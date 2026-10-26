@@ -1,0 +1,91 @@
+{
+  "title": "Sinner, Art Thou Still Secure",
+  "tune": "messiah-herald",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Sinner, Art Thou Still Secure in Tonic Solfa to MESSIAH (HERALD), doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 4, “Prepare to meet God”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to MESSIAH (HERALD); any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Sin-ner, art thou still se-cure? Wilt thou still re-fuse to pray? Can thy heart or hands en-dure In the Lord'S a-veng-ing day? See, his might-y arm is bared! Awe-ful ter-rors clothe his brow! For his judg-ment stand pre-pared, Thou must ei-ther break or bow.",
+  "verses": [
+    {
+      "lines": [
+        "Sinner, art thou still secure?",
+        "Wilt thou still refuse to pray?",
+        "Can thy heart or hands endure",
+        "In the Lord'S avenging day?",
+        "See, his mighty arm is bared!",
+        "Aweful terrors clothe his brow!",
+        "For his judgment stand prepared,",
+        "Thou must either break or bow."
+      ]
+    },
+    {
+      "lines": [
+        "At his presence nature shakes,",
+        "Earth affrighted hastes to flee;",
+        "Solid mountains melt like wax,",
+        "What will then become of thee?",
+        "Who his advent may abide?",
+        "You that glory in your shame,",
+        "Will you find a place to hide",
+        "When the world is wrapped in flame?"
+      ]
+    },
+    {
+      "lines": [
+        "Then the rich, the great, the wise,",
+        "Trembling, guilty, self-condemned;",
+        "Must behold the wrathful eyes",
+        "Of the Judge they once blasphemed:",
+        "Where are now their haughty looks?",
+        "O, their horror and despair!",
+        "When they see the opened books",
+        "And their dreadful sentence hear!"
+      ]
+    },
+    {
+      "lines": [
+        "Lord prepare us by thy grace!",
+        "Soon we must resign our breath;",
+        "And our souls be called, to pass",
+        "Through the iron gate of death",
+        "Let us now our day improve,",
+        "Listen to the gospel voice;",
+        "Seek the things that are above,",
+        "Scorn the world's pretended joys."
+      ]
+    },
+    {
+      "lines": [
+        "O! when flesh and heart shall fail,",
+        "Let thy love our spirits cheer;",
+        "Strengthened thus, we shall prevail",
+        "Over Satan, sin, and fear:",
+        "Trusting in thy precious name,",
+        "May we thus our journey end;",
+        "Then our foes hall lose their aim,",
+        "And the Judge will be our Friend."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MESSIAH (HERALD) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:4"
+}

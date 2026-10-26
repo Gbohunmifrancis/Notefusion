@@ -1,0 +1,111 @@
+{
+  "title": "Encouraged by Thy Word",
+  "tune": "darwall",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Encouraged by Thy Word in Tonic Solfa to DARWALL, doh is D: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 81, “The beggar. Mt 7:7-8”.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.8.8), to be sung to any tune of that metre. This page sets them to DARWALL; any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "En-cour-aged by thy word Of pro-mise to the poor; Be-hold, a beg-gar, Lord, Waits at thy mer-cy's door! No hand, no heart, O Lord, but thine, Can help or pi-ty wants like mine.",
+  "verses": [
+    {
+      "lines": [
+        "Encouraged by thy word",
+        "Of promise to the poor;",
+        "Behold, a beggar, Lord,",
+        "Waits at thy mercy's door!",
+        "No hand, no heart, O Lord, but thine,",
+        "Can help or pity wants like mine."
+      ]
+    },
+    {
+      "lines": [
+        "The beggar's usual plea",
+        "Relief from men to gain,",
+        "If offered unto thee,",
+        "I know thou would'st disdain:",
+        "And pleas which move thy gracious ear,",
+        "Are such as men would scorn to hear."
+      ]
+    },
+    {
+      "lines": [
+        "I have no right to say",
+        "That though I now am poor,",
+        "Yet once there was a day",
+        "When I possessed more:",
+        "Thou know'st that from my very birth,",
+        "I've been the poorest wretch on earth."
+      ]
+    },
+    {
+      "lines": [
+        "Nor can I dare profess,",
+        "As beggars often do,",
+        "Though great is my distress,",
+        "My wants have been but few:",
+        "If thou shouldst leave my soul to starve,",
+        "It would be what I well deserve."
+      ]
+    },
+    {
+      "lines": [
+        "'Twere folly to pretend",
+        "I never begged before;",
+        "Or if thou now befriend,",
+        "I'll trouble thee no more:",
+        "Thou often hast relieved my pain,",
+        "And often I must come again."
+      ]
+    },
+    {
+      "lines": [
+        "Though crumbs are much too good",
+        "For such a dog as I;",
+        "No less than children's food",
+        "My soul can satisfy:",
+        "O do not frown and bid me go,",
+        "I must have all thou canst bestow."
+      ]
+    },
+    {
+      "lines": [
+        "Nor can I willing be",
+        "Thy bounty to conceal",
+        "From others, who like me,",
+        "Their wants and hunger feel:",
+        "I'll tell them of thy mercy's store,",
+        "And try to send a thousand more."
+      ]
+    },
+    {
+      "lines": [
+        "Thy thoughts, thou only wise!",
+        "Our thoughts and ways transcend,",
+        "Far as the arched skies",
+        "Above the earth extend:",
+        "Such pleas as mine men would not bear,",
+        "But God receives a beggar's prayer."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to DARWALL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:81"
+}

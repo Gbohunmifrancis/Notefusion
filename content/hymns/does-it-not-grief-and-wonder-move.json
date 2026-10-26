@@ -1,0 +1,87 @@
+{
+  "title": "Does It Not Grief, and Wonder Move",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Does It Not Grief, and Wonder Move in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 14, “Elijah's prayer. 1Ki 18”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Does it not grief, and won-der move, To think of Is-rael's shame-ful fall? Who need-ed mir-a-cles to prove Wheth-er the Lord was God, or Baal!",
+  "verses": [
+    {
+      "lines": [
+        "Does it not grief, and wonder move,",
+        "To think of Israel's shameful fall?",
+        "Who needed miracles to prove",
+        "Whether the Lord was God, or Baal!"
+      ]
+    },
+    {
+      "lines": [
+        "Methinks I see Elijah stand,",
+        "His features glow with love and zeal,",
+        "In faith and prayer he lifts his hand,",
+        "And makes to heav'n his great appeal,"
+      ]
+    },
+    {
+      "lines": [
+        "\"O God! if I thy servant am,",
+        "If 'tis thy message fills my heart;",
+        "Now glorify thy holy name,",
+        "And show this people who thou art!\""
+      ]
+    },
+    {
+      "lines": [
+        "He spake, and lo! a sudden flame",
+        "Consumed the wood, the dust, the stone;",
+        "The people struck, at once proclaim",
+        "\"The Lord is God, the Lord alone.\""
+      ]
+    },
+    {
+      "lines": [
+        "Like him we mourn an aweful day,",
+        "When more for Baal, than God appear;",
+        "Like him, believers, let us pray,",
+        "And may the God of Israel hear!"
+      ]
+    },
+    {
+      "lines": [
+        "Lord, if thy servant speaks thy truth,",
+        "If he indeed is sent by thee;",
+        "Confirm the word to all our youth,",
+        "And let them thy salvation see."
+      ]
+    },
+    {
+      "lines": [
+        "Now may thy Spirit's holy fire",
+        "Pierce every heart that hears thy word;",
+        "Consume each hurtful vain desire,",
+        "And make them know thou art the Lord."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:14"
+}

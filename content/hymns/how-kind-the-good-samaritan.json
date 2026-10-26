@@ -1,0 +1,95 @@
+{
+  "title": "How Kind the Good Samaritan",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "How Kind the Good Samaritan in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 99, “The good Samaritan. Lk 10:33-35”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "How kind the good Sa-mar-i-tan To him who fell a-mong the thieves! Thus Je-sus pi-ties fall-en man, And heals the wounds the soul re-ceives.",
+  "verses": [
+    {
+      "lines": [
+        "How kind the good Samaritan",
+        "To him who fell among the thieves!",
+        "Thus Jesus pities fallen man,",
+        "And heals the wounds the soul receives."
+      ]
+    },
+    {
+      "lines": [
+        "O! I remember well the day,",
+        "When sorely wounded, nearly slain;",
+        "Like that poor man I bleeding lay,",
+        "And groaned for help, but groaned in vain."
+      ]
+    },
+    {
+      "lines": [
+        "Men saw me in this helpless case,",
+        "And passed without compassion by;",
+        "Each neighbor turned away his face,",
+        "Unmoved by my mournful cry."
+      ]
+    },
+    {
+      "lines": [
+        "But he whose name had been my scorn,",
+        "(As Jews Samaritans despise)",
+        "Came, when he saw me thus forlorn,",
+        "With love and pity in his eyes."
+      ]
+    },
+    {
+      "lines": [
+        "Gently he raised me from the ground,",
+        "Pressed me to lean upon his arm;",
+        "And into every gaping wound",
+        "He poured his own all-healing balm."
+      ]
+    },
+    {
+      "lines": [
+        "Unto his church my steps he led,",
+        "The house prepared for sinners lost;",
+        "Gave charge I should be clothed and fed;",
+        "And took upon him all the cost."
+      ]
+    },
+    {
+      "lines": [
+        "Thus saved from death, from want secured,",
+        "I wait till he again shall come,",
+        "(When I shall be completely cured)",
+        "And take me to his heav'nly home."
+      ]
+    },
+    {
+      "lines": [
+        "There through eternal boundless days,",
+        "When nature's wheel no longer rolls,",
+        "How shall I love, adore, and praise,",
+        "This good Samaritan to souls!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:99"
+}

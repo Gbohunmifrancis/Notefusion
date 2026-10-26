@@ -1,0 +1,91 @@
+{
+  "title": "The Church a Garden Is",
+  "tune": "st-john-parish-choir",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Church a Garden Is in Tonic Solfa to ST. JOHN (PARISH CHOIR), doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 103, “The Barren fig-tree. Lk 13:6-9”.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.8.8), to be sung to any tune of that metre. This page sets them to ST. JOHN (PARISH CHOIR); any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "The church a gar-den is In which be-liev-ers stand, Like or-na-men-tal trees Plant-ed by God's own hand: His Spir-it wa-ters all their roots, And ev-ery branch a-bounds with fruits.",
+  "verses": [
+    {
+      "lines": [
+        "The church a garden is",
+        "In which believers stand,",
+        "Like ornamental trees",
+        "Planted by God's own hand:",
+        "His Spirit waters all their roots,",
+        "And every branch abounds with fruits."
+      ]
+    },
+    {
+      "lines": [
+        "But other trees there are,",
+        "In this enclosure grow;",
+        "Which, though they promise fair,",
+        "Have only leaves to show:",
+        "No fruits of grace are on them found,",
+        "They stand but cumb'rers of the ground."
+      ]
+    },
+    {
+      "lines": [
+        "The under gard'ner grieves,",
+        "In vain his strength he spends,",
+        "For heaps of useless leaves,",
+        "Afford him small amends:",
+        "He hears the Lord his will make known,",
+        "To cut the barren fig-trees down."
+      ]
+    },
+    {
+      "lines": [
+        "How difficult his post,",
+        "What pangs his bowels move,",
+        "To find his wishes crossed,",
+        "His labors useless prove!",
+        "His last relief is earnest prayer,",
+        "Lord, spare them yet another year."
+      ]
+    },
+    {
+      "lines": [
+        "Spare them, and let me try",
+        "What farther means may do;",
+        "I'll fresh manure apply,",
+        "My digging I'll renew",
+        "Who knows but yet they fruit may yield!",
+        "If not--'tis just, they must be felled."
+      ]
+    },
+    {
+      "lines": [
+        "If under means of grace,",
+        "No gracious fruits appear;",
+        "It is a dreadful case,",
+        "Though God may long forbear:",
+        "At length he'll strike the threatened blow,",
+        "And lay the barren fig-tree low."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. JOHN (PARISH CHOIR) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:103"
+}

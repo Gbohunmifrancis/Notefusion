@@ -1,0 +1,95 @@
+{
+  "title": "Beside the Gospel Pool",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Beside the Gospel Pool in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 112, “The pool of Bethesda. Jn 5:2-4”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Be-side the gos-pel pool Ap-point-ed for the poor; From year to year, my help-less soul Has wait-ed for a cure.",
+  "verses": [
+    {
+      "lines": [
+        "Beside the gospel pool",
+        "Appointed for the poor;",
+        "From year to year, my helpless soul",
+        "Has waited for a cure."
+      ]
+    },
+    {
+      "lines": [
+        "How often have I seen",
+        "The healing waters move;",
+        "And others, round me, stepping in",
+        "Their efficacy prove."
+      ]
+    },
+    {
+      "lines": [
+        "But my complaints remain,",
+        "I feel the very same;",
+        "As full of guilt, and fear, and pain.",
+        "As when at first I came."
+      ]
+    },
+    {
+      "lines": [
+        "O would the Lord appear",
+        "My malady to heal;",
+        "He knows how long I've languished here;",
+        "And what distress I feel."
+      ]
+    },
+    {
+      "lines": [
+        "How often have I thought",
+        "Why should I longer lie?",
+        "Surely the mercy I have sought",
+        "Is not for such as I."
+      ]
+    },
+    {
+      "lines": [
+        "But whither can I go?",
+        "There is no other pool",
+        "Where streams of sovereign virtue flow",
+        "To make a sinner whole."
+      ]
+    },
+    {
+      "lines": [
+        "Here then, from day to day,",
+        "I'll wait, and hope, and try;",
+        "Can Jesus hear a sinner pray,",
+        "Yet suffer him to die?"
+      ]
+    },
+    {
+      "lines": [
+        "No: he is full of grace;",
+        "He never will permit",
+        "A soul, that fain would see his face,",
+        "To perish at his feet."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:112"
+}

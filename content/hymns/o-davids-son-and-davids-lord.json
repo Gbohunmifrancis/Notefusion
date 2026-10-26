@@ -1,0 +1,79 @@
+{
+  "title": "O David's Son, and David's Lord",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "O David's Son, and David's Lord in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 20, “David's charge to Solomon. 1Chr 28:9”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Da-vid's Son, and Da-vid's Lord! From age to age thou art the same; Thy gra-cious pre-sence now af-ford, And teach our youth to know thy name!",
+  "verses": [
+    {
+      "lines": [
+        "O David's Son, and David's Lord!",
+        "From age to age thou art the same;",
+        "Thy gracious presence now afford,",
+        "And teach our youth to know thy name!"
+      ]
+    },
+    {
+      "lines": [
+        "Thy people, Lord, though oft distressed,",
+        "Upheld by thee, thus far are come;",
+        "And now we long to see thy rest,",
+        "And wait thy word to call us home."
+      ]
+    },
+    {
+      "lines": [
+        "Like David, when this life shall end,",
+        "We trust in thee sure peace to find;",
+        "Like him, to thee we now commend",
+        "The children we must leave behind."
+      ]
+    },
+    {
+      "lines": [
+        "Ere long, we hope to be, where care,",
+        "And sin, and sorrow, never come",
+        "But O! accept our humble prayer,",
+        "That these may praise thee in our room."
+      ]
+    },
+    {
+      "lines": [
+        "Show them how vile they are by sin,",
+        "And wash them in thy cleansing blood;",
+        "O, make them willing to be thine,",
+        "And be, to them, a cov'nant God."
+      ]
+    },
+    {
+      "lines": [
+        "Long may thy light and truth remain",
+        "To bless this place, when we are gone;",
+        "And numbers here be born again,",
+        "To dwell for ever near thy throne."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:20"
+}

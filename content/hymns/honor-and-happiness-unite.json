@@ -1,0 +1,79 @@
+{
+  "title": "Honor and Happiness Unite",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Honor and Happiness Unite in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 50, “The christian”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Hon-or and happ-i-ness u-nite To make the christ-ian's name a praise; How fair the scene, how clear the light, That fills the rem-nant of his days!",
+  "verses": [
+    {
+      "lines": [
+        "Honor and happiness unite",
+        "To make the christian's name a praise;",
+        "How fair the scene, how clear the light,",
+        "That fills the remnant of his days!"
+      ]
+    },
+    {
+      "lines": [
+        "A kingly character he bears,",
+        "No change his priestly office knows;",
+        "Unfading is the crown he wears,",
+        "His joys can never reach a close."
+      ]
+    },
+    {
+      "lines": [
+        "Adorned with glory from on high,",
+        "Salvation shines upon his face;",
+        "His robe is of th' ethereal dye,",
+        "His steps are dignity and grace."
+      ]
+    },
+    {
+      "lines": [
+        "Inferior honors he disdains,",
+        "Nor stoops to take applause from earth,",
+        "The King of kings himself, maintains",
+        "Th' expenses of his heav'nly birth."
+      ]
+    },
+    {
+      "lines": [
+        "The noblest creature seen below,",
+        "Ordained to fill a throne above;",
+        "God gives him all he can bestow,",
+        "His kingdom of eternal love!"
+      ]
+    },
+    {
+      "lines": [
+        "My soul is ravished at the thought!",
+        "Methinks from earth I see him rise;",
+        "Angels congratulate his lot,",
+        "And shout him welcome to the skies!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:50"
+}

@@ -1,0 +1,87 @@
+{
+  "title": "Chief Shepherd of Thy Chosen Sheep",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Chief Shepherd of Thy Chosen Sheep in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 50, “Prayer for ministers”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Chief Shep-herd of thy cho-sen sheep, From death and sin set free; May ev-ery un-der shep-herd keep His eye, in-tent on thee!",
+  "verses": [
+    {
+      "lines": [
+        "Chief Shepherd of thy chosen sheep,",
+        "From death and sin set free;",
+        "May every under-shepherd keep",
+        "His eye, intent on thee!"
+      ]
+    },
+    {
+      "lines": [
+        "With plenteous grace their hearts prepare,",
+        "To execute thy will",
+        "Compassion, patience, love and care,",
+        "And faithfulness and skill."
+      ]
+    },
+    {
+      "lines": [
+        "Inflame their minds with holy zeal",
+        "Their flocks to feed and teach;",
+        "And let them live, and let them feel",
+        "The sacred truths they preach."
+      ]
+    },
+    {
+      "lines": [
+        "Oh, never let the sheep complain",
+        "That toys, which fools amuse;",
+        "Ambition, pleasure, praise or gain,",
+        "Debase the shepherd's views."
+      ]
+    },
+    {
+      "lines": [
+        "He, that for these, forbears to feed",
+        "The souls whom Jesus loves;",
+        "Whate'er he may profess, or plead,",
+        "An idol-shepherd proves."
+      ]
+    },
+    {
+      "lines": [
+        "The sword of God shall break his arm,",
+        "A blast shall blind his eye",
+        "His word shall have no pow'r to warm,",
+        "His gifts shall all grow dry."
+      ]
+    },
+    {
+      "lines": [
+        "O Lord, avert this heavy woe,",
+        "Let all thy shepherds say!",
+        "And grace, and strength, on each bestow,",
+        "To labor while 'tis day."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:50"
+}

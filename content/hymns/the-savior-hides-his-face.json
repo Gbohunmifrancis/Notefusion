@@ -1,0 +1,87 @@
+{
+  "title": "The Savior Hides His Face",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Savior Hides His Face in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 24, “Mourning and longing”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "The Sa-vior hides his face! My spir-it thirsts to prove Re-newed sup-plies of pard'n-ing grace, And nev-er fa-ding love.",
+  "verses": [
+    {
+      "lines": [
+        "The Savior hides his face!",
+        "My spirit thirsts to prove",
+        "Renewed supplies of pard'ning grace,",
+        "And never-fading love."
+      ]
+    },
+    {
+      "lines": [
+        "The favored souls who know",
+        "What glories shine in him,",
+        "Pant for his presence, as the roe",
+        "Pants for the living stream!"
+      ]
+    },
+    {
+      "lines": [
+        "What trifles tease me now!",
+        "They swarm like summer flies,",
+        "They cleave to everything I do,",
+        "And swim before my eyes."
+      ]
+    },
+    {
+      "lines": [
+        "How dull the Sabbath day,",
+        "Without the Sabbath's Lord!",
+        "How toilsome then to sing and pray,",
+        "And wait upon the word!"
+      ]
+    },
+    {
+      "lines": [
+        "Of all the truths I hear",
+        "How few delight my taste!",
+        "I glean a berry here and there,",
+        "But mourn the vintage past."
+      ]
+    },
+    {
+      "lines": [
+        "Yet let me (as I ought)",
+        "Still hope to be supplied;",
+        "No pleasure else is worth a thought,",
+        "Nor shall I be denied."
+      ]
+    },
+    {
+      "lines": [
+        "Though I am but a worm,",
+        "Unworthy of his care;",
+        "The Lord will my desire perform,",
+        "And grant me all my prayer."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:24"
+}

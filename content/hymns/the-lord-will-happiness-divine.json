@@ -1,0 +1,79 @@
+{
+  "title": "The Lord Will Happiness Divine",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Lord Will Happiness Divine in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 64, “The contrite heart. Isa 47:15”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The Lord will happ-i-ness di-vine On con-trite hearts be-stow: Then tell me, gra-cious God, is mine A con-trite heart, or no?",
+  "verses": [
+    {
+      "lines": [
+        "The Lord will happiness divine",
+        "On contrite hearts bestow:",
+        "Then tell me, gracious God, is mine",
+        "A contrite heart, or no?"
+      ]
+    },
+    {
+      "lines": [
+        "I hear, but seem to hear in vain,",
+        "Insensible as steel;",
+        "If ought is felt, 'tis only pain,",
+        "To find I cannot feel."
+      ]
+    },
+    {
+      "lines": [
+        "I sometimes think myself inclined",
+        "To love thee, if I could;",
+        "But often feel another mind,",
+        "Averse to all that's good."
+      ]
+    },
+    {
+      "lines": [
+        "My best desires are faint and few,",
+        "I fain would strive for more;",
+        "But when I cry, \"My strength renew,\"",
+        "Seem weaker than before."
+      ]
+    },
+    {
+      "lines": [
+        "Thy saints are comforted I know,",
+        "And love thy house of prayer;",
+        "I therefore go where others go,",
+        "But find no comfort there."
+      ]
+    },
+    {
+      "lines": [
+        "O make this heart rejoice, or ache;",
+        "Decide this doubt for me;",
+        "And if it be not broken, break,",
+        "And heal it, if it be."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:64"
+}

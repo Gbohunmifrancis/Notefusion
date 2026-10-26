@@ -1,0 +1,39 @@
+{
+  "title": "Furnish Us All with Light and Pow'rs",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Furnish Us All with Light and Pow'rs in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 1 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 90, “Now, Lord, inspire the preacher's heart, And teach his tongue to speak; Food to the hungry soul impart, And cordials to the weak”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fur-nish us all with light and pow'rs To walk in Wis-dom's ways; So shall the ben-e-fit be ours, And thou shalt have the praise.",
+  "verses": [
+    {
+      "lines": [
+        "Furnish us all with light and pow'rs",
+        "To walk in Wisdom's ways;",
+        "So shall the benefit be ours,",
+        "And thou shalt have the praise."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:90"
+}

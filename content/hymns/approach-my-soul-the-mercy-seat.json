@@ -1,0 +1,79 @@
+{
+  "title": "Approach, My Soul, the Mercy-seat",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Approach, My Soul, the Mercy-seat in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 12, “The effort”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Ap-proach, my soul, the mer-cy seat Where Je-sus an-swers prayer; There hum-bly fall be-fore his feet, For none can per-ish there.",
+  "verses": [
+    {
+      "lines": [
+        "Approach, my soul, the mercy-seat",
+        "Where Jesus answers prayer;",
+        "There humbly fall before his feet,",
+        "For none can perish there."
+      ]
+    },
+    {
+      "lines": [
+        "Thy promise is my only plea,",
+        "With this I venture nigh;",
+        "Thou callest burdened souls to thee,",
+        "And such, O Lord, am I."
+      ]
+    },
+    {
+      "lines": [
+        "Bowed down beneath a load of sin,",
+        "By Satan sorely pressed;",
+        "By war without, and fears within,",
+        "I come to thee for rest."
+      ]
+    },
+    {
+      "lines": [
+        "Be thou my shield and hiding-place!",
+        "That, sheltered near thy side,",
+        "I may my fierce accuser face,",
+        "And tell him, \"Thou hast died.\""
+      ]
+    },
+    {
+      "lines": [
+        "Oh wondrous love! to bleed and die,",
+        "To bear the cross and shame;",
+        "That guilty sinners, such as I,",
+        "Might plead thy gracious name."
+      ]
+    },
+    {
+      "lines": [
+        "\"Poor tempest-tossed soul, be still,",
+        "My promised grace receive;\"",
+        "'Tis Jesus speaks--I must, I will,",
+        "I can, I do believe."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:12"
+}

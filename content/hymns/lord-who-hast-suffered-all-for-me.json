@@ -1,0 +1,79 @@
+{
+  "title": "Lord, Who Hast Suffered All for Me",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Lord, Who Hast Suffered All for Me in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 28, “Prayer for patience”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Lord, who hast suff-ered all for me, My peace and par-don to pro-cure; The ligh-ter cross I bear for thee, Help me with pa-tience to en-dure.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, who hast suffered all for me,",
+        "My peace and pardon to procure;",
+        "The lighter cross I bear for thee,",
+        "Help me with patience to endure."
+      ]
+    },
+    {
+      "lines": [
+        "The storm of loud repining hush,",
+        "I would in humble silence mourn;",
+        "Why should th' unburnt, though burning bush,",
+        "Be angry as the crackling thorn?"
+      ]
+    },
+    {
+      "lines": [
+        "Man should not faint at thy rebuke,",
+        "Like Joshua falling on his face,",
+        "When the cursed thing that Achan took,",
+        "Brought Israel into just disgrace."
+      ]
+    },
+    {
+      "lines": [
+        "Perhaps some golden wedge suppressed,",
+        "Some secret sin offends my God;",
+        "Perhaps that Babylonish vest,",
+        "Self-righteousness, provokes the rod."
+      ]
+    },
+    {
+      "lines": [
+        "Ah! were I buffeted all day,",
+        "Mocked, crowned with thorns, and spit upon;",
+        "I yet should have no right to say,",
+        "My great distress is mine alone."
+      ]
+    },
+    {
+      "lines": [
+        "Let me not angrily declare",
+        "No pain was ever sharp like mine;",
+        "Nor murmur at the cross I hear,",
+        "But rather weep rememb'ring thine."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:28"
+}

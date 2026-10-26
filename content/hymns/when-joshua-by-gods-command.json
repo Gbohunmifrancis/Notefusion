@@ -1,0 +1,95 @@
+{
+  "title": "When Joshua, by God's Command",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "When Joshua, by God's Command in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 21, “Gibeon. Josh 10:6”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When Jo-shu-a, by God's com-mand, In-vad-ed Ca-naan's guilt-y land; Gi-beon, un-like the na-tions round, Sub-mis-sion made and mer-cy found.",
+  "verses": [
+    {
+      "lines": [
+        "When Joshua, by God's command,",
+        "Invaded Canaan's guilty land;",
+        "Gibeon, unlike the nations round,",
+        "Submission made and mercy found."
+      ]
+    },
+    {
+      "lines": [
+        "Their stubborn neighbors who enraged,",
+        "United war against them waged,",
+        "By Joshua soon were overthrown,",
+        "For Gibeon's cause was now his own."
+      ]
+    },
+    {
+      "lines": [
+        "He, from whose arm they ruin feared,",
+        "Their leader and ally appeared",
+        "An emblem of the Savior's grace,",
+        "To those who humbly seek his face."
+      ]
+    },
+    {
+      "lines": [
+        "The men of Gibeon wore disguise,",
+        "And gained their peace by framing lies;",
+        "For Joshua had no pow'r to spare,",
+        "If he had known from whence they were."
+      ]
+    },
+    {
+      "lines": [
+        "But Jesus invitations sends,",
+        "Treating with rebels as his friends;",
+        "And holds the promise forth in view,",
+        "To all who for his mercy sue."
+      ]
+    },
+    {
+      "lines": [
+        "Too long his goodness I disdained,",
+        "Yet went at last and peace obtained;",
+        "But soon the noise of war I heard,",
+        "And former friends in arms appeared."
+      ]
+    },
+    {
+      "lines": [
+        "Weak in myself for help I cried,",
+        "Lord, I am pressed on every side;",
+        "The cause is thine, they fight with me,",
+        "But every blow is aimed at thee."
+      ]
+    },
+    {
+      "lines": [
+        "With speed to my relief he came,",
+        "And put my enemies to shame;",
+        "Thus saved by grace I live to sing,",
+        "The love and triumphs of my King."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:21"
+}

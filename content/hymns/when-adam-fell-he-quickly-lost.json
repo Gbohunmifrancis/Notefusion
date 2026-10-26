@@ -1,0 +1,95 @@
+{
+  "title": "When Adam Fell He Quickly Lost",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "When Adam Fell He Quickly Lost in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 2, “Cain and Abel. Gen 4:3-8”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When A-dam fell he quick-ly lost God's i-mage, which he once pos-sessed: See All our na-ture since could boast In Cain, his first born Son, ex-pressed!",
+  "verses": [
+    {
+      "lines": [
+        "When Adam fell he quickly lost",
+        "God's image, which he once possessed:",
+        "See All our nature since could boast",
+        "In Cain, his first-born Son, expressed!"
+      ]
+    },
+    {
+      "lines": [
+        "The sacrifice the Lord ordained",
+        "In type of the Redeemer's blood,",
+        "Self-righteous reas'ning Cain disdained,",
+        "And thought his own first-fruits as good."
+      ]
+    },
+    {
+      "lines": [
+        "Yet rage and envy filled his mind,",
+        "When, with a fallen, downcast look,",
+        "He saw his brother favor find,",
+        "Who God's appointed method took."
+      ]
+    },
+    {
+      "lines": [
+        "By Cain's own hand, good Abel died,",
+        "Because the Lord approved his faith;",
+        "And, when his blood for vengeance cried,",
+        "He vainly thought to hide his death."
+      ]
+    },
+    {
+      "lines": [
+        "Such was the wicked murd'rer Cain,",
+        "And such by nature still are we,",
+        "Until by grace we're born again,",
+        "Malicious, blind and proud, as he."
+      ]
+    },
+    {
+      "lines": [
+        "Like him the way of grace we slight,",
+        "And in our own devices trust;",
+        "Call evil good, and darkness light,",
+        "And hate and persecute the just."
+      ]
+    },
+    {
+      "lines": [
+        "The saints, in every age and place,",
+        "Have found this history fulfilled;",
+        "The numbers all our thoughts surpass",
+        "Of Abels, whom the Cains have killed!"
+      ]
+    },
+    {
+      "lines": [
+        "Thus Jesus fell--but O! his blood",
+        "Far better things than Abel's cries:",
+        "Obtains his murd'rers peace with God,",
+        "And gains them mansions in the skies."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:2"
+}

@@ -1,0 +1,87 @@
+{
+  "title": "Nay, I Cannot Let Thee Go",
+  "tune": "st-bees",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Nay, I Cannot Let Thee Go in Tonic Solfa to ST. BEES, doh is Ab: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 10, “My name is Jacob. Gen 32:27”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to ST. BEES; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Nay, I can-not let Thee go, Till a bless-ing thou be-stow; Do not turn a-way thy face, Mine's an ur-gent press-ing case.",
+  "verses": [
+    {
+      "lines": [
+        "Nay, I cannot let Thee go,",
+        "Till a blessing thou bestow;",
+        "Do not turn away thy face,",
+        "Mine's an urgent pressing case."
+      ]
+    },
+    {
+      "lines": [
+        "Dost thou ask me, who I am?",
+        "Ah, my Lord, thou know'st my name!",
+        "Yet the question gives a plea,",
+        "To support my suit with thee."
+      ]
+    },
+    {
+      "lines": [
+        "Thou didst once a wretch behold,",
+        "In rebellion blindly bold;",
+        "Scorn thy grace, thy pow'r defy,",
+        "That poor rebel, Lord, was I."
+      ]
+    },
+    {
+      "lines": [
+        "Once a sinner near despair,",
+        "Sought thy mercy-seat by prayer;",
+        "Mercy heard and set him free,",
+        "Lord, that mercy came to me,"
+      ]
+    },
+    {
+      "lines": [
+        "Many years have passed since then,",
+        "Many changes I have seen;",
+        "Yet have been upheld till now,",
+        "Who could hold me up but thou?"
+      ]
+    },
+    {
+      "lines": [
+        "Thou hast helped in every need,",
+        "This emboldens me to plead;",
+        "After so much mercy past,",
+        "Canst thou let me sink at last?"
+      ]
+    },
+    {
+      "lines": [
+        "No--I must maintain my hold,",
+        "'Tis thy goodness makes me bold;",
+        "I can no denial take,",
+        "When I plead for Jesu's sake."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. BEES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:10"
+}

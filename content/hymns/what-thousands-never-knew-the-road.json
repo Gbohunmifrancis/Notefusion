@@ -1,0 +1,71 @@
+{
+  "title": "What Thousands Never Knew the Road",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "What Thousands Never Knew the Road in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 73, “The narrow way”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "What thou-sands nev-er knew the road! What thou-sands hate it when 'tis known! None but the cho-sen tribes of God, Will seek or choose it for their own.",
+  "verses": [
+    {
+      "lines": [
+        "What thousands never knew the road!",
+        "What thousands hate it when 'tis known!",
+        "None but the chosen tribes of God,",
+        "Will seek or choose it for their own."
+      ]
+    },
+    {
+      "lines": [
+        "A thousand ways in ruin end,",
+        "One, only, leads to joys on high;",
+        "By that my willing steps ascend,",
+        "Pleased with a journey to the sky."
+      ]
+    },
+    {
+      "lines": [
+        "No more I ask, or hope to find,",
+        "Delight or happiness below;",
+        "Sorrow may well possess the mind",
+        "That feeds where thorns and thistles grow."
+      ]
+    },
+    {
+      "lines": [
+        "The joy that fades is not for me,",
+        "I seek immortal joys above;",
+        "There, glory without end, shall be",
+        "The bright reward of faith and love."
+      ]
+    },
+    {
+      "lines": [
+        "Cleave to the world ye sordid worms,",
+        "Contented lick your native dust;",
+        "But God shall fight, with all his storms,",
+        "Against the idol of your trust."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:73"
+}

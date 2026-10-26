@@ -1,0 +1,79 @@
+{
+  "title": "From Pole to Pole Let Others Roam",
+  "tune": "york",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "From Pole to Pole Let Others Roam in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 69, “The Lord is my portion. Lam 3:24”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "From pole to pole let o-thers roam, And search in vain for bliss; My soul is sat-is-fied at home, The Lord my por-tion is.",
+  "verses": [
+    {
+      "lines": [
+        "From pole to pole let others roam,",
+        "And search in vain for bliss;",
+        "My soul is satisfied at home,",
+        "The Lord my portion is."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, who on his glorious throne",
+        "Rules heav'n and earth and sea;",
+        "Is pleased to claim me for his own,",
+        "And give himself to me."
+      ]
+    },
+    {
+      "lines": [
+        "His person fixes all my love,",
+        "His blood removes my fear;",
+        "And while he pleads for me above,",
+        "His arm preserves me here."
+      ]
+    },
+    {
+      "lines": [
+        "His word of promise is my food,",
+        "His Spirit is my guide;",
+        "Thus daily is my strength renewed",
+        "And all my wants supplied."
+      ]
+    },
+    {
+      "lines": [
+        "For him I count as gain each loss,",
+        "Disgrace, for him, renown;",
+        "Well may I glory in his cross,",
+        "While he prepares my crown!"
+      ]
+    },
+    {
+      "lines": [
+        "Let worldlings then indulge their boast,",
+        "How much they gain or spend!",
+        "Their joys must soon give up the ghost,",
+        "But mine shall know no end."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:69"
+}

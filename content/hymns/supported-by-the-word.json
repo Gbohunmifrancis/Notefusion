@@ -1,0 +1,91 @@
+{
+  "title": "Supported by the Word",
+  "tune": "st-john-parish-choir",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Supported by the Word in Tonic Solfa to ST. JOHN (PARISH CHOIR), doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 73, “The power and triumph of faith. Dan 3:6”.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.8.8), to be sung to any tune of that metre. This page sets them to ST. JOHN (PARISH CHOIR); any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "Sup-port-ed by the word, Though in him-self a worm, The ser-vant of the Lord Can won-drous acts per-form: With-out dis-may he bold-ly treads Wher-e'er the path of du-ty leads.",
+  "verses": [
+    {
+      "lines": [
+        "Supported by the word,",
+        "Though in himself a worm,",
+        "The servant of the Lord",
+        "Can wondrous acts perform:",
+        "Without dismay he boldly treads",
+        "Where'er the path of duty leads."
+      ]
+    },
+    {
+      "lines": [
+        "The haughty king in vain,",
+        "With fury on his brow,",
+        "Believers would constrain",
+        "To golden gods to bow:",
+        "The furnace could not make them fear,",
+        "Because they knew the Lord was near."
+      ]
+    },
+    {
+      "lines": [
+        "As vain was the decree",
+        "Which charged them not to pray;",
+        "Daniel still bowed his knee,",
+        "And worshiped thrice a day:",
+        "Trusting in God, he feared not men,",
+        "Though threatened with the lion's den."
+      ]
+    },
+    {
+      "lines": [
+        "Secure they might refuse",
+        "Compliance with such laws,",
+        "For what had they to lose,",
+        "When God espoused their cause?",
+        "He made the hungry lions crouch,",
+        "Nor durst the fire his children touch."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord is still the same,",
+        "A mighty shield and tow'r,",
+        "And they who trust his name",
+        "Are guarded by his pow'r:",
+        "He can the rage of lions tame,",
+        "And bear them harmless through the flame."
+      ]
+    },
+    {
+      "lines": [
+        "Yet we too often shrink",
+        "When trials are in view;",
+        "Expecting we must sink,",
+        "And never can get through.",
+        "But could we once believe indeed,",
+        "From all these fears we should be freed."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. JOHN (PARISH CHOIR) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:73"
+}

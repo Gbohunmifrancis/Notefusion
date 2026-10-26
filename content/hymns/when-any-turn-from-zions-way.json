@@ -1,0 +1,87 @@
+{
+  "title": "When Any Turn from Zion's Way",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "When Any Turn from Zion's Way in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 115, “Will ye also go away? Jn 6:67-69”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When a-ny turn from Zi-on's way, (A-las! what num-bers do!) Me-thinks I hear my Sa-vior say, \"Wilt thou for-sake me too?\"",
+  "verses": [
+    {
+      "lines": [
+        "When any turn from Zion's way,",
+        "(Alas! what numbers do!)",
+        "Methinks I hear my Savior say,",
+        "\"Wilt thou forsake me too?\""
+      ]
+    },
+    {
+      "lines": [
+        "Ah Lord! with such a heart as mine,",
+        "Unless thou hold me fast;",
+        "I feel I must, I shall decline,",
+        "And prove like them at last."
+      ]
+    },
+    {
+      "lines": [
+        "Yet thou alone hast pow'r, I know,",
+        "To save a wretch like me;",
+        "To whom, or whither, could I go,",
+        "If I should turn from thee?"
+      ]
+    },
+    {
+      "lines": [
+        "Beyond a doubt I rest assured",
+        "Thou art the Christ of God;",
+        "Who hast eternal life secured",
+        "By promise and by blood."
+      ]
+    },
+    {
+      "lines": [
+        "The help of men and angels joined,",
+        "Could never reach my case;",
+        "Nor can I hope relief to find,",
+        "But in thy boundless grace."
+      ]
+    },
+    {
+      "lines": [
+        "No voice but thine can give me rest,",
+        "And bid my fears depart;",
+        "No love but thine can make me blest,",
+        "And satisfy my heart."
+      ]
+    },
+    {
+      "lines": [
+        "What anguish has that question stirred,",
+        "If I will also go?",
+        "Yet, Lord, relying on thy word,",
+        "I humbly answer, No!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:115"
+}

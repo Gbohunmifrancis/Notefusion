@@ -1,0 +1,71 @@
+{
+  "title": "The Savior! What a Noble Flame",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Savior! What a Noble Flame in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 55, “Jesus hasting to suffer”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The Sa-vior! what a no-ble flame Was kin-dled in his breast, When hast-ing to Je-ru-sa-lem He marched be-fore the rest!",
+  "verses": [
+    {
+      "lines": [
+        "The Savior! what a noble flame",
+        "Was kindled in his breast,",
+        "When hasting to Jerusalem",
+        "He marched before the rest!"
+      ]
+    },
+    {
+      "lines": [
+        "Good-will to men, and zeal for God,",
+        "His every thought engross;",
+        "He longs to be baptized with blood,",
+        "He pants to reach the cross."
+      ]
+    },
+    {
+      "lines": [
+        "With all his suff'rings full in view,",
+        "And woes, to us, unknown,",
+        "Forth to the task his spirit flew,",
+        "'Twas love that urged him on."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, we return thee what we can!",
+        "Our hearts shall sound abroad",
+        "Salvation, to the dying Man,",
+        "And to the rising God!"
+      ]
+    },
+    {
+      "lines": [
+        "And while thy bleeding glories here",
+        "Engage our wond'ring eyes;",
+        "We learn our lighter cross to bear,",
+        "And hasten to the skies."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:55"
+}

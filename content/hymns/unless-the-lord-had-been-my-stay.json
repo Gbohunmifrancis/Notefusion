@@ -1,0 +1,91 @@
+{
+  "title": "Unless the Lord Had Been My Stay",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Unless the Lord Had Been My Stay in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 22, “Help in time of Need”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Un-less the Lord had been my stay (With trem-bling joy my soul may say) My cru-el foe had gained his end: But he ap-peared for my re-lief, And Sa-tan sees, with shame and grief, That I have an al-might-y Friend.",
+  "verses": [
+    {
+      "lines": [
+        "Unless the Lord had been my stay",
+        "(With trembling joy my soul may say)",
+        "My cruel foe had gained his end:",
+        "But he appeared for my relief,",
+        "And Satan sees, with shame and grief,",
+        "That I have an almighty Friend."
+      ]
+    },
+    {
+      "lines": [
+        "O, 'twas a dark and trying hour,",
+        "When harassed by the tempter's pow'r,",
+        "I felt my strongest hopes decline!",
+        "You only who have known his arts,",
+        "You only who have felt his darts,",
+        "Can pity such a case as mine."
+      ]
+    },
+    {
+      "lines": [
+        "Loud in my ears a charge he read,",
+        "(My conscience witnessed all he said)",
+        "My long black list of outward sin;",
+        "Then bringing forth my heart to view,",
+        "Too well what's hidden there he knew,",
+        "He showed me ten-times worse within."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis all too true, my soul replied,",
+        "But I remember Jesus died,",
+        "And now he fills a throne of grace;",
+        "I'll go, as I have done before,",
+        "His mercy I may still implore,",
+        "I have his promise, \"Seek my face.\""
+      ]
+    },
+    {
+      "lines": [
+        "But, as when sudden fogs arise,",
+        "The trees and hills, the sun and skies,",
+        "Are all at once concealed from view;",
+        "So clouds of horror, black as night,",
+        "By Satan raised, hid from my sight,",
+        "The throne of grace and promise too."
+      ]
+    },
+    {
+      "lines": [
+        "Then, while beset with guilt and fear,",
+        "He tried to urge me to despair,",
+        "He tried, and he almost prevailed;",
+        "But Jesus, by a heav'nly ray,",
+        "Drove clouds, and guilt, and fear away,",
+        "And all the tempter's malice failed."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:22"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "As Birds Their Infant Brood Protect",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "As Birds Their Infant Brood Protect in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 72, “Jehovah-Shammah. Ezek 48:33”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "As birds their in-fant brood pro-tect, And spread their wings to shel-ter them; Thus saith the Lord to his e-lect, \"So will I guard Je-ru-sa-lem.\"",
+  "verses": [
+    {
+      "lines": [
+        "As birds their infant brood protect,",
+        "And spread their wings to shelter them;",
+        "Thus saith the Lord to his elect,",
+        "\"So will I guard Jerusalem.\""
+      ]
+    },
+    {
+      "lines": [
+        "And what then is Jerusalem,",
+        "This darling object of his care?",
+        "Where is its worth in God's esteem,",
+        "Who built it? who inhabits there?"
+      ]
+    },
+    {
+      "lines": [
+        "Jehovah founded it in blood,",
+        "The blood of his incarnate Son;",
+        "There dwell the saints, once foes to God,",
+        "The sinners, whom he calls his own."
+      ]
+    },
+    {
+      "lines": [
+        "There, though besieged on every side,",
+        "Yet much beloved and guarded well;",
+        "From age to age they have defied,",
+        "The utmost force of earth and hell."
+      ]
+    },
+    {
+      "lines": [
+        "Let earth repent, and hell despair,",
+        "This city has a sure defence;",
+        "Her name is called, the Lord is there,",
+        "And who has pow'r to drive him thence."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:72"
+}

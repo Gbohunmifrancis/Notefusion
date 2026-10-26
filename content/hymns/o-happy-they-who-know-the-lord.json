@@ -1,0 +1,95 @@
+{
+  "title": "O Happy They Who Know the Lord",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "O Happy They Who Know the Lord in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 46, “Gospel privileges”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O hap-py they who know the Lord, With whom he deigns to dwell! He feeds and cheers them by his word, His arm sup-ports them well.",
+  "verses": [
+    {
+      "lines": [
+        "O happy they who know the Lord,",
+        "With whom he deigns to dwell!",
+        "He feeds and cheers them by his word,",
+        "His arm supports them well."
+      ]
+    },
+    {
+      "lines": [
+        "To them, in each distressing hour,",
+        "His throne of grace is near;",
+        "And when they plead his love and pow'r,",
+        "He stands engaged to hear."
+      ]
+    },
+    {
+      "lines": [
+        "He helped his saints in ancient days",
+        "Who trusted in his name;",
+        "And we can witness, to his praise,",
+        "His love is still the same."
+      ]
+    },
+    {
+      "lines": [
+        "Wand'ring in sin, our souls he found,",
+        "And bid us seek his face;",
+        "Gave us to hear the gospel sound,",
+        "And taste the gospel grace."
+      ]
+    },
+    {
+      "lines": [
+        "Oft in his house his glory shines",
+        "Before our wond'ring eyes;",
+        "We wish not, then, for golden mines,",
+        "Or ought beneath the skies."
+      ]
+    },
+    {
+      "lines": [
+        "His presence sweetens all our cares,",
+        "And makes our burdens light;",
+        "A word from him dispels our fears,",
+        "And gilds the gloom of night."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, we expect to suffer here,",
+        "Nor would we dare repine;",
+        "But give us, still, to find thee near;",
+        "And own us, still, for thine."
+      ]
+    },
+    {
+      "lines": [
+        "Let us enjoy, and highly prize",
+        "These tokens of thy love;",
+        "Till thou shalt bid our spirits rise,",
+        "To worship thee above."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:46"
+}

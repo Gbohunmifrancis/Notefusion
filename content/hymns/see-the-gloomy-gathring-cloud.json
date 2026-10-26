@@ -1,0 +1,79 @@
+{
+  "title": "See the Gloomy Gath'ring Cloud",
+  "tune": "martyn",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "See the Gloomy Gath'ring Cloud in Tonic Solfa to MARTYN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 67, “The hiding place. February 10, 1779”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to MARTYN; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "See the gloo-my gath'-ring cloud Hang-ing o'er a sin-ful land! Sure the Lord pro-claims a-loud, Times of trou-ble are at hand: Hap-py they, who love his name! They shall al-ways find him near; Though the earth were wrapped in flame, They have no just cause for fear.",
+  "verses": [
+    {
+      "lines": [
+        "See the gloomy gath'ring cloud",
+        "Hanging o'er a sinful land!",
+        "Sure the Lord proclaims aloud,",
+        "Times of trouble are at hand:",
+        "Happy they, who love his name!",
+        "They shall always find him near;",
+        "Though the earth were wrapped in flame,",
+        "They have no just cause for fear."
+      ]
+    },
+    {
+      "lines": [
+        "Hark! his voice in accents mild,",
+        "(O, how comforting and sweet!)",
+        "Speaks to every humble child,",
+        "Pointing out a sure retreat!",
+        "Come, and in my chambers hide,",
+        "To my saints of old well known;",
+        "There you safely may abide,",
+        "Till the storm be overblown."
+      ]
+    },
+    {
+      "lines": [
+        "You have only to repose",
+        "On my wisdom, love, and care;",
+        "Where my wrath consumes my foes,",
+        "Mercy shall my children spare:",
+        "While they perish in the flood,",
+        "You that bear my holy mark,",
+        "Sprinkled with atoning blood,",
+        "Shall be safe within the ark."
+      ]
+    },
+    {
+      "lines": [
+        "Sinners, see the ark prepared!",
+        "Haste to enter while there's room;",
+        "Though the Lord his arm has bared,",
+        "Mercy still retards your doom:",
+        "Seek him while there yet is hope,",
+        "Ere the day of grace be past;",
+        "Lest in wrath he give you up,",
+        "And this call should prove your last."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MARTYN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:67"
+}

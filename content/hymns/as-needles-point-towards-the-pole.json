@@ -1,0 +1,79 @@
+{
+  "title": "As Needles Point Towards the Pole",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "As Needles Point Towards the Pole in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 90, “The Lodestone”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "As nee-dles point to-wards the pole, When touched by the mag-net-ic stone; So faith in Je-sus, gives the soul A ten-den-cy be-fore un-known.",
+  "verses": [
+    {
+      "lines": [
+        "As needles point towards the pole,",
+        "When touched by the magnetic stone;",
+        "So faith in Jesus, gives the soul",
+        "A tendency before unknown."
+      ]
+    },
+    {
+      "lines": [
+        "Till then, by blinded passions led,",
+        "In search of fancied good we range;",
+        "The paths of disappointment tread,",
+        "To nothing fixed, but love of change."
+      ]
+    },
+    {
+      "lines": [
+        "But when the Holy Ghost imparts",
+        "A knowledge of the Savior's love;",
+        "Our wand'ring, weary, restless hearts,",
+        "Are fixed at once, no more to move."
+      ]
+    },
+    {
+      "lines": [
+        "Now a new principle takes place,",
+        "Which guides and animates the will;",
+        "This love, another name for grace,",
+        "Constrains to good, and bars from ill."
+      ]
+    },
+    {
+      "lines": [
+        "By love's sure light we soon perceive",
+        "Our noblest bliss, and proper end;",
+        "And gladly every idol leave,",
+        "To love and serve our Lord and Friend."
+      ]
+    },
+    {
+      "lines": [
+        "Thus borne along by faith and hope,",
+        "We feel the Savior's words are true;",
+        "\"And I, if I be lifted up,",
+        "Will draw the sinner upward too.\""
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:90"
+}

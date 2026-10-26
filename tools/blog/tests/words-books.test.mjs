@@ -3,7 +3,7 @@
 // two books print given to the first, and the committed pages one syllable to a note of their tune.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseBook, patternFor, authorOf, fitHymn, pickTune, METRES, BOOKS } from "../import/words-books.mjs";
+import { parseBook, parseOlney, patternFor, authorOf, fitHymn, pickTune, METRES, BOOKS } from "../import/words-books.mjs";
 import { fromLaterBook } from "../import/watts.mjs";
 import { loadAll } from "../lib/content.mjs";
 import { loadEngine } from "../lib/solfa.mjs";
@@ -56,6 +56,61 @@ test("the book's text is read into hymns: number, metre, author, heading, verses
   assert.equal(a.verses[1][2], "With power proclaimed, in peace received, —");
   assert.deepEqual([b.number, b.label, b.author, b.verses[0][0]], [27, "P. M.", "Anonymous", "Teach us to pray!"]);
   assert.deepEqual([c.number, c.author, c.altered], [480, "Anonymous", true]);
+});
+
+test("Olney Hymns: author, metre, title and verses, the margin's scripture and the capitals left out, each book from Hymn 1", () => {
+  const text = `
+BOOK I.
+     ______
+Hymn 1
+
+   John Newton
+
+   8,6,8,6
+
+   ADAM. Gen 3:9
+
+
+   On man, in his own image made,
+
+   How much did GOD bestow?
+   Rom 8:36
+
+   The whole creation homage paid,
+
+   And owned him LORD, below!
+
+
+   He dwelt in Eden's garden, stored [3]
+
+   With sweets for every sense;
+
+   And there, with his descending LORD,
+
+   He walked in confidence.
+     ______
+
+A
+TABLE
+   1 Adam                                          3
+
+Hymn 1
+
+   William Cowper
+
+   8,8,8,8
+
+   Walking with God
+`;
+  const [a, b] = parseOlney(text);
+  assert.deepEqual([a.book, a.number, a.author, a.label, a.heading], [1, 1, "John Newton", "8,6,8,6", ["Adam. Gen 3:9"]]);
+  assert.deepEqual(a.verses, [
+    ["On man, in his own image made,", "How much did God bestow?", "The whole creation homage paid,", "And owned him Lord, below!"],
+    ["He dwelt in Eden's garden, stored", "With sweets for every sense;", "And there, with his descending Lord,", "He walked in confidence."],
+  ]);
+  assert.deepEqual([b.book, b.number, b.author, b.verses.length], [2, 1, "William Cowper", 0]);
+  assert.deepEqual(patternFor("8,6,8,6", 8), [8, 6, 8, 6, 8, 6, 8, 6]);
+  assert.equal(patternFor("8,8,8,8a", 4), null);
 });
 
 test("a metre label and a verse's length give its syllables per line, or nothing for a particular metre", () => {
@@ -118,7 +173,8 @@ test("a hymn is fitted to its metre, verse for verse, or refused; its tune stays
 
 test("the committed pages: set by metre, in print by the book's year, each underlay one syllable to a note of its tune", () => {
   const { allHymns } = loadAll({ includeDrafts: true });
-  const pages = allHymns.filter((h) => /^hymns-18(48|46):/.test(h.importedFrom || ""));
+  const pages = allHymns.filter((h) => /^(hymns-18(48|46)|olney-1779):/.test(h.importedFrom || ""));
+  assert.ok(pages.filter((h) => h.importedFrom.startsWith("olney-1779:")).length >= 250);
   assert.ok(pages.filter((h) => h.importedFrom.startsWith("hymns-1848:")).length >= 300);
   assert.ok(pages.filter((h) => h.importedFrom.startsWith("hymns-1846:")).length >= 400);
   const N = loadEngine();
@@ -126,7 +182,7 @@ test("the committed pages: set by metre, in print by the book's year, each under
     assert.equal(h.setByMetre, true, h.slug);
     assert.equal(h.reviewed, false, h.slug);
     assert.equal(h.textPublishedBy, true, h.slug);
-    assert.ok([1848, 1866, 1853].includes(h.textPublished), h.slug);
+    assert.ok([1848, 1866, 1853, 1779].includes(h.textPublished), h.slug);
     assert.doesNotMatch(h.about[1], /\) \(/, h.slug);   // never "Sevens (7.7.7.7) (7.7.7.7)"
     assert.ok(Object.values(METRES).some((m) => m.tunes.includes(h.tune)), h.slug);
     assert.equal(N.syllabify(h.underlay).length, h.tuneData.parsed.notes.length, h.slug);

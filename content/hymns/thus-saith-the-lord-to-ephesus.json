@@ -1,0 +1,79 @@
+{
+  "title": "Thus Saith the Lord to Ephesus",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Thus Saith the Lord to Ephesus in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 136, “Ephesus. Rev 2:1,7”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thus saith the Lord to Eph-e-sus, And thus he speaks to some of us; \"A-midst my church-es, lo, I stand, And hold the pas-tors in my hand.",
+  "verses": [
+    {
+      "lines": [
+        "Thus saith the Lord to Ephesus,",
+        "And thus he speaks to some of us;",
+        "\"Amidst my churches, lo, I stand,",
+        "And hold the pastors in my hand."
+      ]
+    },
+    {
+      "lines": [
+        "Thy works, to me, are fully known,",
+        "Thy patience, and thy toil, I own;",
+        "Thy views of gospel truth are clear,",
+        "Nor canst thou other doctrine bear."
+      ]
+    },
+    {
+      "lines": [
+        "Yet I must blame while I approve,",
+        "Where is thy first, thy fervent love?",
+        "Dost thou forget my love to thee,",
+        "That thine is grown so faint to me?"
+      ]
+    },
+    {
+      "lines": [
+        "Recall to mind the happy days",
+        "When thou wast filled with joy and praise;",
+        "Repent, thy former works renew,",
+        "Then I'll restore thy comforts too."
+      ]
+    },
+    {
+      "lines": [
+        "Return at once, when I reprove,",
+        "Lest I thy candlestick remove;",
+        "And thou, too late, thy loss lament;",
+        "I warn before I strike, Repent.\""
+      ]
+    },
+    {
+      "lines": [
+        "Hearken to what the Spirit saith,",
+        "To him that overcomes by faith;",
+        "\"The fruit of life's unfading tree,",
+        "In paradise his food shall be.\""
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:136"
+}

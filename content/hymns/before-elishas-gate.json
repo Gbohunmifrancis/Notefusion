@@ -1,0 +1,101 @@
+{
+  "title": "Before Elisha's Gate",
+  "tune": "darwall",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Before Elisha's Gate in Tonic Solfa to DARWALL, doh is D: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 38, “Naaman. 2Ki 5:14”.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.8.8), to be sung to any tune of that metre. This page sets them to DARWALL; any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "Be-fore El-i-sha's gate The Syr-ian le-per stood; But could not brook to wait, He deemed him-self too good: He thought the pro-phet would at-tend, And not to him a mes-sage send.",
+  "verses": [
+    {
+      "lines": [
+        "Before Elisha's gate",
+        "The Syrian leper stood;",
+        "But could not brook to wait,",
+        "He deemed himself too good:",
+        "He thought the prophet would attend,",
+        "And not to him a message send."
+      ]
+    },
+    {
+      "lines": [
+        "Have I this journey come,",
+        "And will he not be seen?",
+        "I were as well at home,",
+        "Would washing make me clean:",
+        "Why must I wash in Jordan's flood?",
+        "Damascus' rivers are as good."
+      ]
+    },
+    {
+      "lines": [
+        "Thus by his foolish pride",
+        "He almost missed a cure;",
+        "Howe'er at length he tried,",
+        "And found the method sure:",
+        "Soon as his pride was brought to yield,",
+        "The leprosy was quickly healed."
+      ]
+    },
+    {
+      "lines": [
+        "Leprous and proud as he,",
+        "To Jesus thus I came,",
+        "From sin to set me free,",
+        "When first I heard his fame:",
+        "Surely, thought I, my pompous train",
+        "Of vows and tears will notice gain."
+      ]
+    },
+    {
+      "lines": [
+        "My heart devised the way",
+        "Which I supposed he'd take;",
+        "And when I found delay,",
+        "Was ready to go back:",
+        "Had he some painful task enjoined,",
+        "I to performance seemed inclined."
+      ]
+    },
+    {
+      "lines": [
+        "When by his word he spake,",
+        "That fountain opened see;",
+        "'Twas opened for thy sake,",
+        "Go wash, and thou art free:\"",
+        "O! how did my proud heart gainsay,",
+        "I feared to trust this simple way."
+      ]
+    },
+    {
+      "lines": [
+        "At length I trial made,",
+        "When I had much endured;",
+        "The message I obeyed,",
+        "I washed, and I was cured:",
+        "Sinners this healing fountain try,",
+        "Which cleansed a wretch so vile as I."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to DARWALL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:38"
+}

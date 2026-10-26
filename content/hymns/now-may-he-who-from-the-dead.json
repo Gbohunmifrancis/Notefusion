@@ -1,0 +1,55 @@
+{
+  "title": "Now May He Who from the Dead",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Now May He Who from the Dead in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 100, “Heb 13:20,24”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Now may He who from the dead Brought the Shep-herd of the sheep, Je-sus Christ, our King and Head, All our souls in safe-ty keep!",
+  "verses": [
+    {
+      "lines": [
+        "Now may He who from the dead",
+        "Brought the Shepherd of the sheep,",
+        "Jesus Christ, our King and Head,",
+        "All our souls in safety keep!"
+      ]
+    },
+    {
+      "lines": [
+        "May he teach us to fulfill",
+        "What is pleasing in his sight;",
+        "Perfect us in all his will,",
+        "And preserve us day and night!"
+      ]
+    },
+    {
+      "lines": [
+        "To that dear Redeemer's praise,",
+        "Who the cov'nant sealed with blood,",
+        "Let our hearts and voices raise",
+        "Loud thanksgivings to our God."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:100"
+}

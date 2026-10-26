@@ -1,0 +1,79 @@
+{
+  "title": "When Israel's Tribes Were Parched with Thirst",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "When Israel's Tribes Were Parched with Thirst in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 128, “That Rock was Christ. 1Cor 10:4”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When Is-rael's tribes were parched with thirst, Forth from the Rock the wa-ters burst; And all their fu-ture jour-ney through, Yield-ed them drink and gos-pel too!",
+  "verses": [
+    {
+      "lines": [
+        "When Israel's tribes were parched with thirst,",
+        "Forth from the Rock the waters burst;",
+        "And all their future journey through,",
+        "Yielded them drink and gospel too!"
+      ]
+    },
+    {
+      "lines": [
+        "In Moses' rod, a type they saw,",
+        "Of his severe and fiery law;",
+        "The smitten rock prefigured him,",
+        "From whose pierced side all blessings stream."
+      ]
+    },
+    {
+      "lines": [
+        "But ah! the types were all too faint,",
+        "His sorrows or his worth to paint;",
+        "Slight was the stroke of Moses' rod,",
+        "But he endured the wrath of God."
+      ]
+    },
+    {
+      "lines": [
+        "Their outward rock could feel no pain,",
+        "But ours was wounded, torn and slain;",
+        "The rock gave but a wat'ry flood,",
+        "But Jesus poured forth streams of blood."
+      ]
+    },
+    {
+      "lines": [
+        "The earth is like their wilderness,",
+        "A land of drought and sore distress;",
+        "Without one stream from pole to pole,",
+        "To satisfy a thirsty soul."
+      ]
+    },
+    {
+      "lines": [
+        "But let the Savior's praise resound!",
+        "In him refreshing streams are found;",
+        "Which pardon, strength, and comfort give,",
+        "And thirsty sinners drink and live."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:128"
+}

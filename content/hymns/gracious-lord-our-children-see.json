@@ -1,0 +1,67 @@
+{
+  "title": "Gracious Lord, Our Children See",
+  "tune": "watchman",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Gracious Lord, Our Children See in Tonic Solfa to WATCHMAN, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 12, “Prayer for children”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to WATCHMAN; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Gra-cious Lord, our child-ren see, By thy mer-cy we are free; But shall these, a-las! re-main Sub-jects still of Sa-tan's reign? Is-rael's young ones, when of old Pha-raoh threat-ened to with-hold; Then thy mes-sen-ger said, \"No; Let the child-ren al-so go.\"",
+  "verses": [
+    {
+      "lines": [
+        "Gracious Lord, our children see,",
+        "By thy mercy we are free;",
+        "But shall these, alas! remain",
+        "Subjects still of Satan's reign?",
+        "Israel's young ones, when of old",
+        "Pharaoh threatened to withhold;",
+        "Then thy messenger said, \"No;",
+        "Let the children also go.\""
+      ]
+    },
+    {
+      "lines": [
+        "When the angel of the Lord",
+        "Drawing forth his dreadful sword,",
+        "Slew, with an avenging hand,",
+        "All the first-born of the land:",
+        "Then thy peoples' doors he passed,",
+        "Where the bloody sign was placed;",
+        "Hear us, now, upon our knees,",
+        "Plead the blood of Christ for these!"
+      ]
+    },
+    {
+      "lines": [
+        "Lord we tremble, for we know",
+        "How the fierce malicious foe;",
+        "Wheeling round his watchful flight,",
+        "Keeps them ever in his sight:",
+        "Spread thy pinions, King of kings!",
+        "Hide them safe beneath thy wings;",
+        "Lest the rav'nous bird of prey",
+        "Stoop, and bear the brood away."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to WATCHMAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:12"
+}

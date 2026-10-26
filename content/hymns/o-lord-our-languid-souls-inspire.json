@@ -1,0 +1,87 @@
+{
+  "title": "O Lord, Our Languid Souls Inspire",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "O Lord, Our Languid Souls Inspire in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 43, “On opening a place for social prayer”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O Lord, our lan-guid souls in-spire, For here, we trust, thou art! Send down a coal of heav'n-ly fire, To warm each wait-ing heart.",
+  "verses": [
+    {
+      "lines": [
+        "O Lord, our languid souls inspire,",
+        "For here, we trust, thou art!",
+        "Send down a coal of heav'nly fire,",
+        "To warm each waiting heart."
+      ]
+    },
+    {
+      "lines": [
+        "Dear Shepherd of thy people, hear,",
+        "Thy presence now display;",
+        "As thou hast giv'n a place for prayer,",
+        "So give us hearts to pray."
+      ]
+    },
+    {
+      "lines": [
+        "Show us some token of thy love,",
+        "Our fainting hope to raise;",
+        "And pour thy blessings from above,",
+        "That we may render praise."
+      ]
+    },
+    {
+      "lines": [
+        "Within there walls let holy peace,",
+        "And love, and concord dwell;",
+        "Here give the troubled conscience ease,",
+        "The wounded spirit heal."
+      ]
+    },
+    {
+      "lines": [
+        "The feeling heart, the melting eye,",
+        "The humble mind bestow;",
+        "And shine upon us from on high,",
+        "To make our graces grow!"
+      ]
+    },
+    {
+      "lines": [
+        "May we in faith receive thy word,",
+        "In faith present our prayers;",
+        "And, in the presence of our Lord,",
+        "Unbosom all our cares."
+      ]
+    },
+    {
+      "lines": [
+        "And may the gospel's joyful sound",
+        "Enforced by mighty grace,",
+        "Awaken many sinners round,",
+        "To come and fill the place."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:43"
+}

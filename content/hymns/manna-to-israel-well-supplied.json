@@ -1,0 +1,87 @@
+{
+  "title": "Manna to Israel Well Supplied",
+  "tune": "york",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Manna to Israel Well Supplied in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 15, “Manna. Ex 16:18”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Man-na to Is-rael well sup-plied The want of oth-er bread; While God is ab-le to pro-vide, His peo-ple shall be fed.",
+  "verses": [
+    {
+      "lines": [
+        "Manna to Israel well supplied",
+        "The want of other bread;",
+        "While God is able to provide,",
+        "His people shall be fed."
+      ]
+    },
+    {
+      "lines": [
+        "(Thus though the corn and wine should fail,",
+        "And creature-streams be dry;",
+        "The prayer of faith will still prevail,",
+        "For blessings from on high.)"
+      ]
+    },
+    {
+      "lines": [
+        "Of his kind care how sweet a proof!",
+        "It suited every taste;",
+        "Who gathered most, had just enough,",
+        "Enough, who gathered least."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis thus our gracious Lord provides",
+        "Our comforts and our cares;",
+        "His own unerring hand provides,",
+        "And gives us each our shares."
+      ]
+    },
+    {
+      "lines": [
+        "He knows how much the weak can bear,",
+        "And helps them when they cry;",
+        "The strongest have no strength to spare,",
+        "For such he'll strongly try."
+      ]
+    },
+    {
+      "lines": [
+        "Daily they saw the Manna come,",
+        "And cover all the ground;",
+        "But what they tried to keep at home,",
+        "Corrupted soon was found."
+      ]
+    },
+    {
+      "lines": [
+        "Vain their attempt to store it up,",
+        "This was to tempt the Lord;",
+        "Israel must live by faith and hope,",
+        "And not upon a hoard."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:15"
+}

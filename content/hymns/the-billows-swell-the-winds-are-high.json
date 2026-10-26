@@ -1,5 +1,5 @@
 {
-  "title": "The Billows Swell; the Winds Are High",
+  "title": "The Billows Swell the Winds Are High",
   "tune": "melcombe",
   "text": [
     {
@@ -9,20 +9,20 @@
       "role": "Words"
     }
   ],
-  "textPublished": 1853,
+  "textPublished": 1779,
   "textPublishedBy": true,
-  "description": "The Billows Swell; the Winds Are High in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 2 verses and a piano.",
+  "description": "The Billows Swell the Winds Are High in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
   "about": [
-    "William Cowper wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 832 of its twenty-second edition (1853), “Temptation compared to a Storm”.",
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 18, “Temptation”.",
     "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
   ],
-  "underlay": "The bil-lows swell; the winds are high; Clouds o-ver-cast my win-try sky: Out of the depths to thee I call; My fears are great, my strength is small.",
+  "underlay": "The bil-lows swell the winds are high, Clouds o-ver-cast my win-try sky; Out of the depths to thee I call, My fears are great, my strength is small.",
   "verses": [
     {
       "lines": [
-        "The billows swell; the winds are high;",
-        "Clouds overcast my wintry sky:",
-        "Out of the depths to thee I call;",
+        "The billows swell the winds are high,",
+        "Clouds overcast my wintry sky;",
+        "Out of the depths to thee I call,",
         "My fears are great, my strength is small."
       ]
     },
@@ -30,18 +30,42 @@
       "lines": [
         "O Lord, the pilot's part perform,",
         "And guide and guard me through the storm;",
-        "Defend me from each threatening ill;",
-        "Control the waves: say, \"Peace! be still.\""
+        "Defend me from each threat'ning ill,",
+        "Control the waves, say, \"Peace, be still!\""
+      ]
+    },
+    {
+      "lines": [
+        "Amidst the roaring of the sea,",
+        "My soul still hangs her hope on thee;",
+        "Thy constant love, thy faithful care,",
+        "Is all that saves me from despair."
+      ]
+    },
+    {
+      "lines": [
+        "Dangers of every shape and name",
+        "Attend the follow'rs of the Lamb,",
+        "Who leave the world's deceitful shore,",
+        "And leave it to return no more."
+      ]
+    },
+    {
+      "lines": [
+        "Though tempest-tossed and half a wreck,",
+        "My Savior through the floods I seek;",
+        "Let neither winds nor stormy main,",
+        "Force back my shattered bark again."
       ]
     }
   ],
   "metre": "8 8 8 8",
-  "source": "Hymns for Christian Devotion (1846)",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
   "licence": "Public domain: William Cowper died in 1800.",
-  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
   "updated": "2026-10-26",
   "reviewed": false,
   "draft": false,
   "setByMetre": true,
-  "importedFrom": "hymns-1846:832"
+  "importedFrom": "olney-1779:3:18"
 }

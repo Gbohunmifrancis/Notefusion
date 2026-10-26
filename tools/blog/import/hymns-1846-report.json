@@ -136,13 +136,6 @@
       "author": "James Montgomery"
     },
     {
-      "ref": "36",
-      "slug": "safely-through-another-week",
-      "metre": "7 7 7 7 7 7",
-      "tune": "ratisbon-werner",
-      "author": "John Newton"
-    },
-    {
       "ref": "41",
       "slug": "this-day-the-lord-hath-called-his-own",
       "metre": "8 8 8 8",
@@ -696,13 +689,6 @@
       "author": "Reginald Heber"
     },
     {
-      "ref": "223",
-      "slug": "the-saviour-what-a-noble-flame",
-      "metre": "8 6 8 6",
-      "tune": "st-anne",
-      "author": "William Cowper"
-    },
-    {
       "ref": "227",
       "slug": "the-morning-dawns-upon-the-place",
       "metre": "8 8 8 8",
@@ -799,13 +785,6 @@
       "metre": "8 6 8 6",
       "tune": "caithness",
       "author": "Sebastian Streeter"
-    },
-    {
-      "ref": "258",
-      "slug": "how-blest-thy-creature-is-o-god",
-      "metre": "8 6 8 6",
-      "tune": "winchester-old",
-      "author": "William Cowper"
     },
     {
       "ref": "261",
@@ -1079,13 +1058,6 @@
       "metre": "6 6 4 6 6 6 4",
       "tune": "malvern-gwyllt",
       "author": "Ray Palmer"
-    },
-    {
-      "ref": "337",
-      "slug": "when-darkness-long-has-veiled-my-mind",
-      "metre": "8 8 8 8",
-      "tune": "old-hundredth",
-      "author": "William Cowper"
     },
     {
       "ref": "340",
@@ -1662,13 +1634,6 @@
       "author": "Philip Doddridge"
     },
     {
-      "ref": "515",
-      "slug": "almighty-king-whose-wondrous-hand",
-      "metre": "8 8 8 8",
-      "tune": "uxbridge",
-      "author": "William Cowper"
-    },
-    {
       "ref": "517",
       "slug": "while-through-this-changing-world-we-roam",
       "metre": "8 6 8 6",
@@ -1701,13 +1666,6 @@
       "slug": "a-glance-from-heaven-with-sweet-effect",
       "metre": "8 8 8 8",
       "tune": "winchester-new",
-      "author": "John Newton"
-    },
-    {
-      "ref": "527",
-      "slug": "the-evils-that-beset-our-path",
-      "metre": "8 6 8 6",
-      "tune": "st-peter",
       "author": "John Newton"
     },
     {
@@ -2712,13 +2670,6 @@
       "author": "Hannah Flagg Gould"
     },
     {
-      "ref": "832",
-      "slug": "the-billows-swell-the-winds-are-high",
-      "metre": "8 8 8 8",
-      "tune": "melcombe",
-      "author": "William Cowper"
-    },
-    {
       "ref": "833",
       "slug": "prayer-may-be-sweet-in-cottage-homes",
       "metre": "8 8 8 8",
@@ -2915,13 +2866,6 @@
       "author": "Philip Doddridge"
     },
     {
-      "ref": "888",
-      "slug": "while-with-ceaseless-course-the-sun",
-      "metre": "7 7 7 7 7 7 7 7",
-      "tune": "watchman",
-      "author": "John Newton"
-    },
-    {
       "ref": "889",
       "slug": "my-helper-god-i-bless-his-name",
       "metre": "8 8 8 8",
@@ -2943,25 +2887,11 @@
       "author": "John Fawcett"
     },
     {
-      "ref": "892",
-      "slug": "now-gracious-lord-thine-arm-reveal",
-      "metre": "8 6 8 6",
-      "tune": "st-peter",
-      "author": "John Newton"
-    },
-    {
       "ref": "895",
       "slug": "and-now-my-soul-another-year",
       "metre": "8 6 8 6",
       "tune": "york",
       "author": "Simon Browne"
-    },
-    {
-      "ref": "896",
-      "slug": "time-by-moments-steals-away",
-      "metre": "7 7 7 7",
-      "tune": "innocents",
-      "author": "Anonymous"
     },
     {
       "ref": "897",
@@ -3004,13 +2934,6 @@
       "metre": "7 7 7 7 7 7 7 7",
       "tune": "messiah-herald",
       "author": "Anonymous"
-    },
-    {
-      "ref": "909",
-      "slug": "kindred-in-christ-for-his-dear-sake",
-      "metre": "8 8 8 8",
-      "tune": "melcombe",
-      "author": "John Newton"
     },
     {
       "ref": "910",
@@ -3461,6 +3384,11 @@
       "page": "o-god-whose-presence-glows-in-all"
     },
     {
+      "ref": "36",
+      "first": "Safely through another week",
+      "page": "safely-through-another-week"
+    },
+    {
       "ref": "38",
       "first": "O Father! though the anxious fear",
       "page": "o-father-though-the-anxious-fear"
@@ -3671,6 +3599,11 @@
       "page": "fear-was-within-the-tossing-bark"
     },
     {
+      "ref": "223",
+      "first": "The Saviour, what a noble flame,",
+      "page": "the-savior-what-a-noble-flame"
+    },
+    {
       "ref": "224",
       "first": "Ride on, ride on in majesty!",
       "page": "ride-on-ride-on-in-majesty"
@@ -3709,6 +3642,11 @@
       "ref": "257",
       "first": "Let every mortal ear attend,",
       "page": "let-every-mortal-ear-attend"
+    },
+    {
+      "ref": "258",
+      "first": "How blest thy creature is, O God,",
+      "page": "how-blest-thy-creature-is-o-god"
     },
     {
       "ref": "259",
@@ -3764,6 +3702,11 @@
       "ref": "323",
       "first": "Lord, have mercy when we pray",
       "page": "lord-have-mercy-when-we-pray"
+    },
+    {
+      "ref": "337",
+      "first": "When darkness long has veiled my mind,",
+      "page": "when-darkness-long-has-veiled-my-mind"
     },
     {
       "ref": "339",
@@ -3884,6 +3827,11 @@
       "ref": "426",
       "first": "Like morning, when her early breeze",
       "page": "like-morning-when-her-early-breeze"
+    },
+    {
+      "ref": "427",
+      "first": "To keep the lamp alive,",
+      "page": "to-keep-the-lamp-alive"
     },
     {
       "ref": "428",
@@ -4011,6 +3959,11 @@
       "page": "our-god-our-help-in-ages-past"
     },
     {
+      "ref": "515",
+      "first": "Almighty King! whose wondrous hand",
+      "page": "almighty-king-whose-wondrous-hand"
+    },
+    {
       "ref": "516",
       "first": "Lead us with thy gentle sway,",
       "page": "lead-us-with-thy-gentle-sway"
@@ -4029,6 +3982,11 @@
       "ref": "524",
       "first": "Let others boast how strong they be,",
       "page": "let-others-boast-how-strong-they-be"
+    },
+    {
+      "ref": "527",
+      "first": "The evils that beset our path,",
+      "page": "the-evils-that-beset-our-path"
     },
     {
       "ref": "534",
@@ -4271,6 +4229,11 @@
       "page": "when-the-parting-bosom-bleeds"
     },
     {
+      "ref": "832",
+      "first": "The billows swell; the winds are high;",
+      "page": "the-billows-swell-the-winds-are-high"
+    },
+    {
       "ref": "837",
       "first": "Lord, while for all mankind we pray,",
       "page": "lord-while-for-all-mankind-we-pray"
@@ -4311,14 +4274,34 @@
       "page": "god-of-the-year-with-songs-of-praise"
     },
     {
+      "ref": "888",
+      "first": "While, with ceaseless course, the sun",
+      "page": "while-with-ceaseless-course-the-sun"
+    },
+    {
+      "ref": "892",
+      "first": "Now, gracious Lord, thine arm reveal,",
+      "page": "now-gracious-lord-thine-arm-reveal"
+    },
+    {
       "ref": "894",
       "first": "Bless, O Lord, each opening year",
       "page": "bless-o-lord-each-opening-year"
     },
     {
+      "ref": "896",
+      "first": "Time by moments steals away,",
+      "page": "time-by-moments-steals-away"
+    },
+    {
       "ref": "907",
       "first": "Father, united by thy grace,",
       "page": "father-united-by-thy-grace"
+    },
+    {
+      "ref": "909",
+      "first": "Kindred in Christ, for his dear sake,",
+      "page": "kindred-in-christ-for-his-dear-sake"
     },
     {
       "ref": "917",
@@ -5070,11 +5053,6 @@
       "ref": "421",
       "first": "As earth's pageant passes by,",
       "why": "an author we cannot name in full: “Beaumont”"
-    },
-    {
-      "ref": "427",
-      "first": "To keep the lamp alive,",
-      "why": "its first verse cannot be sung as 6.6.8.6"
     },
     {
       "ref": "434",
@@ -6007,9 +5985,9 @@
   ],
   "counts": {
     "hymns": 1005,
-    "written": 488,
-    "alreadyOurs": 189,
-    "skipped": 328,
+    "written": 477,
+    "alreadyOurs": 201,
+    "skipped": 327,
     "removed": 0
   }
 }

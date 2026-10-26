@@ -1,0 +1,87 @@
+{
+  "title": "I Asked the Lord That I Might Grow",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "I Asked the Lord That I Might Grow in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 36, “Prayer answered by crosses”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "I asked the Lord that I might grow In faith, and love, and ev-ery grace; Might more of his sal-va-tion know, And seek, more ear-nest-ly, his face.",
+  "verses": [
+    {
+      "lines": [
+        "I asked the Lord that I might grow",
+        "In faith, and love, and every grace;",
+        "Might more of his salvation know,",
+        "And seek, more earnestly, his face."
+      ]
+    },
+    {
+      "lines": [
+        "'Twas he who taught me thus to pray,",
+        "And he, I trust, has answered prayer!",
+        "But it has been in such a way,",
+        "As almost drove me to despair."
+      ]
+    },
+    {
+      "lines": [
+        "I hoped that in some favored hour,",
+        "At once he'd answer my request;",
+        "And by his love's constraining pow'r,",
+        "Subdue my sins, and give me rest."
+      ]
+    },
+    {
+      "lines": [
+        "Instead of this, he made me feel",
+        "The hidden evils of my heart;",
+        "And let the angry pow'rs of hell",
+        "Assault my soul in every part."
+      ]
+    },
+    {
+      "lines": [
+        "Yea more, with his own hand he seemed",
+        "Intent to aggravate my woe;",
+        "Crossed all the fair designs I schemed,",
+        "Blasted my gourds, and laid me low."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, why is this, I trembling cried,",
+        "Wilt thou pursue thy worm to death?",
+        "\"'Tis in this way, the Lord replied,",
+        "I answer prayer for grace and faith."
+      ]
+    },
+    {
+      "lines": [
+        "These inward trials I employ,",
+        "From self, and pride, to set thee free;",
+        "And break thy schemes of earthly joy,",
+        "That thou may'st find thy all in me.\""
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:36"
+}

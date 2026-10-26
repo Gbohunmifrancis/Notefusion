@@ -1,0 +1,79 @@
+{
+  "title": "My Soul, This Curious House of Clay",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "My Soul, This Curious House of Clay in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 75, “Hope beyond the grave”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "My soul, this cu-rious house of clay, Thy pre-sent frail a-bode; Must quick-ly fall to worms a prey, And thou re-turn to God.",
+  "verses": [
+    {
+      "lines": [
+        "My soul, this curious house of clay,",
+        "Thy present frail abode;",
+        "Must quickly fall to worms a prey,",
+        "And thou return to God."
+      ]
+    },
+    {
+      "lines": [
+        "Canst thou, by faith, survey with joy",
+        "The change, before it come?",
+        "And say, \"Let death this house destroy,",
+        "I have a heav'nly home!\""
+      ]
+    },
+    {
+      "lines": [
+        "The Savior, whom I then shall see",
+        "With new admiring eyes,",
+        "Already has prepared for me,",
+        "A mansion in the skies."
+      ]
+    },
+    {
+      "lines": [
+        "I feel this mud-walled cottage shake,",
+        "And long to see it fall;",
+        "That I my willing flight may take",
+        "To him who is my all."
+      ]
+    },
+    {
+      "lines": [
+        "Burdened and groaning, then no more,",
+        "My rescued soul shall sing,",
+        "As up the shining path I soar,",
+        "\"Death, thou hast lost thy sting.\""
+      ]
+    },
+    {
+      "lines": [
+        "Dear Savior, help us now to seek,",
+        "And know thy grace's power;",
+        "That we may all this language speak,",
+        "Before the dying hour."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:75"
+}

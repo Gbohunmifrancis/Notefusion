@@ -1,0 +1,91 @@
+{
+  "title": "Oft in Vain the Voice of Truth",
+  "tune": "messiah-herald",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Oft in Vain the Voice of Truth in Tonic Solfa to MESSIAH (HERALD), doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 6, “Earthly prospects deceitful”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to MESSIAH (HERALD); any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Oft in vain the voice of truth, So-lemn-ly and loud-ly warns; Thought-less, in-ex-pe-rienced youth, Though it hears, the warn-ing scorns: Youth in fan-cy's glass sur-veys Life pro-longed to dis-tant years; While the vast, i-mag-ined space, Filled with sweets and joys ap-pears.",
+  "verses": [
+    {
+      "lines": [
+        "Oft in vain the voice of truth,",
+        "Solemnly and loudly warns;",
+        "Thoughtless, inexperienced youth,",
+        "Though it hears, the warning scorns:",
+        "Youth in fancy's glass surveys",
+        "Life prolonged to distant years;",
+        "While the vast, imagined space,",
+        "Filled with sweets and joys appears."
+      ]
+    },
+    {
+      "lines": [
+        "Aweful disappointment, soon",
+        "Overclouds the prospect gay!",
+        "Some their sun goes down at noon,",
+        "Torn by death's strong hand away:",
+        "Where are then their pleasing schemes?",
+        "Where the joys they hoped to find?",
+        "Gone for ever, like their dreams,",
+        "Leaving not a trace behind."
+      ]
+    },
+    {
+      "lines": [
+        "Others, who are spared awhile,",
+        "Live to weep o'er fancy's cheat;",
+        "Find distress, and pain, and toil,",
+        "Bitter things instead of sweet:",
+        "Sin has spread a curse around,",
+        "Poisoned all things here below;",
+        "On this base polluted ground,",
+        "Peace and joy can never grow."
+      ]
+    },
+    {
+      "lines": [
+        "Grace alone can cure our ills,",
+        "Sweeten life, with all its cares;",
+        "Regulate our stubborn wills,",
+        "Save us from surrounding snares",
+        "Though you oft have heard in vain,",
+        "Former years in folly spent;",
+        "Grace invites you yet again,",
+        "Once more calls you to repent."
+      ]
+    },
+    {
+      "lines": [
+        "Called again, at length, beware,",
+        "Hear the Savior's voice, and live;",
+        "Lest he in his wrath should swear,",
+        "He no more will warning give:",
+        "Pray, that you may hear and feel,",
+        "Ere the day of grace be past;",
+        "Lest your hearts grow hard as steel,",
+        "Or this year should prove your last."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MESSIAH (HERALD) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:6"
+}

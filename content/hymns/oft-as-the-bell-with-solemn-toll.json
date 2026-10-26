@@ -1,0 +1,87 @@
+{
+  "title": "Oft as the Bell, with Solemn Toll",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Oft as the Bell, with Solemn Toll in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 74, “The tolling bell”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Oft as the bell, with sol-emn toll, Speaks the de-par-ture of a soul; Let each one ask him-self; \"Am I Pre-pared, should I be called to die?\"",
+  "verses": [
+    {
+      "lines": [
+        "Oft as the bell, with solemn toll,",
+        "Speaks the departure of a soul;",
+        "Let each one ask himself; \"Am I",
+        "Prepared, should I be called to die?\""
+      ]
+    },
+    {
+      "lines": [
+        "Only this frail and fleeting breath",
+        "Preserves me from the jaws of death;",
+        "Soon as it fails, at once I'm gone,",
+        "And plunged into a world unknown."
+      ]
+    },
+    {
+      "lines": [
+        "Then, leaving all I loved below,",
+        "To God'S tribunal I must go;",
+        "Must hear the Judge pronounce my fate,",
+        "And fix my everlasting state."
+      ]
+    },
+    {
+      "lines": [
+        "But could I bear to hear him say,",
+        "\"Depart, accursed, far away!",
+        "With Satan, in the lowest hell,",
+        "Thou art for ever doomed to dwell.\""
+      ]
+    },
+    {
+      "lines": [
+        "Lord Jesus! help me now to flee,",
+        "And seek my hope alone in thee.",
+        "Apply thy blood, thy Spirit give,",
+        "Subdue my sin, and in me live."
+      ]
+    },
+    {
+      "lines": [
+        "Then, when the solemn bell I hear,",
+        "If saved from guilt, I need not fear;",
+        "Nor would the thought distressing be,",
+        "Perhaps it next may toll for me."
+      ]
+    },
+    {
+      "lines": [
+        "Rather, my spirit would rejoice,",
+        "And long, and wish, to hear thy voice;",
+        "Glad when it bids me earth resign,",
+        "Secure of heav'n, if thou art mine."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:74"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "Salvation! What a Glorious Plan",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Salvation! What a Glorious Plan in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 85, “Salvation”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Sal-va-tion! what a glo-rious plan, How suit-ed to our need! The grace that rais-es fall-en man, Is won-der-ful in-deed!",
+  "verses": [
+    {
+      "lines": [
+        "Salvation! what a glorious plan,",
+        "How suited to our need!",
+        "The grace that raises fallen man,",
+        "Is wonderful indeed!"
+      ]
+    },
+    {
+      "lines": [
+        "'Twas wisdom formed the vast design,",
+        "To ransom us when lost;",
+        "And love's unfathomable mine",
+        "Provided all the cost."
+      ]
+    },
+    {
+      "lines": [
+        "Strict Justice, with approving look,",
+        "The holy cov'nant sealed;",
+        "And Truth, and Power, undertook",
+        "The whole should be fulfilled."
+      ]
+    },
+    {
+      "lines": [
+        "Truth, Wisdom, Justice, Pow'r and Love,",
+        "In all their glory shone;",
+        "When Jesus left the courts above,",
+        "And died to save his own."
+      ]
+    },
+    {
+      "lines": [
+        "Truth, Wisdom, Justice, Pow'r and Love,",
+        "Are equally displayed;",
+        "Now Jesus reigns enthroned above,",
+        "Our Advocate and Head."
+      ]
+    },
+    {
+      "lines": [
+        "Now sin appears deserving death,",
+        "Most hateful and abhorred;",
+        "And yet the sinner lives by faith,",
+        "And dares approach the Lord."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:85"
+}

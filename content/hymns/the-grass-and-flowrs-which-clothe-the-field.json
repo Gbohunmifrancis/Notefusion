@@ -1,0 +1,79 @@
+{
+  "title": "The Grass, and Flow'rs, Which Clothe the Field",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Grass, and Flow'rs, Which Clothe the Field in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 35, “Hay-time”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The grass, and flow'rs, which clothe the field, And look so green and gay; Touched by the scythe, de-fense-less yield, And fall, and fade a-way.",
+  "verses": [
+    {
+      "lines": [
+        "The grass, and flow'rs, which clothe the field,",
+        "And look so green and gay;",
+        "Touched by the scythe, defenseless yield,",
+        "And fall, and fade away."
+      ]
+    },
+    {
+      "lines": [
+        "Fit emblem of our mortal state!",
+        "Thus in the scripture glass,",
+        "The young, the strong, the wise, the great,",
+        "May see themselves but grass;"
+      ]
+    },
+    {
+      "lines": [
+        "Ah! trust not to your fleeting breath,",
+        "Nor call your time your own;",
+        "Around you, see, the scythe of death",
+        "Is mowing thousands down."
+      ]
+    },
+    {
+      "lines": [
+        "And you, who hitherto are spared,",
+        "Must shortly yield your lives;",
+        "Your wisdom is to be prepared,",
+        "Before the stroke arrives."
+      ]
+    },
+    {
+      "lines": [
+        "The grass, when dead, revives no more,",
+        "You die, to live again;",
+        "But o! if death should prove the door",
+        "To everlasting pain."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, help us to obey thy call,",
+        "That from our sins set free",
+        "When like the grass our bodies fall,",
+        "Our souls may spring to thee."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:35"
+}

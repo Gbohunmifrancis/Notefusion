@@ -1,0 +1,103 @@
+{
+  "title": "O Lord, How Vile Am I",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "O Lord, How Vile Am I in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 7, “Behold I am vile!”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "O Lord, how vile am I, Un-ho-ly, and un-clean! How can I dare to ven-ture nigh With such a load of sin?",
+  "verses": [
+    {
+      "lines": [
+        "O Lord, how vile am I,",
+        "Unholy, and unclean!",
+        "How can I dare to venture nigh",
+        "With such a load of sin?"
+      ]
+    },
+    {
+      "lines": [
+        "Is this polluted heart",
+        "A dwelling fit for thee?",
+        "Swarming, alas! I in every part,",
+        "What evils do I see!"
+      ]
+    },
+    {
+      "lines": [
+        "If I attempt to pray,",
+        "And lisp thy holy name;",
+        "My thoughts are hurried soon away,",
+        "I know not where I am."
+      ]
+    },
+    {
+      "lines": [
+        "If in thy word I look,",
+        "Such darkness fills my mind,",
+        "I only read a sealed book,",
+        "But no relief can find."
+      ]
+    },
+    {
+      "lines": [
+        "Thy gospel oft I hear,",
+        "But hear it still in vain;",
+        "Without desire, or love, or fear,",
+        "I like a stone remain."
+      ]
+    },
+    {
+      "lines": [
+        "Myself can hardly bear",
+        "This wretched heart of mine;",
+        "How hateful then must it appear",
+        "To those pure eyes of thine?"
+      ]
+    },
+    {
+      "lines": [
+        "And must I then indeed",
+        "Sink in despair and die?",
+        "Fain would I hope that thou didst bleed",
+        "For such a wretch as I."
+      ]
+    },
+    {
+      "lines": [
+        "That blood which thou hast spilt;",
+        "That grace which is thine own;",
+        "Can cleanse the vilest sinner's guilt,",
+        "And soften hearts of stone."
+      ]
+    },
+    {
+      "lines": [
+        "Low at thy feet I bow,",
+        "O pity and forgive;",
+        "Here will I lie and wait, till thou",
+        "Shalt bid me rise and live."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:7"
+}

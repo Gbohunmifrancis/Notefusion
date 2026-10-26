@@ -1,0 +1,2279 @@
+{
+  "source": "Olney Hymns, in Three Books (John Newton and William Cowper, London 1779), the first edition, from the Christian Classics Ethereal Library",
+  "date": "2026-10-26",
+  "written": [
+    {
+      "ref": "1:1",
+      "slug": "on-man-in-his-own-image-made",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:2",
+      "slug": "when-adam-fell-he-quickly-lost",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:4",
+      "slug": "by-faith-in-christ-i-walk-with-god",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:5",
+      "slug": "how-hurtful-was-the-choice-of-lot",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:10",
+      "slug": "nay-i-cannot-let-thee-go",
+      "metre": "7 7 7 7",
+      "tune": "st-bees",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:11",
+      "slug": "my-soul-once-had-its-plenteous-years",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:13",
+      "slug": "bitter-indeed-the-waters-are",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:14",
+      "slug": "heal-us-emmanuel-here-we-are",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "1:15",
+      "slug": "manna-to-israel-well-supplied",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:16",
+      "slug": "the-manna-favored-israels-meat",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:17",
+      "slug": "by-whom-was-david-taught",
+      "metre": "6 6 6 6 8 8",
+      "tune": "st-john-parish-choir",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "1:18",
+      "slug": "when-israel-heard-the-fiery-law",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:19",
+      "slug": "see-aaron-gods-anointed-priest",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:20",
+      "slug": "how-blest-the-righteous-are",
+      "metre": "6 6 8 6",
+      "tune": "st-bride",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:21",
+      "slug": "when-joshua-by-gods-command",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:22",
+      "slug": "jesus-whose-blood-so-freely-streamed",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "1:24",
+      "slug": "the-lion-that-on-sampson-roared",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:26",
+      "slug": "when-first-to-make-my-heart-his-own",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:29",
+      "slug": "how-david-when-by-sin-deceived",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:30",
+      "slug": "poor-weak-and-worthless-though-i-am",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:31",
+      "slug": "come-my-soul-thy-suit-prepare",
+      "metre": "7 7 7 7",
+      "tune": "vienna",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:33",
+      "slug": "behold-the-throne-of-grace",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:36",
+      "slug": "by-the-poor-widows-oil-and-meal",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:38",
+      "slug": "before-elishas-gate",
+      "metre": "6 6 6 6 8 8",
+      "tune": "darwall",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:39",
+      "slug": "the-prophets-sons-in-time-of-old",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:40",
+      "slug": "alas-elishas-servant-cried",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:42",
+      "slug": "joy-is-a-fruit-that-will-not-grow",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:43",
+      "slug": "sweet-was-the-time-when-first-i-felt",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:44",
+      "slug": "savior-shine-and-cheer-my-soul",
+      "metre": "7 7 7 7 7 7",
+      "tune": "ratisbon-werner",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:45",
+      "slug": "in-mercy-not-in-wrath-rebuke",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:47",
+      "slug": "incarnate-god-the-soul-that-knows",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:48",
+      "slug": "that-man-no-guard-or-weapons-needs",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:49",
+      "slug": "when-israel-was-from-egypt-freed",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:50",
+      "slug": "for-mercies-countless-as-the-sands",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:51",
+      "slug": "what-a-mournful-life-is-mine",
+      "metre": "7 7 7 7",
+      "tune": "st-bees",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:52",
+      "slug": "ere-god-had-built-the-mountains",
+      "metre": "7 6 7 6 7 6 7 6",
+      "tune": "angels-story",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "1:54",
+      "slug": "the-evils-that-beset-our-path",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:55",
+      "slug": "god-gives-his-mercies-to-be-spent",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "1:56",
+      "slug": "honey-though-the-bee-prepares",
+      "metre": "7 7 7 7",
+      "tune": "st-bees",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:58",
+      "slug": "i-will-praise-thee-every-day",
+      "metre": "7 7 7 7",
+      "tune": "pleyels-hymn",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "1:59",
+      "slug": "he-who-on-earth-as-man-was-known",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:61",
+      "slug": "as-the-serpent-raised-by-moses",
+      "metre": "8 7 8 7 8 7 8 7",
+      "tune": "rustington",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:62",
+      "slug": "how-lost-was-my-condition",
+      "metre": "7 6 7 6 7 6 7 6",
+      "tune": "aurelia",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:63",
+      "slug": "pensive-doubting-fearful-heart",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "martyn",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:64",
+      "slug": "the-lord-will-happiness-divine",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "1:65",
+      "slug": "hear-what-god-the-lord-hath-spoken",
+      "metre": "8 7 8 7 8 7 8 7",
+      "tune": "lux-eoi",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "1:67",
+      "slug": "my-god-how-perfect-are-thy-ways",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "1:68",
+      "slug": "my-god-till-i-received-thy-stroke",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "1:69",
+      "slug": "from-pole-to-pole-let-others-roam",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:70",
+      "slug": "once-perishing-in-blood-i-lay",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:72",
+      "slug": "as-birds-their-infant-brood-protect",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "1:73",
+      "slug": "supported-by-the-word",
+      "metre": "6 6 6 6 8 8",
+      "tune": "st-john-parish-choir",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:74",
+      "slug": "poor-sinners-little-do-they-think",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:75",
+      "slug": "as-once-for-jonah-so-the-lord",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:76",
+      "slug": "son-of-god-thy-peoples-shield",
+      "metre": "7 7 7 7",
+      "tune": "vienna",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:77",
+      "slug": "with-satan-my-accuser-near",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:80",
+      "slug": "when-sinners-utter-boasting-words",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:81",
+      "slug": "encouraged-by-thy-word",
+      "metre": "6 6 6 6 8 8",
+      "tune": "darwall",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:82",
+      "slug": "oft-as-the-lepers-case-i-read",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:83",
+      "slug": "physician-of-my-sin-sick-soul",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:84",
+      "slug": "when-jesus-claims-the-sinners-heart",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:85",
+      "slug": "ye-sons-of-earth-prepare-the-plow",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "1:86",
+      "slug": "though-in-the-outward-church-below",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:88",
+      "slug": "prayer-an-answer-will-obtain",
+      "metre": "7 7 7 7",
+      "tune": "pleyels-hymn",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:91",
+      "slug": "when-peter-boasted-soon-he-fell",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:92",
+      "slug": "legion-was-my-name-by-nature",
+      "metre": "8 7 8 7 8 7 8 7",
+      "tune": "lux-eoi",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:93",
+      "slug": "could-the-creatures-help-or-ease-us",
+      "metre": "8 7 8 7 8 7 8 7",
+      "tune": "lux-eoi",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:94",
+      "slug": "when-the-disciples-crossed-the-lake",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:96",
+      "slug": "thy-mansion-is-the-christians-heart",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "1:97",
+      "slug": "one-aweful-word-which-jesus-spoke",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:99",
+      "slug": "how-kind-the-good-samaritan",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:100",
+      "slug": "martha-her-love-and-joy-expressed",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:101",
+      "slug": "the-castle-of-the-human-heart",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:102",
+      "slug": "my-barns-are-full-my-stores-increase",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:103",
+      "slug": "the-church-a-garden-is",
+      "metre": "6 6 6 6 8 8",
+      "tune": "st-john-parish-choir",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:104",
+      "slug": "afflictions-though-they-seem-severe",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:105",
+      "slug": "a-worldling-spent-each-day",
+      "metre": "6 6 6 6 8 8",
+      "tune": "darwall",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:106",
+      "slug": "our-lord-who-knows-full-well",
+      "metre": "6 6 8 6",
+      "tune": "franconia",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:108",
+      "slug": "simon-beware-the-savior-said",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:111",
+      "slug": "jesus-to-what-didst-thou-submit",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:112",
+      "slug": "beside-the-gospel-pool",
+      "metre": "6 6 8 6",
+      "tune": "aylesbury",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:113",
+      "slug": "here-at-bethesdas-pool-the-poor",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:115",
+      "slug": "when-any-turn-from-zions-way",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:116",
+      "slug": "i-am-saith-christ-our-glorious-head",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:117",
+      "slug": "mary-to-her-saviors-tomb",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "watchman",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:118",
+      "slug": "hark-my-soul-it-is-the-lord",
+      "metre": "7 7 7 7",
+      "tune": "innocents",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "1:119",
+      "slug": "tis-a-point-i-long-to-know",
+      "metre": "7 7 7 7",
+      "tune": "st-bees",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:120",
+      "slug": "as-some-tall-rock-amidst-the-waves",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:123",
+      "slug": "a-believer-free-from-care",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "hollingside",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:124",
+      "slug": "then-the-apostle-wonders-wrought",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:125",
+      "slug": "if-paul-in-caesars-court-must-stand",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:126",
+      "slug": "i-would-but-cannot-sing",
+      "metre": "6 6 8 6",
+      "tune": "aylesbury",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:127",
+      "slug": "darkness-overspreads-us-here",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "watchman",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:128",
+      "slug": "when-israels-tribes-were-parched-with-thirst",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:129",
+      "slug": "oppressed-with-unbelief-and-sin",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:130",
+      "slug": "strange-and-mysterious-is-my-life",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:131",
+      "slug": "fierce-passions-discompose-the-mind",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "1:132",
+      "slug": "israel-in-ancient-days",
+      "metre": "6 6 6 6 8 8",
+      "tune": "darwall",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "1:133",
+      "slug": "the-word-of-christ-our-lord",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:134",
+      "slug": "by-various-maxims-forms-and-rules",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:135",
+      "slug": "afflictions-do-not-come-alone",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:136",
+      "slug": "thus-saith-the-lord-to-ephesus",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:137",
+      "slug": "the-message-first-to-smyrna-sent",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:140",
+      "slug": "hear-what-the-lord-the-great-amen",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Newton"
+    },
+    {
+      "ref": "1:141",
+      "slug": "when-the-beloved-disciple-took",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:1",
+      "slug": "while-with-ceaseless-course-the-sun",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "watchman",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:2",
+      "slug": "time-with-an-unwearied-hand",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "martyn",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:3",
+      "slug": "see-another-year-is-gone",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "martyn",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:4",
+      "slug": "time-by-moments-steals-away",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "watchman",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:5",
+      "slug": "hark-how-times-wide-sounding-bell",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "messiah-herald",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:6",
+      "slug": "oft-in-vain-the-voice-of-truth",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "messiah-herald",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:7",
+      "slug": "now-gracious-lord-thine-arm-reveal",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:8",
+      "slug": "bestow-dear-lord-upon-our-youth",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "2:9",
+      "slug": "now-may-fervent-prayer-arise",
+      "metre": "7 7 7 7",
+      "tune": "st-bees",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:10",
+      "slug": "when-peter-through-the-tedious-night",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:11",
+      "slug": "sin-has-undone-our-wretched-race",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "2:12",
+      "slug": "gracious-lord-our-children-see",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "watchman",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "2:13",
+      "slug": "the-shunemite-oppressed-with-grief",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:14",
+      "slug": "does-it-not-grief-and-wonder-move",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:16",
+      "slug": "when-moses-waved-his-mystic-rod",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:17",
+      "slug": "the-god-who-once-to-israel-spoke",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:18",
+      "slug": "o-thou-at-whose-almighty-word",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:19",
+      "slug": "elisha-struck-with-grief-and-awe",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:20",
+      "slug": "o-davids-son-and-davids-lord",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:21",
+      "slug": "let-us-adore-the-grace-that-seeks",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:22",
+      "slug": "jesus-who-bought-us-with-his-blood",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:23",
+      "slug": "ensnared-too-long-my-heart-has-been",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:24",
+      "slug": "zion-the-city-of-our-god",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:25",
+      "slug": "beneath-the-tyrant-satans-yoke",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:26",
+      "slug": "what-contradictions-meet",
+      "metre": "6 6 6 6 8 8",
+      "tune": "st-john-parish-choir",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:27",
+      "slug": "thy-message-by-the-preacher-seal",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:28",
+      "slug": "when-paul-was-parted-from-his-friends",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:29",
+      "slug": "alas-by-nature-how-depraved",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:30",
+      "slug": "see-how-rude-winters-icy-hand",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:32",
+      "slug": "bleak-winter-is-subdued-at-length",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:33",
+      "slug": "pleasing-spring-again-is-here",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "watchman",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:34",
+      "slug": "though-the-morn-may-be-serene",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "martyn",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:35",
+      "slug": "the-grass-and-flowrs-which-clothe-the-field",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:37",
+      "slug": "sweeter-founds-than-music-knows",
+      "metre": "7 7 7 7",
+      "tune": "pleyels-hymn",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:38",
+      "slug": "my-song-shall-bless-the-lord-of-all",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "2:39",
+      "slug": "now-let-us-join-with-hearts-and-tongues",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:40",
+      "slug": "safely-through-another-week",
+      "metre": "7 7 7 7 7 7",
+      "tune": "ratisbon-werner",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:42",
+      "slug": "let-hearts-and-tongues-unite",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:43",
+      "slug": "o-lord-our-languid-souls-inspire",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:44",
+      "slug": "jesus-whereer-thy-people-meet",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "2:45",
+      "slug": "how-welcome-to-the-saints-when-pressed",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:46",
+      "slug": "o-happy-they-who-know-the-lord",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:47",
+      "slug": "happy-are-they-to-whom-the-lord",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:48",
+      "slug": "once-while-we-aimed-at-zions-songs",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:49",
+      "slug": "gladness-was-spread-through-israels-host",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:50",
+      "slug": "chief-shepherd-of-thy-chosen-sheep",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:51",
+      "slug": "savior-visit-thy-plantation",
+      "metre": "8 7 8 7 8 7 8 7",
+      "tune": "rustington",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:52",
+      "slug": "my-harp-untuned-and-laid-aside",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:53",
+      "slug": "this-is-the-feast-of-heavnly-wine",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "2:54",
+      "slug": "when-on-the-cross-my-lord-i-see",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:55",
+      "slug": "the-savior-what-a-noble-flame",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "2:56",
+      "slug": "let-me-dwell-on-golgotha",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:57",
+      "slug": "in-evil-long-i-took-delight",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:58",
+      "slug": "when-israel-by-divine-command",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:60",
+      "slug": "what-various-hindrances-we-meet",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "2:61",
+      "slug": "in-themselves-as-weak-as-worms",
+      "metre": "7 7 7 7",
+      "tune": "vienna",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:62",
+      "slug": "the-spirit-breathes-upon-the-word",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "2:64",
+      "slug": "the-gathring-clouds-with-aspect-dark",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:65",
+      "slug": "o-may-the-powr-which-melts-the-rock",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:66",
+      "slug": "while-joshua-led-the-armed-bands",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:67",
+      "slug": "see-the-gloomy-gathring-cloud",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "martyn",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:68",
+      "slug": "although-on-massy-pillars-built",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:69",
+      "slug": "wearied-by-day-with-toils-and-cares",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:70",
+      "slug": "kindred-in-christ-for-his-dear-sake",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:71",
+      "slug": "as-the-suns-enlivning-eye",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:72",
+      "slug": "in-vain-my-fancy-strives-to-paint",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:73",
+      "slug": "his-master-taken-from-his-head",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "2:74",
+      "slug": "oft-as-the-bell-with-solemn-toll",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:75",
+      "slug": "my-soul-this-curious-house-of-clay",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:76",
+      "slug": "courage-my-soul-behold-the-prize",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:78",
+      "slug": "god-with-one-piercing-glance-looks-through",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:80",
+      "slug": "that-was-a-wonder-working-word",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:81",
+      "slug": "the-book-of-nature-open-lies",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:82",
+      "slug": "when-the-sun-with-cheerful-beams",
+      "metre": "7 7 7 7 7 7",
+      "tune": "spanish-hymn",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:83",
+      "slug": "when-a-black-overspreading-cloud",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:84",
+      "slug": "a-glance-from-heavn-with-sweet-effect",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:85",
+      "slug": "the-moon-in-silver-glory-shone",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:86",
+      "slug": "the-moon-has-but-a-borrowed-light",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:87",
+      "slug": "if-for-a-time-the-air-be-calm",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:89",
+      "slug": "the-ice-and-snow-we-lately-saw",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:90",
+      "slug": "as-needles-point-towards-the-pole",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:92",
+      "slug": "the-subtle-spider-often-weaves",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:93",
+      "slug": "a-lion-though-by-nature-wild",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:94",
+      "slug": "the-savior-calls-his-people-sheep",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:95",
+      "slug": "a-garden-contemplation-suits",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:96",
+      "slug": "a-shelter-from-the-rain-or-wind",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:97",
+      "slug": "the-water-stood-like-walls-of-brass",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Newton"
+    },
+    {
+      "ref": "2:99",
+      "slug": "see-the-world-for-youth-prepares",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:3",
+      "slug": "shall-men-pretend-to-pleasure",
+      "metre": "7 6 7 6 7 6 7 6",
+      "tune": "greenland",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:4",
+      "slug": "sinner-art-thou-still-secure",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "messiah-herald",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:7",
+      "slug": "o-lord-how-vile-am-i",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:8",
+      "slug": "my-former-hopes-are-dead",
+      "metre": "6 6 8 6",
+      "tune": "aylesbury",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:10",
+      "slug": "breathe-from-the-gentle-south-o-lord",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:11",
+      "slug": "cheer-up-my-soul-there-is-a-mercy-seat",
+      "metre": "10 10 10 10",
+      "tune": "song-twenty-two",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:12",
+      "slug": "approach-my-soul-the-mercy-seat",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:14",
+      "slug": "does-the-gospel-word-proclaim",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "hollingside",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:15",
+      "slug": "god-moves-in-a-mysterious-way",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:16",
+      "slug": "tis-my-happiness-below",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "messiah-herald",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:18",
+      "slug": "the-billows-swell-the-winds-are-high",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:19",
+      "slug": "god-of-my-life-to-thee-i-call",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:22",
+      "slug": "unless-the-lord-had-been-my-stay",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:23",
+      "slug": "when-darkness-long-has-veiled-my-mind",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:24",
+      "slug": "the-savior-hides-his-face",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:26",
+      "slug": "dear-lord-accept-a-sinful-heart",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:28",
+      "slug": "lord-who-hast-suffered-all-for-me",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:29",
+      "slug": "o-lord-my-best-desire-fulfill",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:31",
+      "slug": "return-to-bless-my-waiting-eyes",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:33",
+      "slug": "forest-beasts-that-live-by-prey",
+      "metre": "7 7 7 7",
+      "tune": "innocents",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:34",
+      "slug": "when-the-poor-prisner-through-a-grate",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:35",
+      "slug": "uncertain-how-the-way-to-find",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:36",
+      "slug": "i-asked-the-lord-that-i-might-grow",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:39",
+      "slug": "unbelief-the-soul-dismays",
+      "metre": "7 7 7 7",
+      "tune": "vienna",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:40",
+      "slug": "be-still-my-heart-these-anxious-cares",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:41",
+      "slug": "one-glance-of-thine-eternal-lord",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:42",
+      "slug": "from-egypt-lately-freed",
+      "metre": "6 6 8 6",
+      "tune": "franconia",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:43",
+      "slug": "sight-hearing-feeling-taste-and-smell",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:44",
+      "slug": "how-blest-thy-creature-is-o-god",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:45",
+      "slug": "far-from-the-world-o-lord-i-flee",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:47",
+      "slug": "to-tell-the-savior-all-my-wants",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:50",
+      "slug": "honor-and-happiness-unite",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:51",
+      "slug": "i-was-a-groveling-creature-once",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:53",
+      "slug": "o-speak-that-gracious-word-again",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:54",
+      "slug": "saved-by-blood-i-live-to-tell",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "martyn",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:55",
+      "slug": "while-i-lived-without-the-lord",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:58",
+      "slug": "as-when-the-weary-travellr-gains",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:59",
+      "slug": "let-worldly-minds-the-world-pursue",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:60",
+      "slug": "happy-the-birth-where-grace-presides",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:61",
+      "slug": "i-thirst-but-not-as-once-i-did",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:62",
+      "slug": "no-strength-of-nature-can-suffice",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:64",
+      "slug": "holy-lord-god-i-love-thy-truth",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:66",
+      "slug": "fix-my-heart-and-eyes-on-thine",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "hollingside",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:67",
+      "slug": "ten-thousand-talents-once-i-owed",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:68",
+      "slug": "the-new-born-child-of-gospel-grace",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:69",
+      "slug": "o-god-whose-favorable-eye",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:70",
+      "slug": "zeal-is-that-pure-and-heavnly-flame",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:71",
+      "slug": "the-lord-receives-his-highest-praise",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:72",
+      "slug": "too-many-lord-abuse-thy-grace",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:73",
+      "slug": "what-thousands-never-knew-the-road",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:74",
+      "slug": "to-keep-the-lamp-alive",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:75",
+      "slug": "grace-triumphant-in-the-throne",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "messiah-herald",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:76",
+      "slug": "sin-when-viewed-by-scripture-light",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:77",
+      "slug": "destructions-dangerous-road",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:79",
+      "slug": "how-soon-the-saviors-gracious-call",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:80",
+      "slug": "of-all-the-gifts-thine-hand-bestows",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:81",
+      "slug": "almighty-king-whose-wondrous-hand",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:83",
+      "slug": "winter-has-a-joy-for-me",
+      "metre": "7 7 7 7",
+      "tune": "innocents",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "3:84",
+      "slug": "rejoice-believer-in-the-lord",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:85",
+      "slug": "salvation-what-a-glorious-plan",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:88",
+      "slug": "lord-what-is-man-extremes-how-wide",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:90",
+      "slug": "furnish-us-all-with-light-and-powrs",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:92",
+      "slug": "thy-word-invites-us-nigh",
+      "metre": "6 6 8 6",
+      "tune": "aylesbury",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:93",
+      "slug": "remember-us-we-pray-thee-lord",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:99",
+      "slug": "the-saints-emmanuels-portion-are",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:100",
+      "slug": "now-may-he-who-from-the-dead",
+      "metre": "7 7 7 7",
+      "tune": "vienna",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:101",
+      "slug": "may-the-grace-of-christ-our-savior",
+      "metre": "8 7 8 7 8 7 8 7",
+      "tune": "rustington",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:104",
+      "slug": "at-the-creations-birth",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:105",
+      "slug": "thy-glory-holy-three-in-one",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:106",
+      "slug": "thy-praise-was-sung-when-time-began",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Newton"
+    }
+  ],
+  "alreadyOurs": [
+    {
+      "ref": "1:3",
+      "first": "O! for a closer walk with God,",
+      "page": "o-for-a-closer-walk-with-god"
+    },
+    {
+      "ref": "1:41",
+      "first": "Amazing grace! (how sweet the sound)",
+      "page": "amazing-grace"
+    },
+    {
+      "ref": "1:57",
+      "first": "How sweet the name of Jesus sounds",
+      "page": "how-sweet-the-name-of-jesus-sounds"
+    },
+    {
+      "ref": "1:60",
+      "first": "Glorious things of thee are spoken,",
+      "page": "glorious-things-of-thee-are-spoken"
+    },
+    {
+      "ref": "1:79",
+      "first": "There is a fountain filled with blood",
+      "page": "there-is-a-fountain-filled-with-blood"
+    },
+    {
+      "ref": "3:17",
+      "first": "O How I love thy holy word,",
+      "page": "o-how-i-love-thy-holy-law"
+    }
+  ],
+  "skipped": [
+    {
+      "ref": "1:6",
+      "first": "The saints should never be dismayed,",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "1:7",
+      "first": "Though troubles assail",
+      "why": "no tune we hold for “10,10,11,11” in 8-line verses"
+    },
+    {
+      "ref": "1:8",
+      "first": "Poor Esau repented too late",
+      "why": "no tune we hold for “8,8,8,8a” in 8-line verses"
+    },
+    {
+      "ref": "1:9",
+      "first": "If the Lord our leader be,",
+      "why": "its first verse cannot be sung as 7.7.7.7.7.7.7.7"
+    },
+    {
+      "ref": "1:12",
+      "first": "When Joseph his brethren beheld,",
+      "why": "no tune we hold for “8,8,8,8a” in 8-line verses"
+    },
+    {
+      "ref": "1:23",
+      "first": "The signs which God to Gideon gave,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "1:25",
+      "first": "When she began to pray,",
+      "why": "no tune we hold for “1Sam 1:10,18” in 6-line verses"
+    },
+    {
+      "ref": "1:27",
+      "first": "The kine unguided went",
+      "why": "its first verse cannot be sung as 6.6.8.6"
+    },
+    {
+      "ref": "1:28",
+      "first": "When first my soul enlisted",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "1:32",
+      "first": "If Solomon for wisdom prayed,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "1:34",
+      "first": "From Sheba a distant report",
+      "why": "no tune we hold for “8,8,8,8a” in 8-line verses"
+    },
+    {
+      "ref": "1:35",
+      "first": "Elijah's example declares,",
+      "why": "no tune we hold for “8,8,8,8a” in 8-line verses"
+    },
+    {
+      "ref": "1:37",
+      "first": "Though Jericho pleasantly stood,",
+      "why": "no tune we hold for “8,8,8,8a” in 8-line verses"
+    },
+    {
+      "ref": "1:46",
+      "first": "How tedious and tasteless the hours,",
+      "why": "no tune we hold for “8,8,8,8a” in 8-line verses"
+    },
+    {
+      "ref": "1:53",
+      "first": "One there is, above all others,",
+      "why": "no tune we hold for “8,7,8,7,7,7” in 6-line verses"
+    },
+    {
+      "ref": "1:66",
+      "first": "As parched in the barren sands",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "1:71",
+      "first": "The Lord proclaims his grace abroad!",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "1:78",
+      "first": "Jesus Christ, the Lord's anointed,",
+      "why": "no tune we hold for “8,7,8,7,11” in 5-line verses"
+    },
+    {
+      "ref": "1:87",
+      "first": "A Word from Jesus calms the sea,",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "1:89",
+      "first": "What think you of Christ? is the test",
+      "why": "no tune we hold for “8,8,8,8a” in 8-line verses"
+    },
+    {
+      "ref": "1:90",
+      "first": "When descending from the sky",
+      "why": "no tune we hold for “7,6,7,6,7,7,7,6” in 8-line verses"
+    },
+    {
+      "ref": "1:95",
+      "first": "Mercy, O thou Son of David!",
+      "why": "its first verse cannot be sung as 8.7.8.7.8.7.8.7"
+    },
+    {
+      "ref": "1:98",
+      "first": "Once a woman silent stood",
+      "why": "no tune we hold for “7,6,7,6,7,7,7,6” in 8-line verses"
+    },
+    {
+      "ref": "1:107",
+      "first": "Zaccheus climbed the tree,",
+      "why": "its first verse cannot be sung as 6.6.6.6.8.8"
+    },
+    {
+      "ref": "1:109",
+      "first": "\"Father, forgive (the Savior said)",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "1:110",
+      "first": "Sovereign grace has pow'r alone",
+      "why": "its first verse cannot be sung as 7.7.7.7"
+    },
+    {
+      "ref": "1:114",
+      "first": "Constrained by their Lord to embark,",
+      "why": "no tune we hold for “8,8,8,8a” in 8-line verses"
+    },
+    {
+      "ref": "1:121",
+      "first": "Lord, thou hast won, at length I yield,",
+      "why": "no tune we hold for “8,8,6,8,8,6” in 6-line verses"
+    },
+    {
+      "ref": "1:122",
+      "first": "Fervent persevering prayers",
+      "why": "no tune we hold for “7,6,7,6,7,7,7,6” in 8-line verses"
+    },
+    {
+      "ref": "1:138",
+      "first": "\"Write to Sardis, saith the Lord,",
+      "why": "no tune we hold for “7,6,7,6,7,7,7,6” in 8-line verses"
+    },
+    {
+      "ref": "1:139",
+      "first": "Thus saith the holy One, and true,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "2:15",
+      "first": "Preachers may, from Ezekiel's case,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "2:31",
+      "first": "Though cloudy skies, and northern blasts,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "2:36",
+      "first": "See! the corn again in ear!",
+      "why": "verses of different lengths"
+    },
+    {
+      "ref": "2:41",
+      "first": "The Lord, our salvation and light,",
+      "why": "no tune we hold for “8,8,8,8a” in 8-line verses"
+    },
+    {
+      "ref": "2:59",
+      "first": "Refreshed by the bread and wine,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "2:63",
+      "first": "Precious Bible! what a treasure",
+      "why": "no tune we hold for “8,7,8,7,7,7” in 6-line verses"
+    },
+    {
+      "ref": "2:77",
+      "first": "Day of judgment, day of wonders!",
+      "why": "no tune we hold for “8,7,8,7,11” in 5-line verses"
+    },
+    {
+      "ref": "2:79",
+      "first": "John in vision saw the day",
+      "why": "its first verse cannot be sung as 7.7.7.7.7.7.7.7"
+    },
+    {
+      "ref": "2:88",
+      "first": "Though small the drops of falling rain,",
+      "why": "verses of different lengths"
+    },
+    {
+      "ref": "2:91",
+      "first": "On the same flow'r we often see",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "2:98",
+      "first": "When slumber seals our weary eyes,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "2:100",
+      "first": "Blinded in youth by Satan's arts,",
+      "why": "no tune we hold for “8,8,6,8,8,6” in 6-line verses"
+    },
+    {
+      "ref": "3:1",
+      "first": "Yet sinners will choose",
+      "why": "no tune we hold for “10,10,11,11” in 8-line verses"
+    },
+    {
+      "ref": "3:2",
+      "first": "Stop, poor sinner! stop and think",
+      "why": "no tune we hold for “7,6,7,6,7,7,7,6” in 8-line verses"
+    },
+    {
+      "ref": "3:5",
+      "first": "Sinner, hear the Savior's call,",
+      "why": "no tune we hold for “7,6,7,6,7,7,7,6” in 8-line verses"
+    },
+    {
+      "ref": "3:6",
+      "first": "Ah, what can I do,",
+      "why": "no tune we hold for “10,10,11,11” in 8-line verses"
+    },
+    {
+      "ref": "3:9",
+      "first": "My soul is beset",
+      "why": "no tune we hold for “10,10,11,11” in 8-line verses"
+    },
+    {
+      "ref": "3:13",
+      "first": "To those who know the Lord I speak,",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "3:20",
+      "first": "My soul is sad and much dismayed;",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "3:21",
+      "first": "'Tis past--the dreadful stormy night",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "3:25",
+      "first": "When my prayers are a burden and task,",
+      "why": "no tune we hold for “8,8,8,8a” in 8-line verses"
+    },
+    {
+      "ref": "3:27",
+      "first": "Kindle, Savior, in my heart",
+      "why": "no tune we hold for “7,6,7,6,7,7,7,6” in 8-line verses"
+    },
+    {
+      "ref": "3:30",
+      "first": "When my Savior, my Shepherd is near,",
+      "why": "no tune we hold for “8,8,8,8a” in 8-line verses"
+    },
+    {
+      "ref": "3:32",
+      "first": "Though sore beset with guilt and fear,",
+      "why": "no tune we hold for “8,8,8,8” in 8-line verses"
+    },
+    {
+      "ref": "3:37",
+      "first": "Begone unbelief,",
+      "why": "no tune we hold for “10,10,11,11” in 8-line verses"
+    },
+    {
+      "ref": "3:38",
+      "first": "If to Jesus for relief",
+      "why": "no tune we hold for “7,6,7,6,7,7,7,6” in 8-line verses"
+    },
+    {
+      "ref": "3:46",
+      "first": "Why should I fear the darkest hour,",
+      "why": "no tune we hold for “8,8,8” in 3-line verses"
+    },
+    {
+      "ref": "3:48",
+      "first": "Sometimes a light surprises",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "3:49",
+      "first": "Lord my soul with pleasure springs,",
+      "why": "no tune we hold for “7,6,7,6,7,7,7,6” in 8-line verses"
+    },
+    {
+      "ref": "3:52",
+      "first": "Yes! since God himself has said it,",
+      "why": "no tune we hold for “8,7,8,7,7,7” in 6-line verses"
+    },
+    {
+      "ref": "3:56",
+      "first": "When the wounded spirit hears",
+      "why": "no tune we hold for “7,6,7,6,7,7,7,6” in 8-line verses"
+    },
+    {
+      "ref": "3:57",
+      "first": "When Hagar found the bottle spent,",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "3:63",
+      "first": "Sin enslaved me many years,",
+      "why": "no tune we hold for “7,6,7,6,7,7,7,6” in 8-line verses"
+    },
+    {
+      "ref": "3:65",
+      "first": "Quiet, Lord, my froward heart,",
+      "why": "no tune we hold for “7,6,7,6,7,7” in 6-line verses"
+    },
+    {
+      "ref": "3:78",
+      "first": "The wishes that the sluggard frames,",
+      "why": "verses of different lengths"
+    },
+    {
+      "ref": "3:82",
+      "first": "Let us love, and sing, and wonder,",
+      "why": "no tune we hold for “8,7,8,7,7,7” in 6-line verses"
+    },
+    {
+      "ref": "3:86",
+      "first": "Now may the Lord reveal his face,",
+      "why": "its first verse cannot be sung as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "3:87",
+      "first": "Prepare a thankful song",
+      "why": "verses of different lengths"
+    },
+    {
+      "ref": "3:89",
+      "why": "no verses"
+    },
+    {
+      "ref": "3:91",
+      "first": "Meet us, we pray, with words of peace,",
+      "why": "only 3 of 4 lines sing as 8.6.8.6"
+    },
+    {
+      "ref": "3:94",
+      "first": "Not to hear the fiery Law,",
+      "why": "only 4 of 8 lines sing as 8.7.8.7"
+    },
+    {
+      "ref": "3:95",
+      "first": "But we from such assaults are freed,",
+      "why": "no tune we hold for “8,8,6,8,8,6” in 6-line verses"
+    },
+    {
+      "ref": "3:96",
+      "first": "With Israel's God who can compare?",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "3:97",
+      "first": "Jesus is mine! I'm now prepared",
+      "why": "no tune we hold for “8,8,8,8” in 8-line verses"
+    },
+    {
+      "ref": "3:98",
+      "why": "no verses"
+    },
+    {
+      "ref": "3:102",
+      "why": "no verses"
+    },
+    {
+      "ref": "3:103",
+      "first": "Oh, grant that each of us",
+      "why": "no tune we hold for “6,6,6,6,7,7” in 6-line verses"
+    },
+    {
+      "ref": "3:107",
+      "why": "no verses"
+    }
+  ],
+  "counts": {
+    "hymns": 348,
+    "written": 263,
+    "alreadyOurs": 6,
+    "skipped": 79,
+    "removed": 0
+  }
+}

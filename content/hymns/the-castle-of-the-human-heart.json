@@ -1,0 +1,95 @@
+{
+  "title": "The Castle of the Human Heart",
+  "tune": "york",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Castle of the Human Heart in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 101, “The heart taken. Lk 11:21,22”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The cas-tle of the hu-man heart Strong in its na-tive sin; Is guard-ed well, in ev-ery part, By him who dwells with-in.",
+  "verses": [
+    {
+      "lines": [
+        "The castle of the human heart",
+        "Strong in its native sin;",
+        "Is guarded well, in every part,",
+        "By him who dwells within."
+      ]
+    },
+    {
+      "lines": [
+        "For Satan there, in arms, resides,",
+        "And calls the place his own;",
+        "With care against assaults provides,",
+        "And rules, as on a throne."
+      ]
+    },
+    {
+      "lines": [
+        "Each traitor thought on him, as chief,",
+        "In blind obedience waits;",
+        "And pride, self-will, and unbelief,",
+        "Are posted at the gates."
+      ]
+    },
+    {
+      "lines": [
+        "Thus Satan for a season reigns,",
+        "And keeps his goods in peace;",
+        "The soul is pleased to wear his chains,",
+        "Nor wishes a release."
+      ]
+    },
+    {
+      "lines": [
+        "But Jesus, stronger far than he,",
+        "In his appointed hour",
+        "Appears, to set his people free",
+        "From the usurper's pow'r."
+      ]
+    },
+    {
+      "lines": [
+        "\"This heart I bought with blood, he says,",
+        "And now it shall be mine;\"",
+        "His voice the strong one armed dismays,",
+        "He knows he must resign."
+      ]
+    },
+    {
+      "lines": [
+        "In spite of unbelief and pride,",
+        "And self, and Satan's art;",
+        "The gates of brass fly open wide,",
+        "And Jesus wins the heart."
+      ]
+    },
+    {
+      "lines": [
+        "The rebel soul that once withstood",
+        "The Savior's kindest call;",
+        "Rejoices now, by grace subdued,",
+        "To serve him with her all."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:101"
+}

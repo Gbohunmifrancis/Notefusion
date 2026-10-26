@@ -1,0 +1,91 @@
+{
+  "title": "Savior, Visit Thy Plantation",
+  "tune": "rustington",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Savior, Visit Thy Plantation in Tonic Solfa to RUSTINGTON, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 51, “Prayer for a revival”.",
+    "The book printed the words without tunes, marked Eights and Sevens Double (8.7.8.7.8.7.8.7), to be sung to any tune of that metre. This page sets them to RUSTINGTON; any other Eights and Sevens Double tune fits them as well."
+  ],
+  "underlay": "Sa-vior, vis-it thy plan-ta-tion, Grant us, Lord, a gra-cious rain! All will come to des-o-la-tion, Un-less thou re-turn a-gain: Keep no lon-ger at a dis-tance, Shine up-on us from on high; Lest, for want of thine as-sis-tance; Ev-ery plant would droop and die.",
+  "verses": [
+    {
+      "lines": [
+        "Savior, visit thy plantation,",
+        "Grant us, Lord, a gracious rain!",
+        "All will come to desolation,",
+        "Unless thou return again:",
+        "Keep no longer at a distance,",
+        "Shine upon us from on high;",
+        "Lest, for want of thine assistance;",
+        "Every plant would droop and die."
+      ]
+    },
+    {
+      "lines": [
+        "Surely, once thy garden flourished,",
+        "Every part looked gay and green;",
+        "Then thy word our spirits nourished,",
+        "Happy seasons we have seen!",
+        "But a drought has since succeeded,",
+        "And a sad decline we see;",
+        "Lord, thy help is greatly needed,",
+        "Help can only come from thee."
+      ]
+    },
+    {
+      "lines": [
+        "Where are those we counted leaders,",
+        "Filled with zeal, and love, and truth?",
+        "Old professors, tall as cedars,",
+        "Bright examples to our youth!",
+        "Some, in whom we once delighted,",
+        "We shall meet no more below;",
+        "Some, alas! we fear are blighted,",
+        "Scarce a single leaf they show."
+      ]
+    },
+    {
+      "lines": [
+        "Younger plants-the sight how pleasant,",
+        "Covered thick with blossoms stood;",
+        "But they cause us grief at present,",
+        "Frosts have nipped them in the bud!",
+        "Dearest Savior, hasten hither,",
+        "Thou canst make them bloom again;",
+        "O, permit them not to wither,",
+        "Let not all our hopes be vain!"
+      ]
+    },
+    {
+      "lines": [
+        "Let our mutual love be fervent,",
+        "Make us prevalent in prayers;",
+        "Let each one esteemed thy servant,",
+        "Shun the world's bewitching snares:",
+        "Break the tempter's fatal power,",
+        "Turn the stony heart to flesh;",
+        "And begin, from this good hour,",
+        "To revive thy work afresh."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to RUSTINGTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:51"
+}

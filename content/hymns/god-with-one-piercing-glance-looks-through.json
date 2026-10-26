@@ -1,0 +1,87 @@
+{
+  "title": "God, with One Piercing Glance, Looks Through",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "God, with One Piercing Glance, Looks Through in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 78, “The day of the Lord”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "God, with one pierc-ing glance, looks through Cre-a-tion's wide ex-tend-ed frame; The past and fu-ture in his view, And days and a-ges are the same.",
+  "verses": [
+    {
+      "lines": [
+        "God, with one piercing glance, looks through",
+        "Creation's wide extended frame;",
+        "The past and future in his view,",
+        "And days and ages are the same."
+      ]
+    },
+    {
+      "lines": [
+        "Sinners, who dare provoke his face,",
+        "Who on his patience long presume,",
+        "And trifle out his day of grace,",
+        "Will find he has a day of doom."
+      ]
+    },
+    {
+      "lines": [
+        "As pangs the lab'ring woman feels,",
+        "Or as the thief, in midnight sleep;",
+        "So comes that day, for which the wheels",
+        "Of time, their ceaseless motion keep!"
+      ]
+    },
+    {
+      "lines": [
+        "Hark! from the sky, the trump proclaims",
+        "Jesus; the Judge approaching nigh!",
+        "See, the creation wrapped in flames,",
+        "First kindled by his vengeful eye!"
+      ]
+    },
+    {
+      "lines": [
+        "When thus the mountains melt like wax,",
+        "When earth, and air, and sea, shall burn;",
+        "When all the frame of nature breaks,",
+        "Poor sinner, whither wilt thou turn?"
+      ]
+    },
+    {
+      "lines": [
+        "The puny works which feeble men",
+        "Now boast, or covet, or admire;",
+        "Their pomp, and arts, and treasures, then",
+        "Shall perish in one common fire."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, fix our hearts and hopes above!",
+        "Since all below to ruin tends;",
+        "Here may we trust, obey, and love,",
+        "And there be found amongst thy friends."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:78"
+}

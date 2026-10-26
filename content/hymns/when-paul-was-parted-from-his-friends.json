@@ -1,0 +1,79 @@
+{
+  "title": "When Paul Was Parted from His Friends",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "When Paul Was Parted from His Friends in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 28, “Paul's farewell charge. Acts 20:26,27”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When Paul was par-ted from his friends It was a weep-ing day; But Je-sus made them all a-mends, And wiped their tears a-way.",
+  "verses": [
+    {
+      "lines": [
+        "When Paul was parted from his friends",
+        "It was a weeping day;",
+        "But Jesus made them all amends,",
+        "And wiped their tears away."
+      ]
+    },
+    {
+      "lines": [
+        "Ere long they met again, with joy,",
+        "(Secure no more to part)",
+        "Where praises every tongue employ,",
+        "And pleasure fills each heart."
+      ]
+    },
+    {
+      "lines": [
+        "Thus all the preachers of his grace",
+        "Their children soon shall meet;",
+        "Together see their Savior's face,",
+        "And worship at his feet."
+      ]
+    },
+    {
+      "lines": [
+        "But they who heard the word in vain,",
+        "Though oft, and plainly, warned;",
+        "Will tremble, when they meet again",
+        "The ministers they scorned"
+      ]
+    },
+    {
+      "lines": [
+        "On your own heads your blood will fall",
+        "If any perish here",
+        "The preachers, who have told you all,",
+        "Shall stand approved, and clear."
+      ]
+    },
+    {
+      "lines": [
+        "Yet, Lord, to save themselves alone,",
+        "Is not their utmost view;",
+        "Oh bear their prayer, thy message own,",
+        "And save their hearers too."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:28"
+}

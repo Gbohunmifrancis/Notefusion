@@ -1,0 +1,95 @@
+{
+  "title": "How Hurtful Was the Choice of Lot",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "How Hurtful Was the Choice of Lot in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 5, “Lot in Sodom. Gen 13:10”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How hurt-ful was the choice of Lot, Who took up his a-bode (Be-cause it was a fruit-ful spot) With them who feared not God!",
+  "verses": [
+    {
+      "lines": [
+        "How hurtful was the choice of Lot,",
+        "Who took up his abode",
+        "(Because it was a fruitful spot)",
+        "With them who feared not God!"
+      ]
+    },
+    {
+      "lines": [
+        "A pris'ner he was quickly made,",
+        "Bereaved of all his store;",
+        "And, but for Abraham's timely aid,",
+        "He had returned no more."
+      ]
+    },
+    {
+      "lines": [
+        "Yet still he seemed resolved to stay",
+        "As if it were his rest;",
+        "Although their sins from day to day",
+        "His righteous soul distressed."
+      ]
+    },
+    {
+      "lines": [
+        "Awhile he stayed with anxious mind,",
+        "Exposed to scorn and strife;",
+        "At last he left his all behind,",
+        "And fled to save his life."
+      ]
+    },
+    {
+      "lines": [
+        "In vain his sons-in-law he warned,",
+        "They thought he told his dreams;",
+        "His daughters too, of them had learned,",
+        "And perished in the flames."
+      ]
+    },
+    {
+      "lines": [
+        "His wife escaped a little way,",
+        "But died for looking back:",
+        "Does not her case to pilgrims say,",
+        "\"Beware of growing slack?\""
+      ]
+    },
+    {
+      "lines": [
+        "Yea; Lot himself could ling'ring stand,",
+        "Though vengeance was in view;",
+        "'Twas mercy plucked him by the hand,",
+        "Or he had perished too."
+      ]
+    },
+    {
+      "lines": [
+        "The doom of Sodom wilt be ours",
+        "If to the earth we cleave;",
+        "Lord quicken all our drowsy pow'rs,",
+        "To flee to thee and live."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:5"
+}

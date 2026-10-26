@@ -6,7 +6,7 @@
 //   --book 1846  Hymns for Christian Devotion (John G. Adams and Edwin H. Chapin, Boston 1846; the twenty-second
 //                edition of 1853): eBook #20476
 //
-//   node tools/blog/import/words-books.mjs --book 1848|1846 --src FILE [--date YYYY-MM-DD] [--publish] [--dry-run]
+//   node tools/blog/import/words-books.mjs --book 1848|1846|olney --src FILE [--date YYYY-MM-DD] [--publish] [--dry-run]
 //
 // FILE is the book's plain text, downloaded beforehand into a directory of its own. It is data: read and parsed here,
 // never run.
@@ -40,7 +40,8 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * The books: where their pages come from (`id`), what the page says of them, and the year their words were in print by.
- * `printedIn(n, year)` is the clause "printed in …, as hymn n" that the page's first paragraph ends with.
+ * `printedIn(h, year)` is the clause "printed in …, as hymn n" that the page's first paragraph ends with; `parse` reads the
+ * book's text when it is not laid out as the 1848 book is (parseBook).
  */
 export const BOOKS = {
   1848: {
@@ -48,8 +49,8 @@ export const BOOKS = {
     title: "A Book of Hymns for Public and Private Devotion",
     source: "A Book of Hymns for Public and Private Devotion (1848)",
     printing: "A Book of Hymns for Public and Private Devotion (Samuel Longfellow and Samuel Johnson, 1848), fifteenth edition, 1866",
-    yearOf: (n) => (n >= 480 ? 1866 : 1848),
-    printedIn: (n, year) => `${n >= 480 ? "the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion" : "A Book of Hymns for Public and Private Devotion"}, compiled by Samuel Longfellow and Samuel Johnson (Boston, ${year}), as hymn ${n}`,
+    yearOf: ({ number: n }) => (n >= 480 ? 1866 : 1848),
+    printedIn: ({ number: n }, year) => `${n >= 480 ? "the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion" : "A Book of Hymns for Public and Private Devotion"}, compiled by Samuel Longfellow and Samuel Johnson (Boston, ${year}), as hymn ${n}`,
   },
   1846: {
     id: "hymns-1846",
@@ -57,7 +58,16 @@ export const BOOKS = {
     source: "Hymns for Christian Devotion (1846)",
     printing: "Hymns for Christian Devotion (John G. Adams and Edwin H. Chapin, 1846), twenty-second edition, 1853",
     yearOf: () => 1853,
-    printedIn: (n) => `Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn ${n} of its twenty-second edition (1853)`,
+    printedIn: ({ number: n }) => `Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn ${n} of its twenty-second edition (1853)`,
+  },
+  olney: {
+    id: "olney-1779",
+    title: "Olney Hymns",
+    source: "John Newton and William Cowper, Olney Hymns (1779)",
+    printing: "Olney Hymns, in Three Books (John Newton and William Cowper, London 1779), the first edition, from the Christian Classics Ethereal Library",
+    yearOf: () => 1779,
+    printedIn: ({ book, number }) => `Olney Hymns (London, 1779), Book ${["I", "II", "III"][book - 1]}, hymn ${number}`,
+    parse: (text) => parseOlney(text),
   },
 };
 for (const [key, b] of Object.entries(BOOKS)) b.report = path.join(HERE, `hymns-${key}-report.json`);
@@ -102,6 +112,11 @@ export function patternFor(label, lines) {
   if (core === "L") return lines === 6 ? Array(6).fill(8) : repeat([8, 8, 8, 8]);   // "L. M. 6l.": 8.8.8.8.8.8
   if (core === "S") return repeat([6, 6, 8, 6]);
   if (core === "H") return exact([6, 6, 6, 6, 8, 8]);
+  // Every line's syllables ("8,6,8,6", Olney's), the whole verse or a half of it; "8,8,8,8a" (anapaests) is not sung to these tunes.
+  if (/^\d+(,\d+)+$/.test(core)) {
+    const base = core.split(",").map(Number);
+    return repeat(base);
+  }
   // Numbers: "7s", "10s" (every line the same); "8 & 7s", "8s. & 7s." (alternating); "6 & 4s"; "8, 7, & 4s".
   if (!/^[\d\s.,&s]+$/.test(core)) return null;
   const n = (core.match(/\d+/g) || []).map(Number);
@@ -275,6 +290,8 @@ export const AUTHORS = {
   "Mrs. Gilbert": ["Ann Gilbert", 1782, 1866],
   "Mrs. Brown": ["Phoebe Hinsdale Brown", 1783, 1861],
   "Tate": ["Nahum Tate", 1652, 1715],
+  "John Newton": ["John Newton", 1725, 1807],
+  "William Cowper": ["William Cowper", 1731, 1800],
   "Brady": ["Nicholas Brady", 1659, 1726],
   "Bickersteth": ["Edward Bickersteth", 1786, 1850],
   "Jay": ["William Jay", 1769, 1853],
@@ -334,6 +351,45 @@ export function parseBook(text) {
 }
 
 /**
+ * Olney Hymns as the Christian Classics Ethereal Library prints it: "Hymn 41", the author, the metre ("8,6,8,6"), the title
+ * and its scripture, then the verses, a blank line between lines and two between verses; a rule of underscores ends a
+ * hymn (the section titles, tables and notes between hymns are not read). Each book starts again at "Hymn 1".
+ */
+export function parseOlney(text) {
+  const lines = String(text).replace(/\r/g, "").split("\n");
+  const hymns = [];
+  let cur = null, stanza = null, blanks = 0, book = 0;
+  const close = () => { if (stanza && stanza.length) cur.verses.push(stanza); stanza = null; };
+  const end = () => { if (cur) { close(); hymns.push(cur); cur = null; } };
+  for (const raw of lines) {
+    const head = /^Hymn (\d+)\s*$/.exec(raw);
+    if (head) {
+      end();
+      if (Number(head[1]) === 1) book++;
+      cur = { book, number: Number(head[1]), author: "", label: "", heading: [], verses: [] };
+      blanks = 0;
+      continue;
+    }
+    if (!cur) continue;
+    if (/^\s*_{5,}\s*$/.test(raw)) { end(); continue; }
+    // The book sets the divine names in capitals ("GOD", "JESUS"): written as words here.
+    const line = raw.replace(/\s*\[\d+\]/g, "").replace(/\b(\p{Lu})(\p{Lu}+)\b/gu, (_, a, b) => a + b.toLowerCase()).trim();
+    if (!line) { blanks++; if (blanks >= 2) close(); continue; }
+    const gap = blanks;
+    blanks = 0;
+    if (!cur.author) { cur.author = line; continue; }
+    if (!cur.label) { cur.label = line; continue; }
+    if (!cur.verses.length && !stanza && (gap < 2 || !cur.heading.length)) { cur.heading.push(line); continue; }
+    // The margin's scripture beside a verse ("Rom 8:36", "1Cor 15:55"), not a line to sing.
+    if (/^(\d\s?)?[A-Z][a-z]{1,6}\.? \d+(:\d+)?([,-]\d+)*([;,] ?(\d\s?)?([A-Z][a-z]{1,6}\.? )?\d+(:\d+)?([,-]\d+)*)*$/.test(line)) continue;
+    if (!stanza) stanza = [];
+    stanza.push(line);
+  }
+  end();
+  return hymns;
+}
+
+/**
  * Who wrote the words, as the page credits them ({people, from, altered}), or why we cannot say ({why}). "A & B" is two
  * writers, both of whom we must be able to name; ", alt." is the book's mark for words it altered.
  */
@@ -380,7 +436,7 @@ const sentence = (s) => s.replace(/[.\s]+$/, "");
 
 export function runImport({ src, today, book, publish = false, dryRun = false, hymnsDir = HYMNS_DIR, tunesDir = TUNES_DIR, reportPath = BOOKS[book].report, log = console.log }) {
   const B = BOOKS[book];
-  const hymns = parseBook(fs.readFileSync(src, "utf8"));
+  const hymns = (B.parse || parseBook)(fs.readFileSync(src, "utf8"));
   const dict = underlayDictionary(hymnsDir);
 
   // The tunes, checked: published, a doh we can name, one note per syllable of the metre.
@@ -407,7 +463,7 @@ export function runImport({ src, today, book, publish = false, dryRun = false, h
   const report = { source: B.printing, date: today, written: [], alreadyOurs: [], skipped: [], counts: {} };
   const keep = new Set();
   for (const h of hymns) {
-    const ref = String(h.number);
+    const ref = h.book ? `${h.book}:${h.number}` : String(h.number);
     const first = h.verses[0]?.[0];
     if (!first) { report.skipped.push({ ref, why: "no verses" }); continue; }
     const have = ours.get(firstWords(first));
@@ -430,12 +486,12 @@ export function runImport({ src, today, book, publish = false, dryRun = false, h
     let description = `${title} in Tonic Solfa to ${t.name}, doh is ${doh}: the solfa with the words, staff notation, ${h.verses.length} verses and a piano.`;
     if (description.length > 160) description = `${title}: Tonic Solfa to ${t.name} (doh is ${doh}), staff notation and ${h.verses.length} verses.`;
     if (description.length > 160) { report.skipped.push({ ref, first, why: "title too long for a description" }); continue; }
-    const year = B.yearOf(h.number);
+    const year = B.yearOf(h);
     const heading = sentence(h.heading.join(" ").replace(/\s+/g, " ").trim());
     const source = from && from.replace(/ Coll?$/, " Collection").replace(/ Sel$/, " Selection");
     const who = anonymous
-      ? `These words were printed without an author's name in ${B.printedIn(h.number, year)}${heading ? `, “${heading}”` : ""}${source ? `, where the book credits them to ${/^(Wesleyan|Moravian|Methodist)$/.test(source) ? `a ${source} source` : `${/'s?\s/.test(source) ? "" : "the "}${source}`}` : ""}.`
-      : `${names} wrote these words. They were printed in ${B.printedIn(h.number, year)}${heading ? `, “${heading}”` : ""}.`;
+      ? `These words were printed without an author's name in ${B.printedIn(h, year)}${heading ? `, “${heading}”` : ""}${source ? `, where the book credits them to ${/^(Wesleyan|Moravian|Methodist)$/.test(source) ? `a ${source} source` : `${/'s?\s/.test(source) ? "" : "the "}${source}`}` : ""}.`
+      : `${names} wrote these words. They were printed in ${B.printedIn(h, year)}${heading ? `, “${heading}”` : ""}.`;
     const page = {
       title,
       tune,
@@ -479,7 +535,7 @@ function main() {
   const args = process.argv.slice(2);
   const arg = (name) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : null; };
   const src = arg("--src"), book = arg("--book");
-  if (!src || !BOOKS[book]) { console.error("usage: node tools/blog/import/words-books.mjs --book 1848|1846 --src FILE [--date YYYY-MM-DD] [--publish] [--dry-run]"); process.exit(2); }
+  if (!src || !BOOKS[book]) { console.error("usage: node tools/blog/import/words-books.mjs --book 1848|1846|olney --src FILE [--date YYYY-MM-DD] [--publish] [--dry-run]"); process.exit(2); }
   const today = arg("--date") || new Date().toISOString().slice(0, 10);
   runImport({ src, today, book, publish: args.includes("--publish"), dryRun: args.includes("--dry-run") });
 }

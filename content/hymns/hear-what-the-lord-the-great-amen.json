@@ -1,0 +1,87 @@
+{
+  "title": "Hear What the Lord, the Great Amen",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Hear What the Lord, the Great Amen in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 140, “Laodicea. Rev 3:14-20”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Hear what the Lord, the great A-men, The true and faith-ful Wit-ness says! He formed the vast cre-a-tion's plan, And search-es all our hearts and ways.",
+  "verses": [
+    {
+      "lines": [
+        "Hear what the Lord, the great Amen,",
+        "The true and faithful Witness says!",
+        "He formed the vast creation's plan,",
+        "And searches all our hearts and ways."
+      ]
+    },
+    {
+      "lines": [
+        "To some he speaks as once of old,",
+        "\"I know thee, thy profession's vain;",
+        "Since thou art neither hot nor cold,",
+        "I'll spit thee from me with disdain."
+      ]
+    },
+    {
+      "lines": [
+        "Thou boasteth, \"I am wise and rich,",
+        "Increased in goods and nothing need;\"",
+        "And dost not know thou art a wretch,",
+        "Naked and poor, and blind and dead."
+      ]
+    },
+    {
+      "lines": [
+        "Yet while I thus rebuke, I love,",
+        "My message is in mercy sent;",
+        "That thou may'st my compassion prove,",
+        "I can forgive, if thou repent."
+      ]
+    },
+    {
+      "lines": [
+        "Wouldst thou be truly rich and wise?",
+        "Come, buy my gold in fire well tried,",
+        "My ointment to anoint thine eyes,",
+        "My robe, thy nakedness to hide."
+      ]
+    },
+    {
+      "lines": [
+        "See at thy door I stand and knock!",
+        "Poor sinner, shall I wait in vain?",
+        "Quickly thy stubborn heart unlock,",
+        "That I may enter with my train."
+      ]
+    },
+    {
+      "lines": [
+        "Thou canst not entertain a king,",
+        "Unworthy thou of such a guest!",
+        "But I my own provisions bring,",
+        "To make thy soul a heavenly feast.\""
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:140"
+}

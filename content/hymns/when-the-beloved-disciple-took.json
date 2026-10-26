@@ -1,0 +1,87 @@
+{
+  "title": "When the Beloved Disciple Took",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "When the Beloved Disciple Took in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 141, “The little book. Rev 10”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When the be-loved dis-ci-ple took The an-gels' lit-tle o-pen book, Which by the Lord'S com-mand he eat, It tast-ed bit-ter af-ter sweet.",
+  "verses": [
+    {
+      "lines": [
+        "When the beloved disciple took",
+        "The angels' little open book,",
+        "Which by the Lord'S command he eat,",
+        "It tasted bitter after sweet."
+      ]
+    },
+    {
+      "lines": [
+        "Thus when the gospel is embraced,",
+        "At first 'tis sweeter to the taste",
+        "Than honey, or the honey-comb,",
+        "But there's a bitterness to come."
+      ]
+    },
+    {
+      "lines": [
+        "What sweetness does the promise yield,",
+        "When by the Spirit's power sealed?",
+        "The longing soul is filled with good,",
+        "Nor feels a wish for other food."
+      ]
+    },
+    {
+      "lines": [
+        "By these inviting tastes allured,",
+        "We pass to what must be endured;",
+        "For soon we find it is decreed,",
+        "That bitter must to sweet succeed."
+      ]
+    },
+    {
+      "lines": [
+        "When sin revives and shows its pow'r.",
+        "When Satan threatens to devour,",
+        "When God afflicts and men revile,",
+        "We drag our steps with pain and toil."
+      ]
+    },
+    {
+      "lines": [
+        "When thus deserted, tempest-tossed,",
+        "The sense of former sweetness lost;",
+        "We tremble lest we were deceived",
+        "In thinking that we once believed."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord first makes the sweetness known,",
+        "To win and fix us far his own;",
+        "And though we now some bitter meet,",
+        "We hope for everlasting sweet."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:141"
+}

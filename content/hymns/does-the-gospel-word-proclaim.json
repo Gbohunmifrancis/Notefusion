@@ -1,0 +1,79 @@
+{
+  "title": "Does the Gospel-word Proclaim",
+  "tune": "hollingside",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Does the Gospel-word Proclaim in Tonic Solfa to HOLLINGSIDE, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 14, “Rest for weary souls”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to HOLLINGSIDE; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Does the gos-pel word pro-claim Rest, for those who wea-ry be? Then, my soul, put in thy claim, Sure that pro-mise speaks to thee: Marks of grace I can-not show, All pol-lut-ed is my best; Yet I wea-ry am I know, And the wea-ry long for rest.",
+  "verses": [
+    {
+      "lines": [
+        "Does the gospel-word proclaim",
+        "Rest, for those who weary be?",
+        "Then, my soul, put in thy claim,",
+        "Sure that promise speaks to thee:",
+        "Marks of grace I cannot show,",
+        "All polluted is my best;",
+        "Yet I weary am I know,",
+        "And the weary long for rest."
+      ]
+    },
+    {
+      "lines": [
+        "Burdened with a load of sin,",
+        "Harassed with tormenting doubt,",
+        "Hourly conflicts from within,",
+        "Hourly crosses from without:",
+        "All my little strength is gone,",
+        "Sink I must without supply;",
+        "Sure upon the earth is none",
+        "Can more weary be than I."
+      ]
+    },
+    {
+      "lines": [
+        "In the ark, the weary dove",
+        "Found a welcome resting-place;",
+        "Thus my spirit longs to prove",
+        "Rest in Christ, the ark of grace:",
+        "Tempest-tossed I long have been,",
+        "And the flood increases fast;",
+        "Open, Lord, and take me in,",
+        "Till the storm be overpast."
+      ]
+    },
+    {
+      "lines": [
+        "Safely lodged within thy breast,",
+        "What a wondrous change I find!",
+        "Now I know thy promised rest",
+        "Can compose a troubled mind",
+        "You that weary are like me,",
+        "Hearken to the gospel call;",
+        "To the ark for refuge flee,",
+        "Jesus will receive you all!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to HOLLINGSIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:14"
+}

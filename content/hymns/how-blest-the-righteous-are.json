@@ -1,0 +1,79 @@
+{
+  "title": "How Blest the Righteous Are",
+  "tune": "st-bride",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "How Blest the Righteous Are in Tonic Solfa to ST. BRIDE, doh is Bb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 20, “Balaam's wish Num 23:10”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to ST. BRIDE; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "How blest the right-eous are When they re-sign their breath! No won-der Bal-aam wished to share In such a hap-py death.",
+  "verses": [
+    {
+      "lines": [
+        "How blest the righteous are",
+        "When they resign their breath!",
+        "No wonder Balaam wished to share",
+        "In such a happy death."
+      ]
+    },
+    {
+      "lines": [
+        "\"Oh! let me die, said he,",
+        "The death the righteous do;",
+        "When life is ended let me be",
+        "Found with the faithful few.\""
+      ]
+    },
+    {
+      "lines": [
+        "The force of truth how great!",
+        "When enemies confess,",
+        "None but the righteous whom they hate,",
+        "A solid hope possess."
+      ]
+    },
+    {
+      "lines": [
+        "But Balaam's wish was vain,",
+        "His heart was insincere;",
+        "He thirsted for unrighteous gain,",
+        "And sought a portion here."
+      ]
+    },
+    {
+      "lines": [
+        "He seemed the Lord to know,",
+        "And to offend him loth;",
+        "But Mammon proved his overthrow,",
+        "For none can serve them both."
+      ]
+    },
+    {
+      "lines": [
+        "May you, my friends, and I,",
+        "Warning from hence receive;",
+        "If like the righteous we would die,",
+        "To choose the life they live."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. BRIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:20"
+}

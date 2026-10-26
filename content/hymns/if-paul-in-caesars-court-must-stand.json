@@ -1,0 +1,95 @@
+{
+  "title": "If Paul in Caesar's Court Must Stand",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "If Paul in Caesar's Court Must Stand in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 125, “Paul's voyage. Acts 27”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "If Paul in Cae-sar's court must stand, He need not fear the sea; Se-cured from harm, on ev-ery hand, By the di-vine de-cree.",
+  "verses": [
+    {
+      "lines": [
+        "If Paul in Caesar's court must stand,",
+        "He need not fear the sea;",
+        "Secured from harm, on every hand,",
+        "By the divine decree."
+      ]
+    },
+    {
+      "lines": [
+        "Although the ship, in which he sailed,",
+        "By dreadful storms was tossed;",
+        "The promise over all prevailed,",
+        "And not a life was lost."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus! the God whom Paul adored,",
+        "Who saves in time of need;",
+        "Was then confessed, by all on board,",
+        "A present help indeed!"
+      ]
+    },
+    {
+      "lines": [
+        "Though neither sun nor stars were seen",
+        "Paul knew the Lord was near;",
+        "And faith preserved his soul serene,",
+        "When others shook for fear."
+      ]
+    },
+    {
+      "lines": [
+        "Believers thus are tossed about",
+        "On life's tempestuous main;",
+        "But grace assures, beyond a doubt,",
+        "They shall their port attain."
+      ]
+    },
+    {
+      "lines": [
+        "They must, they shall appear one day,",
+        "Before their Savior's throne;",
+        "The storms they meet with by the way,",
+        "But make his power known."
+      ]
+    },
+    {
+      "lines": [
+        "Their passage lies across the brink",
+        "Of many a threat'ning wave;",
+        "The world expects to see them sink,",
+        "But Jesus lives to save."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, though we are but feeble worms,",
+        "Yet since thy word is past;",
+        "We'll venture through a thousand storms,",
+        "To see thy face at last."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:125"
+}

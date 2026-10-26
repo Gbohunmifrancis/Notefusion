@@ -1,0 +1,95 @@
+{
+  "title": "Sweet Was the Time When First I Felt",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Sweet Was the Time When First I Felt in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 43, “Oh that I were as in months past! Job 29:2”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Sweet was the time when first I felt The Sa-vior's pard'n-ing blood Ap-plied, to cleanse my soul from guilt, And bring me home to God.",
+  "verses": [
+    {
+      "lines": [
+        "Sweet was the time when first I felt",
+        "The Savior's pard'ning blood",
+        "Applied, to cleanse my soul from guilt,",
+        "And bring me home to God."
+      ]
+    },
+    {
+      "lines": [
+        "Soon as the morn the light revealed,",
+        "His praises tuned my tongue;",
+        "And when the evening shades prevailed,",
+        "His love was all my song."
+      ]
+    },
+    {
+      "lines": [
+        "In vain the tempter spread his wiles,",
+        "The world no more could charm;",
+        "I lived upon my Savior's smiles,",
+        "And leaned upon his arm."
+      ]
+    },
+    {
+      "lines": [
+        "In prayer my soul drew near the Lord,",
+        "And saw his glory shine;",
+        "And when I read his holy word,",
+        "I called each promise mine."
+      ]
+    },
+    {
+      "lines": [
+        "Then to his saints I often spoke;",
+        "Of what his love had done;",
+        "But now my heart is almost broke,",
+        "For all my joys are gone."
+      ]
+    },
+    {
+      "lines": [
+        "Now when the evening shade prevails,",
+        "My soul in darkness mourns,",
+        "And when the morn the light reveals,",
+        "No light to me returns."
+      ]
+    },
+    {
+      "lines": [
+        "My prayers are now a chatt'ring noise,",
+        "For Jesus hides his face;",
+        "I read, the promise meets my eyes,",
+        "But will not reach my case."
+      ]
+    },
+    {
+      "lines": [
+        "Now Satan threatens to prevail,",
+        "And make my soul his prey;",
+        "Yet, Lord, thy mercies cannot fail,",
+        "O come without delay."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:43"
+}

@@ -1,0 +1,103 @@
+{
+  "title": "Gladness Was Spread Through Israel's Host",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Gladness Was Spread Through Israel's Host in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 49, “A famine of the word”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Glad-ness was spread through Is-rael's host When first they Man-na viewed; They la-bored who should ga-ther most, And thought it plea-sant food.",
+  "verses": [
+    {
+      "lines": [
+        "Gladness was spread through Israel's host",
+        "When first they Manna viewed;",
+        "They labored who should gather most,",
+        "And thought it pleasant food."
+      ]
+    },
+    {
+      "lines": [
+        "But when they had it long enjoyed",
+        "From day to day, the same;",
+        "Their hearts were by the plenty cloyed,",
+        "Although from heav'n it came."
+      ]
+    },
+    {
+      "lines": [
+        "Thus gospel bread at first is prized,",
+        "And makes a people glad;",
+        "But afterwards too much despised,",
+        "When easy to be had."
+      ]
+    },
+    {
+      "lines": [
+        "But should the Lord, displeased, withhold",
+        "The bread his mercy sends;",
+        "To have our houses filled with gold",
+        "Would make but poor amends."
+      ]
+    },
+    {
+      "lines": [
+        "How tedious would the week appear,",
+        "How dull the Sabbath prove?",
+        "Could we no longer meet to bear",
+        "The precious truths we love!"
+      ]
+    },
+    {
+      "lines": [
+        "How would believing parents bear",
+        "To leave their heedless youth,",
+        "Exposed to every fatal snare,",
+        "Without the light of truth?"
+      ]
+    },
+    {
+      "lines": [
+        "The gospel, and a praying few",
+        "Our bulwark long have proved;",
+        "But Olney sure the day will rue",
+        "When these shall be removed."
+      ]
+    },
+    {
+      "lines": [
+        "Then sin, in this once favored town,",
+        "Will triumph unrestrained;",
+        "And wrath and vengeance hasten down,",
+        "No more by prayer detained."
+      ]
+    },
+    {
+      "lines": [
+        "Preserve us from this judgment, Lord",
+        "For Jesus' sake we plead;",
+        "A famine of the gospel word",
+        "Would be a stroke indeed!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:49"
+}

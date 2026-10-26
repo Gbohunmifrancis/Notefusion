@@ -1,0 +1,87 @@
+{
+  "title": "Destruction's Dangerous Road",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Destruction's Dangerous Road in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 77, “Are there few that shall he saved?”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "De-struc-tion's dan-gerous road What mul-ti-tudes pur-sue! While that which leads the soul to God, Is known or sought by few.",
+  "verses": [
+    {
+      "lines": [
+        "Destruction's dangerous road",
+        "What multitudes pursue!",
+        "While that which leads the soul to God,",
+        "Is known or sought by few."
+      ]
+    },
+    {
+      "lines": [
+        "Believers enter in",
+        "By Christ, the living gate;",
+        "But they who will not leave their sin,",
+        "Complain it is too strait."
+      ]
+    },
+    {
+      "lines": [
+        "If self must be denied,",
+        "And sin forsaken quite;",
+        "They rather choose the way that's wide,",
+        "And strive to think it right."
+      ]
+    },
+    {
+      "lines": [
+        "Encompassed by a throng,",
+        "On numbers they depend;",
+        "So many surely can't be wrong,",
+        "And miss a happy end."
+      ]
+    },
+    {
+      "lines": [
+        "But numbers are no mark",
+        "That men will right be found",
+        "A few were saved in Noah's ark,",
+        "For many millions drowned."
+      ]
+    },
+    {
+      "lines": [
+        "Obey the gospel call,",
+        "And enter while you may;",
+        "The flock of Christ is always small,",
+        "And none are safe but they."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, open sinners' eyes",
+        "Their awful state to see",
+        "And make them, ere the storm arise,",
+        "To thee for safety flee."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:77"
+}

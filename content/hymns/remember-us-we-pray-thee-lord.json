@@ -1,0 +1,47 @@
+{
+  "title": "Remember Us, We Pray Thee, Lord",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Remember Us, We Pray Thee, Lord in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 93, “Psalm 106:4,5”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Re-mem-ber us, we pray thee, Lord, With those who love thy gra-cious name, And to our souls that good af-ford, Thy pro-mise has pre-pared for them.",
+  "verses": [
+    {
+      "lines": [
+        "Remember us, we pray thee, Lord,",
+        "With those who love thy gracious name,",
+        "And to our souls that good afford,",
+        "Thy promise has prepared for them."
+      ]
+    },
+    {
+      "lines": [
+        "To us thy great salvation show,",
+        "Give us a taste of love divine;",
+        "That we thy people's joy may know;",
+        "And in their holy triumph join."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:93"
+}

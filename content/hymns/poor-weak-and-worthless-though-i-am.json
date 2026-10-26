@@ -1,0 +1,95 @@
+{
+  "title": "Poor, Weak, and Worthless Though I Am",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Poor, Weak, and Worthless Though I Am in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 30, “Is this thy kindness to thy friend. 2Sam 16:17”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Poor, weak, and worth-less though I am, I have a rich al-might-y friend; Je-sus, the Sa-vior, is his name, He free-ly loves, and with-out end.",
+  "verses": [
+    {
+      "lines": [
+        "Poor, weak, and worthless though I am,",
+        "I have a rich almighty friend;",
+        "Jesus, the Savior, is his name,",
+        "He freely loves, and without end."
+      ]
+    },
+    {
+      "lines": [
+        "He ransomed me from hell with blood,",
+        "And by his pow'r my foes controlled;",
+        "He found me, wand'ring far from God,",
+        "And brought me to his chosen fold."
+      ]
+    },
+    {
+      "lines": [
+        "He cheers my heart, my wants supplies,",
+        "And says that I shall shortly be",
+        "Enthroned with him above the skies,",
+        "O! what a friend is Christ to me."
+      ]
+    },
+    {
+      "lines": [
+        "But ah! I my inmost spirit mourns,",
+        "And well my eyes with tears may swim,",
+        "To think of my perverse returns;",
+        "I've been a faithless friend to him."
+      ]
+    },
+    {
+      "lines": [
+        "Often my gracious Friend I grieve,",
+        "Neglect, distrust, and disobey,",
+        "And often Satan's lies believe,",
+        "Sooner than all my Friend can say."
+      ]
+    },
+    {
+      "lines": [
+        "He bids me always freely come,",
+        "And promises whate'er I ask:",
+        "But I am straitened, cold and dumb,",
+        "And count my privilege a task."
+      ]
+    },
+    {
+      "lines": [
+        "Before the world that hates his course,",
+        "My treach'rous heart has throbbed with shame;",
+        "Loth to forego the worlds applause,",
+        "I hardly dare avow his name."
+      ]
+    },
+    {
+      "lines": [
+        "Sure were not I most vile and base,",
+        "I could not thus my friend requite!",
+        "And were not he the God of grace,",
+        "He'd frown and spurn me from his sight."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:30"
+}

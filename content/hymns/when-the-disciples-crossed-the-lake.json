@@ -1,0 +1,87 @@
+{
+  "title": "When the Disciples Crossed the Lake",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "When the Disciples Crossed the Lake in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 94, “But one loaf Mk 8:14”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When the dis-ci-ples crossed the lake With but one loaf on board; How strange-ly did their hearts mis-take The cau-tion of their Lord.",
+  "verses": [
+    {
+      "lines": [
+        "When the disciples crossed the lake",
+        "With but one loaf on board;",
+        "How strangely did their hearts mistake",
+        "The caution of their Lord."
+      ]
+    },
+    {
+      "lines": [
+        "\"The leaven of the Pharisees",
+        "Beware,\" the Savior said;",
+        "They thought, it is because he sees",
+        "We have forgotten bread."
+      ]
+    },
+    {
+      "lines": [
+        "It seems they had forgotten too,",
+        "What their own eyes had viewed;",
+        "How with what scarce sufficed for few,",
+        "He fed a multitude."
+      ]
+    },
+    {
+      "lines": [
+        "If five small loaves, by his command,",
+        "Could many thousands serve;",
+        "Might they not trust his gracious hand,",
+        "That they should never starve?"
+      ]
+    },
+    {
+      "lines": [
+        "They oft his pow'r and love had known,",
+        "And doubtless were to blame;",
+        "But we have reason good to own",
+        "That we are just the same."
+      ]
+    },
+    {
+      "lines": [
+        "How often has he brought relief,",
+        "And every want supplied!",
+        "Yet soon, again, our unbelief",
+        "Says, \"Can the Lord provide?\""
+      ]
+    },
+    {
+      "lines": [
+        "Be thankful for one loaf today,",
+        "Though that be all your store;",
+        "Tomorrow, if you trust and pray,",
+        "Shall timely bring you more."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:94"
+}

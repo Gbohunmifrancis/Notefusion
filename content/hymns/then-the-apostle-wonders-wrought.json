@@ -1,0 +1,95 @@
+{
+  "title": "Then the Apostle Wonders Wrought",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Then the Apostle Wonders Wrought in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 124, “The exorcists. Acts 19:13-16”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Then the a-pos-tle won-ders wrought, And healed the sick, in Je-sus' name; The sons of Sce-va vain-ly thought That they had pow'r to do the fame.",
+  "verses": [
+    {
+      "lines": [
+        "Then the apostle wonders wrought,",
+        "And healed the sick, in Jesus' name;",
+        "The sons of Sceva vainly thought",
+        "That they had pow'r to do the fame."
+      ]
+    },
+    {
+      "lines": [
+        "On one possessed they tried their art,",
+        "And naming Jesus preached by Paul,",
+        "They charged the spirit to depart",
+        "Expecting he'd obey their call."
+      ]
+    },
+    {
+      "lines": [
+        "The spirit answered, with a mock,",
+        "\"Jesus I know; and Paul I know;",
+        "I must have gone if Paul had spoke;",
+        "But who are ye that bid me go?\""
+      ]
+    },
+    {
+      "lines": [
+        "With fury then the man he filled,",
+        "Who on the poor pretenders flew;",
+        "Naked and wounded, almost killed,",
+        "They fled in all the peoples' view."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus! that name, pronounced by faith,",
+        "Is full of wonder-working pow'r;",
+        "It conquers Satan, sin and death,",
+        "And cheers in trouble's darkest hour."
+      ]
+    },
+    {
+      "lines": [
+        "But they, who are not born again,",
+        "Know nothing of it but the sound;",
+        "They do but take his name in vain",
+        "When most their zeal and pains abound."
+      ]
+    },
+    {
+      "lines": [
+        "Satan their vain attempts derides,",
+        "Whether they talk, or pray, or preach;",
+        "Long as the love of sin abides,",
+        "His pow'r is safe beyond their reach."
+      ]
+    },
+    {
+      "lines": [
+        "But you, believers, may rejoice,",
+        "Satan well knows your mighty Friend;",
+        "He trembles at your Savior's voice,",
+        "And owns he cannot gain his end."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:124"
+}

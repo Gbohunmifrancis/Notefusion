@@ -1,0 +1,79 @@
+{
+  "title": "My Song Shall Bless the Lord of All",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "My Song Shall Bless the Lord of All in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 38, “Jehovah-Jesus”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "My song shall bless the Lord of all, My praise shall climb to his a-bode; Thee, Sa-vior, by that name I call, The great Su-preme, the might-y God.",
+  "verses": [
+    {
+      "lines": [
+        "My song shall bless the Lord of all,",
+        "My praise shall climb to his abode;",
+        "Thee, Savior, by that name I call,",
+        "The great Supreme, the mighty God."
+      ]
+    },
+    {
+      "lines": [
+        "Without beginning, or decline,",
+        "Object of faith, and not of sense;",
+        "Eternal ages saw him shine,",
+        "He shines eternal ages hence."
+      ]
+    },
+    {
+      "lines": [
+        "As much, when in the manger laid,",
+        "Almighty ruler of the sky;",
+        "As when the six days' works he made,",
+        "Filled all the morning-stars with joy."
+      ]
+    },
+    {
+      "lines": [
+        "Of all the crowns Jehovah bears,",
+        "Salvation is his dearest claim;",
+        "That gracious sound well-pleased he hears,",
+        "And owns Emmanuel for his name."
+      ]
+    },
+    {
+      "lines": [
+        "A cheerful confidence I feel,",
+        "My well-placed hopes with joy I see;",
+        "My bosom glows with heav'nly zeal",
+        "To worship him who died for me."
+      ]
+    },
+    {
+      "lines": [
+        "As man, he pities my complaint,",
+        "His pow'r and truth are all divine;",
+        "He will not fail, he cannot faint,",
+        "Salvation's sure, and must be mine."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:38"
+}

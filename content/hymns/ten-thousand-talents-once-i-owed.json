@@ -1,0 +1,87 @@
+{
+  "title": "Ten Thousand Talents Once I Owed",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Ten Thousand Talents Once I Owed in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 67, “The happy debtor”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Ten thou-sand tal-ents once I owed, And noth-ing had to pay; But Je-sus freed me from the load, And washed my debt a-way.",
+  "verses": [
+    {
+      "lines": [
+        "Ten thousand talents once I owed,",
+        "And nothing had to pay;",
+        "But Jesus freed me from the load,",
+        "And washed my debt away."
+      ]
+    },
+    {
+      "lines": [
+        "Yet since the Lord forgave my sin,",
+        "And blotted out my score;",
+        "Much more indebted I have been,",
+        "Than e'er I was before."
+      ]
+    },
+    {
+      "lines": [
+        "My guilt is cancelled quite, I know,",
+        "And satisfaction made;",
+        "But the vast debt of love I owe,",
+        "Can never be repaid."
+      ]
+    },
+    {
+      "lines": [
+        "The love I owe for sin forgiv'n,",
+        "For power to believe,",
+        "For present peace, and promised heav'n,",
+        "No angel can conceive."
+      ]
+    },
+    {
+      "lines": [
+        "That love of thine! thou sinner's Friend!",
+        "Witness thy bleeding heart!",
+        "My little all can ne'er extend",
+        "To pay a thousandth part."
+      ]
+    },
+    {
+      "lines": [
+        "Nay more, the poor returns I make",
+        "I first from thee obtain;",
+        "And 'tis of grace, that thou wilt take",
+        "Such poor returns again."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis well--it shall my glory be",
+        "(Let who will boast their store)",
+        "In time and to eternity,",
+        "To owe thee more and more."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:67"
+}

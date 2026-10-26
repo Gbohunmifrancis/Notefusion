@@ -1,0 +1,95 @@
+{
+  "title": "Jesus, to What Didst Thou Submit",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Jesus, to What Didst Thou Submit in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 111, “The woman of Samaria. Jn 4:28”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus, to what didst thou sub-mit To save thy dear bought flock from hell! Like a pour trav'l-ler see him sit, A-thirst, and wea-ry, by the well.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, to what didst thou submit",
+        "To save thy dear-bought flock from hell!",
+        "Like a pour trav'ller see him sit,",
+        "Athirst, and weary, by the well."
+      ]
+    },
+    {
+      "lines": [
+        "The woman who for water came,",
+        "(What great events on small depend)",
+        "Then learnt the glory of his name,",
+        "The Well of life, the sinner's Friend!"
+      ]
+    },
+    {
+      "lines": [
+        "Taught from her birth to hate the Jews,",
+        "And filled with party-pride; at first",
+        "Her zeal induced her to refuse",
+        "Water, to quench the Savior's thirst."
+      ]
+    },
+    {
+      "lines": [
+        "But soon she knew the gift of God,",
+        "And Jesus, whom she scorned before,",
+        "Unasked, that drink on her bestowed,",
+        "Which whoso tastes shall thirst no more."
+      ]
+    },
+    {
+      "lines": [
+        "His words her prejudice removed,",
+        "Her sin she felt, relief she found;",
+        "She saw and heard, believed and loved,",
+        "And ran to tell her neighbors round."
+      ]
+    },
+    {
+      "lines": [
+        "O come, this wondrous man behold!",
+        "The promised Savior! this is he,",
+        "Whom ancient prophecies foretold,",
+        "Born, from our guilt to set us free."
+      ]
+    },
+    {
+      "lines": [
+        "Like her, in ignorance content,",
+        "I worshipped long I knew not what;",
+        "Like her, on other things intent,",
+        "I found him, when I sought him not."
+      ]
+    },
+    {
+      "lines": [
+        "He told me all that e'er I did,",
+        "And told me all was pardoned too;",
+        "And now, like her, as he has bid,",
+        "I live to point him out to you."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:111"
+}

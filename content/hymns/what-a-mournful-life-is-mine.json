@@ -1,0 +1,103 @@
+{
+  "title": "What a Mournful Life Is Mine",
+  "tune": "st-bees",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "What a Mournful Life Is Mine in Tonic Solfa to ST. BEES, doh is Ab: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 51, “Dwelling in Mesech. Ps 120:5-7”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to ST. BEES; any other Sevens tune fits them as well."
+  ],
+  "underlay": "What a mourn-ful life is mine, Fill with cross-es, pains and cares! Ev-ery work de-filed with sin, Ev-ery step be-set with snares!",
+  "verses": [
+    {
+      "lines": [
+        "What a mournful life is mine,",
+        "Fill with crosses, pains and cares!",
+        "Every work defiled with sin,",
+        "Every step beset with snares!"
+      ]
+    },
+    {
+      "lines": [
+        "If alone I pensive fit,",
+        "I myself can hardly bear;",
+        "If I pass along the street,",
+        "Sin and riot triumph there."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus! how my heart is pained,",
+        "How it mourns for souls deceived!",
+        "When I hear thy name profaned,",
+        "When I see thy Spirit grieved!"
+      ]
+    },
+    {
+      "lines": [
+        "When thy children's griefs I view,",
+        "Their distress becomes my own;",
+        "All I hear, or see, or do,",
+        "Makes me tremble, weep and groan."
+      ]
+    },
+    {
+      "lines": [
+        "Mourning thus I long had been,",
+        "When I heard my Savior's voice;",
+        "Thou hast cause to mourn for sin,",
+        "But in me thou may'st rejoice.\""
+      ]
+    },
+    {
+      "lines": [
+        "This kind word dispelled my grief,",
+        "Put to silence my complaints;",
+        "Though of sinners I am chief,",
+        "He his ranked me with his saints."
+      ]
+    },
+    {
+      "lines": [
+        "Though constrained to dwell a while",
+        "Where the wicked strive and brawl;",
+        "Let them frown; so he but smile,",
+        "Heav'n will make amends for all."
+      ]
+    },
+    {
+      "lines": [
+        "There, believers, we shall rest,",
+        "Free from sorrow, sin and fears;",
+        "Nothing there our peace molests,",
+        "Through eternal rounds of years."
+      ]
+    },
+    {
+      "lines": [
+        "Let us then the fight endure,",
+        "See our Captain looking down;",
+        "He will make the conquest sure,",
+        "And bestow the promised crown."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. BEES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:51"
+}

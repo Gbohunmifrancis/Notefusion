@@ -1,0 +1,95 @@
+{
+  "title": "When a Black Overspreading Cloud",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "When a Black Overspreading Cloud in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 83, “Thunder”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When a black o-ver-spread-ing cloud Has dark-'ned all the air; And peals of thun-der roar-ing loud Pro-claim the tem-pest near.",
+  "verses": [
+    {
+      "lines": [
+        "When a black overspreading cloud",
+        "Has dark'ned all the air;",
+        "And peals of thunder roaring loud",
+        "Proclaim the tempest near."
+      ]
+    },
+    {
+      "lines": [
+        "Then guilt and fear, the fruits of sin,",
+        "The sinner oft pursue;",
+        "A louder storm is heard within,",
+        "And conscience thunders too."
+      ]
+    },
+    {
+      "lines": [
+        "The law a fiery language speaks,",
+        "His danger he perceives;",
+        "Like Satan, who his ruin seeks,",
+        "He trembles and believes."
+      ]
+    },
+    {
+      "lines": [
+        "But when the sky serene appears,",
+        "And thunders roll no more;",
+        "He soon forgets his vows and fears,",
+        "Just as he did before."
+      ]
+    },
+    {
+      "lines": [
+        "But whither shall the sinner flee,",
+        "When nature's mighty frame,",
+        "The pond'rous earth, and air, and sea,",
+        "Shall all dissolve in flame?"
+      ]
+    },
+    {
+      "lines": [
+        "Amazing day! it comes apace!",
+        "The Judge is hasting down!",
+        "Will sinners bear to see his face,",
+        "Or stand before his frown?"
+      ]
+    },
+    {
+      "lines": [
+        "Lord, let thy mercy find a way",
+        "To touch each stubborn heart",
+        "That they may never hear thee say,",
+        "\"Ye cursed ones depart.\""
+      ]
+    },
+    {
+      "lines": [
+        "Believers, you may well rejoice!",
+        "The thunders loudest strains",
+        "Should be to you a welcome voice,",
+        "That tells you, \"Jesus Reigns!\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:83"
+}

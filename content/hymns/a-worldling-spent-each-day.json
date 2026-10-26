@@ -1,0 +1,101 @@
+{
+  "title": "A Worldling Spent Each Day",
+  "tune": "darwall",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "A Worldling Spent Each Day in Tonic Solfa to DARWALL, doh is D: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 105, “The rich man and Lazarus. Lk 16:19-25”.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.8.8), to be sung to any tune of that metre. This page sets them to DARWALL; any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "A World-ling spent each day In lux-u-ry and state; While a be-liev-er lay, A beg-gar at his gate: Think not the Lord'S ap-point-ments strange, Death made a great and last-ing change.",
+  "verses": [
+    {
+      "lines": [
+        "A Worldling spent each day",
+        "In luxury and state;",
+        "While a believer lay,",
+        "A beggar at his gate:",
+        "Think not the Lord'S appointments strange,",
+        "Death made a great and lasting change."
+      ]
+    },
+    {
+      "lines": [
+        "Death brought the saint release",
+        "From want, disease, and scorn;",
+        "And to the land of peace,",
+        "His soul, by angels borne,",
+        "In Abraham's bosom safely placed,",
+        "Enjoys an everlasting feast."
+      ]
+    },
+    {
+      "lines": [
+        "The rich man also died,",
+        "And in a moment fell",
+        "From all his pomp and pride",
+        "Into the flames of hell:",
+        "The beggar's bliss from far beheld,",
+        "His soul with double anguish filled."
+      ]
+    },
+    {
+      "lines": [
+        "\"O Abram send, he cries,",
+        "(But his request was vain)",
+        "The beggar from the skies",
+        "To mitigate my pain!",
+        "One drop of water I entreat,",
+        "To soothe my tongue's tormenting heat.\""
+      ]
+    },
+    {
+      "lines": [
+        "Let all who worldly pelf,",
+        "And worldly spirits have,",
+        "Observe, each for himself,",
+        "The answer Abram gave:",
+        "\"Remember, thou wast filled with good,",
+        "While the poor beggar pined for food."
+      ]
+    },
+    {
+      "lines": [
+        "Neglected at thy door",
+        "With tears he begged his bread;",
+        "But now, he weeps no more,",
+        "His griefs and pains are fled:",
+        "His joys eternally will flow,",
+        "While thine expire in endless woe.\""
+      ]
+    },
+    {
+      "lines": [
+        "Lord, make us truly wise,",
+        "To choose thy peoples' lot;",
+        "And earthly joys despise,",
+        "Which soon will be forgot:",
+        "The greatest evil we can fear,",
+        "Is to possess our portion here!"
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to DARWALL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:105"
+}

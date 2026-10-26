@@ -1,0 +1,79 @@
+{
+  "title": "As Once for Jonah, So the Lord",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "As Once for Jonah, So the Lord in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 75, “The gourd. Jonah 4:7”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "As once for Jon-ah, so the Lord To soothe and cheer my mourn-ful hours, Pre-pared for me a pleas-ing gourd, Cool was its shade, and sweet its flow'rs.",
+  "verses": [
+    {
+      "lines": [
+        "As once for Jonah, so the Lord",
+        "To soothe and cheer my mournful hours,",
+        "Prepared for me a pleasing gourd,",
+        "Cool was its shade, and sweet its flow'rs."
+      ]
+    },
+    {
+      "lines": [
+        "To prize his gift was surely right;",
+        "But through the folly of my heart,",
+        "It hid the Giver from my sight,",
+        "And soon my joy was changed to smart."
+      ]
+    },
+    {
+      "lines": [
+        "While I admired its beauteous form,",
+        "Its pleasant shade and graceful fruit;",
+        "The Lord, displeased, sent forth a worm,",
+        "Unseen, to prey upon the root."
+      ]
+    },
+    {
+      "lines": [
+        "I trembled when I saw it fade,",
+        "But guilt restrained the murm'ring word;",
+        "My folly I confessed, and prayed,",
+        "Forgive my sin, and spare my gourd."
+      ]
+    },
+    {
+      "lines": [
+        "His wondrous love can ne'er be told,",
+        "He heard me and relieved my pain;",
+        "His word the threat'ning worm controlled,",
+        "And bid my gourd revive again."
+      ]
+    },
+    {
+      "lines": [
+        "Now, Lord, my gourd is mine no more,",
+        "'Tis thine, who only couldst it raise;",
+        "The idol of my heart before,",
+        "Henceforth shall flourish to thy praise."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:75"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "When Israel by Divine Command",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "When Israel by Divine Command in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 58, “Supplies in the wilderness”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When Is-rael by di-vine com-mand The path-less des-ert trod; They found, though 'twas a bar-ren land, A sure re-source in God.",
+  "verses": [
+    {
+      "lines": [
+        "When Israel by divine command",
+        "The pathless desert trod;",
+        "They found, though 'twas a barren land,",
+        "A sure resource in God."
+      ]
+    },
+    {
+      "lines": [
+        "A cloudy pillar marked their road,",
+        "And screened them from the heat;",
+        "From the hard rocks their water flowed,",
+        "And Manna was their meat."
+      ]
+    },
+    {
+      "lines": [
+        "Like them we have a rest in view,",
+        "Secure from adverse pow'rs;",
+        "Like them we pass a desert too,",
+        "But Israel's God is ours."
+      ]
+    },
+    {
+      "lines": [
+        "Yes, in this barren wilderness",
+        "He is to us the same;",
+        "By his appointed means of grace,",
+        "As once he was to them."
+      ]
+    },
+    {
+      "lines": [
+        "His word a light before us spreads",
+        "By which our path we see;",
+        "His love a banner o'er our head,",
+        "From harm preserves us free."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, 'tis enough; I ask no more,",
+        "These blessings are divine;",
+        "I envy not the worldling's store,",
+        "If Christ and heav'n are mine."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:58"
+}

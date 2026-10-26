@@ -1,0 +1,79 @@
+{
+  "title": "Heal Us, Emmanuel, Here We Are",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Heal Us, Emmanuel, Here We Are in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 14, “Jehovah-Rophi, I am the Lord that healeth thee. Ex 15”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Heal us, Em-man-uel, here we are, Wait-ing to feel thy touch; Deep woun-ded souls to thee re-pair, And, Sa-vior we are such.",
+  "verses": [
+    {
+      "lines": [
+        "Heal us, Emmanuel, here we are,",
+        "Waiting to feel thy touch;",
+        "Deep wounded souls to thee repair,",
+        "And, Savior we are such."
+      ]
+    },
+    {
+      "lines": [
+        "Our faith is feeble we confess,",
+        "We faintly trust thy word;",
+        "But wilt thou pity us the less?",
+        "Be that far from thee, Lord!"
+      ]
+    },
+    {
+      "lines": [
+        "Remember him who once applied",
+        "With trembling for relief;",
+        "\"Lord, I believe, with tears he cried,",
+        "O help my unbelief.\""
+      ]
+    },
+    {
+      "lines": [
+        "She too, who touched thee in the press,",
+        "And healing virtue stole;",
+        "Was answered, \"Daughter, go in peace,",
+        "Thy faith hath made thee whole.\""
+      ]
+    },
+    {
+      "lines": [
+        "Concealed amid the gath'ring throng,",
+        "She would have shunned thy view;",
+        "And if her faith was firm and strong,",
+        "Had strong misgivings too."
+      ]
+    },
+    {
+      "lines": [
+        "Like her, with hopes and fears, we come,",
+        "To touch thee if we may;",
+        "O! send us not despairing home,",
+        "Send none unhealed away."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:14"
+}

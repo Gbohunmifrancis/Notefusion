@@ -1,0 +1,79 @@
+{
+  "title": "Once, While We Aimed at Zion's Songs",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Once, While We Aimed at Zion's Songs in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 48, “Prayer for the continuance of the gospel”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Once, while we aimed at Zi-on's songs, A sud-den mourn-ing checked our tongues! Then we were called to sow in tears, The seeds of joy for fu-ture years.",
+  "verses": [
+    {
+      "lines": [
+        "Once, while we aimed at Zion's songs,",
+        "A sudden mourning checked our tongues!",
+        "Then we were called to sow in tears,",
+        "The seeds of joy for future years."
+      ]
+    },
+    {
+      "lines": [
+        "Oft as that memorable hour",
+        "The changing year brings round again;",
+        "We meet to praise the love and pow'r",
+        "Which heard our cries, and eased our pain."
+      ]
+    },
+    {
+      "lines": [
+        "Come, ye who trembled for the ark,",
+        "Unite in praise for answered prayer!",
+        "Did not the Lord our sorrows mark?",
+        "Did not our sighing reach his ear?"
+      ]
+    },
+    {
+      "lines": [
+        "Then smaller griefs were laid aside,",
+        "And all our cares summed up in one;",
+        "\"Let us but have thy word, we cried,",
+        "In other things, thy will be done.\""
+      ]
+    },
+    {
+      "lines": [
+        "Since he has granted our request,",
+        "And we still hear the gospel voice;",
+        "Although by many trials pressed,",
+        "In this we can, and will rejoice."
+      ]
+    },
+    {
+      "lines": [
+        "Though to our lot temptations fall,",
+        "Though pain and want, and cares annoy;",
+        "The precious gospel sweetens all,",
+        "And yields us med'cine, food, and joy."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:48"
+}

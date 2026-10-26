@@ -1,0 +1,95 @@
+{
+  "title": "With Satan, My Accuser Near",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "With Satan, My Accuser Near in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 77, “A brand plucked out of the fire. Zech 3:1-5”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "With Sa-tan, my ac-cu-ser near, My spir-it trem-bled when I saw The Lord in maj-es-ty ap-pear, And heard the lan-guage of his law.",
+  "verses": [
+    {
+      "lines": [
+        "With Satan, my accuser near,",
+        "My spirit trembled when I saw",
+        "The Lord in majesty appear,",
+        "And heard the language of his law."
+      ]
+    },
+    {
+      "lines": [
+        "In vain I wished and strove to hide",
+        "The tattered filthy rags I wore;",
+        "While my fierce foe, insulting cried,",
+        "\"See what you trusted in before!\""
+      ]
+    },
+    {
+      "lines": [
+        "Struck dumb, and left without a plea,",
+        "I heard my gracious Savior say,",
+        "\"Know, Satan, I this sinner free,",
+        "I died to take his sins away."
+      ]
+    },
+    {
+      "lines": [
+        "This is a brand which I in love,",
+        "To save from wrath and sin design;",
+        "In vain thy accusations prove,",
+        "I answer all, and claim him mine.\""
+      ]
+    },
+    {
+      "lines": [
+        "At his rebuke the tempter fled;",
+        "Then he removed my filthy dress;",
+        "\"Poor sinner take this robe, he said,",
+        "It is thy Savior's righteousness."
+      ]
+    },
+    {
+      "lines": [
+        "And see, a crown of life prepared!",
+        "That I might thus thy head adorn;",
+        "I thought no shame or suff'ring hard,",
+        "But wore, for thee, a crown of thorn.\""
+      ]
+    },
+    {
+      "lines": [
+        "O how I heard these gracious words!",
+        "They broke and healed my heart at once;",
+        "Constrained me to become the Lord's,",
+        "And all my idol-gods renounce."
+      ]
+    },
+    {
+      "lines": [
+        "Now, Satan, thou hast lost thy aim,",
+        "Against this brand thy threats are vain;",
+        "Jesus has plucked it from the flame,",
+        "And who shall put it in again?"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:77"
+}

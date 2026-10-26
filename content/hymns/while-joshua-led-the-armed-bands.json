@@ -1,0 +1,87 @@
+{
+  "title": "While Joshua Led the Armed Bands",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "While Joshua Led the Armed Bands in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 66, “Moses and Amalek February 27, 1778. Ex 17:9”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "While Jo-shu-a led the armed bands. Of Is-rael forth to war; Mo-ses a-part with lift-ed hands En-gaged in hum-ble prayer.",
+  "verses": [
+    {
+      "lines": [
+        "While Joshua led the armed bands.",
+        "Of Israel forth to war;",
+        "Moses apart with lifted hands",
+        "Engaged in humble prayer."
+      ]
+    },
+    {
+      "lines": [
+        "The armed bands had quickly failed,",
+        "And perished in the fight;",
+        "If Moses' prayer had not prevailed",
+        "To put the foes to flight."
+      ]
+    },
+    {
+      "lines": [
+        "When Moses' hands through weakness dropped,",
+        "The warriors fainted too;",
+        "Israel's success at once was stopped,",
+        "And Am'lek bolder grew."
+      ]
+    },
+    {
+      "lines": [
+        "A people, always prone to boast,",
+        "Were taught by this suspense,",
+        "That not a num'rous armed host,",
+        "But God was their defence."
+      ]
+    },
+    {
+      "lines": [
+        "We now of fleets and armies vaunt,",
+        "And ships and men prepare;",
+        "But men like Moses most we want,",
+        "To save the state by prayer."
+      ]
+    },
+    {
+      "lines": [
+        "Yet, Lord, we hope thou hast prepared",
+        "A hidden few today;",
+        "(The nation's secret strength and guard)",
+        "To weep, and mourn, and pray."
+      ]
+    },
+    {
+      "lines": [
+        "O hear their prayers and grant us aid,",
+        "Bid war and discord cease;",
+        "Heal the sad breach which sin has made,",
+        "And bless us all with peace."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:66"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "See, How Rude Winter's Icy Hand",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "See, How Rude Winter's Icy Hand in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 30, “Winter”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "See, how rude win-ter's i-cy hand Has stripped the trees, and sealed the ground! But spring shall soon his rage with-stand, And spread new beau-ties all a-round.",
+  "verses": [
+    {
+      "lines": [
+        "See, how rude winter's icy hand",
+        "Has stripped the trees, and sealed the ground!",
+        "But spring shall soon his rage withstand,",
+        "And spread new beauties all around."
+      ]
+    },
+    {
+      "lines": [
+        "My soul, a sharper winter mourns,",
+        "Barren and fruitless I remain;",
+        "When will the gentle spring return,",
+        "And bid my graces grow again?"
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, my glorious Sun arise!",
+        "'Tis thine, the frozen heart to move",
+        "O hush these storms and clear my skies,",
+        "And let me feel thy vital love!"
+      ]
+    },
+    {
+      "lines": [
+        "Dear Lord, regard my feeble cry,",
+        "I faint and droop till thou appear;",
+        "Wilt thou permit thy plant to die?",
+        "Must it be winter all the year?"
+      ]
+    },
+    {
+      "lines": [
+        "Be still, my soul, and wait his hour,",
+        "With humble prayer, and patient faith;",
+        "Till he reveals his gracious pow'r,",
+        "Repose on what his promise faith."
+      ]
+    },
+    {
+      "lines": [
+        "He, by whose all-commanding word,",
+        "Seasons this changing course maintain;",
+        "In every change a pledge affords,",
+        "That none shall seek his face in vain."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:30"
+}

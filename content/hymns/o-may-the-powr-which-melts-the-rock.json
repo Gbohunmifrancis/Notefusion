@@ -1,0 +1,95 @@
+{
+  "title": "O, May the Pow'r Which Melts the Rock",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "O, May the Pow'r Which Melts the Rock in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 65, “Confession and Prayer. December 13, 1776”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O, may the pow'r which melts the rock Be felt by all as-sem-bled here! Or else our ser-vice will but mock The God whom we pro-fess to fear!",
+  "verses": [
+    {
+      "lines": [
+        "O, may the pow'r which melts the rock",
+        "Be felt by all assembled here!",
+        "Or else our service will but mock",
+        "The God whom we profess to fear!"
+      ]
+    },
+    {
+      "lines": [
+        "Lord, while thy judgments shake the land,",
+        "Thy peoples' eyes are fixed on thee!",
+        "We own thy just, uplifted hand,",
+        "Which thousands cannot, will not see."
+      ]
+    },
+    {
+      "lines": [
+        "How long hast thou bestowed thy care",
+        "On this indulged ungrateful spot?",
+        "While other nations, far and near,",
+        "Have envied and admired our lot."
+      ]
+    },
+    {
+      "lines": [
+        "Here peace and liberty have dwelt,",
+        "The glorious gospel brightly shone;",
+        "And oft our enemies have felt",
+        "That God has made our cause his own."
+      ]
+    },
+    {
+      "lines": [
+        "But ah! both heav'n and earth have heard",
+        "Our vile requital of his love!",
+        "We, whom like children he has reared,",
+        "Rebels against his goodness prove."
+      ]
+    },
+    {
+      "lines": [
+        "His grace despised, his pow'r defied,",
+        "And legions of the blackest crimes,",
+        "Profaneness, riot, run, and pride,",
+        "Are signs that mark the present times."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord, displeased, has raised his rod;",
+        "Ah where are now the faithful few",
+        "Who tremble for the ark of God,",
+        "And know what Israel ought to do?"
+      ]
+    },
+    {
+      "lines": [
+        "Lord, hear thy people everywhere,",
+        "Who meet to mourn, confess and pray;",
+        "The nation and thy churches spare,",
+        "And let thy wrath be turned away."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:65"
+}

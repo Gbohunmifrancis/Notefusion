@@ -1,0 +1,95 @@
+{
+  "title": "Once Perishing in Blood I Lay",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Once Perishing in Blood I Lay in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 70, “Humbled and silenced by mercy. Ezek 16:64”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Once per-ish-ing in blood I lay, Crea-tures no help could give, But Je-sus passed me in the way, He saw, and bid me live.",
+  "verses": [
+    {
+      "lines": [
+        "Once perishing in blood I lay,",
+        "Creatures no help could give,",
+        "But Jesus passed me in the way,",
+        "He saw, and bid me live."
+      ]
+    },
+    {
+      "lines": [
+        "Though Satan still his rule maintained,",
+        "And all his arts employed;",
+        "That mighty Word his rage restrained,",
+        "I could not be destroyed."
+      ]
+    },
+    {
+      "lines": [
+        "At length the time of love arrived",
+        "When I my Lord should know,",
+        "Then Satan, of his pow'r deprived,",
+        "Was forced to let me go."
+      ]
+    },
+    {
+      "lines": [
+        "O can I e'er that day forget",
+        "When Jesus kindly spoke!",
+        "\"Poor soul, my blood has paid thy debt,",
+        "And now I break thy yoke."
+      ]
+    },
+    {
+      "lines": [
+        "Henceforth I take thee for my own,",
+        "And give myself to thee;",
+        "Forsake the idols thou hast known,",
+        "And yield thyself to me.\""
+      ]
+    },
+    {
+      "lines": [
+        "Ah, worthless heart! it promised fair,",
+        "And said it would be thine;",
+        "I little thought it e'er would dare",
+        "Again with idols join."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, dost thou such backslidings heal,",
+        "And pardon all that's past?",
+        "Sure, if I am not made of steel,",
+        "Thou hast prevailed at last."
+      ]
+    },
+    {
+      "lines": [
+        "My tongue, which rashly spoke before,",
+        "This mercy will restrain;",
+        "Surely I now shall boast no more,",
+        "Nor censure, nor complain."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:70"
+}

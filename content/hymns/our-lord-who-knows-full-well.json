@@ -1,0 +1,103 @@
+{
+  "title": "Our Lord, Who Knows Full Well",
+  "tune": "franconia",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Our Lord, Who Knows Full Well in Tonic Solfa to FRANCONIA, doh is Eb: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 106, “The importunate widow Lk 18:1-7”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to FRANCONIA; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Our Lord, who knows full well The heart of ev-ery saint; In-vites us, by a pa-ra-ble, To pray and nev-er faint.",
+  "verses": [
+    {
+      "lines": [
+        "Our Lord, who knows full well",
+        "The heart of every saint;",
+        "Invites us, by a parable,",
+        "To pray and never faint."
+      ]
+    },
+    {
+      "lines": [
+        "He bows his gracious ear,",
+        "We never plead in vain;",
+        "Yet we must wait, till he appear,",
+        "And pray, and pray again."
+      ]
+    },
+    {
+      "lines": [
+        "Though unbelief suggest,",
+        "Why should we longer wait?",
+        "He bids us never give him rest,",
+        "But be importunate."
+      ]
+    },
+    {
+      "lines": [
+        "'Twas thus a widow poor,",
+        "Without support or friend,",
+        "Beset the unjust judge's door,",
+        "And gained, at last, her end."
+      ]
+    },
+    {
+      "lines": [
+        "For her he little cared,",
+        "As little for the laws;",
+        "Nor God, nor man, did he regard,",
+        "Yet he espoused her cause."
+      ]
+    },
+    {
+      "lines": [
+        "She urged him day and night,",
+        "Would no denial take;",
+        "At length he said, \"I'll do her right,",
+        "For my own quiet sake.\""
+      ]
+    },
+    {
+      "lines": [
+        "And shall not Jesus hear",
+        "His chosen, when they cry?",
+        "Yes, though he may awhile forbear,",
+        "He'll help them from on high."
+      ]
+    },
+    {
+      "lines": [
+        "His nature, truth and love,",
+        "Engage him on their side;",
+        "When they are grieved, his bowels move,",
+        "And can they be denied?"
+      ]
+    },
+    {
+      "lines": [
+        "Then let us earnest be,",
+        "And never faint in prayer;",
+        "He loves our importunity,",
+        "And makes our cause his care."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to FRANCONIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:106"
+}

@@ -1,0 +1,91 @@
+{
+  "title": "How Lost Was My Condition",
+  "tune": "aurelia",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "How Lost Was My Condition in Tonic Solfa to AURELIA, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 62, “The good Physician”.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to AURELIA; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "How lost was my con-di-tion Till Je-sus made me whole! There is but one Phy-si-cian Can cure a sin sick soul. Next door to death he found me, And snatched me from the grave, To tell to all a-round me, His won-drous pow'r to save.",
+  "verses": [
+    {
+      "lines": [
+        "How lost was my condition",
+        "Till Jesus made me whole!",
+        "There is but one Physician",
+        "Can cure a sin-sick soul.",
+        "Next door to death he found me,",
+        "And snatched me from the grave,",
+        "To tell to all around me,",
+        "His wondrous pow'r to save."
+      ]
+    },
+    {
+      "lines": [
+        "The worst of all diseases",
+        "Is light, compared with sin;",
+        "On every part it seizes,",
+        "But rages most within:",
+        "'Tis palsy, plague, and fever,",
+        "And madness--all combined;",
+        "And none but a believer",
+        "The least relief can find."
+      ]
+    },
+    {
+      "lines": [
+        "From men great skill professing",
+        "I thought a cure to gain;",
+        "But this proved more distressing,",
+        "And added to my pain:",
+        "Some said that nothing ailed me,",
+        "Some gave me up for lost;",
+        "Thus every refuge failed me,",
+        "And all my hopes were crossed."
+      ]
+    },
+    {
+      "lines": [
+        "At length this great Physician,",
+        "How matchless is his grace!",
+        "Accepted my petition,",
+        "And undertook my case:",
+        "First gave me sight to view him,",
+        "For sin my eyes had sealed;",
+        "Then bid me look unto him,",
+        "I looked, and I was healed."
+      ]
+    },
+    {
+      "lines": [
+        "A dying, risen Jesus,",
+        "Seen by the eye of faith;",
+        "At once from danger frees us,",
+        "And saves the soul from death:",
+        "Come then to this Physician,",
+        "His help he'll freely give;",
+        "He makes no hard condition,",
+        "'Tis only--look and live."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to AURELIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:62"
+}

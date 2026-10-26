@@ -1,0 +1,91 @@
+{
+  "title": "Pensive, Doubting, Fearful Heart",
+  "tune": "martyn",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Pensive, Doubting, Fearful Heart in Tonic Solfa to MARTYN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 63, “To the afflicted, tossed with tempests and not comforted. Isa 44:5-11”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to MARTYN; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Pen-sive, doubt-ing, fear-ful heart, Hear what Christ the Sa-vior says; Ev-ery word should joy im-part, Change thy mourn-ing in-to praise: Yes, he speaks, and speaks to thee, May he help thee to be-lieve! Then thou pre-sent-ly wilt see, Thou hast lit-tle cause to grieve.",
+  "verses": [
+    {
+      "lines": [
+        "Pensive, doubting, fearful heart,",
+        "Hear what Christ the Savior says;",
+        "Every word should joy impart,",
+        "Change thy mourning into praise:",
+        "Yes, he speaks, and speaks to thee,",
+        "May he help thee to believe!",
+        "Then thou presently wilt see,",
+        "Thou hast little cause to grieve."
+      ]
+    },
+    {
+      "lines": [
+        "\"Fear thou not, nor be ashamed,",
+        "All thy sorrows soon shall end",
+        "I who heav'n and earth have framed,",
+        "Am thy husband and thy friend",
+        "I the High and Holy One,",
+        "Israel's God by all adored;",
+        "As thy Savior will be known,",
+        "Thy Redeemer and thy Lord."
+      ]
+    },
+    {
+      "lines": [
+        "For a moment I withdrew,",
+        "And thy heart was filled with pain;",
+        "But my mercies I'll renew,",
+        "Thou shalt soon rejoice again:",
+        "Though I scorn to hide my face,",
+        "Very soon my wrath shall cease;",
+        "'Tis but for a moment's space,",
+        "Ending in eternal peace."
+      ]
+    },
+    {
+      "lines": [
+        "When my peaceful bow appears",
+        "Painted on the wat'ry cloud;",
+        "'Tis to dissipate thy fears,",
+        "Lest the earth should be o'erflowed:",
+        "'Tis an emblem too of grace,",
+        "Of my cov'nant love a sign;",
+        "Though the mountains leave their place,",
+        "Thou shalt be for ever mine."
+      ]
+    },
+    {
+      "lines": [
+        "Though afflicted, tempest-tossed,",
+        "Comfortless awhile thou art,",
+        "Do not think thou canst be lost,",
+        "Thou art graven on my heart",
+        "All thy walls I will repair,",
+        "Thou shalt be rebuilt anew;",
+        "And in thee it shall appear,",
+        "What a God of love can do."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MARTYN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:63"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "Fix My Heart and Eyes on Thine",
+  "tune": "hollingside",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Fix My Heart and Eyes on Thine in Tonic Solfa to HOLLINGSIDE, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 66, “True happiness”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to HOLLINGSIDE; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Fix my heart and eyes on thine! What are oth-er ob-jects worth? But to see thy glo-ry shine, Is a heav'n be-gun on earth: Tri-fles can no lon-ger move, O, I tread on all be-side, When I feel my Sav-iour's love, And re-mem-ber how he died.",
+  "verses": [
+    {
+      "lines": [
+        "Fix my heart and eyes on thine!",
+        "What are other objects worth?",
+        "But to see thy glory shine,",
+        "Is a heav'n begun on earth:",
+        "Trifles can no longer move,",
+        "O, I tread on all beside,",
+        "When I feel my Saviour's love,",
+        "And remember how he died."
+      ]
+    },
+    {
+      "lines": [
+        "Now my search is at an end,",
+        "Now my wishes rove no more!",
+        "Thus my moments I would spend,",
+        "Love, and wonder, and adore:",
+        "Jesus, source of excellence!",
+        "All thy glorious love reveal!",
+        "Kingdoms shall not bribe me hence,",
+        "While this happiness I feel."
+      ]
+    },
+    {
+      "lines": [
+        "Take my heart, 'tis all thine own,",
+        "To thy will my spirit frame;",
+        "Thou shalt reign, and thou alone,",
+        "Over all I have, or am:",
+        "If a foolish thought shall dare",
+        "To rebel against thy word,",
+        "Slay it, Lord; and do not spare,",
+        "Let it feel thy Spirit's sword."
+      ]
+    },
+    {
+      "lines": [
+        "Making thus the Lord my choice,",
+        "I have nothing more to choose,",
+        "But to listen to thy voice,",
+        "And my will in thine to lose:",
+        "Thus, whatever may betide,",
+        "I shall safe and happy be;",
+        "Still content and satisfied,",
+        "Having all, in having thee."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to HOLLINGSIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:66"
+}

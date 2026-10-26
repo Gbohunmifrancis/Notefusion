@@ -1,0 +1,87 @@
+{
+  "title": "When Jesus Claims the Sinner's Heart",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "When Jesus Claims the Sinner's Heart in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 84, “Satan returning. Mt 12:43-45”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When Je-sus claims the sin-ner's heart, Where Sa-tan ruled be-fore; The e-vil spir-it must de-part, And dares re-turn no more.",
+  "verses": [
+    {
+      "lines": [
+        "When Jesus claims the sinner's heart,",
+        "Where Satan ruled before;",
+        "The evil spirit must depart,",
+        "And dares return no more."
+      ]
+    },
+    {
+      "lines": [
+        "But when he goes without constraint,",
+        "And wanders from his home;",
+        "Although withdrawn, 'tis but a feint,",
+        "He means again to come."
+      ]
+    },
+    {
+      "lines": [
+        "Some outward change perhaps is seen",
+        "If Satan quit the place;",
+        "But though the house seem swept and clean,",
+        "'Tis destitute of grace."
+      ]
+    },
+    {
+      "lines": [
+        "Except the Savior dwell and reign",
+        "Within the sinner's mind;",
+        "Satan, when he returns again,",
+        "Will easy entrance find."
+      ]
+    },
+    {
+      "lines": [
+        "With rage and malice sevenfold,",
+        "He then resumes his sway;",
+        "No more by checks to be controlled,",
+        "No more to go away."
+      ]
+    },
+    {
+      "lines": [
+        "The sinner's former state was bad,",
+        "But worse the latter far;",
+        "He lives possessed, and blind, and mad,",
+        "And dies in dark despair."
+      ]
+    },
+    {
+      "lines": [
+        "Lord save me from this dreadful end!",
+        "And from this heart of mine,",
+        "O drive and keep away the fiend",
+        "Who fears no voice but thine."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:84"
+}

@@ -1,0 +1,87 @@
+{
+  "title": "My Harp Untuned, and Laid Aside",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "My Harp Untuned, and Laid Aside in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 52, “Hoping for a revival”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "My harp un-tuned, and laid a-side, (To cheer-ful hours the harp be-longs) My cru-el foes, in-sult-ing cried, \"Come, sing us one of Zi-on's songs.\"",
+  "verses": [
+    {
+      "lines": [
+        "My harp untuned, and laid aside,",
+        "(To cheerful hours the harp belongs)",
+        "My cruel foes, insulting cried,",
+        "\"Come, sing us one of Zion's songs.\""
+      ]
+    },
+    {
+      "lines": [
+        "Alas! when sinners, blindly bold,",
+        "At Zion scoff, and Zion's King;",
+        "When zeal declines, and love grows cold,",
+        "Is this a day for me to sing?"
+      ]
+    },
+    {
+      "lines": [
+        "Time was, whene'er the saints I met,",
+        "With joy and praise my bosom glowed;",
+        "But now, like Eli, sad I sit,",
+        "And tremble for the ark of God."
+      ]
+    },
+    {
+      "lines": [
+        "While thus to grief my soul gave way,",
+        "To see the work of God decline;",
+        "Methought I heard my Savior say,",
+        "\"Dismiss thy fears, the ark is mine."
+      ]
+    },
+    {
+      "lines": [
+        "Though for a time I hide my face,",
+        "Rely upon my love and pow'r;",
+        "Still wrestle at a throne of grace,",
+        "And wait for a reviving hour."
+      ]
+    },
+    {
+      "lines": [
+        "Take down thy long neglected harp,",
+        "I've seen thy tears, and heard thy prayer;",
+        "The winter season has been sharp,",
+        "But spring shall all its wastes repair.\""
+      ]
+    },
+    {
+      "lines": [
+        "Lord, I obey, my hopes revive,",
+        "Come join with me, ye saints, and sing;",
+        "Our foes in vain against us strive;",
+        "For God will help and healing bring."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:52"
+}

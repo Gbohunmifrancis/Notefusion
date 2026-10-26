@@ -1,0 +1,87 @@
+{
+  "title": "Let Us Adore the Grace That Seeks",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Let Us Adore the Grace That Seeks in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 21, “The Lord's call to his children. 2Cor 6:17,18”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Let us a-dore the grace that seeks To draw our hearts a-bove! At-tend, 'tis God the Sa-vior speaks, And ev-ery word is love.",
+  "verses": [
+    {
+      "lines": [
+        "Let us adore the grace that seeks",
+        "To draw our hearts above!",
+        "Attend, 'tis God the Savior speaks,",
+        "And every word is love."
+      ]
+    },
+    {
+      "lines": [
+        "Though filled with awe, before his throne",
+        "Each angel veils his face;",
+        "He claims a people for his own",
+        "Amongst our sinful race."
+      ]
+    },
+    {
+      "lines": [
+        "Careless, awhile, they live in sin,",
+        "Enslaved to Satan's pow'r;",
+        "But they obey the call divine,",
+        "In his appointed hour."
+      ]
+    },
+    {
+      "lines": [
+        "Come forth, he says, no more pursue",
+        "The paths that lead to death;",
+        "Look up, a bleeding Savior view,",
+        "Look, and be saved by faith."
+      ]
+    },
+    {
+      "lines": [
+        "My sons and daughters you shall be",
+        "Through the atoning blood;",
+        "And you shall claim, and find, in me,",
+        "A Father, and a God.\""
+      ]
+    },
+    {
+      "lines": [
+        "Lord, speak these words to every heart,",
+        "By thine all-powerful voice;",
+        "That we may now from sin depart,",
+        "And make thy love our choice."
+      ]
+    },
+    {
+      "lines": [
+        "If now, we learn to seek thy face",
+        "By Christ, the living way;",
+        "We'll praise thee for this hour of grace,",
+        "Through an eternal day."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:21"
+}

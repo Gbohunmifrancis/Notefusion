@@ -1,0 +1,95 @@
+{
+  "title": "While I Lived Without the Lord",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "While I Lived Without the Lord in Tonic Solfa to HEINLEIN, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 55, “Freedom from care”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to HEINLEIN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "While I lived with-out the Lord, (If I might be said to live) Noth-ing could re-lief af-ford, Noth-ing sat-is-fac-tion give.",
+  "verses": [
+    {
+      "lines": [
+        "While I lived without the Lord,",
+        "(If I might be said to live)",
+        "Nothing could relief afford,",
+        "Nothing satisfaction give."
+      ]
+    },
+    {
+      "lines": [
+        "Empty hopes and groundless fear,",
+        "Moved by turns my anxious mind;",
+        "Like a feather in the air,",
+        "Made the sport of every wind."
+      ]
+    },
+    {
+      "lines": [
+        "Now, I see, whate'er betide,",
+        "All is well if Christ be mine;",
+        "He has promised to provide,",
+        "I have only to resign."
+      ]
+    },
+    {
+      "lines": [
+        "When a sense of sin and thrall,",
+        "Forced me to the sinner's Friend;",
+        "He engaged to manage all,",
+        "By the way, and to the end."
+      ]
+    },
+    {
+      "lines": [
+        "\"Cast, he said, on me thy care,",
+        "'Tis enough that I am nigh;",
+        "I will all thy burdens bear,",
+        "I will all thy wants supply."
+      ]
+    },
+    {
+      "lines": [
+        "Simply follow as I lead,",
+        "Do not reason but believe;",
+        "Call on me in time of need,",
+        "Thou shalt surely help receive.\""
+      ]
+    },
+    {
+      "lines": [
+        "Lord I would, I do, submit,",
+        "Gladly yield my all to thee;",
+        "What thy wisdom sees most fit,",
+        "Must be, surely, best for me."
+      ]
+    },
+    {
+      "lines": [
+        "Only when the way is rough,",
+        "And the coward flesh would start,",
+        "Let thy promise and thy love,",
+        "Cheer and animate my heart."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to HEINLEIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:55"
+}

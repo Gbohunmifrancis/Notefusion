@@ -1,0 +1,103 @@
+{
+  "title": "See Aaron, God's Anointed Priest",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "See Aaron, God's Anointed Priest in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 19, “The true Aaron Lev 8:7-9”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "See Aa-ron, God's a-noint-ed priest, With-in the veil ap-pear; In robes of mys-tic mean-ing dressed, Pre-sent-ing Is-rael's prayer.",
+  "verses": [
+    {
+      "lines": [
+        "See Aaron, God's anointed priest,",
+        "Within the veil appear;",
+        "In robes of mystic meaning dressed,",
+        "Presenting Israel's prayer."
+      ]
+    },
+    {
+      "lines": [
+        "The plate of gold which crowns his brows,",
+        "His holiness describes;",
+        "His breast displays, in shining rows,",
+        "The names of all the tribes."
+      ]
+    },
+    {
+      "lines": [
+        "With the atoning blood he stands,",
+        "Before the mercy-seat;",
+        "And clouds of incense from his hands,",
+        "Arise with odor sweet."
+      ]
+    },
+    {
+      "lines": [
+        "Urim and Thummim near his heart,",
+        "In rich engravings worn;",
+        "The sacred light of truth impart,",
+        "To teach and to adorn."
+      ]
+    },
+    {
+      "lines": [
+        "Through him the eye of faith descries,",
+        "A greater Priest than he;",
+        "Thus Jesus pleads above the skies,",
+        "For you, my friends, and me."
+      ]
+    },
+    {
+      "lines": [
+        "He bears the names of all his saints,",
+        "Deep on his heart engraved;",
+        "Attentive to the state and wants",
+        "Of all his love has saved."
+      ]
+    },
+    {
+      "lines": [
+        "In him a holiness complete,",
+        "Light and perfections shine;",
+        "And wisdom, grace, and glory meet;",
+        "A Savior all divine."
+      ]
+    },
+    {
+      "lines": [
+        "The blood, which as a Priest he bears",
+        "For sinners, is his own",
+        "The incense of his prayers and tears",
+        "Perfume the holy throne."
+      ]
+    },
+    {
+      "lines": [
+        "In him my weary soul has rest,",
+        "Though I am weak and vile",
+        "I read my name upon his breast,",
+        "And see the Father smile."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:19"
+}

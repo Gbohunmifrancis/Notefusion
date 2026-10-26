@@ -1,0 +1,87 @@
+{
+  "title": "How Soon the Savior's Gracious Call",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "How Soon the Savior's Gracious Call in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 79, “Not in word, but in power”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "How soon the Sa-vior's gra-cious call, Dis-armed the rage of bloo-dy Saul! Je-sus, the knowl-edge of thy name, Chan-ges the li-on to a lamb!",
+  "verses": [
+    {
+      "lines": [
+        "How soon the Savior's gracious call,",
+        "Disarmed the rage of bloody Saul!",
+        "Jesus, the knowledge of thy name,",
+        "Changes the lion to a lamb!"
+      ]
+    },
+    {
+      "lines": [
+        "Zaccheus, when he knew the Lord,",
+        "What he had gained by wrong, restored;",
+        "And of the wealth he prized before,",
+        "He gave the half to feed the poor."
+      ]
+    },
+    {
+      "lines": [
+        "The woman who so vile had been,",
+        "When brought to weep o'er pardoned sin,",
+        "Was from her evil ways estranged,",
+        "And showed that grace her heart had changed."
+      ]
+    },
+    {
+      "lines": [
+        "And can we think the pow'r of grace",
+        "Is lost, by change of time and place?",
+        "Then it was mighty, all allow,",
+        "And is it but a notion now?"
+      ]
+    },
+    {
+      "lines": [
+        "Can they whom pride and passion sway,",
+        "Who Mammon and the world obey,",
+        "In envy or contention live,",
+        "Presume that they indeed believe?"
+      ]
+    },
+    {
+      "lines": [
+        "True faith unites to Christ the root,",
+        "By him producing holy fruit;",
+        "And they who no such fruit can show,",
+        "Still on the stock of nature grow."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, let thy word effectual prove,",
+        "To work in us obedient love!",
+        "And may each one who hears it dread",
+        "A name to live; and yet be dead."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:79"
+}

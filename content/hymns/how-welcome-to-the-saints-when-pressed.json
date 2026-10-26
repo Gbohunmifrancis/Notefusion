@@ -1,0 +1,87 @@
+{
+  "title": "How Welcome to the Saints, When Pressed",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "How Welcome to the Saints, When Pressed in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 45, “The Lord's day”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "How wel-come to the saints, when pressed With six days noise, and care, and toil, Is the re-turn-ing day of rest, Which hides them from the world a-while?",
+  "verses": [
+    {
+      "lines": [
+        "How welcome to the saints, when pressed",
+        "With six days noise, and care, and toil,",
+        "Is the returning day of rest,",
+        "Which hides them from the world awhile?"
+      ]
+    },
+    {
+      "lines": [
+        "Now, from the throng withdrawn away,",
+        "They seem to breathe a different air;",
+        "Composed and softened by the day,",
+        "All things another aspect wear."
+      ]
+    },
+    {
+      "lines": [
+        "How happy if their lot is cast,",
+        "Where statedly the gospel sounds",
+        "The word is honey to their taste,",
+        "Renews their strength, and heals their wounds!"
+      ]
+    },
+    {
+      "lines": [
+        "Though pinched with poverty at home,",
+        "With sharp afflictions daily fed;",
+        "It makes amends, if they can come",
+        "To God'S own house for heav'nly bread!"
+      ]
+    },
+    {
+      "lines": [
+        "With joy they hasten to the place,",
+        "Where they their Savior oft have met;",
+        "And while they feast upon his grace,",
+        "Their burdens and their griefs forget."
+      ]
+    },
+    {
+      "lines": [
+        "This favored lot, my friends, is curs,",
+        "May we the privilege improve;",
+        "And find these consecrated hours,",
+        "Sweet earnests of the joys above!"
+      ]
+    },
+    {
+      "lines": [
+        "We thank thee for thy day, O Lord,",
+        "Here we thy promised presence seek;",
+        "Open thine hand, with blessings stored,",
+        "And give us Manna for the week."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:45"
+}

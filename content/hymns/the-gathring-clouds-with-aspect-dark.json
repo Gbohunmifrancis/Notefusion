@@ -1,0 +1,103 @@
+{
+  "title": "The Gath'ring Clouds, with Aspect Dark",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Gath'ring Clouds, with Aspect Dark in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 64, “On the commencement of hostilities in America”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The gath'-ring clouds, with as-pect dark, A ris-ing storm pre-sage; O! to be hid with-in the ark, And shel-tered from its rage!",
+  "verses": [
+    {
+      "lines": [
+        "The gath'ring clouds, with aspect dark,",
+        "A rising storm presage;",
+        "O! to be hid within the ark,",
+        "And sheltered from its rage!"
+      ]
+    },
+    {
+      "lines": [
+        "See the commissioned angel frown!",
+        "That vial in his hand,",
+        "Filled with fierce wrath, is pouring down",
+        "Upon our guilty land!"
+      ]
+    },
+    {
+      "lines": [
+        "Ye saints, unite in wrestling prayer;",
+        "If yet there may be hope;",
+        "Who knows but Mercy yet may spare,",
+        "And bid the angel stop!"
+      ]
+    },
+    {
+      "lines": [
+        "Already is the plague begun,",
+        "And fired with hostile rage;",
+        "Brethren, by blood and interest one,",
+        "With brethren now engage."
+      ]
+    },
+    {
+      "lines": [
+        "Peace spreads her wings, prepared for flight,",
+        "And war, with flaming sword,",
+        "And hasty strides draws nigh, to fight",
+        "The battles of the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "The first alarm, alas, how few,",
+        "While distant, seem to hear!",
+        "But they will hear, and tremble too,",
+        "When God shall send it near."
+      ]
+    },
+    {
+      "lines": [
+        "So thunder, o'er the distant hills,",
+        "Gives but a murm'ring sound,",
+        "But as the tempest spreads, it fills,",
+        "And makes the welkin sound."
+      ]
+    },
+    {
+      "lines": [
+        "May we, at least, with one consent,",
+        "Fall low before the throne",
+        "With tears the nation's sins lament,",
+        "The churches, and our own."
+      ]
+    },
+    {
+      "lines": [
+        "The humble souls who mourn and pray,",
+        "The Lord approves and knows;",
+        "His mark secures them in the day",
+        "When vengeance strikes his foes."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:64"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "Lord, What Is Man! Extremes How Wide",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Lord, What Is Man! Extremes How Wide in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 88, “Man by nature, grace and glory”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Lord, what is man! ex-tremes how wide, In this mys-te-rious na-ture join! The flesh, to worms and dust al-lied, The soul, im-mor-tal and di-vine!",
+  "verses": [
+    {
+      "lines": [
+        "Lord, what is man! extremes how wide,",
+        "In this mysterious nature join!",
+        "The flesh, to worms and dust allied,",
+        "The soul, immortal and divine!"
+      ]
+    },
+    {
+      "lines": [
+        "Divine at first, a holy flame",
+        "Kindled by the Almighty's breath;",
+        "Till, stained by sin, it soon became",
+        "The seat of darkness, strife, and death,"
+      ]
+    },
+    {
+      "lines": [
+        "But Jesus, O! amazing grace!",
+        "Assumed our nature as his own,",
+        "Obeyed and suffered in our place,",
+        "Then took it with him to his throne."
+      ]
+    },
+    {
+      "lines": [
+        "Now what is man, when grace reveals",
+        "The virtue of a Savior's blood?",
+        "Again a life divine he feels,",
+        "Despises earth, and walks with God."
+      ]
+    },
+    {
+      "lines": [
+        "And what, in yonder realms above,",
+        "Is ransomed man ordained to be?",
+        "With honor, holiness, and love,",
+        "No seraph more adorned than he."
+      ]
+    },
+    {
+      "lines": [
+        "Nearest the throne, and first in song,",
+        "Man shall his hallelujahs raise",
+        "While wond'ring angels round him throng,",
+        "And swell the chorus of his praise."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:88"
+}

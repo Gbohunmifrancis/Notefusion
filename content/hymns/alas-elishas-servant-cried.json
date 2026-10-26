@@ -1,0 +1,63 @@
+{
+  "title": "Alas! Elisha's Servant Cried",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Alas! Elisha's Servant Cried in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 40, “More with us than with them 2Ki 6:16”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "A-las! El-i-sha's ser-vant cried, When he the Syr-ian ar-my spied, But he was soon re-leased from care, In an-swer to the pro-phet's prayer.",
+  "verses": [
+    {
+      "lines": [
+        "Alas! Elisha's servant cried,",
+        "When he the Syrian army spied,",
+        "But he was soon released from care,",
+        "In answer to the prophet's prayer."
+      ]
+    },
+    {
+      "lines": [
+        "Straitway he saw, with other eyes,",
+        "A greater army from the skies;",
+        "A fiery guard around the hill,",
+        "Thus are the saints preserved still."
+      ]
+    },
+    {
+      "lines": [
+        "When Satan and his host appear,",
+        "Like him of old, I faint and fear;",
+        "Like him, by faith, with joy I see,",
+        "A greater host engaged for me."
+      ]
+    },
+    {
+      "lines": [
+        "The saints espouse my cause by prayer,",
+        "The angels make my soul their care;",
+        "Mine is the promise sealed with blood,",
+        "And Jesus lives to make it good."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:40"
+}

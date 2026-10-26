@@ -1,0 +1,95 @@
+{
+  "title": "In Vain My Fancy Strives to Paint",
+  "tune": "york",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "In Vain My Fancy Strives to Paint in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 72, “On the death of a believer”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "In vain my fan-cy strives to paint The mo-ment af-ter death The glo-ries that sur-round the saint, When yield-ing up its breath.",
+  "verses": [
+    {
+      "lines": [
+        "In vain my fancy strives to paint",
+        "The moment after death",
+        "The glories that surround the saint,",
+        "When yielding up its breath."
+      ]
+    },
+    {
+      "lines": [
+        "One gentle sigh their fetters breaks,",
+        "We scarce can say, \"They're gone!\"",
+        "Before the willing spirit takes",
+        "Her mansion near the throne."
+      ]
+    },
+    {
+      "lines": [
+        "Faith strives, but all its efforts fail,",
+        "To trace her in her flight;",
+        "No eye can pierce within the veil",
+        "Which hides that world of light."
+      ]
+    },
+    {
+      "lines": [
+        "Thus much (and this is all) we know,",
+        "They are completely blest",
+        "Have done with sin, and care, and woe,",
+        "And with their Savior rest."
+      ]
+    },
+    {
+      "lines": [
+        "On harps of gold they praise his name,",
+        "His face they always view;",
+        "Then let us follow'rs be of them,",
+        "That we may praise him too."
+      ]
+    },
+    {
+      "lines": [
+        "Their faith and patience, love and zeal,",
+        "Should make their memory dear;",
+        "And, Lord, do thou the prayers fulfil,",
+        "They offered for us here"
+      ]
+    },
+    {
+      "lines": [
+        "While they have gained, we losers are,",
+        "We miss them day by day;",
+        "But thou canst every breach repair,",
+        "And wipe our tears away."
+      ]
+    },
+    {
+      "lines": [
+        "We pray, as in Elisha's case,",
+        "When great Elijah went,",
+        "May double portions of thy grace,",
+        "To us who stay, be sent."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:72"
+}

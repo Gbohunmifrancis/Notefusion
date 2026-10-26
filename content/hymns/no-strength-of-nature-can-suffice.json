@@ -1,0 +1,79 @@
+{
+  "title": "No Strength of Nature Can Suffice",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "No Strength of Nature Can Suffice in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 62, “Love constraining to obedience”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "No strength of na-ture can suf-fice To serve the Lord a-right; And what she has, she mis-ap-plies, For want of clear-er light.",
+  "verses": [
+    {
+      "lines": [
+        "No strength of nature can suffice",
+        "To serve the Lord aright;",
+        "And what she has, she misapplies,",
+        "For want of clearer light."
+      ]
+    },
+    {
+      "lines": [
+        "How long beneath the law I lay",
+        "In bondage and distress!",
+        "I toiled the precept to obey,",
+        "But toiled without success."
+      ]
+    },
+    {
+      "lines": [
+        "Then to abstain from outward sin",
+        "Was more than I could do;",
+        "Now, if I feel its pow'r within,",
+        "I feel I hate it too."
+      ]
+    },
+    {
+      "lines": [
+        "Then all my servile works were done",
+        "A righteousness to raise;",
+        "Now, freely chosen in the Son,",
+        "I freely choose his ways."
+      ]
+    },
+    {
+      "lines": [
+        "What shall I do was then the word,",
+        "That I may worthier grow?",
+        "What shall I render to the Lord?",
+        "Is my enquiry now."
+      ]
+    },
+    {
+      "lines": [
+        "To see the Law by Christ fulfilled,",
+        "And hear his pard'ning voice;",
+        "Changes a slave into a child,",
+        "And duty into choice."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:62"
+}

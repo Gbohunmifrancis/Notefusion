@@ -1,0 +1,79 @@
+{
+  "title": "Though in the Outward Church Below",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Though in the Outward Church Below in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 86, “The wheat and tares. Mt 13:37-42”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Though in the out-ward church be-low The wheat and tares to-ge-ther grow; Je-sus ere long will weed the crop, And pluck the tares, in an-ger, up.",
+  "verses": [
+    {
+      "lines": [
+        "Though in the outward church below",
+        "The wheat and tares together grow;",
+        "Jesus ere long will weed the crop,",
+        "And pluck the tares, in anger, up."
+      ]
+    },
+    {
+      "lines": [
+        "Will it relieve their horrors there,",
+        "To recollect their stations here?",
+        "How much they heard, how much they knew,",
+        "How long amongst the wheat they grew!"
+      ]
+    },
+    {
+      "lines": [
+        "O! this will aggravate their case!",
+        "They perished under means of grace;",
+        "To them the word of life and faith,",
+        "Became an instrument of death."
+      ]
+    },
+    {
+      "lines": [
+        "We seem alike when thus we meet,",
+        "Strangers might think we all are wheat;",
+        "But to the Lord's all-searching eyes,",
+        "Each heart appears without disguise."
+      ]
+    },
+    {
+      "lines": [
+        "The tares are spared for various ends,",
+        "Some, for the sake of praying friends;",
+        "Others, the Lord, against their will,",
+        "Employs his counsels to fulfill."
+      ]
+    },
+    {
+      "lines": [
+        "But though they grow so tall and strong,",
+        "His plan will not require them long;",
+        "In harvest, when he saves his own,",
+        "The tares shall into hell be thrown."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:86"
+}

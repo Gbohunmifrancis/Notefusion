@@ -1,0 +1,79 @@
+{
+  "title": "Dear Lord Accept a Sinful Heart",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Dear Lord Accept a Sinful Heart in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 26, “Self-acquaintance”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Dear Lord ac-cept a sin-ful heart, Which of it-self com-plains And mourns, with much and fre-quent smart, The e-vil it con-tains.",
+  "verses": [
+    {
+      "lines": [
+        "Dear Lord accept a sinful heart,",
+        "Which of itself complains",
+        "And mourns, with much and frequent smart,",
+        "The evil it contains."
+      ]
+    },
+    {
+      "lines": [
+        "There fiery seeds of anger lurk,",
+        "Which often hurt my frame;",
+        "And wait but for the tempter's work,",
+        "To fan them to a flame."
+      ]
+    },
+    {
+      "lines": [
+        "Legality holds out a bribe",
+        "To purchase life from thee;",
+        "And discontent would fain prescribe",
+        "How thou shalt deal with me."
+      ]
+    },
+    {
+      "lines": [
+        "While unbelief withstands thy grace;",
+        "And puts the mercy by;",
+        "Presumption, with a brow of brass,",
+        "Says, \"Give me, or I die.\""
+      ]
+    },
+    {
+      "lines": [
+        "How eager are my thoughts to roam",
+        "In quest of what they love!",
+        "But ah! when duty calls them home,",
+        "How heavily they move!"
+      ]
+    },
+    {
+      "lines": [
+        "O, cleanse me in a Savior's blood,",
+        "Transform me by thy pow'r,",
+        "And make me thy beloved abode,",
+        "And let me rove no more."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:26"
+}

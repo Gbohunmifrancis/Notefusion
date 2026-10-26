@@ -1,0 +1,79 @@
+{
+  "title": "When Sinners Utter Boasting Words",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "When Sinners Utter Boasting Words in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 80, “They shall he mine, saith the Lord. Mal 3:16-18”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When sin-ners ut-ter boast-ing words, And glo-ry in their shame; The Lord, well pleased, an ear af-fords To those who fear his name.",
+  "verses": [
+    {
+      "lines": [
+        "When sinners utter boasting words,",
+        "And glory in their shame;",
+        "The Lord, well-pleased, an ear affords",
+        "To those who fear his name."
+      ]
+    },
+    {
+      "lines": [
+        "They often meet to seek his face,",
+        "And what they do, or say,",
+        "Is noted in his book of grace",
+        "Against another day."
+      ]
+    },
+    {
+      "lines": [
+        "For they, by faith, a day descry,",
+        "And joyfully expect,",
+        "When he, descending from the sky,",
+        "His jewels will collect."
+      ]
+    },
+    {
+      "lines": [
+        "Unnoticed now, because unknown,",
+        "A poor and suff'ring few;",
+        "He comes to claim them for his own,",
+        "And bring them forth to view."
+      ]
+    },
+    {
+      "lines": [
+        "With transport then their Savior's care",
+        "And favor they shall prove;",
+        "As tender parents guard and spare",
+        "The children of their love."
+      ]
+    },
+    {
+      "lines": [
+        "Assembled worlds will then discern",
+        "The saints alone are blest;",
+        "When wrath shall like an oven burn,",
+        "And vengeance strike the rest."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:80"
+}

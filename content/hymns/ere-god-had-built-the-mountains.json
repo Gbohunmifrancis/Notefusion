@@ -1,0 +1,79 @@
+{
+  "title": "Ere God Had Built the Mountains",
+  "tune": "angels-story",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Ere God Had Built the Mountains in Tonic Solfa to ANGEL'S STORY, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 52, “Wisdom. Pr 8:22-31”.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to ANGEL'S STORY; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "Ere God had built the moun-tains, Or raised the fruit-ful hills; Be-fore he filled the foun-tains That feed the run-ning rills; In me, from ev-er-last-ing, The won-der-ful I Am, Found plea-sures nev-er wast-ing, And Wis-dom is my name.",
+  "verses": [
+    {
+      "lines": [
+        "Ere God had built the mountains,",
+        "Or raised the fruitful hills;",
+        "Before he filled the fountains",
+        "That feed the running rills;",
+        "In me, from everlasting,",
+        "The wonderful I Am,",
+        "Found pleasures never wasting,",
+        "And Wisdom is my name."
+      ]
+    },
+    {
+      "lines": [
+        "When, like a tent to dwell in,",
+        "He spread the skies abroad;",
+        "And swathed about the swelling",
+        "Of ocean's mighty flood;.",
+        "He wrought by weight and measure,",
+        "And I was with him then;",
+        "Myself the Father's pleasure,",
+        "And mine, the sons of men."
+      ]
+    },
+    {
+      "lines": [
+        "Thus wisdom's words discover",
+        "Thy glory and thy grace,",
+        "Thou everlasting lover",
+        "Of our unworthy race!",
+        "Thy gracious eye surveyed us",
+        "Ere stars were seen above.",
+        "In wisdom thou hast made us,",
+        "And died for us in love."
+      ]
+    },
+    {
+      "lines": [
+        "And couldst thou be delighted",
+        "With creatures such as we!",
+        "Who when we saw thee, slighted",
+        "And nailed thee to a tree?",
+        "Unfathomable wonder,",
+        "And mystery divine!",
+        "The voice that speaks in thunder,",
+        "Says, \"Sinner I am thine!\""
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to ANGEL'S STORY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:52"
+}

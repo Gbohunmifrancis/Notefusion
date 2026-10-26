@@ -1,0 +1,79 @@
+{
+  "title": "To Keep the Lamp Alive",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "To Keep the Lamp Alive in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 74, “Dependance”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "To keep the lamp a-live With oil we fill the bowl; 'Tis wa-ter makes the wil-low thrive, And grace that feeds the soul.",
+  "verses": [
+    {
+      "lines": [
+        "To keep the lamp alive",
+        "With oil we fill the bowl;",
+        "'Tis water makes the willow thrive,",
+        "And grace that feeds the soul."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord'S unsparing hand",
+        "Supplies the living stream",
+        "It is not at our own command,",
+        "But still derived from him."
+      ]
+    },
+    {
+      "lines": [
+        "Beware of Peter's word,",
+        "Nor confidently say,",
+        "\"I never will deny thee, Lord,\"",
+        "But grant I never may."
+      ]
+    },
+    {
+      "lines": [
+        "Man's wisdom is to seek",
+        "His strength in God alone;",
+        "And e'en an angel would be weak,",
+        "Who trusted in his own."
+      ]
+    },
+    {
+      "lines": [
+        "Retreat beneath his wings,",
+        "And in his grace confide;",
+        "This more exalts the King of kings",
+        "Than all your works beside."
+      ]
+    },
+    {
+      "lines": [
+        "In Jesus is our store,",
+        "Grace issues from his throne;",
+        "Whoever says, \"I want no more,\"",
+        "Confesses he has none."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:74"
+}

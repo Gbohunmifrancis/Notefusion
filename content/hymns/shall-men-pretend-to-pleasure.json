@@ -1,0 +1,91 @@
+{
+  "title": "Shall Men Pretend to Pleasure",
+  "tune": "greenland",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Shall Men Pretend to Pleasure in Tonic Solfa to GREENLAND, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 3, “We were once as you are”.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to GREENLAND; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "Shall men pre-tend to plea-sure Who nev-er knew the Lord? Can all the world-ling's trea-sure True peace of mind af-ford? They shall ob-tain this jew-el In what their hearts de-sire, When they by ad-ding fu-el Can quench the flame of fire.",
+  "verses": [
+    {
+      "lines": [
+        "Shall men pretend to pleasure",
+        "Who never knew the Lord?",
+        "Can all the worldling's treasure",
+        "True peace of mind afford?",
+        "They shall obtain this jewel",
+        "In what their hearts desire,",
+        "When they by adding fuel",
+        "Can quench the flame of fire."
+      ]
+    },
+    {
+      "lines": [
+        "Till you can bid the ocean,",
+        "When furious tempests roar,",
+        "Forget its wonted motion,",
+        "And rage, and swell, no more:",
+        "In vain your expectation",
+        "To find content in sin;",
+        "Or freedom from vexation,",
+        "While passions reign within."
+      ]
+    },
+    {
+      "lines": [
+        "Come, turn your thoughts to Jesus,",
+        "If you would good possess;",
+        "'Tis he alone that frees us",
+        "From guilt, and from distress:",
+        "When he, by faith, is present,",
+        "The sinner's troubles cease;",
+        "His ways are truly pleasant,",
+        "And all his paths are peace."
+      ]
+    },
+    {
+      "lines": [
+        "Our time in sin we wasted,",
+        "And fed upon the wind;",
+        "Until his love we tasted,",
+        "No comfort could we find:",
+        "But now we stand to witness",
+        "His pow'r and grace to you;",
+        "May you perceive its fitness,",
+        "And call upon him too!"
+      ]
+    },
+    {
+      "lines": [
+        "Our pleasure and our duty,",
+        "Though opposite before;",
+        "Since we have seen his beauty,",
+        "Are joined to part no more:",
+        "It is our highest pleasure,",
+        "No less than duty's call;",
+        "To love him beyond measure,",
+        "And serve him with our all."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to GREENLAND by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:3"
+}

@@ -1,0 +1,81 @@
+{
+  "title": "By Whom Was David Taught",
+  "tune": "st-john-parish-choir",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "By Whom Was David Taught in Tonic Solfa to ST. JOHN (PARISH CHOIR), doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 17, “Jehovah-Nissi, The Lord my banner. Ex 17:15”.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.8.8), to be sung to any tune of that metre. This page sets them to ST. JOHN (PARISH CHOIR); any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "By whom was Da-vid taught, To aim the dread-ful blow, When he Go-li-ath fought, And laid the Git-tite low? No sword nor spear the stri-pling took, But chose a peb-ble from the brook.",
+  "verses": [
+    {
+      "lines": [
+        "By whom was David taught,",
+        "To aim the dreadful blow,",
+        "When he Goliath fought,",
+        "And laid the Gittite low?",
+        "No sword nor spear the stripling took,",
+        "But chose a pebble from the brook."
+      ]
+    },
+    {
+      "lines": [
+        "'Twas Israel's God and king,",
+        "Who sent him to the fight;",
+        "Who gave him strength to fling,",
+        "And skill to aim aright.",
+        "Ye feeble saints your strength endures,",
+        "Because young David's God is yours."
+      ]
+    },
+    {
+      "lines": [
+        "Who ordered Gideon forth,",
+        "To storm th' invaders' camp,",
+        "With arms of little worth,",
+        "A pitcher and a lamp?",
+        "The trumpets made his coming known,",
+        "And all the host was overthrown."
+      ]
+    },
+    {
+      "lines": [
+        "Oh! I have seen the day,",
+        "When with a single word,",
+        "God helping me to say,",
+        "My trust is in the Lord;",
+        "My soul has quelled a thousand foes,",
+        "Fearless of all that could oppose."
+      ]
+    },
+    {
+      "lines": [
+        "But unbelief, self-will,",
+        "Self-righteousness and pride,",
+        "How often do they steal",
+        "My weapon from my side?",
+        "Yet David's Lord, and Gideon's friend,",
+        "Will help his servant to the end."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to ST. JOHN (PARISH CHOIR) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:17"
+}

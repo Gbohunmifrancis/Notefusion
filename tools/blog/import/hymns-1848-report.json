@@ -374,13 +374,6 @@
       "author": "Anonymous"
     },
     {
-      "ref": "94",
-      "slug": "far-from-the-world-o-lord-i-flee",
-      "metre": "8 6 8 6",
-      "tune": "st-peter",
-      "author": "William Cowper"
-    },
-    {
       "ref": "95",
       "slug": "while-thee-i-seek-protecting-power",
       "metre": "8 6 8 6",
@@ -745,13 +738,6 @@
       "author": "John Greenleaf Whittier"
     },
     {
-      "ref": "192",
-      "slug": "hear-what-god-the-lord-hath-spoken",
-      "metre": "8 7 8 7 8 7 8 7",
-      "tune": "lux-eoi",
-      "author": "William Cowper"
-    },
-    {
       "ref": "197",
       "slug": "soul-celestial-in-thy-birth",
       "metre": "7 7 7 7",
@@ -990,13 +976,6 @@
       "author": "Philip Doddridge"
     },
     {
-      "ref": "259",
-      "slug": "god-moves-in-a-mysterious-way",
-      "metre": "8 6 8 6",
-      "tune": "york",
-      "author": "William Cowper"
-    },
-    {
       "ref": "260",
       "slug": "author-of-good-we-rest-on-thee",
       "metre": "8 6 8 6",
@@ -1037,13 +1016,6 @@
       "metre": "8 8 8 8 8 8",
       "tune": "melita",
       "author": "Charles Wesley"
-    },
-    {
-      "ref": "271",
-      "slug": "tis-my-happiness-below",
-      "metre": "7 7 7 7 7 7 7 7",
-      "tune": "messiah-herald",
-      "author": "William Cowper"
     },
     {
       "ref": "272",
@@ -1254,13 +1226,6 @@
       "metre": "7 7 7 7",
       "tune": "st-bees",
       "author": "Stephen Greenleaf Bulfinch"
-    },
-    {
-      "ref": "323",
-      "slug": "be-still-my-heart-these-anxious-cares",
-      "metre": "8 8 8 8",
-      "tune": "uxbridge",
-      "author": "John Newton"
     },
     {
       "ref": "324",
@@ -2328,6 +2293,11 @@
       "page": "lord-dismiss-us-with-thy-blessing"
     },
     {
+      "ref": "94",
+      "first": "Far from the world, O Lord! I flee,",
+      "page": "far-from-the-world-o-lord-i-flee"
+    },
+    {
       "ref": "105",
       "first": "While shepherds watched their flocks by night,",
       "page": "while-shepherds-watched-their-flocks"
@@ -2368,6 +2338,11 @@
       "page": "glorious-things-of-thee-are-spoken"
     },
     {
+      "ref": "192",
+      "first": "Hear what God, the Lord, hath spoken;",
+      "page": "hear-what-god-the-lord-hath-spoken"
+    },
+    {
       "ref": "193",
       "first": "Our blest Redeemer, ere he breathed",
       "page": "our-blest-redeemer-ere-he-breathed"
@@ -2383,9 +2358,24 @@
       "page": "nearer-my-god-to-thee"
     },
     {
+      "ref": "259",
+      "first": "God moves in a mysterious way,",
+      "page": "god-moves-in-a-mysterious-way"
+    },
+    {
+      "ref": "271",
+      "first": "'Tis my happiness below",
+      "page": "tis-my-happiness-below"
+    },
+    {
       "ref": "281",
       "first": "Blest are the pure in heart,",
       "page": "blest-are-the-pure-in-heart"
+    },
+    {
+      "ref": "323",
+      "first": "Be still, my heart! these anxious cares",
+      "page": "be-still-my-heart-these-anxious-cares"
     },
     {
       "ref": "454",
@@ -3662,8 +3652,8 @@
   ],
   "counts": {
     "hymns": 600,
-    "written": 329,
-    "alreadyOurs": 20,
+    "written": 324,
+    "alreadyOurs": 25,
     "skipped": 251,
     "removed": 0
   }

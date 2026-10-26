@@ -1,0 +1,71 @@
+{
+  "title": "I Will Praise Thee Every Day",
+  "tune": "pleyels-hymn",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "I Will Praise Thee Every Day in Tonic Solfa to PLEYEL'S HYMN, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 58, “O Lord, I will praise thee! Isa 12”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to PLEYEL'S HYMN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "I Will praise thee ev-ery day Now thine an-ger's turned a-way! Com-fort-a-ble thoughts a-rise From the bleed-ing sac-ri-fice.",
+  "verses": [
+    {
+      "lines": [
+        "I Will praise thee every day",
+        "Now thine anger's turned away!",
+        "Comfortable thoughts arise",
+        "From the bleeding sacrifice."
+      ]
+    },
+    {
+      "lines": [
+        "Here in the fair gospel field,",
+        "Wells of free salvation yield",
+        "Streams of life, a plenteous store,",
+        "And my soul shall thirst no more."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus is become at length",
+        "My salvation and my strength;",
+        "And his praises shall prolong,",
+        "While I live, my pleasant song."
+      ]
+    },
+    {
+      "lines": [
+        "Praise ye, then, his glorious name,",
+        "Publish his exalted fame!",
+        "Still his worth your praise exceeds,",
+        "Excellent are all his deeds."
+      ]
+    },
+    {
+      "lines": [
+        "Raise again the joyful sound,",
+        "Let the nations roll it round!",
+        "Zion shout, for this is he,",
+        "God the Savior dwells in thee."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to PLEYEL'S HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:58"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "Holy Lord God! I Love Thy Truth",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Holy Lord God! I Love Thy Truth in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 64, “Hatred of sin”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Ho-ly Lord God! I love thy truth, Nor dare thy least com-mand-ment slight; Yet pierced by sin, the ser-pent's tooth, I mourn the an-guish of the bite.",
+  "verses": [
+    {
+      "lines": [
+        "Holy Lord God! I love thy truth,",
+        "Nor dare thy least commandment slight;",
+        "Yet pierced by sin, the serpent's tooth,",
+        "I mourn the anguish of the bite."
+      ]
+    },
+    {
+      "lines": [
+        "But though the poison lurks within,",
+        "Hope bids me still with patience wait;",
+        "Till death shall set me free from sin,",
+        "Free from the only thing I hate."
+      ]
+    },
+    {
+      "lines": [
+        "Had I a throne above the rest,",
+        "Where angels and archangels dwell;",
+        "One sin, unslain, within my breast,",
+        "Would make that heav'n as dark as hell."
+      ]
+    },
+    {
+      "lines": [
+        "The pris'ner, sent to breathe fresh air,",
+        "And blessed with liberty again,",
+        "Would mourn, were he condemned to wear",
+        "One link of all his former chain."
+      ]
+    },
+    {
+      "lines": [
+        "But O! no foe invades the bliss,",
+        "When glory crowns the christian's head;",
+        "One view of Jesus as he is,",
+        "Will strike all sin for ever dead."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:64"
+}

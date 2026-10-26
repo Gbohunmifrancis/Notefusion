@@ -1,0 +1,87 @@
+{
+  "title": "In Mercy, Not in Wrath, Rebuke",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "In Mercy, Not in Wrath, Rebuke in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 45, “Pleading for mercy. Ps 6”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "In mer-cy, not in wrath, re-buke Thy fee-ble worm, my God! My spir-it dreads thine an-gry look, And trem-bles at thy rod.",
+  "verses": [
+    {
+      "lines": [
+        "In mercy, not in wrath, rebuke",
+        "Thy feeble worm, my God!",
+        "My spirit dreads thine angry look,",
+        "And trembles at thy rod."
+      ]
+    },
+    {
+      "lines": [
+        "Have mercy, Lord, for I am weak,",
+        "Regard my heavy groans;",
+        "O let thy voice of comfort speak,",
+        "And heal my broken bones!"
+      ]
+    },
+    {
+      "lines": [
+        "By day my busy beating head",
+        "Is filled with anxious fears;",
+        "By night, upon my restless bed,",
+        "I weep a flood of tears."
+      ]
+    },
+    {
+      "lines": [
+        "Thus I sit desolate and mourn,",
+        "Mine eyes grow dull with grief;",
+        "How long, my Lord, ere thou return,",
+        "And bring my soul relief?"
+      ]
+    },
+    {
+      "lines": [
+        "O come and show thy pow'r to save,",
+        "And spare my fainting breath;",
+        "For who can praise thee in the grave,",
+        "Or sing thy name in death?"
+      ]
+    },
+    {
+      "lines": [
+        "Satan, my cruel envious foe,",
+        "Insults me in my pain;",
+        "He smiles to see me brought so low,",
+        "And tells me hope is vain,"
+      ]
+    },
+    {
+      "lines": [
+        "But hence, thou enemy, depart!",
+        "Nor tempt me to despair;",
+        "My Savior comes to cheer my heart,",
+        "The Lord has heard my prayer."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:45"
+}

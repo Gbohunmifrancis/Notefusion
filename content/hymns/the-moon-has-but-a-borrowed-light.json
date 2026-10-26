@@ -1,0 +1,79 @@
+{
+  "title": "The Moon Has but a Borrowed Light",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Moon Has but a Borrowed Light in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 86, “Moon-light”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The moon has but a bor-rowed light, A faint and fee-ble ray; She owes her beau-ty to the night, And hides her-self by day.",
+  "verses": [
+    {
+      "lines": [
+        "The moon has but a borrowed light,",
+        "A faint and feeble ray;",
+        "She owes her beauty to the night,",
+        "And hides herself by day."
+      ]
+    },
+    {
+      "lines": [
+        "No cheering warmth her beam conveys,",
+        "Though pleasing to behold;",
+        "We might upon her brightness gaze",
+        "Till we were starved with cold."
+      ]
+    },
+    {
+      "lines": [
+        "Just such is all the light to man",
+        "Which reason can impart;",
+        "It cannot show one object plain,",
+        "Nor warm the frozen heart."
+      ]
+    },
+    {
+      "lines": [
+        "Thus moonlight views of truths divine",
+        "To many fatal prove;",
+        "For what avail in gifts to shine,",
+        "Without a spark of love?"
+      ]
+    },
+    {
+      "lines": [
+        "The gospel, like the sun at noon,",
+        "Affords a glorious light;",
+        "Then fallen reason's boasted moon",
+        "Appears no longer bright."
+      ]
+    },
+    {
+      "lines": [
+        "And grace, not light alone, bestows,",
+        "But adds a quick'ing pow'r;",
+        "The desert blossoms like the rose,",
+        "And sin prevails no more."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:86"
+}

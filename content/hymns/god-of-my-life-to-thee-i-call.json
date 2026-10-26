@@ -1,0 +1,79 @@
+{
+  "title": "God of My Life, to Thee I Call",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "God of My Life, to Thee I Call in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 19, “Looking upwards in a storm”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "God of my life, to thee I call, A-fflic-ted at thy feet I fall; When the great wa-ter floods pre-vail, Leave not my trem-bling heart to fail!",
+  "verses": [
+    {
+      "lines": [
+        "God of my life, to thee I call,",
+        "Afflicted at thy feet I fall;",
+        "When the great water-floods prevail,",
+        "Leave not my trembling heart to fail!"
+      ]
+    },
+    {
+      "lines": [
+        "Friend of the friendless, and the saint!",
+        "Where should I lodge my deep complaint?",
+        "Where but with thee, whose open door,",
+        "Invites the helpless and the poor!"
+      ]
+    },
+    {
+      "lines": [
+        "Did ever mourner plead with thee,",
+        "And thou refuse that mourner's plea?",
+        "Does not the word still fixed remain,",
+        "That none shall seek thy face in vain?"
+      ]
+    },
+    {
+      "lines": [
+        "That were a grief I could not bear,",
+        "Didst thou not hear and answer prayer;",
+        "But a prayer-hearing, answ'ring God,",
+        "Supports me under every load."
+      ]
+    },
+    {
+      "lines": [
+        "Fair is the lot that's cast for me!",
+        "I have an advocate with thee;",
+        "They whom the world caresses most,",
+        "Have no such privilege to boast."
+      ]
+    },
+    {
+      "lines": [
+        "Poor though I am, despised, forgot,",
+        "Yet God, my God, forgets me not;",
+        "And he is safe and must succeed,",
+        "For whom the Lord vouchsafes to plead."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:19"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "Let Me Dwell on Golgotha",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Let Me Dwell on Golgotha in Tonic Solfa to HEINLEIN, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 56, “It is good to be here”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to HEINLEIN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Let me dwell on Gol-go-tha, Weep and love my life a-way! While I see him on the tree Weep and bleed, and die for me!",
+  "verses": [
+    {
+      "lines": [
+        "Let me dwell on Golgotha,",
+        "Weep and love my life away!",
+        "While I see him on the tree",
+        "Weep and bleed, and die for me!"
+      ]
+    },
+    {
+      "lines": [
+        "That dear blood, for sinners spilt,",
+        "Shows my sin in all its guilt:",
+        "Ah, my soul, he bore thy load,",
+        "Thou hast slain the Lamb of God."
+      ]
+    },
+    {
+      "lines": [
+        "Hark! his dying words; \"Forgive,",
+        "Father, let the sinner live;",
+        "Sinner, wipe thy tears away,",
+        "I thy ransom freely pay.\""
+      ]
+    },
+    {
+      "lines": [
+        "While I hear this grace revealed,",
+        "And obtain a pardon sealed;",
+        "All my lost affections move,",
+        "Wakened by the force of love."
+      ]
+    },
+    {
+      "lines": [
+        "Farewell world, thy gold is dross,",
+        "Now I see the bleeding cross;",
+        "Jesus died to set me free",
+        "From the law, and sin, and thee!"
+      ]
+    },
+    {
+      "lines": [
+        "He has dearly bought my soul",
+        "Lord, accept, and claim the whole!",
+        "To thy will I all resign,",
+        "Now, no more my own, but thine."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to HEINLEIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:56"
+}

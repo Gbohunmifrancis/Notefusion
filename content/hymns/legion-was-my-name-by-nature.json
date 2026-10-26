@@ -1,0 +1,91 @@
+{
+  "title": "Legion Was My Name by Nature",
+  "tune": "lux-eoi",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Legion Was My Name by Nature in Tonic Solfa to LUX EOI, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 92, “The legion dispossessed. Mk 5:18,19”.",
+    "The book printed the words without tunes, marked Eights and Sevens Double (8.7.8.7.8.7.8.7), to be sung to any tune of that metre. This page sets them to LUX EOI; any other Eights and Sevens Double tune fits them as well."
+  ],
+  "underlay": "Le-gion was my name by na-ture, Sa-tan raged with-in my breast; Nev-er mis-e-ry was great-er, Nev-er sin-ner more pos-sessed: Mis-chie-vous to all a-round me, To my-self the great-est foe; Thus I was, when Je-sus found me, Filled with mad-ness, sin and woe.",
+  "verses": [
+    {
+      "lines": [
+        "Legion was my name by nature,",
+        "Satan raged within my breast;",
+        "Never misery was greater,",
+        "Never sinner more possessed:",
+        "Mischievous to all around me,",
+        "To myself the greatest foe;",
+        "Thus I was, when Jesus found me,",
+        "Filled with madness, sin and woe."
+      ]
+    },
+    {
+      "lines": [
+        "Yet in this forlorn condition,",
+        "When he came to see me free;",
+        "I replied, to my Physician,",
+        "\"What have I to do with thee?\"",
+        "But he would not be prevented,",
+        "Rescued me against my will;",
+        "Had he stayed till I consented,",
+        "I had been a captive still."
+      ]
+    },
+    {
+      "lines": [
+        "\"Satan, though thou fain wouldst have it,",
+        "Know this soul is none of thine;",
+        "I have shed my blood to save it,",
+        "Now I challenge it for mine,",
+        "Though it long has thee resembled,",
+        "Henceforth it shall me obey;\"",
+        "Thus he spoke while Satan trembled,",
+        "Gnashed his teeth and fled away."
+      ]
+    },
+    {
+      "lines": [
+        "Thus my frantic soul he healed,",
+        "Bid my sins and sorrows cease;",
+        "\"Take, said he, my pardon sealed,",
+        "I have saved thee, go in peace:\"",
+        "Rather take me, Lord, to heaven,",
+        "Now thy love and grace I know;",
+        "Since thou hast my sins forgiven,",
+        "Why should I remain below?"
+      ]
+    },
+    {
+      "lines": [
+        "\"Love, he said, will sweeten labors,",
+        "Thou hast something yet to do;",
+        "Go and tell your friends and neighbors,",
+        "What my love has done for you:",
+        "Live to manifest my glory,",
+        "Wait for heav'n a little space;",
+        "Sinners, when they hear thy story,",
+        "Will repent and seek my face.\""
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to LUX EOI by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:92"
+}

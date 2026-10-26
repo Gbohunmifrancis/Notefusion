@@ -1,0 +1,87 @@
+{
+  "title": "Sight, Hearing, Feeling, Taste and Smell",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Sight, Hearing, Feeling, Taste and Smell in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 43, “Faith a new and comprehensive sense”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Sight, hear-ing, feel-ing, taste and smell, Are gifts we high-ly prize; But faith does sin-gly each ex-cel, And all the five com-prise.",
+  "verses": [
+    {
+      "lines": [
+        "Sight, hearing, feeling, taste and smell,",
+        "Are gifts we highly prize;",
+        "But faith does singly each excel,",
+        "And all the five comprise."
+      ]
+    },
+    {
+      "lines": [
+        "More piercing than the eagle's flight",
+        "It views the world unknown;",
+        "Surveys the glorious realms of light,",
+        "And Jesus on the throne."
+      ]
+    },
+    {
+      "lines": [
+        "It hears the mighty voice of God,",
+        "And ponders what he saith",
+        "His word and works, his gifts and rod,",
+        "Have each a voice to faith."
+      ]
+    },
+    {
+      "lines": [
+        "It feels the touch of heavenly pow'r,",
+        "And from that boundless source,",
+        "Derives fresh vigor every hour,",
+        "To run its daily course."
+      ]
+    },
+    {
+      "lines": [
+        "The truth and goodness of the Lord,",
+        "Are suited to its taste",
+        "Mean is the worldling's pampered board,",
+        "To faith's perpetual feast."
+      ]
+    },
+    {
+      "lines": [
+        "It smells the dear Redeemer's name",
+        "Like ointment poured forth;",
+        "Faith only knows or can proclaim,",
+        "Its favor or its worth."
+      ]
+    },
+    {
+      "lines": [
+        "Till saving faith possess the mind,",
+        "In vain of sense we boast;",
+        "We are but senseless, tasteless, blind,",
+        "And deaf, and dead, and lost."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:43"
+}

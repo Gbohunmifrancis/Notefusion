@@ -1,0 +1,79 @@
+{
+  "title": "My God! Till I Received Thy Stroke",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "My God! Till I Received Thy Stroke in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 68, “Ephraim repenting. Jer 31:18-20”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "My God! till I re-ceived thy stroke, How like a beast was I! So un-ac-cus-tomed to the yoke, So back-ward to com-ply.",
+  "verses": [
+    {
+      "lines": [
+        "My God! till I received thy stroke,",
+        "How like a beast was I!",
+        "So unaccustomed to the yoke,",
+        "So backward to comply."
+      ]
+    },
+    {
+      "lines": [
+        "With grief my just reproach I bear,",
+        "Shame fills me at the thought;",
+        "How frequent my rebellions were!",
+        "What wickedness I wrought!"
+      ]
+    },
+    {
+      "lines": [
+        "Thy merciful restraint I scorned",
+        "And left the pleasant road;",
+        "Yet turn me, and I shall be turned,",
+        "Thou art the Lord my God."
+      ]
+    },
+    {
+      "lines": [
+        "Is Ephraim banished from my thoughts,",
+        "Or vile in my esteem?",
+        "No, saith the Lord, with all his faults,",
+        "I shall remember him."
+      ]
+    },
+    {
+      "lines": [
+        "Is he a dear and pleasant child?",
+        "Yes, dear and pleasant still;",
+        "Though sin his foolish heart beguiled,",
+        "And he withstood my will."
+      ]
+    },
+    {
+      "lines": [
+        "My sharp rebuke has laid him low,",
+        "He seeks my face again;",
+        "My pity kindles at his woe,",
+        "He shall not seek in vain."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:68"
+}

@@ -1,0 +1,87 @@
+{
+  "title": "\"My Barns Are Full, My Stores Increase",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "\"My Barns Are Full, My Stores Increase in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 102, “The worldling. Lk 12:16-21”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "\"My barns are full, my stores in-crease, And now, for man-y years, Soul, eat and drink, and take thine ease, Se-cure from wants and fears.\"",
+  "verses": [
+    {
+      "lines": [
+        "\"My barns are full, my stores increase,",
+        "And now, for many years,",
+        "Soul, eat and drink, and take thine ease,",
+        "Secure from wants and fears.\""
+      ]
+    },
+    {
+      "lines": [
+        "Thus while a worldling boasted once,",
+        "As many now presume;",
+        "He heard the Lord himself pronounce",
+        "His sudden, aweful doom."
+      ]
+    },
+    {
+      "lines": [
+        "\"This night, vain fool, thy soul must pass",
+        "Into a world unknown;",
+        "And who shall then the stores possess",
+        "Which thou hast called thine own.\""
+      ]
+    },
+    {
+      "lines": [
+        "Thus blinded mortals fondly scheme",
+        "For happiness below;",
+        "Till death disturb the pleasing dream,",
+        "And they awake to woe."
+      ]
+    },
+    {
+      "lines": [
+        "Ah! who can speak the vast dismay",
+        "That fills the sinner's mind;",
+        "When torn, by death's strong hand, away,",
+        "He leaves his all behind."
+      ]
+    },
+    {
+      "lines": [
+        "Wretches, who cleave to earthly things,",
+        "But are not rich to God;",
+        "Their dying hour is full of stings,",
+        "And hell their dark abode."
+      ]
+    },
+    {
+      "lines": [
+        "Dear Savior, make us timely wise,",
+        "Thy gospel to attend;",
+        "That we may live above the skies,",
+        "When this poor life shall end."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:102"
+}

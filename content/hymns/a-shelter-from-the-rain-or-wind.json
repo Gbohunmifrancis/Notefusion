@@ -1,0 +1,95 @@
+{
+  "title": "A Shelter from the Rain or Wind",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "A Shelter from the Rain or Wind in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 96, “For a garden-seat, or summer-house”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "A Shel-ter from the rain or wind, A shade from scorch-ing heats A rest-ing place you here may find, To ease your wea-ry feet.",
+  "verses": [
+    {
+      "lines": [
+        "A Shelter from the rain or wind,",
+        "A shade from scorching heats",
+        "A resting place you here may find,",
+        "To ease your weary feet."
+      ]
+    },
+    {
+      "lines": [
+        "Enter but with a serious thought,",
+        "Consider who is near",
+        "This is a consecrated spot,",
+        "The Lord is present here!"
+      ]
+    },
+    {
+      "lines": [
+        "A question of the utmost weight,",
+        "While reading, meets your eye;",
+        "May conscience witness to your state,",
+        "And give a true reply!"
+      ]
+    },
+    {
+      "lines": [
+        "Is Jesus to your heart revealed,",
+        "As full of truth and grace?",
+        "And is his name your hope and shield,",
+        "Your rest and hiding place?"
+      ]
+    },
+    {
+      "lines": [
+        "If so, for all events prepared,",
+        "Whatever storms may rise,",
+        "He, whom you love, wilt safely guard,",
+        "And guide you to the skies."
+      ]
+    },
+    {
+      "lines": [
+        "No burning sun, or storm, or rain,",
+        "Will there your peace annoy;",
+        "No sin, temptation, grief, or pain,",
+        "Intrude to damp your joy."
+      ]
+    },
+    {
+      "lines": [
+        "But if his name you have not known,",
+        "Oh, seek him while you may!",
+        "Lest you should meet his aweful frown,",
+        "In that approaching day."
+      ]
+    },
+    {
+      "lines": [
+        "When the avenging Judge you see,",
+        "With terrors on his brow;",
+        "Where can you hide, or whither flee,",
+        "If you reject him now?"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:96"
+}

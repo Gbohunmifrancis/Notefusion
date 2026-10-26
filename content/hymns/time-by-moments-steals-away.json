@@ -1,70 +1,91 @@
 {
-  "title": "Time by Moments Steals Away",
-  "tune": "innocents",
+  "title": "Time, by Moments, Steals Away",
+  "tune": "watchman",
   "text": [
     {
-      "name": "Anonymous",
-      "traditional": true,
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
       "role": "Words"
     }
   ],
-  "textPublished": 1853,
+  "textPublished": 1779,
   "textPublishedBy": true,
-  "description": "Time by Moments Steals Away in Tonic Solfa to INNOCENTS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "description": "Time, by Moments, Steals Away in Tonic Solfa to WATCHMAN, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
   "about": [
-    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 896 of its twenty-second edition (1853), “The Same”.",
-    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to INNOCENTS; any other Sevens tune fits them as well."
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 4, “A new-year's thought and prayer”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to WATCHMAN; any other Sevens Double tune fits them as well."
   ],
-  "underlay": "Time by mo-ments steals a-way, First the hour and then the day; Small the dail-y loss ap-pears, Yet it soon a-mounts to years.",
+  "underlay": "Time, by mo-ments, steals a-way, First the hour, and then the day; Small the dail-y loss ap-pears, Yet it soon a-mounts to years: Thus an-oth-er year is flown, Now it is no more our own (If it brought or pro-mised good) Than the years be-fore the flood.",
   "verses": [
     {
       "lines": [
-        "Time by moments steals away,",
-        "First the hour and then the day;",
+        "Time, by moments, steals away,",
+        "First the hour, and then the day;",
         "Small the daily loss appears,",
-        "Yet it soon amounts to years."
-      ]
-    },
-    {
-      "lines": [
-        "Thus another year is flown;",
-        "Now it is no more our own,",
-        "If it brought or promised good,",
+        "Yet it soon amounts to years:",
+        "Thus another year is flown,",
+        "Now it is no more our own",
+        "(If it brought or promised good)",
         "Than the years before the flood."
       ]
     },
     {
       "lines": [
-        "But may none of us forget",
+        "But (may none of us forget)",
         "It has left us much in debt;",
-        "Who can tell the vast amount",
-        "Placed to every one's account!"
+        "Favors from the Lord received,",
+        "Sins that have his Spirit grieved;",
+        "Marked by an unerring hand",
+        "In his book recorded stand;",
+        "Who can tell the vast amount,",
+        "Placed to each of our account?"
       ]
     },
     {
       "lines": [
-        "Favors, from the Lord received,",
-        "Sins, that have his spirit grieved,",
-        "Marked by an unerring hand,",
-        "In his book recorded stand."
+        "Happy, the believing soul!",
+        "Christ for you has paid the whole;",
+        "While you own the debt is large,",
+        "You may plead a full discharge:",
+        "But poor careless sinner, say,",
+        "What can you to justice pay?",
+        "Tremble, lest when life is past,",
+        "Into prison you be cast!"
       ]
     },
     {
       "lines": [
-        "If we see another year,",
-        "May thy blessing meet us here:",
-        "Sun of righteousness, arise,",
-        "Warm our hearts and bless our eyes."
+        "Will you still increase the score?",
+        "Still be careless, as before?",
+        "O, forbid it, gracious Lord,",
+        "Touch their spirits by thy word!",
+        "Now, in mercy, to them show",
+        "What a mighty debt they owe!",
+        "All their unbelief subdue,",
+        "Let them find forgiveness too."
+      ]
+    },
+    {
+      "lines": [
+        "Spared to see another year,",
+        "Let thy blessing meet us here;",
+        "Come, thy dying work revive,",
+        "Bid thy drooping garden thrive:",
+        "Sun of righteousness arise!",
+        "Warm our hearts, and bless our eyes;",
+        "Let our prayer thy bowels move,",
+        "Make this year a time of love!"
       ]
     }
   ],
-  "metre": "7 7 7 7",
-  "source": "Hymns for Christian Devotion (1846)",
-  "licence": "Public domain: anonymous words in print by 1853.",
-  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to INNOCENTS by NoteFusion, as words-only hymn books were sung.",
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WATCHMAN by NoteFusion, as words-only hymn books were sung.",
   "updated": "2026-10-26",
   "reviewed": false,
   "draft": false,
   "setByMetre": true,
-  "importedFrom": "hymns-1846:896"
+  "importedFrom": "olney-1779:2:4"
 }

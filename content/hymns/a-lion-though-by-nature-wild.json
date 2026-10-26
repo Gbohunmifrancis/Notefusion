@@ -1,0 +1,95 @@
+{
+  "title": "A Lion, Though by Nature Wild",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "A Lion, Though by Nature Wild in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 93, “The tamed lion”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "A Li-on, though by na-ture wild, The art of man can tame; He stands be-fore his keep-er, mild, And gen-tle as a lamb.",
+  "verses": [
+    {
+      "lines": [
+        "A Lion, though by nature wild,",
+        "The art of man can tame;",
+        "He stands before his keeper, mild,",
+        "And gentle as a lamb."
+      ]
+    },
+    {
+      "lines": [
+        "He watches, with submissive eye,",
+        "The hand that gives him food;",
+        "As if he meant to testify",
+        "A sense of gratitude."
+      ]
+    },
+    {
+      "lines": [
+        "But man himself, who thus subdues",
+        "The fiercest beasts of prey;",
+        "A nature, more unfeeling shows,",
+        "And far more fierce than they."
+      ]
+    },
+    {
+      "lines": [
+        "Though by the Lord preserved and fed,",
+        "He proves rebellious still;",
+        "And while he eats his Maker's bread,",
+        "Resists his holy will."
+      ]
+    },
+    {
+      "lines": [
+        "Alike in vain, of grace that saves,",
+        "Or threat'ning law he hears;",
+        "The savage scorns, blasphemes, and raves,",
+        "But neither loves nor fears."
+      ]
+    },
+    {
+      "lines": [
+        "O Savior! how thy wondrous pow'r",
+        "By angels is proclaimed!",
+        "When in thine own appointed hour,",
+        "They see this lion tamed."
+      ]
+    },
+    {
+      "lines": [
+        "The love thy bleeding cross displays,",
+        "The hardest heart subdues;",
+        "Here furious lions while they gaze,",
+        "Their rage and fierceness lose."
+      ]
+    },
+    {
+      "lines": [
+        "Yet are we but renewed in part,",
+        "The lion still remains;",
+        "Lord, drive him wholly from my heart,",
+        "Or keep him fast in chains."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:93"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "Sin Has Undone Our Wretched Race",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Sin Has Undone Our Wretched Race in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 11, “Pleading for and with youth”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Sin has un-done our wret-ched race, But Je-sus has re-stored And brought the sin-ner face to face With his for-giv-ing Lord.",
+  "verses": [
+    {
+      "lines": [
+        "Sin has undone our wretched race,",
+        "But Jesus has restored",
+        "And brought the sinner face to face",
+        "With his forgiving Lord."
+      ]
+    },
+    {
+      "lines": [
+        "This we repeat from year to year,",
+        "And press upon our youth;",
+        "Lord, give them an attentive ear,",
+        "Lord, save them by thy truth."
+      ]
+    },
+    {
+      "lines": [
+        "Blessings upon the rising race!",
+        "Make this an happy hour,",
+        "According to thy richest grace,",
+        "And thine almighty pow'r."
+      ]
+    },
+    {
+      "lines": [
+        "We feel for your unhappy state,",
+        "(May you regard it too)",
+        "And would awhile ourselves forget,",
+        "To pour out prayer for you."
+      ]
+    },
+    {
+      "lines": [
+        "We see, though you perceive it not,",
+        "Th' approaching, aweful doom;",
+        "O tremble at the solemn thought,",
+        "And flee the wrath to come!"
+      ]
+    },
+    {
+      "lines": [
+        "Dear Savior, let this new-born year",
+        "Spread an alarm abroad;",
+        "And cry, in every careless ear,",
+        "\"Prepare to meet thy God!\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:11"
+}

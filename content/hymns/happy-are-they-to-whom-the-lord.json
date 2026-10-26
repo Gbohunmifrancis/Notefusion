@@ -1,0 +1,95 @@
+{
+  "title": "Happy Are They, to Whom the Lord",
+  "tune": "york",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Happy Are They, to Whom the Lord in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 47, “Gospel privileges”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Hap-py are they, to whom the Lord His gra-cious name makes known! And by his Spir-it, and his word, A-dopts them for his own!",
+  "verses": [
+    {
+      "lines": [
+        "Happy are they, to whom the Lord",
+        "His gracious name makes known!",
+        "And by his Spirit, and his word,",
+        "Adopts them for his own!"
+      ]
+    },
+    {
+      "lines": [
+        "He calls them to his mercy-seat,",
+        "And hears their humble prayer;",
+        "And when within his house they meet,",
+        "They find his presence near."
+      ]
+    },
+    {
+      "lines": [
+        "The force of their united cries",
+        "No pow'r can long withstand",
+        "For Jesus helps them from the skies,",
+        "By his almighty hand."
+      ]
+    },
+    {
+      "lines": [
+        "Then mountains sink at once to plains,",
+        "And light from darkness springs;",
+        "Each seeming loss improves their gains,",
+        "Each trouble comfort brings."
+      ]
+    },
+    {
+      "lines": [
+        "Though men despise them, or revile,",
+        "They count the trial small;",
+        "Whoever frowns, if Jesus smile,",
+        "It makes amends for all."
+      ]
+    },
+    {
+      "lines": [
+        "Though meanly clad, and coarsely fed,",
+        "And, like their Savior, poor;",
+        "They would not change their gospel bread",
+        "For all the worldling's store."
+      ]
+    },
+    {
+      "lines": [
+        "When cheered with faith's sublimer joys,",
+        "They mount on eagle's wings;",
+        "They can disdain, as children's toys,",
+        "The pride and pomp of kings."
+      ]
+    },
+    {
+      "lines": [
+        "Dear Lord, assist our souls to pay",
+        "The debt of praise we owe;",
+        "That we enjoy a gospel day,",
+        "And heav'n begun below."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:47"
+}

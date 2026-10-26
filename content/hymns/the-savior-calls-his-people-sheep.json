@@ -1,0 +1,87 @@
+{
+  "title": "The Savior Calls His People Sheep",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Savior Calls His People Sheep in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 94, “Sheep”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The Sa-vior calls his peo-ple sheep, And bids them on his love re-ly, For he a-lone their souls can keep, And he a-lone their wants sup-ply.",
+  "verses": [
+    {
+      "lines": [
+        "The Savior calls his people sheep,",
+        "And bids them on his love rely,",
+        "For he alone their souls can keep,",
+        "And he alone their wants supply."
+      ]
+    },
+    {
+      "lines": [
+        "The bull can fight, the hare can flee,",
+        "The ant, in summer, food prepare;",
+        "But helpless sheep, and such are we,",
+        "Depend upon the Shepherd's care."
+      ]
+    },
+    {
+      "lines": [
+        "Jehovah is our Shepherd's name,",
+        "Then what have we, though weak, to fear?",
+        "Our sin and folly we proclaim,",
+        "If we despond while he is near."
+      ]
+    },
+    {
+      "lines": [
+        "When Satan threatens to devour,",
+        "When troubles press on every side;",
+        "Think of our Shepherd's care and pow'r,",
+        "He can defend, he will provide."
+      ]
+    },
+    {
+      "lines": [
+        "See the rich pastures of his grace,",
+        "Where, in full streams, salvation flows!",
+        "There he appoints our resting place,",
+        "And we may feed, secure from foes."
+      ]
+    },
+    {
+      "lines": [
+        "There, 'midst the flock the Shepherd dwells,",
+        "The sheep around in safety lie;",
+        "The wolf, in vain, with malice swells,",
+        "For he protects them with his eye."
+      ]
+    },
+    {
+      "lines": [
+        "Dear Lord, if I am one of thine,",
+        "From anxious thoughts I would be free;",
+        "To trust, and love, and praise, is mine,",
+        "The care of all belongs to thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:94"
+}

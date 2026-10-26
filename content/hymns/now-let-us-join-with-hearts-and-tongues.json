@@ -1,0 +1,87 @@
+{
+  "title": "Now Let Us Join with Hearts and Tongues",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Now Let Us Join with Hearts and Tongues in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 39, “Man honored above angels”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Now let us join with hearts and tongues, And em-u-late the an-gels' songs; Yea, sin-ners may ad-dress their King In songs that an-gels can-not sing.",
+  "verses": [
+    {
+      "lines": [
+        "Now let us join with hearts and tongues,",
+        "And emulate the angels' songs;",
+        "Yea, sinners may address their King",
+        "In songs that angels cannot sing."
+      ]
+    },
+    {
+      "lines": [
+        "They praise the Lamb who once was slain,",
+        "But we can add a higher strain;",
+        "Not only say, \"He suffered thus,\"",
+        "But, that he suffered all for us."
+      ]
+    },
+    {
+      "lines": [
+        "When angels by transgression fell,",
+        "Justice consigned them all to hell;",
+        "But mercy formed a wondrous plan,",
+        "To save, and honor fallen man."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, who passed the angels by,",
+        "Assumed our flesh to bleed and die;",
+        "And still he makes it his abode,",
+        "As man, he fills the throne of God."
+      ]
+    },
+    {
+      "lines": [
+        "Our next of kin, our Brother now,",
+        "Is he to whom the angels bow;",
+        "They join with us to praise his name,",
+        "But we the nearest interest claim."
+      ]
+    },
+    {
+      "lines": [
+        "But ah! how faint our praises rise!",
+        "Sure, 'tis the wonder of the skies;",
+        "That we, who share his richest love,",
+        "So cold and unconcerned should prove."
+      ]
+    },
+    {
+      "lines": [
+        "O glorious hour it comes with speed",
+        "When we from sin and darkness freed,",
+        "Shall see the God who died for man,",
+        "And praise him more than angels can."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:39"
+}

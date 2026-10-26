@@ -1,0 +1,79 @@
+{
+  "title": "Jesus, Whose Blood So Freely Streamed",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Jesus, Whose Blood So Freely Streamed in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 22, “Jehovam-Shalem, The Lord send peace. Judg 6:24”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus, whose blood so free-ly streamed To sa-tis-fy the laws de-mand; By thee from guilt and wrath re-deemed, Be-fore the Fa-ther's face I stand.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, whose blood so freely streamed",
+        "To satisfy the laws demand;",
+        "By thee from guilt and wrath redeemed,",
+        "Before the Father's face I stand."
+      ]
+    },
+    {
+      "lines": [
+        "To reconcile offending man,",
+        "Make Justice drop her angry rod;",
+        "What creature could have formed the plan,",
+        "Or who fulfil it but a God?"
+      ]
+    },
+    {
+      "lines": [
+        "No drop remains of all the curse;",
+        "For wretches who deserved the whole;",
+        "No arrows dipped in wrath to pierce",
+        "The guilty, but returning soul."
+      ]
+    },
+    {
+      "lines": [
+        "Peace by such means co dearly bought,",
+        "What rebel could have hoped to see?",
+        "Peace, by his injured sovereign wrought,",
+        "His Sovereign fastened to the tree."
+      ]
+    },
+    {
+      "lines": [
+        "Now, Lord, thy feeble worm prepare!",
+        "For strife with earth and hell begins;",
+        "Confirm and gird me for the war,",
+        "They hate the soul that hates his sins."
+      ]
+    },
+    {
+      "lines": [
+        "Let them in horrid league agree!",
+        "They may assault, they may distress;",
+        "But cannot quench thy love to me,",
+        "Nor rob me of the Lord my peace."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:22"
+}

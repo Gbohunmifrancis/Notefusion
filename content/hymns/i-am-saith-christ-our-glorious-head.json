@@ -1,0 +1,87 @@
+{
+  "title": "\"I Am, Saith Christ Our Glorious Head",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "\"I Am, Saith Christ Our Glorious Head in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 116, “The resurrection and the life. Jn 11:25”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "\"I Am, saith Christ our glo-rious head, (May we at-ten-tion give) The re-sur-rec-tion of the dead, The life of all that live.",
+  "verses": [
+    {
+      "lines": [
+        "\"I Am, saith Christ our glorious head,",
+        "(May we attention give)",
+        "The resurrection of the dead,",
+        "The life of all that live."
+      ]
+    },
+    {
+      "lines": [
+        "By faith in me, the soul receives",
+        "New life, though dead before;",
+        "And he that in my name believes,",
+        "Shall live, to die no more."
+      ]
+    },
+    {
+      "lines": [
+        "The sinner, sleeping in his grave,",
+        "Shall at my voice awake;",
+        "And when I once begin to save,",
+        "My work I ne'er forsake.\""
+      ]
+    },
+    {
+      "lines": [
+        "Fulfill thy promise, gracious Lord,",
+        "On us assembled here,",
+        "Put forth thy Spirit with the word,",
+        "And cause the dead to hear."
+      ]
+    },
+    {
+      "lines": [
+        "Preserve the pow'r of faith alive,",
+        "In those who love thy name;",
+        "For sin and Satan daily strive",
+        "To quench the sacred flame."
+      ]
+    },
+    {
+      "lines": [
+        "Thy pow'r and mercy first prevailed",
+        "From death to set us free;",
+        "And often since our life had failed,",
+        "If not renewed by thee."
+      ]
+    },
+    {
+      "lines": [
+        "To thee we look, to thee we bow;",
+        "To thee, for help, we call;",
+        "Our life and resurrection thou,",
+        "Our hope, our joy, our all."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:116"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "When First to Make My Heart His Own",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "When First to Make My Heart His Own in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 26, “Dagon before the ark. Judg 5:4,5”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When first to make my heart his own, The Lord re-vealed his might-y grace; Self reigned, like Da-gon, on the throne, But could not long main-tain its place.",
+  "verses": [
+    {
+      "lines": [
+        "When first to make my heart his own,",
+        "The Lord revealed his mighty grace;",
+        "Self reigned, like Dagon, on the throne,",
+        "But could not long maintain its place."
+      ]
+    },
+    {
+      "lines": [
+        "It fell, and owned the pow'r divine,",
+        "(Grace can with ease the vict'ry gain)",
+        "But soon this wretched heart of mine,",
+        "Contrived to set it up again."
+      ]
+    },
+    {
+      "lines": [
+        "Again the Lord his name proclaimed,",
+        "And brought the hateful idol low;",
+        "Then self, like Dagon, broken, maimed,",
+        "Seemed to receive a mortal blow."
+      ]
+    },
+    {
+      "lines": [
+        "Yet self is not of life bereft,",
+        "Nor ceases to oppose his will;",
+        "Though but a maimed stump be left,",
+        "'Tis Dagon, 'tis an idol still."
+      ]
+    },
+    {
+      "lines": [
+        "Lord! must I always guilty prove,",
+        "And idols in my heart have room?",
+        "Oh! let the, fire of heavenly love,",
+        "The very slump of self consume."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:26"
+}

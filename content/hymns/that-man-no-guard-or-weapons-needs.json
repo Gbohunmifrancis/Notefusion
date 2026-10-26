@@ -1,0 +1,79 @@
+{
+  "title": "That Man No Guard or Weapons Needs",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "That Man No Guard or Weapons Needs in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 48, “The believer's safety. Ps 91”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "That man no guard or wea-pons needs, Whose heart the blood of Je-sus knows; But safe may pass, if du-ty leads, Through burn-ing sands or moun-tain snows.",
+  "verses": [
+    {
+      "lines": [
+        "That man no guard or weapons needs,",
+        "Whose heart the blood of Jesus knows;",
+        "But safe may pass, if duty leads,",
+        "Through burning sands or mountain snows."
+      ]
+    },
+    {
+      "lines": [
+        "Released from guilt he feels no fear,",
+        "Redemption is his shield and tow'r;",
+        "He sees his Savior always near",
+        "To help, in every trying hour."
+      ]
+    },
+    {
+      "lines": [
+        "Though I am weak and Satan strong,",
+        "And often to assault me tries;",
+        "When Jesus is my shield and song,",
+        "Abashed the wolf before me flies."
+      ]
+    },
+    {
+      "lines": [
+        "His love possessing I am blest,",
+        "Secure whatever change may come;",
+        "Whether I go to East or West,",
+        "With him I still shall be at home."
+      ]
+    },
+    {
+      "lines": [
+        "If placed beneath the northern pole,",
+        "Though winter reigns with rigor there;",
+        "His gracious beams would cheer my soul,",
+        "And make a spring throughout the year."
+      ]
+    },
+    {
+      "lines": [
+        "Or if the deserts sun-burnt soil,",
+        "My lonely dwelling e'er should prove;",
+        "His presence would support my toil,",
+        "Whose smile is life, whose voice is love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:48"
+}

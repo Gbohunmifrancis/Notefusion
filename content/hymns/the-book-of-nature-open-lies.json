@@ -1,0 +1,95 @@
+{
+  "title": "The Book of Nature Open Lies",
+  "tune": "york",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Book of Nature Open Lies in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 81, “The book of creation”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The book of na-ture o-pen lies, With much in-struc-tion stored; But till the Lord a-noints our eyes We can-not read a word.",
+  "verses": [
+    {
+      "lines": [
+        "The book of nature open lies,",
+        "With much instruction stored;",
+        "But till the Lord anoints our eyes",
+        "We cannot read a word."
+      ]
+    },
+    {
+      "lines": [
+        "Philosophers have pored in vain,",
+        "And guessed, from age to age;",
+        "For reason's eye could ne'er attain",
+        "To understand a page."
+      ]
+    },
+    {
+      "lines": [
+        "Though to each star they give a name,",
+        "Its size and motions teach;",
+        "The truths which all the stars proclaim,",
+        "Their wisdom cannot reach."
+      ]
+    },
+    {
+      "lines": [
+        "With skill to measure earth and sea;",
+        "And weigh the subtle air;",
+        "They cannot, Lord, discover thee",
+        "Though present everywhere."
+      ]
+    },
+    {
+      "lines": [
+        "The knowledge of the saints excels",
+        "The wisdom of the schools;",
+        "To them his secrets God reveals,",
+        "Though men account them fools."
+      ]
+    },
+    {
+      "lines": [
+        "To them the sun and stars on high,",
+        "The flow'rs that paint the field,",
+        "And all the artless birds that fly,",
+        "Divine instruction yield."
+      ]
+    },
+    {
+      "lines": [
+        "The creatures on their senses press,",
+        "As witnesses to prove",
+        "Their Savior's pow'r, and faithfulness,",
+        "His providence and love."
+      ]
+    },
+    {
+      "lines": [
+        "Thus may we study nature's book",
+        "To make us wise indeed!",
+        "And pity those who only look",
+        "At what they cannot read."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:81"
+}

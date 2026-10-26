@@ -1,0 +1,95 @@
+{
+  "title": "Behold the Throne of Grace",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Behold the Throne of Grace in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 33, “Ask what I shall give thee. 1Ki 3:5”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Be-hold the throne of grace! The pro-mise calls me near; There Je-sus shows a smil-ing face, And waits to an-swer prayer.",
+  "verses": [
+    {
+      "lines": [
+        "Behold the throne of grace!",
+        "The promise calls me near;",
+        "There Jesus shows a smiling face,",
+        "And waits to answer prayer."
+      ]
+    },
+    {
+      "lines": [
+        "That rich atoning blood,",
+        "Which sprinkled round I see;",
+        "Provides for those who come to God,",
+        "An all-prevailing plea."
+      ]
+    },
+    {
+      "lines": [
+        "My soul ask what thou wilt,",
+        "Thou canst not be too bold;",
+        "Since his own blood for thee he spilt,",
+        "What else can he withhold."
+      ]
+    },
+    {
+      "lines": [
+        "Beyond thy utmost wants",
+        "His love and pow'r can bless;",
+        "To praying souls he always grants,",
+        "More than they can express."
+      ]
+    },
+    {
+      "lines": [
+        "Since 'tis the Lord's command,",
+        "My mouth I open wide;",
+        "Lord open thou thy bounteous hand,",
+        "That I may be supplied."
+      ]
+    },
+    {
+      "lines": [
+        "Thine image, Lord, bestow,",
+        "Thy presence and thy love;",
+        "I ask to serve thee here below,",
+        "And reign with thee above."
+      ]
+    },
+    {
+      "lines": [
+        "Teach me to live by faith,",
+        "Conform my will to thine;",
+        "Let me victorious be in death,",
+        "And then in glory shine."
+      ]
+    },
+    {
+      "lines": [
+        "If Thou these blessings give,",
+        "And wilt my portion be;",
+        "Cheerful the world's poor toys I leave,",
+        "To them who know not thee."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:33"
+}

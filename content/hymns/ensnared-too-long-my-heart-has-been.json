@@ -1,0 +1,87 @@
+{
+  "title": "Ensnared, Too Long, My Heart Has Been",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Ensnared, Too Long, My Heart Has Been in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 23, “Waiting at Wisdom's gates. Prov 8:34,35”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "En-snared, too long, my heart has been In fol-ly's hurt-ful ways; O, may I now, at length, be-gin To hear what Wis-dom says!",
+  "verses": [
+    {
+      "lines": [
+        "Ensnared, too long, my heart has been",
+        "In folly's hurtful ways;",
+        "O, may I now, at length, begin",
+        "To hear what Wisdom says!"
+      ]
+    },
+    {
+      "lines": [
+        "'Tis Jesus, from the mercy-seat,",
+        "Invites me to his rest;",
+        "He calls poor sinners to his feet",
+        "To make them truly blest."
+      ]
+    },
+    {
+      "lines": [
+        "Approach my soul to Wisdom's gates",
+        "While it is called today;",
+        "No one who watches there and waits",
+        "Shall e'er be turned away."
+      ]
+    },
+    {
+      "lines": [
+        "He will not let me seek in vain,",
+        "For all, who trust his word,",
+        "Shall everlasting life obtain,",
+        "And favor from the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, I have hated thee too long,",
+        "And dared thee to thy face;",
+        "I've done my soul exceeding wrong",
+        "In slighting all thy grace."
+      ]
+    },
+    {
+      "lines": [
+        "Now I would break my league with death,",
+        "And live to thee alone;",
+        "O let thy Spirit's seal of faith,",
+        "Secure me for thine own."
+      ]
+    },
+    {
+      "lines": [
+        "Let all the saints assembled here,",
+        "Yea, let all heav'n rejoice;",
+        "That I begin with this new-year,",
+        "To make the Lord my choice."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:23"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "Sweeter Founds Than Music Knows",
+  "tune": "pleyels-hymn",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Sweeter Founds Than Music Knows in Tonic Solfa to PLEYEL'S HYMN, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 37, “Praise for the incarnation”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to PLEYEL'S HYMN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Sweet-er founds than mu-sic knows Charm me, in Em-ma-nuel'S name; All her hopes my spir-it owes To his birth, and cross, and shame.",
+  "verses": [
+    {
+      "lines": [
+        "Sweeter founds than music knows",
+        "Charm me, in Emmanuel'S name;",
+        "All her hopes my spirit owes",
+        "To his birth, and cross, and shame."
+      ]
+    },
+    {
+      "lines": [
+        "When he came the angels sang",
+        "\"Glory be to God on high,\"",
+        "Lord, unloose my stamm'ring tongue,",
+        "Who should louder sing than I."
+      ]
+    },
+    {
+      "lines": [
+        "Did the Lord a man become",
+        "That he might the law fulfil,",
+        "Bleed and suffer in my room,",
+        "And canst thou, my tongue, be still."
+      ]
+    },
+    {
+      "lines": [
+        "No, I must my praises bring,",
+        "Though they worthless are, and weak;",
+        "For should I refuse to sing",
+        "Sure the very stones would speak."
+      ]
+    },
+    {
+      "lines": [
+        "O my Savior, Shield, and Sun,",
+        "Shepherd, Brother, Husband, Friend,",
+        "Every precious name in one;",
+        "I will love thee without end."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to PLEYEL'S HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:37"
+}

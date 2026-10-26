@@ -1,0 +1,103 @@
+{
+  "title": "Let Hearts and Tongues Unite",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Let Hearts and Tongues Unite in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 42, “Ebenezer 1Sam 7:12”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Let hearts and tongues u-nite And loud thanks-giv-ings raise; 'Tis du-ty, min-gled with de-light, The Sa-vior's name to praise.",
+  "verses": [
+    {
+      "lines": [
+        "Let hearts and tongues unite",
+        "And loud thanksgivings raise;",
+        "'Tis duty, mingled with delight,",
+        "The Savior's name to praise."
+      ]
+    },
+    {
+      "lines": [
+        "To him we owe our breath,",
+        "He took us from the womb,",
+        "Which else had shut us up in death,",
+        "And proved an early tomb."
+      ]
+    },
+    {
+      "lines": [
+        "When on the breast we hung",
+        "Our help was in the Lord;",
+        "'Twas he first taught our infant tongue",
+        "To form the lisping word."
+      ]
+    },
+    {
+      "lines": [
+        "When in our blood we lay",
+        "He would not let us die,",
+        "Because his love had fixed a day",
+        "To bring salvation nigh."
+      ]
+    },
+    {
+      "lines": [
+        "In childhood and in youth",
+        "His eye was on us still;",
+        "Though strangers to his love and truth,",
+        "And prone to cross his will."
+      ]
+    },
+    {
+      "lines": [
+        "And since his name we knew,",
+        "How gracious has he been!",
+        "What dangers has he led us through,",
+        "What mercies have we seen!"
+      ]
+    },
+    {
+      "lines": [
+        "Now through another year",
+        "Supported by his care;",
+        "We raise our Ebenezer here,",
+        "\"The Lord has helped thus far.\""
+      ]
+    },
+    {
+      "lines": [
+        "Our lot in future years",
+        "Unable to foresee",
+        "He, kindly to prevent our fears,",
+        "Says, \"Leave it all to me.\""
+      ]
+    },
+    {
+      "lines": [
+        "Yea, Lord, we wish to cast",
+        "Our cares upon thy breast!",
+        "Help us to praise thee for the past,",
+        "And trust thee for the rest."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:42"
+}

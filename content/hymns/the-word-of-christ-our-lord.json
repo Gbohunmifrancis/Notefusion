@@ -1,0 +1,87 @@
+{
+  "title": "The Word of Christ, Our Lord",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Word of Christ, Our Lord in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 133, “The word quick and powerful. Heb 4:12,13”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "The word of Christ, our Lord, With whom we have to do; Is sharp-er than a two edged sword, To pierce the sin-ner through.",
+  "verses": [
+    {
+      "lines": [
+        "The word of Christ, our Lord,",
+        "With whom we have to do;",
+        "Is sharper than a two-edged sword,",
+        "To pierce the sinner through."
+      ]
+    },
+    {
+      "lines": [
+        "Swift as the lightnings blaze",
+        "When aweful thunders roll,",
+        "It fills the conscience with amaze,",
+        "And penetrates the soul."
+      ]
+    },
+    {
+      "lines": [
+        "No heart can he concealed",
+        "From his all-piercing eyes;",
+        "Each thought and purpose stands revealed,",
+        "Naked, without disguise."
+      ]
+    },
+    {
+      "lines": [
+        "He sees his peoples' fears,",
+        "He notes their mournful cry;",
+        "He counts their sighs and falling tears,",
+        "And helps them from on high."
+      ]
+    },
+    {
+      "lines": [
+        "Though feeble is their good,",
+        "It has his kind regard;",
+        "Yea, all they would do, if they could,",
+        "Shall find a sure reward."
+      ]
+    },
+    {
+      "lines": [
+        "He sees the wicked too,",
+        "And will repay them soon,",
+        "For all the evil deeds they do,",
+        "And all they would have done."
+      ]
+    },
+    {
+      "lines": [
+        "Since all our secret ways",
+        "Are marked and known by thee;",
+        "Afford us, Lord, thy light of grace",
+        "That we ourselves may see."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:133"
+}
