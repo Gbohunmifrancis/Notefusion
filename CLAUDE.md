@@ -731,8 +731,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `IJobEvents` key `support:{id}` (the customer's `GET /api/support/events`) and to the console (`AdminLiveFeed` "support": the
   Support page and its nav badge); a customer's run of messages pushes the admins' consoles and phones once (again after 2 minutes
   or once read), an answer pushes the customer's phone (`data.screen` "SupportChat") and web app (`/app?support=1`) only when their
-  chat is not open. The website and /app carry `assets/support.js` (the button inline, the chat and `support.css` on the first tap;
-  above the tab bar and the mini player); web-admin `/support`. Threads go with their account.
+  chat is not open. The website and /app carry `assets/support.js` (the button inline, the panel and `support.css` on the first tap;
+  above the tab bar and the mini player): Home (Send us a message with the typical reply time, `GET /api/support/info`
+  `GetSupportInfoQuery`: the median wait over 60 days once 5 were answered, else "within a few hours"; the `HELP` questions,
+  searchable; Follow us on X, x.com/NoteFusion), Messages (the chat) and Help, on a tab bar; web-admin `/support`. Threads go with their account.
   The phone: `screens/SupportChatScreen` (route `SupportChat`, its stream by XHR while in front, a read every 15 s otherwise),
   the one floating `components/SupportBubble` on Home only (a dot for an unread answer, `lib/supportSeen`), and "Chat with us" in
   Profile and Help; pushes `SupportChat` (the customer) and `AdminSupport` (an admin: the console's Support page).

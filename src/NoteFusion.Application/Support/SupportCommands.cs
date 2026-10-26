@@ -400,3 +400,60 @@ public sealed class SetSupportClosedCommandHandler : IRequestHandler<SetSupportC
         return Result.Success();
     }
 }
+
+/// <summary>
+/// How quickly customers are answered, for the chat's "We typically reply in …": the median wait, in minutes, from the
+/// first customer message after an answer (or the thread's start) to the next answer, over the last
+/// <see cref="WindowDays"/> days. Null until <see cref="MinimumAnswered"/> waits have been answered.
+/// </summary>
+public sealed record SupportInfoDto(int? TypicalReplyMinutes, int Answered);
+
+public sealed record GetSupportInfoQuery : IRequest<Result<SupportInfoDto>>
+{
+    public const int WindowDays = 60;
+    public const int MinimumAnswered = 5;
+}
+
+public sealed class GetSupportInfoQueryHandler : IRequestHandler<GetSupportInfoQuery, Result<SupportInfoDto>>
+{
+    private readonly IApplicationDbContext _db;
+    private readonly IDateTimeProvider _clock;
+
+    public GetSupportInfoQueryHandler(IApplicationDbContext db, IDateTimeProvider clock)
+    {
+        _db = db;
+        _clock = clock;
+    }
+
+    public async Task<Result<SupportInfoDto>> Handle(GetSupportInfoQuery request, CancellationToken ct)
+    {
+        var since = _clock.UtcNow.AddDays(-GetSupportInfoQuery.WindowDays);
+        var messages = await _db.SupportMessages.AsNoTracking()
+            .Where(m => m.CreatedAtUtc >= since)
+            .Select(m => new { m.ConversationId, FromAdmin = m.AdminId != null, m.CreatedAtUtc })
+            .ToListAsync(ct);
+
+        var waits = new List<double>();
+        foreach (var thread in messages.GroupBy(m => m.ConversationId))
+        {
+            DateTime? waitingSince = null;
+            foreach (var m in thread.OrderBy(m => m.CreatedAtUtc))
+            {
+                if (!m.FromAdmin)
+                    waitingSince ??= m.CreatedAtUtc;
+                else if (waitingSince is { } start)
+                {
+                    waits.Add((m.CreatedAtUtc - start).TotalMinutes);
+                    waitingSince = null;
+                }
+            }
+        }
+
+        if (waits.Count < GetSupportInfoQuery.MinimumAnswered)
+            return new SupportInfoDto(null, waits.Count);
+        waits.Sort();
+        var middle = waits.Count / 2;
+        var median = waits.Count % 2 == 1 ? waits[middle] : (waits[middle - 1] + waits[middle]) / 2;
+        return new SupportInfoDto((int)Math.Ceiling(median), waits.Count);
+    }
+}

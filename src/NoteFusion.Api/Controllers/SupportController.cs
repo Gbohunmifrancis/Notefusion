@@ -29,6 +29,11 @@ public sealed class SupportController : ApiControllerBase
 
     private string? Key => Request.Headers.TryGetValue(KeyHeader, out var v) ? v.ToString() : null;
 
+    /// <summary>How quickly customers are answered (the median wait in minutes, null until five answers), for the chat's home.</summary>
+    [HttpGet("info")]
+    public async Task<IActionResult> Info(CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetSupportInfoQuery(), ct));
+
     /// <summary>The caller's thread (newest 200 messages); <c>conversationId</c> null when they have not written yet.</summary>
     [HttpGet("thread")]
     public async Task<IActionResult> Thread(CancellationToken ct)

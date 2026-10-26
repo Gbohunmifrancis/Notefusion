@@ -37,3 +37,22 @@ test("a dot only for an answer newer than the last message shown", () => {
   assert.equal(hasUnread([them, me], null), false);
   assert.equal(hasUnread([], null), false);
 });
+
+test("the reply-time line rounds up to a plain promise, and says 'a few hours' until there is enough to measure", () => {
+  const { replyPromise } = window.NfSupport;
+  assert.equal(replyPromise(null), "We usually reply within a few hours");
+  assert.equal(replyPromise(undefined), "We usually reply within a few hours");
+  assert.equal(replyPromise(3), "We typically reply in under 5 minutes");
+  assert.equal(replyPromise(11), "We typically reply in under 15 minutes");
+  assert.equal(replyPromise(45), "We typically reply in under an hour");
+  assert.equal(replyPromise(61), "We typically reply in under 2 hours");
+  assert.equal(replyPromise(60 * 30), "We typically reply within a day or two");
+});
+
+test("help search keeps the questions holding every word, in their order", () => {
+  const { searchHelp, HELP } = window.NfSupport;
+  assert.equal(searchHelp(HELP, "").length, HELP.length);
+  assert.deepEqual([...searchHelp(HELP, "YouTube link").map((h) => h.q)], ["How do I transcribe a song from YouTube?"]);
+  assert.ok(searchHelp(HELP, "  delete   ACCOUNT ").some((h) => h.q === "How do I delete my account?"));
+  assert.equal(searchHelp(HELP, "zzzz").length, 0);
+});
