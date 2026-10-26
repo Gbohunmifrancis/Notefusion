@@ -1,0 +1,78 @@
+{
+  "title": "Jesus, Our Lord, Ascend Thy Throne",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Jesus, Our Lord, Ascend Thy Throne in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 110, part 3, headed “Christ's kingdom and priesthood”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus, our Lord, as-cend thy throne, And near the Fa-ther sit; In Zi-on shall thy power be known, And make thy foes sub-mit.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, our Lord, ascend thy throne,",
+        "And near the Father sit;",
+        "In Zion shall thy power be known,",
+        "And make thy foes submit."
+      ]
+    },
+    {
+      "lines": [
+        "What wonders shall thy gospel do!",
+        "Thy converts shall surpass",
+        "The numerous drops of morning dew,",
+        "And own thy sovereign grace."
+      ]
+    },
+    {
+      "lines": [
+        "God hath pronounc'd a firm decree,",
+        "Nor changes what he swore;",
+        "\"Eternal shall thy priesthood be,",
+        "\"When Aaron is no more."
+      ]
+    },
+    {
+      "lines": [
+        "\"Melchisedek, that wondrous priest,",
+        "\"That king of high degree,",
+        "\"That holy man who Abr'am blest,",
+        "\"Was but a type of thee.\""
+      ]
+    },
+    {
+      "lines": [
+        "Jesus our priest for ever lives",
+        "To plead for us above;",
+        "Jesus our king for ever gives",
+        "The blessings of his love."
+      ]
+    },
+    {
+      "lines": [
+        "God shall exalt his glorious head,",
+        "And his high throne maintain,",
+        "Shall strike the powers and princes dead",
+        "Who dare oppose his reign."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 110:3"
+}

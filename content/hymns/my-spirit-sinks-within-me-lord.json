@@ -1,0 +1,78 @@
+{
+  "title": "My Spirit Sinks Within Me, Lord",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "My Spirit Sinks Within Me, Lord in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 42, part 2, headed “Melancholy thoughts reproved; or, Hope in afflictions”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "My spir-it sinks with-in me, Lord, But I will call thy name to mind, And times of past dis-tress re-cord, When I have found my God was kind.",
+  "verses": [
+    {
+      "lines": [
+        "My spirit sinks within me, Lord,",
+        "But I will call thy name to mind,",
+        "And times of past distress record,",
+        "When I have found my God was kind."
+      ]
+    },
+    {
+      "lines": [
+        "Huge troubles, with tumultuous noise,",
+        "Swell like a sea, and round me spread;",
+        "Thy water-spouts drown all my joys,",
+        "And rising waves roll o'er my head."
+      ]
+    },
+    {
+      "lines": [
+        "Yet will the Lord command his love,",
+        "When I address his throne by day,",
+        "Nor in the night his grace remove;",
+        "The night shall hear me sing and pray."
+      ]
+    },
+    {
+      "lines": [
+        "I'll cast myself before his feet,",
+        "And say \"My God, my heavenly Rock,",
+        "\"Why doth thy love so long forget",
+        "\"The soul that groans beneath thy stroke?\""
+      ]
+    },
+    {
+      "lines": [
+        "I'll chide my heart that sinks so low,",
+        "Why should my soul indulge her grief?",
+        "Hope in the Lord, and praise him too,",
+        "He is my rest, my sure relief."
+      ]
+    },
+    {
+      "lines": [
+        "Thy light and truth shall guide me still,",
+        "Thy word shall my best thoughts employ,",
+        "And lead me to thine heavenly hill,",
+        "My God, my most exceeding Joy."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 42:2"
+}

@@ -1,0 +1,78 @@
+{
+  "title": "My Refuge Is the God of Love",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "My Refuge Is the God of Love in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 11, headed “God loves the righteous and hates the wicked”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "My re-fuge is the God of love; Why do my foes in-sult and cry, \"Fly like a tim-orous trem-bling dove, \"To dis-tant woods or moun-tains fly\"?",
+  "verses": [
+    {
+      "lines": [
+        "My refuge is the God of love;",
+        "Why do my foes insult and cry,",
+        "\"Fly like a timorous trembling dove,",
+        "\"To distant woods or mountains fly\"?"
+      ]
+    },
+    {
+      "lines": [
+        "If government be all destroy'd",
+        "(That firm foundation of our peace)",
+        "And violence make justice void,",
+        "Where shall the righteous seek redress?"
+      ]
+    },
+    {
+      "lines": [
+        "The Lord in heaven has fix'd his throne,",
+        "His eye surveys the world below;",
+        "To him all mortal things are known,",
+        "His eyelids search our spirits thro'."
+      ]
+    },
+    {
+      "lines": [
+        "If he afflicts his saints so far",
+        "To prove their love, and try their grace,",
+        "What may the bold transgressors fear?",
+        "His very soul abhors their ways."
+      ]
+    },
+    {
+      "lines": [
+        "On impious wretches he shall rain",
+        "Tempests of brimstone, fire, and death,",
+        "Such as he kindled on the plain",
+        "Of Sodom with his angry breath."
+      ]
+    },
+    {
+      "lines": [
+        "The righteous Lord loves righteous souls,",
+        "Whose thoughts and actions are sincere;",
+        "And with a gracious eye beholds",
+        "The men that his own image bear."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 11"
+}

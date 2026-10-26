@@ -1,0 +1,62 @@
+{
+  "title": "My God, What Inward Grief I Feel",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "My God, What Inward Grief I Feel in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 139, part 3, headed “Sincerity professed, and grace tried; or, The heart- searching of God”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "My God, what in-ward grief I feel When im-pious men trans-gress thy will! I mourn to hear their lips pro-fane Take thy tre-men-dous Name in vain.",
+  "verses": [
+    {
+      "lines": [
+        "My God, what inward grief I feel",
+        "When impious men transgress thy will!",
+        "I mourn to hear their lips profane",
+        "Take thy tremendous Name in vain."
+      ]
+    },
+    {
+      "lines": [
+        "Does not my soul detest and hate",
+        "The sons of malice and deceit?",
+        "Those that oppose thy laws and thee",
+        "I count them enemies to me."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, search my soul, try every thought;",
+        "Tho' my own heart accuse me not",
+        "Of walking in a false disguise,",
+        "I beg the trial of thine eyes."
+      ]
+    },
+    {
+      "lines": [
+        "Doth secret mischief lurk within?",
+        "Do I indulge some unknown sin?",
+        "O turn my feet whene'er I stray,",
+        "And lead me in thy perfect way."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 139:3"
+}

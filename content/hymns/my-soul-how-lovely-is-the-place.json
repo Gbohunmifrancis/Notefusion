@@ -1,0 +1,102 @@
+{
+  "title": "My Soul, How Lovely Is the Place",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "My Soul, How Lovely Is the Place in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 84, part 3, headed “Delight in ordinances of worship; or, God present in his churches”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "My soul, how love-ly is the place To which thy God re-sorts! 'Tis heaven to see his smil-ing face, Tho' in his earth-ly courts.",
+  "verses": [
+    {
+      "lines": [
+        "My soul, how lovely is the place",
+        "To which thy God resorts!",
+        "'Tis heaven to see his smiling face,",
+        "Tho' in his earthly courts."
+      ]
+    },
+    {
+      "lines": [
+        "There the great Monarch of the skies",
+        "His saving power displays,",
+        "And light breaks in upon our eyes",
+        "With kind and quickening rays."
+      ]
+    },
+    {
+      "lines": [
+        "With his rich gifts the heavenly Dove",
+        "Descends and fills the place,",
+        "While Christ reveals his wondrous love,",
+        "And sheds abroad his grace."
+      ]
+    },
+    {
+      "lines": [
+        "There, mighty God, thy words declare",
+        "The secrets of thy will;",
+        "And still we seek thy mercy there,",
+        "And sing thy praises still."
+      ]
+    },
+    {
+      "lines": [
+        "My heart and flesh cry out for thee,",
+        "While far from thine abode:",
+        "When shall I tread thy courts, and see",
+        "My Saviour and my God?"
+      ]
+    },
+    {
+      "lines": [
+        "The sparrow builds herself a nest,",
+        "And suffers no remove;",
+        "O make me like the sparrows, blest,",
+        "To dwell but where I love."
+      ]
+    },
+    {
+      "lines": [
+        "To sit one day beneath thine eye,",
+        "And hear thy gracious voice,",
+        "Exceeds a whole eternity",
+        "Employ'd in carnal joys."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, at thy threshold I would wait,",
+        "While Jesus is within,",
+        "Rather than fill a throne of state,",
+        "Or live in tents of sin."
+      ]
+    },
+    {
+      "lines": [
+        "Could I command the spacious land,",
+        "And the more boundless sea,",
+        "For one blest hour at thy right hand",
+        "I'd give them both away."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 84:3"
+}

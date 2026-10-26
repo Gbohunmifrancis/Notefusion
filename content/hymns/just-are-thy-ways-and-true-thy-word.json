@@ -1,0 +1,70 @@
+{
+  "title": "Just Are Thy Ways, and True Thy Word",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Just Are Thy Ways, and True Thy Word in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 18, part 3, headed “Rejoicing in God; or, Salvation and triumph”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Just are thy ways, and true thy word, Great rock of my se-cure a-bode; Who is a God be-side the Lord? Or where's a re-fuge like our God?",
+  "verses": [
+    {
+      "lines": [
+        "Just are thy ways, and true thy word,",
+        "Great rock of my secure abode;",
+        "Who is a God beside the Lord?",
+        "Or where's a refuge like our God?"
+      ]
+    },
+    {
+      "lines": [
+        "'Tis he that girds me with his might,",
+        "Gives me his holy sword to wield;",
+        "And while with sin and hell I fight,",
+        "Spreads his salvation for my shield."
+      ]
+    },
+    {
+      "lines": [
+        "He lives (and blessed be my rock!)",
+        "The God of my salvation lives,",
+        "The dark designs of hell are broke;",
+        "Sweet is the peace my Father gives."
+      ]
+    },
+    {
+      "lines": [
+        "Before the scoffers of the age,",
+        "I will exalt my Father's name,",
+        "Nor tremble at their mighty rage,",
+        "But meet reproach and bear the shame."
+      ]
+    },
+    {
+      "lines": [
+        "To David and his royal seed",
+        "Thy grace for ever shall extend;",
+        "Thy love to saints in Christ their head",
+        "Knows not a limit, nor an end."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 18:3"
+}

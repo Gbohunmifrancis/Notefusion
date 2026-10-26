@@ -1,0 +1,158 @@
+{
+  "title": "Let Every Creature Join",
+  "tune": "franconia",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Let Every Creature Join in Tonic Solfa to FRANCONIA, doh is Eb: the solfa with the words, staff notation, 16 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 148, part 3, headed “Universal praise”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to FRANCONIA; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Let ev-ery crea-ture join To praise th'e-ter-nal God; Ye heav-enly hosts, the song be-gin, And sound his Name a-broad.",
+  "verses": [
+    {
+      "lines": [
+        "Let every creature join",
+        "To praise th' eternal God;",
+        "Ye heavenly hosts, the song begin,",
+        "And sound his Name abroad."
+      ]
+    },
+    {
+      "lines": [
+        "Thou sun with golden beams,",
+        "And moon with paler rays;",
+        "Ye starry lights, ye twinkling flames,",
+        "Shine to your Maker's praise."
+      ]
+    },
+    {
+      "lines": [
+        "He built those worlds above,",
+        "And fix'd their wondrous frame;",
+        "By his command they stand or move,",
+        "And ever speak his Name."
+      ]
+    },
+    {
+      "lines": [
+        "Ye vapours, when ye rise,",
+        "Or fall in showers, or snow,",
+        "Ye thunders, murmuring round the skies,",
+        "His power and glory show."
+      ]
+    },
+    {
+      "lines": [
+        "Wind, hail, and flashing fire,",
+        "Agree to praise the Lord,",
+        "When ye in dreadful storms conspire",
+        "To execute his word."
+      ]
+    },
+    {
+      "lines": [
+        "By all his works above",
+        "His honours be exprest;",
+        "But saints that taste his saving love",
+        "Should sing his praises best."
+      ]
+    },
+    {
+      "lines": [
+        "Let earth and ocean know",
+        "They owe their Maker praise;",
+        "Praise him, ye watery worlds below,",
+        "And monsters of the seas."
+      ]
+    },
+    {
+      "lines": [
+        "From mountains near the sky",
+        "Let his high praise resound,",
+        "From humble shrubs and cedars high,",
+        "And vales and fields around."
+      ]
+    },
+    {
+      "lines": [
+        "Ye lions of the wood,",
+        "And tamer beasts that graze,",
+        "Ye live upon his daily food,",
+        "And he expects your praise."
+      ]
+    },
+    {
+      "lines": [
+        "Ye birds of lofty wing,",
+        "On high his praises bear;",
+        "Or sit on flowery boughs, and sing",
+        "Your Maker's glory there."
+      ]
+    },
+    {
+      "lines": [
+        "Ye creeping ants and worms,",
+        "His various wisdom show,",
+        "And flies, in all your shining swarms,",
+        "Praise him that drest you so."
+      ]
+    },
+    {
+      "lines": [
+        "By all the earth-born race",
+        "His honours be exprest;",
+        "But saints that know his heavenly grace",
+        "Should learn to praise him best."
+      ]
+    },
+    {
+      "lines": [
+        "Monarchs of wide command,",
+        "Praise ye th' eternal King;",
+        "Judges, adore that sovereign hand",
+        "Whence all your honours spring."
+      ]
+    },
+    {
+      "lines": [
+        "Let vigorous youth engage",
+        "To sound his praises high;",
+        "While growing babes, and withering age,",
+        "Their feebler voices try."
+      ]
+    },
+    {
+      "lines": [
+        "United zeal be shown,",
+        "His wondrous fame to raise;",
+        "God is the Lord: his name alone",
+        "Deserves our endless praise."
+      ]
+    },
+    {
+      "lines": [
+        "Let nature join with art,",
+        "And all pronounce him blest;",
+        "But saints that dwell so near his heart,",
+        "Should sing his praises best."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to FRANCONIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 148:3"
+}

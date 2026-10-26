@@ -1,0 +1,94 @@
+{
+  "title": "Not to Ourselves, Who Are but Dust",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Not to Ourselves, Who Are but Dust in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 115, part 1, headed “The true God our refuge; or, Idolatry reproved”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Not to our-selves, who are but dust, Not to our-selves is glo-ry due, E-ter-nal God, thou on-ly just, Thou on-ly gra-cious, wise, and true.",
+  "verses": [
+    {
+      "lines": [
+        "Not to ourselves, who are but dust,",
+        "Not to ourselves is glory due,",
+        "Eternal God, thou only just,",
+        "Thou only gracious, wise, and true."
+      ]
+    },
+    {
+      "lines": [
+        "Shine forth in all thy dreadful Name;",
+        "Why should a heathen's haughty tongue",
+        "Insult us, and to raise our shame",
+        "Say, \"Where's the God you've serv'd so long?\""
+      ]
+    },
+    {
+      "lines": [
+        "The God we serve maintains his throne",
+        "Above the clouds, beyond the skies,",
+        "Thro' all the earth his will is done,",
+        "He knows our groans, he hears our cries."
+      ]
+    },
+    {
+      "lines": [
+        "But the vain idols they adore",
+        "Are senseless shapes of stone and wood;",
+        "At best a mass of glittering ore,",
+        "A silver saint, or golden god."
+      ]
+    },
+    {
+      "lines": [
+        "With eyes, and ears they carve their head,",
+        "Deaf are their ears, their eyes are blind;",
+        "In vain are costly offerings made,",
+        "And vows are scatter'd in the wind."
+      ]
+    },
+    {
+      "lines": [
+        "Their feet were never made to move,",
+        "Nor hands to save when mortals pray;",
+        "Mortals that pay them fear or love",
+        "Seem to be blind and deaf as they."
+      ]
+    },
+    {
+      "lines": [
+        "O Israel, make the Lord thy hope,",
+        "Thy help, thy refuge, and thy rest;",
+        "The Lord shall build thy ruins up,",
+        "And bless the people and the priest."
+      ]
+    },
+    {
+      "lines": [
+        "The dead no more can speak thy praise,",
+        "They dwell in silence and the grave;",
+        "But we shall live to sing thy grace,",
+        "And tell the world thy power to save."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 115:1"
+}

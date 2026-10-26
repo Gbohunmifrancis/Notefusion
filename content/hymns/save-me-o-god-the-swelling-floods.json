@@ -1,0 +1,126 @@
+{
+  "title": "\"Save Me, O God, the Swelling Floods",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "\"Save Me, O God, the Swelling Floods in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 12 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 69, part 1, headed “The sufferings of Christ for our salvation”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "\"Save me, O God, the swel-ling floods \"Break in up-on my soul: \"I sink, and sor-rows o'er my head \"Like might-y wa-ters roll.",
+  "verses": [
+    {
+      "lines": [
+        "\"Save me, O God, the swelling floods",
+        "\"Break in upon my soul:",
+        "\"I sink, and sorrows o'er my head",
+        "\"Like mighty waters roll."
+      ]
+    },
+    {
+      "lines": [
+        "\"I cry till all my voice be gone,",
+        "\"In tears I waste the day:",
+        "\"My God behold my longing eyes,",
+        "\"And shorten thy delay."
+      ]
+    },
+    {
+      "lines": [
+        "\"They hate my soul without a cause,",
+        "\"And still their number grows",
+        "\"More than the hairs around my head,",
+        "\"And mighty are my foes."
+      ]
+    },
+    {
+      "lines": [
+        "\"'Twas then I paid that dreadful debt",
+        "\"That men could never pay,",
+        "\"And gave those honours to thy law",
+        "\"Which sinners took away.\""
+      ]
+    },
+    {
+      "lines": [
+        "Thus in the great Messiah's name,",
+        "The royal prophet mourns;",
+        "Thus he awakes our hearts to grief,",
+        "And gives us joy by turns."
+      ]
+    },
+    {
+      "lines": [
+        "\"Now shall the saints rejoice and find",
+        "\"Salvation in my Name:",
+        "\"For I have borne their heavy load",
+        "Of sorrow, pain, and shame."
+      ]
+    },
+    {
+      "lines": [
+        "\"Grief, like a garment, cloth'd me round,",
+        "\"And sackcloth was my dress,",
+        "\"While I procur'd for naked souls",
+        "\"A robe of righteousness."
+      ]
+    },
+    {
+      "lines": [
+        "\"Amongst my brethren and the Jews",
+        "\"I like a stranger stood,",
+        "\"And bore their vile reproach to bring",
+        "\"The Gentiles near to God."
+      ]
+    },
+    {
+      "lines": [
+        "\"I came in sinful mortals' stead,",
+        "\"To do my Father's will;",
+        "\"Yet when I cleans'd my father's house",
+        "\"They scandaliz'd my zeal."
+      ]
+    },
+    {
+      "lines": [
+        "\"My fasting and my holy groans",
+        "\"Were made the drunkard's song;",
+        "\"But God, from his celestial throne,",
+        "\"Heard my complaining tongue."
+      ]
+    },
+    {
+      "lines": [
+        "\"He sav'd me from the dreadful deep,",
+        "\"Nor let my soul be drown'd;",
+        "\"He rais'd and fix'd my sinking feet",
+        "\"On well establish'd ground."
+      ]
+    },
+    {
+      "lines": [
+        "\"'Twas in a most accepted hour",
+        "\"My prayer arose on high,",
+        "\"And for my sake my God shall hear",
+        "\"The dying sinner's cry.\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 69:1"
+}

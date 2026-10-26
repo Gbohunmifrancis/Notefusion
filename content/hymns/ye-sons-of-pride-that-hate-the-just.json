@@ -1,0 +1,62 @@
+{
+  "title": "Ye Sons of Pride, That Hate the Just",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Ye Sons of Pride, That Hate the Just in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 49, part 2, headed “Death and the resurrection”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Ye sons of pride, that hate the just, And tram-ple on the poor, When death has brought you down to dust, Your pomp shall rise no more,",
+  "verses": [
+    {
+      "lines": [
+        "Ye sons of pride, that hate the just,",
+        "And trample on the poor,",
+        "When death has brought you down to dust,",
+        "Your pomp shall rise no more,"
+      ]
+    },
+    {
+      "lines": [
+        "The last great day shall change the scene;",
+        "When will that hour appear?",
+        "When shall the just revive, and reign",
+        "O'er all that scorn'd them here?"
+      ]
+    },
+    {
+      "lines": [
+        "God will my naked soul receive,",
+        "When sep'rate from the flesh;",
+        "And break the prison of the grave",
+        "To raise my bones afresh."
+      ]
+    },
+    {
+      "lines": [
+        "Heaven is my everlasting home,",
+        "Th' inheritance is sure;",
+        "Let men of pride their rage resume,",
+        "But I'll repine no more."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 49:2"
+}

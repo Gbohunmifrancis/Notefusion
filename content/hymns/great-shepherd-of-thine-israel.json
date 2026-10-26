@@ -1,0 +1,126 @@
+{
+  "title": "Great Shepherd of Thine Israel",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Great Shepherd of Thine Israel in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 12 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 80, headed “The church's prayer under affliction; or, The vineyard of God wasted”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Great Shep-herd of thine Is-ra-el, Who didst be-tween the che-rubs dwell, And led the tribes, thy cho-sen sheep, Safe thro' the des-ert and the deep.",
+  "verses": [
+    {
+      "lines": [
+        "Great Shepherd of thine Israel,",
+        "Who didst between the cherubs dwell,",
+        "And led the tribes, thy chosen sheep,",
+        "Safe thro' the desert and the deep."
+      ]
+    },
+    {
+      "lines": [
+        "Thy church is in the desert now,",
+        "Shine from on high and guide us thro';",
+        "Turn us to thee, thy love restore,",
+        "We shall be sav'd, and sigh no more."
+      ]
+    },
+    {
+      "lines": [
+        "Great God, whom heavenly hosts obey,",
+        "How long shall we lament and pray,",
+        "And wait in vain thy kind return?",
+        "How long shall thy fierce anger burn?"
+      ]
+    },
+    {
+      "lines": [
+        "Instead of wine and cheerful bread,",
+        "Thy saints with their own tears are fed;",
+        "Turn us to thee, thy love restore,",
+        "We shall be sav'd, and sigh no more."
+      ]
+    },
+    {
+      "lines": [
+        "Hast thou not planted with thy hands",
+        "A lovely vine in heathen lands?",
+        "Did not thy power defend it round,",
+        "And heavenly dews enrich the ground?"
+      ]
+    },
+    {
+      "lines": [
+        "How did the spreading branches shoot,",
+        "And bless the nations with the fruit!",
+        "But now, dear Lord, look down and see",
+        "Thy mourning vine, that lovely tree."
+      ]
+    },
+    {
+      "lines": [
+        "Why is its beauty thus defac'd?",
+        "Why hast thou laid her fences waste?",
+        "Strangers and foes against her join,",
+        "And every beast devours the vine."
+      ]
+    },
+    {
+      "lines": [
+        "Return, almighty God, return,",
+        "Nor let thy bleeding vineyard mourn;",
+        "Turn us to thee, thy love restore,",
+        "We shall be sav'd, and sigh no more."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, when this vine in Canaan grew",
+        "Thou wast its strength and glory too;",
+        "Attack'd in vain by all its foes,",
+        "Till the fair Branch of Promise rose;"
+      ]
+    },
+    {
+      "lines": [
+        "Fair Branch, ordain'd of old to shoot",
+        "From David's stock, from Jacob's root;",
+        "Himself a noble vine, and we",
+        "The lesser branches of the tree."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis thy own Son, and he shall stand",
+        "Girt with thy strength at thy right hand;",
+        "Thy first-born Son, adorn'd and blest",
+        "With power and grace above the rest."
+      ]
+    },
+    {
+      "lines": [
+        "O! for his sake attend our cry,",
+        "Shine on thy churches lest they die;",
+        "Turn us to thee, thy love restore,",
+        "We shall be sav'd, and sigh no more."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 80"
+}

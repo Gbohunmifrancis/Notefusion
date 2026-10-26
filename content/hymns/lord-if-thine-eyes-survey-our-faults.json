@@ -1,0 +1,86 @@
+{
+  "title": "Lord, If Thine Eyes Survey Our Faults",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Lord, If Thine Eyes Survey Our Faults in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 90, part 3, headed “Infirmities and mortality the effect of sin; or, Life, old age, and preparation for death”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Lord, if thine eyes sur-vey our faults, And jus-tice grow se-vere, Thy dread-ful wrath ex-ceeds our thoughts, And burns be-yond our fear.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, if thine eyes survey our faults,",
+        "And justice grow severe,",
+        "Thy dreadful wrath exceeds our thoughts,",
+        "And burns beyond our fear."
+      ]
+    },
+    {
+      "lines": [
+        "Thine anger turns our frame to dust;",
+        "By one offence to thee",
+        "Adam with all his sons have lost",
+        "Their immortality."
+      ]
+    },
+    {
+      "lines": [
+        "Life like a vain amusement flies,",
+        "A fable or a song;",
+        "By swift degrees our nature dies,",
+        "Nor can our joys be long."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis but a few whose days amount",
+        "To threescore years and ten,",
+        "And all beyond that short account",
+        "is sorrow, toil, and pain."
+      ]
+    },
+    {
+      "lines": [
+        "Our vitals with laborious strife",
+        "Bear up the crazy load,",
+        "And drag those poor remains of life",
+        "Along the tiresome road."
+      ]
+    },
+    {
+      "lines": [
+        "Almighty God, reveal thy love,",
+        "And not thy wrath alone;",
+        "O let our sweet experience prove",
+        "The mercies of thy throne!"
+      ]
+    },
+    {
+      "lines": [
+        "Our souls would learn the heavenly art",
+        "T' improve the hours we have,",
+        "That we may act the wiser part,",
+        "And live beyond the grave."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 90:3"
+}

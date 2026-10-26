@@ -1,0 +1,110 @@
+{
+  "title": "He That Hath Made His Refuge God",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "He That Hath Made His Refuge God in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 10 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 91, part 1, headed “Safety in public diseases and dangers”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "He that hath made his re-fuge God, Shall find a most se-cure a-bode, Shall walk all day be-neath his shade, And there at night shall rest his head.",
+  "verses": [
+    {
+      "lines": [
+        "He that hath made his refuge God,",
+        "Shall find a most secure abode,",
+        "Shall walk all day beneath his shade,",
+        "And there at night shall rest his head."
+      ]
+    },
+    {
+      "lines": [
+        "Then will I say, \"My God, thy power",
+        "\"Shall be my fortress and my tower;",
+        "\"I that am form'd of feeble dust",
+        "\"Make thine almighty arm my trust.\""
+      ]
+    },
+    {
+      "lines": [
+        "Thrice happy man! thy Maker's care",
+        "Shall keep thee from the fowler's snare,",
+        "Satan, the fowler, who betrays",
+        "Unguarded souls a thousand ways."
+      ]
+    },
+    {
+      "lines": [
+        "Just as a hen protects her brood",
+        "From birds of prey that seek their blood,",
+        "Under her feathers, so the Lord",
+        "Makes his own arm his people's guard."
+      ]
+    },
+    {
+      "lines": [
+        "If burning beams of noon conspire",
+        "To dart a pestilential fire,",
+        "God is their life; his wings are spread",
+        "To shield them with an healthful shade."
+      ]
+    },
+    {
+      "lines": [
+        "If vapours with malignant breath",
+        "Rise thick and scatter midnight death,",
+        "Israel is safe; the poison'd air",
+        "Grows pure if Israel's God be there."
+      ]
+    },
+    {
+      "lines": [
+        "What though a thousand at thy side,",
+        "At thy right hand ten thousand dy'd,",
+        "Thy God his chosen people saves",
+        "Amongst the dead, amidst the graves."
+      ]
+    },
+    {
+      "lines": [
+        "So when he sent his angel down",
+        "To make his wrath in Egypt known,",
+        "And slew their sons, his careful eye",
+        "Pass'd all the doors of Jacob by."
+      ]
+    },
+    {
+      "lines": [
+        "But if the fire, or plague, or sword,",
+        "Receive commission from the Lord",
+        "To strike his saints among the rest,",
+        "Their very pains and deaths are blest."
+      ]
+    },
+    {
+      "lines": [
+        "The sword, the pestilence or fire",
+        "Shall but fulfil their best desire,",
+        "From sins and sorrows set them free,",
+        "And bring thy children, Lord, to thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 91:1"
+}

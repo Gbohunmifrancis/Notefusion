@@ -1,0 +1,70 @@
+{
+  "title": "My God, My Everlasting Hope",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "My God, My Everlasting Hope in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 71, part 1, headed “The aged saint's reflection and hope”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "My God, my ev-er-last-ing hope, I live up-on thy truth; Thine hands have held my child-hood up, And strength-en'd all my youth.",
+  "verses": [
+    {
+      "lines": [
+        "My God, my everlasting hope,",
+        "I live upon thy truth;",
+        "Thine hands have held my childhood up,",
+        "And strengthen'd all my youth."
+      ]
+    },
+    {
+      "lines": [
+        "My flesh was fashion'd by thy power,",
+        "With all these limbs of mine;",
+        "And from my mother's painful hour",
+        "I've been entirely thine."
+      ]
+    },
+    {
+      "lines": [
+        "Still has my life new wonders seen",
+        "Repeated every year;",
+        "Behold my days that yet remain,",
+        "I trust them to thy care."
+      ]
+    },
+    {
+      "lines": [
+        "Cast me not off when strength declines,",
+        "When hoary hairs arise;",
+        "And round me let thy glories shine",
+        "Whene'er thy servant dies."
+      ]
+    },
+    {
+      "lines": [
+        "Then in the history of my age,",
+        "When men review my days,",
+        "They'll read thy love in every page,",
+        "In every line thy praise."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 71:1"
+}

@@ -1,0 +1,62 @@
+{
+  "title": "Are Sinners Now So Senseless Grown",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Are Sinners Now So Senseless Grown in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 14, part 2, headed “The folly of persecutors”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Are sin-ners now so sense-less grown That they thy saints de-vour? And nev-er wor-ship at thy throne, Nor fear thine aw-ful power?",
+  "verses": [
+    {
+      "lines": [
+        "Are sinners now so senseless grown",
+        "That they thy saints devour?",
+        "And never worship at thy throne,",
+        "Nor fear thine awful power?"
+      ]
+    },
+    {
+      "lines": [
+        "Great God appear to their surprise,",
+        "Reveal thy dreadful name;",
+        "Let them no more thy wrath despise,",
+        "Nor turn our hope to shame."
+      ]
+    },
+    {
+      "lines": [
+        "Dost thou not dwell among the just?",
+        "And yet our foes deride,",
+        "That we should make thy name our trust;",
+        "Great God, confound their pride."
+      ]
+    },
+    {
+      "lines": [
+        "O that the joyful day were come",
+        "To finish our distress!",
+        "When God shall bring his children home,",
+        "Our songs shall never cease."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 14:2"
+}

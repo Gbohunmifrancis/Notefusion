@@ -1,0 +1,78 @@
+{
+  "title": "Sing to the Lord Jehovah's Name",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Sing to the Lord Jehovah's Name in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 95, part 1, headed “A psalm before prayer”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Sing to the Lord Je-ho-vah's Name, And in his strength re-joice; When his sal-va-tion is our theme, Ex-alt-ed be our voice.",
+  "verses": [
+    {
+      "lines": [
+        "Sing to the Lord Jehovah's Name,",
+        "And in his strength rejoice;",
+        "When his salvation is our theme,",
+        "Exalted be our voice."
+      ]
+    },
+    {
+      "lines": [
+        "With thanks approach his awful sight,",
+        "And psalms of honour sing;",
+        "The Lord's a God of boundless might,",
+        "The whole creation's King."
+      ]
+    },
+    {
+      "lines": [
+        "Let princes hear, let angels know,",
+        "How mean their natures seem,",
+        "Those gods on high, and gods below,",
+        "When once compar'd with him."
+      ]
+    },
+    {
+      "lines": [
+        "Earth with its caverns dark and deep",
+        "Lies in his spacious hand,",
+        "He fix'd the seas what bounds to keep,",
+        "And where the hills must stand."
+      ]
+    },
+    {
+      "lines": [
+        "Come, and with humble souls adore,",
+        "Come, kneel before his face;",
+        "O may the creatures of his power",
+        "Be children of his grace!"
+      ]
+    },
+    {
+      "lines": [
+        "Now is the time: he bends his ear,",
+        "And waits for your request;",
+        "Come, lest he rouse his wrath and swear",
+        "\"Ye shall not see my rest.\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 95:1"
+}

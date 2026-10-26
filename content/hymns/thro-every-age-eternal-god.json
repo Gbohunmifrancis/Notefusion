@@ -1,0 +1,94 @@
+{
+  "title": "Thro' Every Age, Eternal God",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Thro' Every Age, Eternal God in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 90, part 1, headed “Man mortal, and God eternal. A mournful song at a funeral”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thro' ev-ery age, e-ter-nal God, Thou art our rest, our safe a-bode; High was thy throne ere heaven was made, Or earth thy hum-ble foot-stool laid.",
+  "verses": [
+    {
+      "lines": [
+        "Thro' every age, eternal God,",
+        "Thou art our rest, our safe abode;",
+        "High was thy throne ere heaven was made,",
+        "Or earth thy humble footstool laid."
+      ]
+    },
+    {
+      "lines": [
+        "Long hadst thou reign'd ere time began,",
+        "Or dust was fashion'd to a man;",
+        "And long thy kingdom shall endure",
+        "When earth and time shall be no more."
+      ]
+    },
+    {
+      "lines": [
+        "But man, weak man, is born to die,",
+        "Made up of guilt and vanity;",
+        "Thy dreadful sentence, Lord, was just,",
+        "\"Return, ye sinners, to your dust.\""
+      ]
+    },
+    {
+      "lines": [
+        "A thousand of our years amount",
+        "Scarce to a day in thine account;",
+        "Like yesterday's departed light,",
+        "Or the last watch of ending night."
+      ]
+    },
+    {
+      "lines": [
+        "Death like an overflowing stream",
+        "Sweeps us away; our life's a dream;",
+        "An empty tale; a morning flower",
+        "Cut down and wither'd in an hour."
+      ]
+    },
+    {
+      "lines": [
+        "Our age to seventy years is set;",
+        "How short the term! how frail the state!",
+        "And if to eighty we arrive,",
+        "We rather sigh and groan than live."
+      ]
+    },
+    {
+      "lines": [
+        "But O how oft thy wrath appears,",
+        "And cuts off our expected years!",
+        "Thy wrath awakes our humble dread;",
+        "We fear the power that strikes us dead."
+      ]
+    },
+    {
+      "lines": [
+        "Teach us, O Lord, how frail is man;",
+        "And kindly lengthen out our span,",
+        "Till a wise care of piety",
+        "Fit us to die, and dwell with thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 90:1"
+}

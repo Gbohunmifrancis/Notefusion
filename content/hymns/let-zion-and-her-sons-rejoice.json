@@ -1,0 +1,78 @@
+{
+  "title": "Let Zion and Her Sons Rejoice",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Let Zion and Her Sons Rejoice in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 102, part 2, headed “Prayer heard and Zion restored”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Let Zi-on and her sons re-joice, Be-hold the pro-mis'd hour; Her God hath heard her mourn-ing voice, And comes t'ex-alt his power.",
+  "verses": [
+    {
+      "lines": [
+        "Let Zion and her sons rejoice,",
+        "Behold the promis'd hour;",
+        "Her God hath heard her mourning voice,",
+        "And comes t' exalt his power."
+      ]
+    },
+    {
+      "lines": [
+        "Her dust and ruins that remain",
+        "Are precious in our eyes;",
+        "Those ruins shall be built again,",
+        "And all that dust shall rise."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord will raise Jerusalem,",
+        "And stand in glory there;",
+        "Nations shall bow before has name,",
+        "And kings attend with fear."
+      ]
+    },
+    {
+      "lines": [
+        "He sits a sovereign on his throne,",
+        "With pity in his eyes;",
+        "He hears the dying prisoners groan,",
+        "And sees their sighs arise."
+      ]
+    },
+    {
+      "lines": [
+        "He frees the souls condemn'd to death,",
+        "And when his saints complain,",
+        "It shan't be said 'That praying breath",
+        "'Was ever spent in vain.'"
+      ]
+    },
+    {
+      "lines": [
+        "This shall be known when we are dead,",
+        "And left on long record,",
+        "That ages yet unborn may read,",
+        "And trust, and praise the Lord."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 102:2"
+}

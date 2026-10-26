@@ -422,6 +422,9 @@ not the transcription.
 mkdir -p /tmp/watts && curl -L -o /tmp/watts/watts.txt https://www.gutenberg.org/cache/epub/13341/pg13341.txt
 node tools/blog/import/watts.mjs --src /tmp/watts/watts.txt --date 2026-10-26             # drafts; --dry-run for the counts
 node tools/blog/import/watts.mjs --src /tmp/watts/watts.txt --date 2026-10-26 --publish   # once a person has read them
+# His Psalms of David Imitated (1719), eBook #13166, the same way: pages "watts-1719:Psalm 23:2", watts-psalms-report.json
+mkdir -p /tmp/watts-psalms && curl -L -o /tmp/watts-psalms/psalms.txt https://www.gutenberg.org/cache/epub/13166/pg13166.txt
+node tools/blog/import/watts.mjs --book psalms --src /tmp/watts-psalms/psalms.txt --date 2026-10-26 --publish
 ```
 
 Each hymn's metre is read off its lines (Common, Long or Short; four-line verses only), and its first verse is laid under a

@@ -1,0 +1,78 @@
+{
+  "title": "O God of Grace and Righteousness",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "O God of Grace and Righteousness in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 4, part 1, headed “Hearing prayer; or, God our portion, and Christ our hope”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O God of grace and right-eous-ness, Hear and at-tend when I com-plain; Thou hast en-larg'd me in dis-tress, Bow down a gra-cious ear a-gain.",
+  "verses": [
+    {
+      "lines": [
+        "O God of grace and righteousness,",
+        "Hear and attend when I complain;",
+        "Thou hast enlarg'd me in distress,",
+        "Bow down a gracious ear again."
+      ]
+    },
+    {
+      "lines": [
+        "Ye sons of men, in vain ye try",
+        "To turn my glory into shame;",
+        "How long will scoffers love to lie,",
+        "And dare reproach my Saviour's name!"
+      ]
+    },
+    {
+      "lines": [
+        "Know that the Lord divides his saints",
+        "From all the tribes of men beside;",
+        "He hears the cry of penitents",
+        "For the dear sake of Christ that dy'd."
+      ]
+    },
+    {
+      "lines": [
+        "When our obedient hands have done",
+        "A thousand works of righteousness,",
+        "We put our trust in God alone,",
+        "And glory in his pardoning grace."
+      ]
+    },
+    {
+      "lines": [
+        "Let the unthinking many say,",
+        "\"Who will bestow some earthly good?\"",
+        "But, Lord, thy light and love we pray,",
+        "Our souls desire this heavenly food."
+      ]
+    },
+    {
+      "lines": [
+        "Then shall my cheerful powers rejoice",
+        "At grace and favour so divine;",
+        "Nor will I change my happy choice",
+        "For all their corn and all their wine."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 4:1"
+}

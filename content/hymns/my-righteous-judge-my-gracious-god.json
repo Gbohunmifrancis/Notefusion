@@ -1,0 +1,126 @@
+{
+  "title": "My Righteous Judge, My Gracious God",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "My Righteous Judge, My Gracious God in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 12 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 143, headed “Complaint of heavy afflictions in mind and body”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "My right-eous Judge, my gra-cious God, Hear when I spread my hands a-broad And cry for suc-cour from thy throne, O make thy truth and mer-cy known.",
+  "verses": [
+    {
+      "lines": [
+        "My righteous Judge, my gracious God,",
+        "Hear when I spread my hands abroad",
+        "And cry for succour from thy throne,",
+        "O make thy truth and mercy known."
+      ]
+    },
+    {
+      "lines": [
+        "Let judgment not against me pass;",
+        "Behold thy servant pleads thy grace:",
+        "Should justice call us to thy bar,",
+        "No man alive is guiltless there."
+      ]
+    },
+    {
+      "lines": [
+        "Look down in pity, Lord, and see",
+        "The mighty woes that burden me;",
+        "Down to the dust my life is brought,",
+        "Like one long bury'd and forgot."
+      ]
+    },
+    {
+      "lines": [
+        "I dwell in darkness and unseen,",
+        "My heart is desolate within;",
+        "My thoughts in musing silence trace",
+        "The ancient wonders of thy grace."
+      ]
+    },
+    {
+      "lines": [
+        "Thence I derive a glimpse of hope",
+        "To bear my sinking spirits up;",
+        "I stretch my hands to God again,",
+        "And thirst like parched lands for rain."
+      ]
+    },
+    {
+      "lines": [
+        "For thee I thirst, I pray, I mourn;",
+        "When will thy smiling face return?",
+        "Shall all my joys on earth remove?",
+        "And God for ever hide his love?"
+      ]
+    },
+    {
+      "lines": [
+        "My God, thy long delay to save",
+        "Will sink thy prisoner to the grave;",
+        "My heart grows faint, and dim mine eye;",
+        "Make haste to help before I die."
+      ]
+    },
+    {
+      "lines": [
+        "The night is witness to my tears,",
+        "Distressing pains, distressing fears;",
+        "O might I hear thy morning voice,",
+        "How would my weary'd powers rejoice!"
+      ]
+    },
+    {
+      "lines": [
+        "In thee I trust, to thee I sigh,",
+        "And lift my heavy soul on high,",
+        "For thee sit waiting all the day,",
+        "And wear the tiresome hours away."
+      ]
+    },
+    {
+      "lines": [
+        "Break off my fetters, Lord, and show",
+        "Which is the path my feet should go;",
+        "If snares and foes beset the road,",
+        "I flee to hide me near my God."
+      ]
+    },
+    {
+      "lines": [
+        "Teach me to do thy holy will,",
+        "And lead me to thy heavenly hill;",
+        "Let the good Spirit of thy love",
+        "Conduct me to thy courts above."
+      ]
+    },
+    {
+      "lines": [
+        "Then shall my soul no more complain,",
+        "The tempter then shall rage in vain;",
+        "And flesh that was my foe before,",
+        "Shall never vex my spirit more."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 143"
+}

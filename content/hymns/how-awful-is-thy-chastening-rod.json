@@ -1,0 +1,110 @@
+{
+  "title": "\"How Awful Is Thy Chastening Rod!\"",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "\"How Awful Is Thy Chastening Rod!\" in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 10 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 77, part 2, headed “Comfort derived from ancient providences; or, Israel delivered from Egypt, and brought to Canaan”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "\"How aw-ful is thy chas-tening rod!\" (May thine own child-ren say) \"The great, the wise, the dread-ful God! \"How ho-ly is his way!\"",
+  "verses": [
+    {
+      "lines": [
+        "\"How awful is thy chastening rod!\"",
+        "(May thine own children say)",
+        "\"The great, the wise, the dreadful God!",
+        "\"How holy is his way!\""
+      ]
+    },
+    {
+      "lines": [
+        "I'll meditate his works of old;",
+        "The King that reigns above;",
+        "I'll hear his ancient wonders told,",
+        "And learn to trust his love."
+      ]
+    },
+    {
+      "lines": [
+        "Long did the house of Joseph lie",
+        "With Egypt's yoke opprest:",
+        "Long he delay'd to hear their cry,",
+        "Nor gave his people rest."
+      ]
+    },
+    {
+      "lines": [
+        "The sons of good old Jacob seem'd",
+        "Abandon'd to their foes;",
+        "But his almighty arm redeem'd",
+        "The nation that he chose."
+      ]
+    },
+    {
+      "lines": [
+        "Israel, his people, and his sheep,",
+        "Must follow where he calls;",
+        "He bid them venture thro' the deep,",
+        "And made the waves their walls."
+      ]
+    },
+    {
+      "lines": [
+        "The waters saw thee, mighty God!",
+        "The waters saw thee come;",
+        "Backward they fled, and frighted stood,",
+        "To make thine armies room."
+      ]
+    },
+    {
+      "lines": [
+        "Strange was thy journey thro' the sea,",
+        "Thy footsteps, Lord, unknown,",
+        "Terrors attend the wondrous way",
+        "That brings thy mercies down."
+      ]
+    },
+    {
+      "lines": [
+        "Thy voice with terror in the sound",
+        "Thro' clouds and darkness broke;",
+        "All heaven in lightning shone around,",
+        "And earth with thunder shook."
+      ]
+    },
+    {
+      "lines": [
+        "Thine arrows thro' the skies were hurl'd;",
+        "How glorious is the Lord!",
+        "Surprise and trembling seiz'd the world,",
+        "And his own saints ador'd."
+      ]
+    },
+    {
+      "lines": [
+        "He gave them water from the rock;",
+        "And safe by Moses' hand",
+        "Thro' a dry desert led his flock",
+        "Home to the promis'd land."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 77:2"
+}

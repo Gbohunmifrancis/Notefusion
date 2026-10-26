@@ -1,0 +1,78 @@
+{
+  "title": "Let All the Heathen Writers Join",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Let All the Heathen Writers Join in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 119, part 7, headed “Imperfection of nature, and perfection of scripture”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Let all the hea-then writ-ers join To form one per-fect book, Great God, if once com-par'd with thine, How mean their writ-ings look!",
+  "verses": [
+    {
+      "lines": [
+        "Let all the heathen writers join",
+        "To form one perfect book,",
+        "Great God, if once compar'd with thine,",
+        "How mean their writings look!"
+      ]
+    },
+    {
+      "lines": [
+        "Not the most perfect rules they gave",
+        "Could shew one sin forgiven,",
+        "Nor lead a step beyond the grave;",
+        "But thine conduct to heaven."
+      ]
+    },
+    {
+      "lines": [
+        "I've seen an end of what we call",
+        "Perfection here below;",
+        "How short the powers of nature fall,",
+        "And can no farther go!"
+      ]
+    },
+    {
+      "lines": [
+        "Yet men would fain be just with God",
+        "By works their hands have wrought;",
+        "But thy commands, exceeding broad,",
+        "Extend to every thought."
+      ]
+    },
+    {
+      "lines": [
+        "In vain we boast perfection here,",
+        "While sin defiles our frame,",
+        "And sinks our virtues down so far,",
+        "They scarce deserve the name."
+      ]
+    },
+    {
+      "lines": [
+        "Our faith and love, and every grace,",
+        "Fall far below thy word;",
+        "But perfect truth and righteousness",
+        "Dwell only with the Lord."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 119:7"
+}

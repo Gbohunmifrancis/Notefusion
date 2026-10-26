@@ -1,0 +1,86 @@
+{
+  "title": "My Saviour, My Almighty Friend",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "My Saviour, My Almighty Friend in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 71, part 2, headed “Christ our strength and righteousness”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "My Sa-viour, my al-might-y Friend, When I be-gin thy praise, Where will the grow-ing num-bers end, The num-bers of thy grace?",
+  "verses": [
+    {
+      "lines": [
+        "My Saviour, my almighty Friend,",
+        "When I begin thy praise,",
+        "Where will the growing numbers end,",
+        "The numbers of thy grace?"
+      ]
+    },
+    {
+      "lines": [
+        "Thou art my everlasting trust,",
+        "Thy goodness I adore;",
+        "And since I knew thy graces first",
+        "I speak thy glories more."
+      ]
+    },
+    {
+      "lines": [
+        "My feet shall travel all the length",
+        "Of the celestial road,",
+        "And march with courage in thy strength",
+        "To see my Father God."
+      ]
+    },
+    {
+      "lines": [
+        "When I am fill'd with sore distress",
+        "For some surprising sin,",
+        "I'll plead thy perfect righteousness,",
+        "And mention none but thine."
+      ]
+    },
+    {
+      "lines": [
+        "How will my lips rejoice to tell",
+        "The victories of my King!",
+        "My soul redeem'd from sin and hell",
+        "Shall thy salvation sing."
+      ]
+    },
+    {
+      "lines": [
+        "My tongue shall all the day proclaim",
+        "My Saviour and my God;",
+        "His death has brought my foes to shame,",
+        "And drown'd them in his blood."
+      ]
+    },
+    {
+      "lines": [
+        "Awake, awake my tuneful powers;",
+        "With this delightful song",
+        "I'll entertain the darkest hours,",
+        "Nor think the season long."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 71:2"
+}

@@ -1,0 +1,86 @@
+{
+  "title": "Ye Servants of Th' Almighty King",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Ye Servants of Th' Almighty King in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 113, part 2, headed “God sovereign and gracious”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Ye ser-vants of th'Al-migh-ty King, In ev-ery age his prais-es sing; Wher-e'er the sun shall rise or set, The na-tions shall his praise re-peat.",
+  "verses": [
+    {
+      "lines": [
+        "Ye servants of th' Almighty King,",
+        "In every age his praises sing;",
+        "Where'er the sun shall rise or set,",
+        "The nations shall his praise repeat."
+      ]
+    },
+    {
+      "lines": [
+        "Above the earth, beyond the sky,",
+        "Stands his high throne of majesty:",
+        "Nor time, nor place, his power restrain,",
+        "Nor bound his universal reign."
+      ]
+    },
+    {
+      "lines": [
+        "Which of the sons of Adam dare,",
+        "Or angels, with their God compare?",
+        "His glories how divinely bright,",
+        "Who dwells in uncreated light!"
+      ]
+    },
+    {
+      "lines": [
+        "Behold his love: he stoops to view",
+        "What saints above and angels do;",
+        "And condescends yet more to know",
+        "The mean affairs of men below."
+      ]
+    },
+    {
+      "lines": [
+        "From dust and cottages obscure",
+        "His grace exalts the humble poor;",
+        "Gives them the honour of his sons,",
+        "And fits them for their heavenly thrones."
+      ]
+    },
+    {
+      "lines": [
+        "A word of his creating voice",
+        "Can make the barren house rejoice:",
+        "Tho' Sarah's ninety years were past,",
+        "The promis'd seed is born at last."
+      ]
+    },
+    {
+      "lines": [
+        "With joy the mother views her son,",
+        "And tells the wonders God has done:",
+        "Faith may grow strong when sense despairs,",
+        "If nature fails, the promise bears."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 113:2"
+}

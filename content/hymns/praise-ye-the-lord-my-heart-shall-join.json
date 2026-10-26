@@ -1,0 +1,86 @@
+{
+  "title": "Praise Ye the Lord, My Heart Shall Join",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Praise Ye the Lord, My Heart Shall Join in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 146, part 1, headed “Praise to God for his goodness and truth”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Praise ye the Lord, my heart shall join In work so plea-sant, so di-vine, Now, while the flesh is mine a-bode, And when my soul a-scends to God.",
+  "verses": [
+    {
+      "lines": [
+        "Praise ye the Lord, my heart shall join",
+        "In work so pleasant, so divine,",
+        "Now, while the flesh is mine abode,",
+        "And when my soul ascends to God."
+      ]
+    },
+    {
+      "lines": [
+        "Praise shall employ my noblest powers,",
+        "While immortality endures;",
+        "My days of praise shall ne'er be past,",
+        "While life and thought and being last."
+      ]
+    },
+    {
+      "lines": [
+        "Why should I make a man my trust?",
+        "Princes must die and turn to dust;",
+        "Their breath departs, their pomp and power",
+        "And thoughts, all vanish in an hour."
+      ]
+    },
+    {
+      "lines": [
+        "Happy the man whose hopes rely",
+        "On Israel's God: he made the sky,",
+        "And earth and seas with all their train,",
+        "And none shall find his promise vain."
+      ]
+    },
+    {
+      "lines": [
+        "His truth for ever stands secure;",
+        "He saves th' opprest, he feeds the poor;",
+        "He sends the labouring conscience peace,",
+        "And grants the prisoner sweet release."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord hath eyes to give the blind;",
+        "The Lord supports the sinking mind;",
+        "He helps the stranger in distress,",
+        "The widow and the fatherless."
+      ]
+    },
+    {
+      "lines": [
+        "He loves his saints, he knows them well,",
+        "But turns the wicked down to hell:",
+        "Thy God, O Zion, ever reigns;",
+        "Praise him in everlasting strains."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 146:1"
+}

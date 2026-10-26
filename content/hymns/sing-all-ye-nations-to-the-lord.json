@@ -1,0 +1,94 @@
+{
+  "title": "Sing, All Ye Nations, to the Lord",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Sing, All Ye Nations, to the Lord in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 66, part 1, headed “Governing power and goodness; or, Our graces tried by afflictions”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Sing, all ye na-tions, to the Lord, Sing with a joy-ful noise; With mel-o-dy of sound re-cord His hon-ours, and your joys.",
+  "verses": [
+    {
+      "lines": [
+        "Sing, all ye nations, to the Lord,",
+        "Sing with a joyful noise;",
+        "With melody of sound record",
+        "His honours, and your joys."
+      ]
+    },
+    {
+      "lines": [
+        "Say to the power that shakes the sky,",
+        "\"How terrible art thou!",
+        "\"Sinners before thy presence fly,",
+        "\"Or at thy feet they bow.\""
+      ]
+    },
+    {
+      "lines": [
+        "Come, see the wonders of our God,",
+        "How glorious are his ways:",
+        "In Moses' hand he puts his rod,",
+        "And cleaves the frighted seas."
+      ]
+    },
+    {
+      "lines": [
+        "He made the ebbing channel dry,",
+        "While Israel pass'd the flood;",
+        "There did the church begin their joy,",
+        "And triumph in their God."
+      ]
+    },
+    {
+      "lines": [
+        "He rules by his resistless might:",
+        "Will rebel mortals dare",
+        "Provoke th' Eternal to the fight,",
+        "And tempt that dreadful war?"
+      ]
+    },
+    {
+      "lines": [
+        "O bless our God and never cease;",
+        "Ye saints, fulfil his praise;",
+        "He keeps our life, maintains our peace,",
+        "And guides our doubtful ways."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, thou hast prov'd our suffering souls,",
+        "To make our graces shine;",
+        "So silver bears the burning coals",
+        "The metal to refine."
+      ]
+    },
+    {
+      "lines": [
+        "Thro' watery deeps and fiery ways",
+        "We march at thy command,",
+        "Led to possess the promis'd place",
+        "By thine unerring hand."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 66:1"
+}

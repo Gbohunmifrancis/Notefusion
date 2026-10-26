@@ -1,0 +1,86 @@
+{
+  "title": "Up to the Hills I Lift Mine Eyes",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Up to the Hills I Lift Mine Eyes in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 121, part 1, headed “Divine protection”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Up to the hills I lift mine eyes, Th'e-ter-nal hills be-yond the skies; Thence all her help my soul de-rives; There my Al-might-y re-fuge lives.",
+  "verses": [
+    {
+      "lines": [
+        "Up to the hills I lift mine eyes,",
+        "Th' eternal hills beyond the skies;",
+        "Thence all her help my soul derives;",
+        "There my Almighty refuge lives."
+      ]
+    },
+    {
+      "lines": [
+        "He lives, the everlasting God,",
+        "That built the world, that spread the flood;",
+        "The heavens with all their hosts he made,",
+        "And the dark regions of the dead."
+      ]
+    },
+    {
+      "lines": [
+        "He guides our feet, he guards our way;",
+        "His morning-smiles bless all the day;",
+        "He spreads the evening veil, and keeps",
+        "The silent hours while Israel sleeps."
+      ]
+    },
+    {
+      "lines": [
+        "Israel, a name divinely blest,",
+        "May rise secure, securely rest;",
+        "Thy holy Guardian's wakeful eyes",
+        "Admit no slumber nor surprise."
+      ]
+    },
+    {
+      "lines": [
+        "No sun shall smite thy head by day,",
+        "Nor the pale moon with sickly ray",
+        "Shall blast thy couch; no baleful star",
+        "Dart his malignant fire so far."
+      ]
+    },
+    {
+      "lines": [
+        "Should earth and hell with malice burn,",
+        "Still thou shalt go and still return",
+        "Safe in the Lord his heavenly care",
+        "Defends thy life from every snare."
+      ]
+    },
+    {
+      "lines": [
+        "On thee foul spirits have no power;",
+        "And in thy last departing hour",
+        "Angels, that trace the airy road,",
+        "Shall bear thee homeward to thy God."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 121:1"
+}

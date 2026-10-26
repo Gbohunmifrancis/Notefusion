@@ -1,0 +1,78 @@
+{
+  "title": "It Is the Lord Our Saviour's Hand",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "It Is the Lord Our Saviour's Hand in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 102, part 3, headed “Man's mortality and Christ's eternity; or, Saints die, but Christ and the church live”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "It is the Lord our Sav-iour's hand Weak-ens our strength a-midst the race; Di-sease and death at his com-mand Ar-rest us, and cut short our days.",
+  "verses": [
+    {
+      "lines": [
+        "It is the Lord our Saviour's hand",
+        "Weakens our strength amidst the race;",
+        "Disease and death at his command",
+        "Arrest us, and cut short our days."
+      ]
+    },
+    {
+      "lines": [
+        "Spare us, O Lord, aloud we pray,",
+        "Nor let our sun go down at noon:",
+        "Thy years are one eternal day,",
+        "And must thy children die so soon?"
+      ]
+    },
+    {
+      "lines": [
+        "Yet in the midst of death and grief",
+        "This thought our sorrow shall assuage,",
+        "\"Our Father and our Saviour live;",
+        "\"Christ is the same thro' every age.\""
+      ]
+    },
+    {
+      "lines": [
+        "'Twas he this earth's foundation laid;",
+        "Heaven is the building of his hand:",
+        "This earth grows old, these heavens shall fade,",
+        "And all be chang'd at his command."
+      ]
+    },
+    {
+      "lines": [
+        "The starry curtains of the sky",
+        "Like garments shall be laid aside;",
+        "But still thy throne stands firm and high;",
+        "Thy church for ever must abide."
+      ]
+    },
+    {
+      "lines": [
+        "Before thy face thy church shall live,",
+        "And on thy throne thy children reign;",
+        "This dying world shall they survive,",
+        "And the dead saints be rais'd again."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 102:3"
+}

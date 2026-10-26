@@ -1,0 +1,94 @@
+{
+  "title": "Behold the Morning Sun",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Behold the Morning Sun in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 19, part 2, headed “God's word most excellent; or, Sincerity and watchfulness”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Be-hold the morn-ing sun Be-gins his glo-rious way; His beams thro' all the na-tions run, And life and light con-vey.",
+  "verses": [
+    {
+      "lines": [
+        "Behold the morning sun",
+        "Begins his glorious way;",
+        "His beams thro' all the nations run,",
+        "And life and light convey."
+      ]
+    },
+    {
+      "lines": [
+        "But where the gospel comes,",
+        "It spreads diviner light,",
+        "It calls dead sinners from their tombs,",
+        "And gives the blind their sight."
+      ]
+    },
+    {
+      "lines": [
+        "How perfect is thy word!",
+        "And all thy judgments just!",
+        "For ever sure thy promise, Lord,",
+        "And men securely trust."
+      ]
+    },
+    {
+      "lines": [
+        "My gracious God, how plain",
+        "Are thy directions given!",
+        "O! may I never read in vain,",
+        "But find the path to heaven!"
+      ]
+    },
+    {
+      "lines": [
+        "I hear thy word with love,",
+        "And I would fain obey;",
+        "Send thy good Spirit from above",
+        "To guide me, lest I stray."
+      ]
+    },
+    {
+      "lines": [
+        "O who can ever find",
+        "The errors of his ways?",
+        "Yet, with a bold presumptuous mind,",
+        "I would not dare transgress."
+      ]
+    },
+    {
+      "lines": [
+        "Warn me of every sin,",
+        "Forgive my secret faults,",
+        "And cleanse this guilty soul of mine,",
+        "Whose crimes exceed my thoughts."
+      ]
+    },
+    {
+      "lines": [
+        "While with my heart and tongue",
+        "I spread thy praise abroad,",
+        "Accept the worship and the song,",
+        "My Saviour and my God."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 19:2"
+}

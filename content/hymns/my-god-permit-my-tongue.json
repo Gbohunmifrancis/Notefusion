@@ -1,0 +1,94 @@
+{
+  "title": "My God, Permit My Tongue",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "My God, Permit My Tongue in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 63, part 4, headed “Seeking God”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "My God, per-mit my tongue This joy, to call thee mine, And let my ear-ly cries pre-vail To taste thy love di-vine.",
+  "verses": [
+    {
+      "lines": [
+        "My God, permit my tongue",
+        "This joy, to call thee mine,",
+        "And let my early cries prevail",
+        "To taste thy love divine."
+      ]
+    },
+    {
+      "lines": [
+        "My thirsty fainting soul",
+        "Thy mercy doth implore;",
+        "Not travellers in desert lands",
+        "Can pant for water more."
+      ]
+    },
+    {
+      "lines": [
+        "Within thy churches, Lord,",
+        "I long to find my place,",
+        "Thy power and glory to behold,",
+        "And feel thy quickening grace."
+      ]
+    },
+    {
+      "lines": [
+        "For life without thy love",
+        "No relish can afford;",
+        "No joy can be compar'd to this,",
+        "To serve and please the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "To thee I'll lift my hands,",
+        "And praise thee while I live;",
+        "Not the rich dainties of a feast",
+        "Such food or pleasure give."
+      ]
+    },
+    {
+      "lines": [
+        "In wakeful hours at night",
+        "I call my God to mind;",
+        "I think how wise thy counsels are,",
+        "And all thy dealings kind."
+      ]
+    },
+    {
+      "lines": [
+        "Since thou hast been my help,",
+        "To thee my spirit flies,",
+        "And on thy watchful providence",
+        "My cheerful hope relies."
+      ]
+    },
+    {
+      "lines": [
+        "The shadow of thy wings",
+        "My soul in safety keeps;",
+        "I follow where my Father leads,",
+        "And he supports my steps."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 63:4"
+}

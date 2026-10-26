@@ -1,0 +1,78 @@
+{
+  "title": "My God, in Whom Are All the Springs",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "My God, in Whom Are All the Springs in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 57, headed “Praise for protection, grace, and truth”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "My God, in whom are all the springs Of bound-less love and grace un-known, Hide me be-neath thy spread-ing wings Till the dark cloud is o-ver-blown.",
+  "verses": [
+    {
+      "lines": [
+        "My God, in whom are all the springs",
+        "Of boundless love and grace unknown,",
+        "Hide me beneath thy spreading wings",
+        "Till the dark cloud is overblown."
+      ]
+    },
+    {
+      "lines": [
+        "Up to the heavens I send my cry,",
+        "The Lord will my desires perform;",
+        "He sends his angel from the sky,",
+        "And saves me from the threatening storm."
+      ]
+    },
+    {
+      "lines": [
+        "Be thou exalted, O my God,",
+        "Above the heavens where angels dwell:",
+        "Thy power on earth be known abroad,",
+        "And land to land thy wonders tell."
+      ]
+    },
+    {
+      "lines": [
+        "My heart is fix'd; my song shall raise",
+        "Immortal honours to thy Name;",
+        "Awake, my tongue, to sound his praise,",
+        "My tongue, the glory of my frame."
+      ]
+    },
+    {
+      "lines": [
+        "High o'er the earth his mercy reigns,",
+        "And reaches to the utmost sky;",
+        "His truth to endless years remains,",
+        "When lower worlds dissolve and die."
+      ]
+    },
+    {
+      "lines": [
+        "Be thou exalted, O my God,",
+        "Above the heavens where angels dwell;",
+        "Thy power on earth be known abroad,",
+        "And land to land thy wonders tell."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 57"
+}

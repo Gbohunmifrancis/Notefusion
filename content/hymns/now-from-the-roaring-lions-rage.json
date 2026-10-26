@@ -1,0 +1,78 @@
+{
+  "title": "\"Now from the Roaring Lion's Rage",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "\"Now from the Roaring Lion's Rage in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 22, part 2, headed “Christ's sufferings and kingdom”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "\"Now from the roar-ing li-on's rage, \"O Lord, pro-tect thy Son; \"Nor leave thy dar-ling to en-gage, \"The powers of hell a-lone.\"",
+  "verses": [
+    {
+      "lines": [
+        "\"Now from the roaring lion's rage,",
+        "\"O Lord, protect thy Son;",
+        "\"Nor leave thy darling to engage,",
+        "\"The powers of hell alone.\""
+      ]
+    },
+    {
+      "lines": [
+        "Thus did our suffering Saviour pray,",
+        "With mighty cries and tears;",
+        "God heard him in that dreadful day,",
+        "And chas'd away his fears."
+      ]
+    },
+    {
+      "lines": [
+        "Great was the victory of his death,",
+        "His throne exalted high;",
+        "And all the kindreds of the earth",
+        "Shall worship or shall die."
+      ]
+    },
+    {
+      "lines": [
+        "A numerous offspring must arise",
+        "From his expiring groans;",
+        "They shall be reckon'd in his eyes",
+        "For daughters and for sons."
+      ]
+    },
+    {
+      "lines": [
+        "The meek and humble soul shall see",
+        "His table richly spread;",
+        "And all that seek the Lord shall be",
+        "With joys immortal fed."
+      ]
+    },
+    {
+      "lines": [
+        "The isles shall know the righteousness",
+        "Of our incarnate God;",
+        "And nations yet unborn profess",
+        "Salvation in his blood."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 22:2"
+}

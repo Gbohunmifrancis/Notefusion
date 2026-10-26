@@ -1,0 +1,78 @@
+{
+  "title": "We Bless the Lord, the Just, the Good",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "We Bless the Lord, the Just, the Good in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 68, part 3, headed “Praise for temporal blessings; or, Common and special mercies”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "We bless the Lord, the just, the good, Who fills our hearts with joy and food; Who pours his bless-ings from the skies, And loads our days with rich sup-plies.",
+  "verses": [
+    {
+      "lines": [
+        "We bless the Lord, the just, the good,",
+        "Who fills our hearts with joy and food;",
+        "Who pours his blessings from the skies,",
+        "And loads our days with rich supplies."
+      ]
+    },
+    {
+      "lines": [
+        "He sends the sun his circuit round,",
+        "To cheer the fruits, to warm the ground;",
+        "He bids the clouds with plenteous rain",
+        "Refresh the thirsty earth again."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis to his care we owe our breath,",
+        "And all our near escapes from death;",
+        "Safety and health to God belong;",
+        "He heals the weak, and guards the strong."
+      ]
+    },
+    {
+      "lines": [
+        "He makes the saint and sinner prove",
+        "The common blessings of his love;",
+        "But the wide difference that remains,",
+        "Is endless joy, or endless pains."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord, that bruis'd the serpent's head,",
+        "On all the serpent's seed shall tread;",
+        "The stubborn sinner's hope confound,",
+        "And smite him with a lasting wound."
+      ]
+    },
+    {
+      "lines": [
+        "But his right hand his saints shall raise",
+        "From the deep earth, or deeper seas,",
+        "And bring them to his courts above,",
+        "There shall they taste his special love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 68:3"
+}

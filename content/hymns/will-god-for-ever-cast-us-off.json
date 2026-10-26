@@ -1,0 +1,166 @@
+{
+  "title": "Will God for Ever Cast Us Off",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Will God for Ever Cast Us Off in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 17 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 74, headed “The church pleading with God under sore persecutions”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Will God for ev-er cast us off? His wrath for ev-er smoke A-gainst the peo-ple of his love, His lit-tle cho-sen flock?",
+  "verses": [
+    {
+      "lines": [
+        "Will God for ever cast us off?",
+        "His wrath for ever smoke",
+        "Against the people of his love,",
+        "His little chosen flock?"
+      ]
+    },
+    {
+      "lines": [
+        "Think of the tribes so dearly bought",
+        "With their Redeemer's blood;",
+        "Nor let thy Sion be forgot,",
+        "Where once thy glory stood."
+      ]
+    },
+    {
+      "lines": [
+        "Lift up thy feet and march in haste,",
+        "Aloud our ruin calls;",
+        "See what a wide and fearful waste",
+        "Is made within thy walls."
+      ]
+    },
+    {
+      "lines": [
+        "Where once thy churches pray'd and sang",
+        "Thy foes profanely roar;",
+        "Over thy gates their ensigns hang,",
+        "Sad tokens of their power."
+      ]
+    },
+    {
+      "lines": [
+        "How are the seats of worship broke!",
+        "They tear the buildings down,",
+        "And he that deals the heaviest stroke",
+        "Procures the chief renown."
+      ]
+    },
+    {
+      "lines": [
+        "With flames they threaten to destroy",
+        "Thy children in their nest;",
+        "\"Come let us burn at once (they cry)",
+        "The temple and the priest.\""
+      ]
+    },
+    {
+      "lines": [
+        "And still to heighten our distress",
+        "Thy presence is withdrawn;",
+        "Thy wonted signs of power and grace,",
+        "Thy power and grace are gone."
+      ]
+    },
+    {
+      "lines": [
+        "No prophet speaks to calm our woes,",
+        "But all the seers mourn;",
+        "There's not a soul amongst us knows",
+        "The time of thy return."
+      ]
+    },
+    {
+      "lines": [
+        "How long, eternal God, how long",
+        "Shall men of pride blaspheme?",
+        "Shall saints be made their endless song,",
+        "And bear immortal shame?"
+      ]
+    },
+    {
+      "lines": [
+        "Canst thou for ever sit and hear",
+        "Thine holy Name profan'd?",
+        "And still thy jealousy forbear,",
+        "And still withhold thine hand?"
+      ]
+    },
+    {
+      "lines": [
+        "What strange deliverance hast thou shown",
+        "In ages long before!",
+        "And now no other God we own,",
+        "No other God adore."
+      ]
+    },
+    {
+      "lines": [
+        "Thou didst divide the raging sea",
+        "By thy resistless might,",
+        "To make thy tribes a wondrous way,",
+        "And then secure their flight."
+      ]
+    },
+    {
+      "lines": [
+        "Is not the world of nature thine,",
+        "The darkness and the day?",
+        "Didst thou not bid the morning shine,",
+        "And mark the sun his way?"
+      ]
+    },
+    {
+      "lines": [
+        "Hath not thy power form'd every coast,",
+        "And set the earth its bounds,",
+        "With summer's heat and winter's frost,",
+        "In their perpetual rounds?"
+      ]
+    },
+    {
+      "lines": [
+        "And shall the sons of earth and dust",
+        "That sacred power blaspheme?",
+        "Will not thy hand that form'd them first",
+        "Avenge thine injur'd Name?"
+      ]
+    },
+    {
+      "lines": [
+        "Think on the covenant thou hast made,",
+        "And all thy words of love;",
+        "Nor let the birds of prey invade",
+        "And vex thy mourning dove."
+      ]
+    },
+    {
+      "lines": [
+        "Our foes would triumph in our blood,",
+        "And make our hope their jest;",
+        "Plead thy own cause, almighty God!",
+        "And give thy children rest."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 74"
+}

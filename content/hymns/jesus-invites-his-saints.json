@@ -1,0 +1,78 @@
+{
+  "title": "Jesus Invites His Saints",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Jesus Invites His Saints in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book III, prepared for the Lord's Supper, hymn 2, headed “Communion with Christ, and with saints, 1 Cor. 10. 16 17”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus in-vites his saints To meet a-round his board; Here par-don'd re-bels sit, and hold Com-mu-nion with their Lord.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus invites his saints",
+        "To meet around his board;",
+        "Here pardon'd rebels sit, and hold",
+        "Communion with their Lord."
+      ]
+    },
+    {
+      "lines": [
+        "For food he gives his flesh,",
+        "He bids us drink his blood,",
+        "Amazing favour! matchless grace",
+        "Of our descending God!"
+      ]
+    },
+    {
+      "lines": [
+        "This holy bread and wine",
+        "Maintains our fainting breath,",
+        "By union with our living Lord,",
+        "And interest in his death."
+      ]
+    },
+    {
+      "lines": [
+        "Our heavenly Father calls",
+        "Christ and his members one;",
+        "We the young children of his love,",
+        "And he the first-born Son."
+      ]
+    },
+    {
+      "lines": [
+        "We are but several parts",
+        "Of the same broken bread;",
+        "One body hath its several limbs,",
+        "But Jesus is the head."
+      ]
+    },
+    {
+      "lines": [
+        "Let all our powers be join'd",
+        "His glorious Name to raise;",
+        "Pleasure and love fill every mind,",
+        "And every voice be praise."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:3:2"
+}

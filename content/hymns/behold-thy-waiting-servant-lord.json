@@ -1,0 +1,62 @@
+{
+  "title": "Behold Thy Waiting Servant, Lord",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Behold Thy Waiting Servant, Lord in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 119, part 10, headed “Pleading the promises”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Be-hold thy wait-ing ser-vant, Lord, De-vot-ed to thy fear; Re-mem-ber and con-firm thy word, For all my hopes are there.",
+  "verses": [
+    {
+      "lines": [
+        "Behold thy waiting servant, Lord,",
+        "Devoted to thy fear;",
+        "Remember and confirm thy word,",
+        "For all my hopes are there."
+      ]
+    },
+    {
+      "lines": [
+        "Hast thou not writ salvation down,",
+        "And promis'd quickening grace?",
+        "Doth not my heart address thy throne?",
+        "And yet thy love delays."
+      ]
+    },
+    {
+      "lines": [
+        "Mine eyes for thy salvation fail;",
+        "O bear thy servant up;",
+        "Nor let the scoffing lips prevail,",
+        "Who dare reproach my hope."
+      ]
+    },
+    {
+      "lines": [
+        "Didst thou not raise my faith, O Lord?",
+        "Then let thy truth appear:",
+        "Saints shall rejoice in my reward,",
+        "And trust as well as fear."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 119:10"
+}

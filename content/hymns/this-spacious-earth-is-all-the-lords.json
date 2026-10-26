@@ -1,0 +1,86 @@
+{
+  "title": "This Spacious Earth Is All the Lord's",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "This Spacious Earth Is All the Lord's in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 24, part 2, headed “Saints dwell in heaven; or, Christ's ascension”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "This spa-cious earth is all the Lord's, And men, and worms, and beasts, and birds: He rais'd the build-ing on the seas, And gave it for their dwell-ing place.",
+  "verses": [
+    {
+      "lines": [
+        "This spacious earth is all the Lord's,",
+        "And men, and worms, and beasts, and birds:",
+        "He rais'd the building on the seas,",
+        "And gave it for their dwelling-place."
+      ]
+    },
+    {
+      "lines": [
+        "But there's a brighter world on high,",
+        "Thy palace, Lord, above the sky:",
+        "Who shall ascend that blest abode,",
+        "And dwell so near his Maker God?"
+      ]
+    },
+    {
+      "lines": [
+        "He that abhors and fears to sin,",
+        "Whose heart is pure whose hands are clean,",
+        "Him shall the Lord the Saviour bless,",
+        "And clothe his soul with righteousness."
+      ]
+    },
+    {
+      "lines": [
+        "These are the men, the pious race",
+        "That seek the God of Jacob's face;",
+        "These shall enjoy the blissful sight,",
+        "And dwell in everlasting light."
+      ]
+    },
+    {
+      "lines": [
+        "Rejoice, ye shining worlds on high,",
+        "Behold the King of glory nigh!",
+        "Who can this King of glory be?",
+        "The mighty Lord, the Saviour's he."
+      ]
+    },
+    {
+      "lines": [
+        "Ye heavenly gates, your leaves display",
+        "To make the Lord the Saviour way:",
+        "Laden with spoils from earth and hell,",
+        "The conqueror comes with God to dwell."
+      ]
+    },
+    {
+      "lines": [
+        "Rais'd from the dead he goes before,",
+        "He opens heaven's eternal door,",
+        "To give his saints a blest abode",
+        "Near their Redeemer, and their God."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 24:2"
+}

@@ -1,0 +1,94 @@
+{
+  "title": "Behold the Lofty Sky",
+  "tune": "franconia",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Behold the Lofty Sky in Tonic Solfa to FRANCONIA, doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 19, part 1, headed “The book of nature and scripture”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to FRANCONIA; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Be-hold the lof-ty sky De-clares its mak-er God, And all his star-ry works on high Pro-claim his power a-broad.",
+  "verses": [
+    {
+      "lines": [
+        "Behold the lofty sky",
+        "Declares its maker God,",
+        "And all his starry works on high",
+        "Proclaim his power abroad."
+      ]
+    },
+    {
+      "lines": [
+        "The darkness and the light",
+        "Still keep their course the same;",
+        "While night to day, and day to night",
+        "Divinely teach his name."
+      ]
+    },
+    {
+      "lines": [
+        "In every different land",
+        "Their general voice is known",
+        "They shew the wonders of his hand,",
+        "And orders of his throne."
+      ]
+    },
+    {
+      "lines": [
+        "Ye British lands, rejoice,",
+        "Here he reveals his word,",
+        "We are not left to nature's voice",
+        "To bid us know the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "His statutes and commands",
+        "Are set before our eyes;",
+        "He puts his gospel in our hands,",
+        "Where our salvation lies."
+      ]
+    },
+    {
+      "lines": [
+        "His laws are just and pure,",
+        "His truth without deceit,",
+        "His promises for ever sure,",
+        "And his rewards are great."
+      ]
+    },
+    {
+      "lines": [
+        "Not honey to the taste",
+        "Affords so much delight,",
+        "Nor gold that has the furnace past",
+        "So much allures the sight."
+      ]
+    },
+    {
+      "lines": [
+        "While of thy works I sing,",
+        "Thy glory to proclaim,",
+        "Accept the praise, my God, my King,",
+        "In my Redeemer's name."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to FRANCONIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 19:1"
+}

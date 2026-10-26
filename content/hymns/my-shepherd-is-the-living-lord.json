@@ -1,0 +1,94 @@
+{
+  "title": "My Shepherd Is the Living Lord",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "My Shepherd Is the Living Lord in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 23, part 1, headed “God our Shepherd”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "My shep-herd is the liv-ing Lord; Now shall my wants be well sup-ply'd His prov-i-dence and ho-ly word Be-come my safe-ty and my guide.",
+  "verses": [
+    {
+      "lines": [
+        "My shepherd is the living Lord;",
+        "Now shall my wants be well supply'd",
+        "His providence and holy word",
+        "Become my safety and my guide."
+      ]
+    },
+    {
+      "lines": [
+        "In pastures where salvation grows",
+        "He makes me feed, he makes me rest;",
+        "There living water gently flows,",
+        "And all the food's divinely blest."
+      ]
+    },
+    {
+      "lines": [
+        "My wandering feet his ways mistake,",
+        "But he restores my soul to peace,",
+        "And leads me for his mercy's sake,",
+        "In the fair paths of righteousness."
+      ]
+    },
+    {
+      "lines": [
+        "Tho' I walk thro' the gloomy vale,",
+        "Where death and all its terrors are,",
+        "My heart and hope shall never fail,",
+        "For God my shepherd's with me there."
+      ]
+    },
+    {
+      "lines": [
+        "Amidst the darkness and the deeps",
+        "Thou art my comfort, thou my stay;",
+        "Thy staff supports my feeble steps,",
+        "Thy rod directs my doubtful way."
+      ]
+    },
+    {
+      "lines": [
+        "The sons of earth and sons of hell",
+        "Gaze at thy goodness and repine",
+        "To see my table spread so well",
+        "With living bread and cheerful wine."
+      ]
+    },
+    {
+      "lines": [
+        "How I rejoice when on my head",
+        "Thy Spirit condescends to rest!",
+        "'Tis a divine anointing shed",
+        "Like oil of gladness at a feast."
+      ]
+    },
+    {
+      "lines": [
+        "Surely the mercies of the Lord",
+        "Attend his household all their days;",
+        "There will I dwell to hear his word,",
+        "To seek his face, and sing his praise."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 23:1"
+}

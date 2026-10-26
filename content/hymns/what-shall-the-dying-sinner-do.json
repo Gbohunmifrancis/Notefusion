@@ -1,0 +1,78 @@
+{
+  "title": "What Shall the Dying Sinner Do",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "What Shall the Dying Sinner Do in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 33, headed “[Supplement.] The gospel the power of God to salvation, Rom. 1. 16. 1 Cor. 1. 18 24”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "What shall the dy-ing sin-ner do That seeks re-lief for all his woe? Where shall the guilt-y con-science find Ease for the tor-ment of the mind?",
+  "verses": [
+    {
+      "lines": [
+        "What shall the dying sinner do",
+        "That seeks relief for all his woe?",
+        "Where shall the guilty conscience find",
+        "Ease for the torment of the mind?"
+      ]
+    },
+    {
+      "lines": [
+        "How shall we get our crimes forgiven,",
+        "Or form our natures fit for heaven?",
+        "Can souls all o'er defil'd with sin",
+        "Make their own powers and passions clean?"
+      ]
+    },
+    {
+      "lines": [
+        "In vain we search, in vain we try,",
+        "Till Jesus bring his gospel nigh;",
+        "'Tis there such power and glory dwell",
+        "As saves rebellious souls from hell."
+      ]
+    },
+    {
+      "lines": [
+        "This is the pillar of our hope",
+        "That bears our fainting spirits up;",
+        "We read the grace, we trust the word,",
+        "And find salvation in the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "Let men or angels dig the mines",
+        "Where nature's golden treasure shines,",
+        "Brought near the doctrine of the cross",
+        "All nature's gold appears but dross."
+      ]
+    },
+    {
+      "lines": [
+        "Should vile blasphemers with disdain",
+        "Pronounce the truths of Jesus vain,",
+        "I'll meet the scandal and the shame,",
+        "And sing and triumph in his Name."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:33"
+}

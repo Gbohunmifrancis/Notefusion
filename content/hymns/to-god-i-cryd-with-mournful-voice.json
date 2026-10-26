@@ -1,0 +1,110 @@
+{
+  "title": "To God I Cry'd with Mournful Voice",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "To God I Cry'd with Mournful Voice in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 10 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 77, part 1, headed “Melancholy assaulting, and hope prevailing”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "To God I cry'd with mourn-ful voice, I sought his gra-cious ear, In the sad day when trou-bles rose, And fill'd the night with fear.",
+  "verses": [
+    {
+      "lines": [
+        "To God I cry'd with mournful voice,",
+        "I sought his gracious ear,",
+        "In the sad day when troubles rose,",
+        "And fill'd the night with fear."
+      ]
+    },
+    {
+      "lines": [
+        "Sad were my days, and dark my nights,",
+        "My soul refus'd relief;",
+        "I thought on God the just and wise,",
+        "But thoughts increas'd my grief."
+      ]
+    },
+    {
+      "lines": [
+        "Still I complain'd, and still opprest,",
+        "My heart began to break;",
+        "My God, thy wrath forbid my rest,",
+        "And kept my eyes awake."
+      ]
+    },
+    {
+      "lines": [
+        "My overwhelming sorrows grew",
+        "Till I could speak no more;",
+        "Then I within myself withdrew,",
+        "And call'd thy judgments o'er."
+      ]
+    },
+    {
+      "lines": [
+        "I call'd back years and ancient times,",
+        "When I beheld thy face;",
+        "My spirit search'd for secret crimes",
+        "That might withhold thy grace."
+      ]
+    },
+    {
+      "lines": [
+        "I call'd thy mercies to my mind",
+        "Which I enjoy'd before;",
+        "And will the Lord no more be kind?",
+        "His face appear no more?"
+      ]
+    },
+    {
+      "lines": [
+        "Will he for ever cast me off?",
+        "His promise ever fail?",
+        "Has he forgot his tender love?",
+        "Shall anger still prevail?"
+      ]
+    },
+    {
+      "lines": [
+        "But I forbid this hopeless thought,",
+        "This dark despairing frame,",
+        "Rememb'ring what thy hand hath wrought,",
+        "Thy hand is still the same."
+      ]
+    },
+    {
+      "lines": [
+        "I'll think again of all thy ways,",
+        "And talk thy wonders o'er;",
+        "Thy wonders of recovering grace,",
+        "When flesh could hope no more."
+      ]
+    },
+    {
+      "lines": [
+        "Grace dwells with justice on the throne;",
+        "And men that love thy word",
+        "Have in thy sanctuary known",
+        "The counsels of the Lord."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 77:1"
+}

@@ -1,0 +1,94 @@
+{
+  "title": "Bless, O My Soul, the Living God",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Bless, O My Soul, the Living God in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 103, part 1, headed “Blessing God for his goodness to soul and body”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Bless, O my soul, the liv-ing God, Call home thy thoughts that rove a-broad; Let all the powers with-in me join In work and wor-ship so di-vine.",
+  "verses": [
+    {
+      "lines": [
+        "Bless, O my soul, the living God,",
+        "Call home thy thoughts that rove abroad;",
+        "Let all the powers within me join",
+        "In work and worship so divine."
+      ]
+    },
+    {
+      "lines": [
+        "Bless, O my soul, the God of grace;",
+        "His favours claim thy highest praise;",
+        "Why should the wonders he hath wrought",
+        "Be lost in silence and forgot?"
+      ]
+    },
+    {
+      "lines": [
+        "'Tis he, my soul, that sent his Son",
+        "To die for crimes which thou hast done;",
+        "He owns the ransom; and forgives",
+        "The hourly follies of our lives."
+      ]
+    },
+    {
+      "lines": [
+        "The vices of the mind he heals,",
+        "And cures the pains that nature feels;",
+        "Redeems the soul from hell, and saves",
+        "Our wasting life from threat'ning graves."
+      ]
+    },
+    {
+      "lines": [
+        "Our youth decay'd his power repairs;",
+        "His mercy crowns our growing years;",
+        "He satisfies our mouth with good,",
+        "And fills our hopes with heavenly food."
+      ]
+    },
+    {
+      "lines": [
+        "He sees th' oppressor and th' opprest,",
+        "And often gives the sufferers rest;",
+        "But will his justice more display",
+        "In the last great rewarding day."
+      ]
+    },
+    {
+      "lines": [
+        "His power he shew'd by Moses' hands,",
+        "And gave to Israel his commands;",
+        "But sent his truth and mercy down",
+        "To all the nations by his Son."
+      ]
+    },
+    {
+      "lines": [
+        "Let the whole earth his power confess,",
+        "Let the whole earth adore his grace;",
+        "The Gentile with the Jew shall join",
+        "In work and worship so divine."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 103:1"
+}

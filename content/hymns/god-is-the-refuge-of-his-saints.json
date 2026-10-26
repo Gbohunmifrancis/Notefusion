@@ -1,0 +1,78 @@
+{
+  "title": "God Is the Refuge of His Saints",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "God Is the Refuge of His Saints in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 46, part 1, headed “The church's safety and triumph among national desolations”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "God is the re-fuge of his saints, When storms of sharp dis-tress in-vade; Ere we can o-ffer our com-plaints Be-hold him pre-sent with his aid.",
+  "verses": [
+    {
+      "lines": [
+        "God is the refuge of his saints,",
+        "When storms of sharp distress invade;",
+        "Ere we can offer our complaints",
+        "Behold him present with his aid."
+      ]
+    },
+    {
+      "lines": [
+        "Let mountains from their seats be hurl'd",
+        "Down to the deep, and buried there;",
+        "Convulsions shake the solid world,",
+        "Our faith shall never yield to fear."
+      ]
+    },
+    {
+      "lines": [
+        "Loud may the troubled ocean roar,",
+        "In sacred peace our souls abide,",
+        "While every nation, every shore,",
+        "Trembles, and dreads the swelling tide."
+      ]
+    },
+    {
+      "lines": [
+        "There is a stream whose gentle flow",
+        "Supplies the city of our God;",
+        "Life, love, and joy still gliding thro',",
+        "And watering our divine abode."
+      ]
+    },
+    {
+      "lines": [
+        "That sacred stream, thine holy word,",
+        "That all our raging fear controls:",
+        "Sweet peace thy promises afford,",
+        "And give new strength to fainting souls."
+      ]
+    },
+    {
+      "lines": [
+        "Sion enjoys her monarch's love,",
+        "Secure against a threatening hour;",
+        "Nor can her firm foundations move,",
+        "Built on his truth, and arm'd with pow'r."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 46:1"
+}

@@ -1,0 +1,94 @@
+{
+  "title": "Ye Sons of Men, a Feeble Race",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Ye Sons of Men, a Feeble Race in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 91, part 2, headed “Protection from death, guard of angels, victory and deliverance”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Ye sons of men, a fee-ble race, Ex-pos'd to ev-ery snare, Come make the Lord your dwell-ing place, And try and trust his care.",
+  "verses": [
+    {
+      "lines": [
+        "Ye sons of men, a feeble race,",
+        "Expos'd to every snare,",
+        "Come make the Lord your dwelling-place,",
+        "And try and trust his care."
+      ]
+    },
+    {
+      "lines": [
+        "No ill shall enter where you dwell;",
+        "Or if the plague come nigh,",
+        "And sweep the wicked down to hell,",
+        "'Twill raise his saints on high."
+      ]
+    },
+    {
+      "lines": [
+        "He'll give his angels charge to keep",
+        "Your feet in all their ways;",
+        "To watch your pillow while you sleep,",
+        "And guard your happy days."
+      ]
+    },
+    {
+      "lines": [
+        "Their hands shall bear you, lest you fall",
+        "And dash against the stones:",
+        "Are they not servants at his call,",
+        "And sent t' attend his sons?"
+      ]
+    },
+    {
+      "lines": [
+        "Adders and lions ye shall tread;",
+        "The tempter's wiles defeat;",
+        "He that hath broke the serpent's head",
+        "Puts him beneath your feet."
+      ]
+    },
+    {
+      "lines": [
+        "\"Because on me they set their love",
+        "\"I'll save them,\" saith the Lord;",
+        "\"I'll bear their joyful souls above",
+        "\"Destruction and the sword."
+      ]
+    },
+    {
+      "lines": [
+        "\"My grace shall answer when they call;",
+        "\"In trouble I'll be nigh;",
+        "\"My power shall help them when they fall,",
+        "\"And raise them when they die."
+      ]
+    },
+    {
+      "lines": [
+        "\"Those that on earth my Name have known,",
+        "\"I'll honour them in heaven;",
+        "\"There my salvation shall be shown,",
+        "\"And endless life be given.\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 91:2"
+}

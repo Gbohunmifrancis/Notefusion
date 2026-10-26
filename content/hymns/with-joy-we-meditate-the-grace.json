@@ -1,0 +1,78 @@
+{
+  "title": "With Joy We Meditate the Grace",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "With Joy We Meditate the Grace in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 125, headed “Christ's compassion to the weak and tempted, Heb. 4. 15 16. and 5. 7. Matt. 12. 20”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "With joy we med-i-tate the grace Of our High Priest a-bove; His heart is made of ten-der-ness, His bow-els melt with love.",
+  "verses": [
+    {
+      "lines": [
+        "With joy we meditate the grace",
+        "Of our High Priest above;",
+        "His heart is made of tenderness,",
+        "His bowels melt with love."
+      ]
+    },
+    {
+      "lines": [
+        "Touch'd with a sympathy within",
+        "He knows our feeble frame;",
+        "He knows what sore temptations mean,",
+        "For he has felt the same."
+      ]
+    },
+    {
+      "lines": [
+        "But spotless, innocent, and pure",
+        "The great Redeemer stood,",
+        "While Satan's fiery darts he bore,",
+        "And did resist to blood."
+      ]
+    },
+    {
+      "lines": [
+        "He in the days of feeble flesh",
+        "Pour'd out his cries and tears,",
+        "And in his measure feels afresh",
+        "What every member bears."
+      ]
+    },
+    {
+      "lines": [
+        "He'll never quench the smoking flax,",
+        "But raise it to a flame;",
+        "The bruised reed he never breaks,",
+        "Nor scorns the meanest name."
+      ]
+    },
+    {
+      "lines": [
+        "Then let our humble faith address",
+        "His mercy and his power,",
+        "We shall obtain delivering grace",
+        "In the distressing hour."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:125"
+}

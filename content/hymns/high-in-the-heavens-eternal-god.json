@@ -1,0 +1,78 @@
+{
+  "title": "High in the Heavens, Eternal God",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "High in the Heavens, Eternal God in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 36, part 1, headed “The perfections and providence of God; or, General providence and special grace”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "High in the heavens, e-ter-nal God, Thy good-ness in full glo-ry shines; Thy truth shall break thro' ev-ery cloud That veils and dark-ens thy de-signs.",
+  "verses": [
+    {
+      "lines": [
+        "High in the heavens, eternal God,",
+        "Thy goodness in full glory shines;",
+        "Thy truth shall break thro' every cloud",
+        "That veils and darkens thy designs."
+      ]
+    },
+    {
+      "lines": [
+        "For ever firm thy justice stands,",
+        "As mountains their foundations keep;",
+        "Wise are the wonders of thy hands;",
+        "Thy judgments are a mighty deep."
+      ]
+    },
+    {
+      "lines": [
+        "Thy providence is kind and large,",
+        "Both man and beast thy bounty share;",
+        "The whole creation is thy charge,",
+        "But saints are thy peculiar care."
+      ]
+    },
+    {
+      "lines": [
+        "My God! how excellent thy grace,",
+        "Whence all our hope and comfort springs!",
+        "The sons of Adam in distress",
+        "Fly to the shadow of thy wings."
+      ]
+    },
+    {
+      "lines": [
+        "From the provisions of thy house",
+        "We shall be fed with sweet repast;",
+        "There mercy like a river flows,",
+        "And brings salvation to our taste."
+      ]
+    },
+    {
+      "lines": [
+        "Life, like a fountain rich and free",
+        "Springs from the presence of the Lord;",
+        "And in thy light our souls shall see",
+        "The glories promis'd in thy word."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 36:1"
+}

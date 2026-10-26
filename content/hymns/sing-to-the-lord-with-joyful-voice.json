@@ -1,0 +1,78 @@
+{
+  "title": "Sing to the Lord with Joyful Voice",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Sing to the Lord with Joyful Voice in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 100, part 2.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Sing to the Lord with joy-ful voice; Let ev-ery land his name a-dore; The Bri-tish isles shall send the noise A-cross the o-cean to the shore.",
+  "verses": [
+    {
+      "lines": [
+        "Sing to the Lord with joyful voice;",
+        "Let every land his name adore;",
+        "The British isles shall send the noise",
+        "Across the ocean to the shore."
+      ]
+    },
+    {
+      "lines": [
+        "Nations, attend before his throne",
+        "With solemn fear, with sacred joy;",
+        "Know that the Lord is God alone;",
+        "He can create, and he destroy."
+      ]
+    },
+    {
+      "lines": [
+        "His sovereign power, without our aid,",
+        "Made us of clay, and form'd us men;",
+        "And when like wandering sheep we stray'd,",
+        "He brought us to his fold again."
+      ]
+    },
+    {
+      "lines": [
+        "We are his people, we his care,",
+        "Our souls and all our mortal frame:",
+        "What lasting honours shall we rear,",
+        "Almighty Maker, to thy Name!"
+      ]
+    },
+    {
+      "lines": [
+        "We'll crowd thy gates with thankful songs,",
+        "High as the heavens our voices raise;",
+        "And earth with her ten thousand tongues",
+        "Shall fill thy courts with sounding praise."
+      ]
+    },
+    {
+      "lines": [
+        "Wide as the world is thy command,",
+        "Vast as eternity thy love;",
+        "Firm as a rock thy truth must stand",
+        "When rolling years shall cease to move."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 100:2"
+}

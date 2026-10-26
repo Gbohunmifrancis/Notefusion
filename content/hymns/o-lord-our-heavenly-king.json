@@ -1,0 +1,94 @@
+{
+  "title": "O Lord, Our Heavenly King",
+  "tune": "st-bride",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "O Lord, Our Heavenly King in Tonic Solfa to ST. BRIDE, doh is Bb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 8, part 1, headed “God's sovereignty and goodness; and man's dominion over the creatures”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to ST. BRIDE; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "O Lord, our heav-enly King, Thy name is all di-vine; Thy glo-ries round the earth are spread, And o'er the heavens they shine.",
+  "verses": [
+    {
+      "lines": [
+        "O Lord, our heavenly King,",
+        "Thy name is all divine;",
+        "Thy glories round the earth are spread,",
+        "And o'er the heavens they shine."
+      ]
+    },
+    {
+      "lines": [
+        "When to thy works on high",
+        "I raise my wondering eyes,",
+        "And see the moon complete in light",
+        "Adorn the darksome skies:"
+      ]
+    },
+    {
+      "lines": [
+        "When I survey the stars,",
+        "And all their shining forms,",
+        "Lord, what is man, that worthless thing,",
+        "Akin to dust and worms?"
+      ]
+    },
+    {
+      "lines": [
+        "Lord, what is worthless man,",
+        "That thou shouldst love him so?",
+        "Next to thine angels he is plac'd,",
+        "And lord of all below."
+      ]
+    },
+    {
+      "lines": [
+        "Thine honours crown his head,",
+        "While beasts like slaves obey,",
+        "And birds that cut the air with wings,",
+        "And fish that cleave the sea."
+      ]
+    },
+    {
+      "lines": [
+        "How rich thy bounties are!",
+        "And wondrous are thy ways:",
+        "Of dust and worms thy power can frame",
+        "A monument of praise."
+      ]
+    },
+    {
+      "lines": [
+        "Out of the mouths of babes",
+        "And sucklings thou canst draw",
+        "Surprising honours to thy name,",
+        "And strike the world with awe."
+      ]
+    },
+    {
+      "lines": [
+        "O Lord, our heavenly King,",
+        "Thy name is all divine:",
+        "Thy glories round the earth are spread,",
+        "And o'er the heavens they shine."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. BRIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 8:1"
+}

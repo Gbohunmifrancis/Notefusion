@@ -1,0 +1,94 @@
+{
+  "title": "All Ye That Love the Lord, Rejoice",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "All Ye That Love the Lord, Rejoice in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 149, headed “Praise God, all his saints; or, The saints judging the world”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "All ye that love the Lord, re-joice, And let your songs be new; A-midst the church with cheer-ful voice His lat-er won-ders shew.",
+  "verses": [
+    {
+      "lines": [
+        "All ye that love the Lord, rejoice,",
+        "And let your songs be new;",
+        "Amidst the church with cheerful voice",
+        "His later wonders shew."
+      ]
+    },
+    {
+      "lines": [
+        "The Jews, the people of his grace,",
+        "Shall their Redeemer sing;",
+        "And Gentile nations join the praise,",
+        "While Zion owns her King."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord takes pleasure in the just,",
+        "Whom sinners treat with scorn;",
+        "The meek that lie despis'd in dust",
+        "Salvation shall adorn."
+      ]
+    },
+    {
+      "lines": [
+        "Saints should be joyful in their King,",
+        "Ev'n on a dying bed;",
+        "And like the souls in glory sing,",
+        "For God shall raise the dead."
+      ]
+    },
+    {
+      "lines": [
+        "Then his high praise shall fill their tongues,",
+        "Their hands shall wield the sword;",
+        "And vengeance shall attend their songs,",
+        "The vengeance of the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "When Christ his judgment-seat ascends,",
+        "And bids the world appear,",
+        "Thrones are prepar'd for all his friends,",
+        "Who humbly lov'd him here."
+      ]
+    },
+    {
+      "lines": [
+        "Then shall they rule with iron rod",
+        "Nations that dar'd rebel;",
+        "And join the sentence of their God",
+        "On tyrants doom'd to hell."
+      ]
+    },
+    {
+      "lines": [
+        "The royal sinners bound in chains",
+        "New triumphs shall afford;",
+        "Such honour for the saints remains:",
+        "Praise ye, and love the Lord."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 149"
+}

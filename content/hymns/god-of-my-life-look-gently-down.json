@@ -1,0 +1,86 @@
+{
+  "title": "God of My Life, Look Gently Down",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "God of My Life, Look Gently Down in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 39, part 3, headed “Sick-bed devotion; or, Pleading without repining”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "God of my life, look gen-tly down, Be-hold the pains I feel; But I am dumb be-fore thy throne, Nor dare dis-pute thy will.",
+  "verses": [
+    {
+      "lines": [
+        "God of my life, look gently down,",
+        "Behold the pains I feel;",
+        "But I am dumb before thy throne,",
+        "Nor dare dispute thy will."
+      ]
+    },
+    {
+      "lines": [
+        "Diseases are thy servants, Lord,",
+        "They come at thy command;",
+        "I'll not attempt a murmuring word",
+        "Against thy chastening hand."
+      ]
+    },
+    {
+      "lines": [
+        "Yet I may plead with humble cries,",
+        "Remove thy sharp rebukes;",
+        "My strength consumes, my spirit dies",
+        "Thro' thy repeated strokes."
+      ]
+    },
+    {
+      "lines": [
+        "Crush'd as a moth beneath thy hand,",
+        "We moulder to the dust;",
+        "Our feeble powers can ne'er withstand,",
+        "And all our beauty's lost."
+      ]
+    },
+    {
+      "lines": [
+        "This mortal life decays apace,",
+        "How soon the bubble's broke!",
+        "Adam and all his numerous race",
+        "Are vanity and smoke."
+      ]
+    },
+    {
+      "lines": [
+        "I'm but a sojourner below,",
+        "As all my fathers were,",
+        "May I be well prepar'd to go",
+        "When I the summons hear."
+      ]
+    },
+    {
+      "lines": [
+        "But if my life be spar'd awhile,",
+        "Before my last remove,",
+        "Thy praise shall be my business still,",
+        "And I'll declare thy love."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 39:3"
+}

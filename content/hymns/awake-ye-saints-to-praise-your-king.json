@@ -1,0 +1,94 @@
+{
+  "title": "Awake, Ye Saints; to Praise Your King",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Awake, Ye Saints; to Praise Your King in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 135, part 3, headed “Praise due to God, not to idols”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "A-wake, ye saints; to praise your King, Your sweet-est pas-sions raise, Your pi-ous plea-sure, while you sing, In-creas-ing with the praise.",
+  "verses": [
+    {
+      "lines": [
+        "Awake, ye saints; to praise your King,",
+        "Your sweetest passions raise,",
+        "Your pious pleasure, while you sing,",
+        "Increasing with the praise."
+      ]
+    },
+    {
+      "lines": [
+        "Great is the Lord; and works unknown",
+        "Are his divine employ;",
+        "But still his saints are near his throne,",
+        "His treasure and his joy."
+      ]
+    },
+    {
+      "lines": [
+        "Heaven, earth, and sea, confess his hand;",
+        "He bids the vapours rise;",
+        "Lightning and storm at his command",
+        "Sweep thro' the sounding skies."
+      ]
+    },
+    {
+      "lines": [
+        "All power, that gods or kings have claim'd",
+        "Is found with him alone;",
+        "But heathen gods should ne'er be nam'd",
+        "Where our Jehovah's known."
+      ]
+    },
+    {
+      "lines": [
+        "Which of the stocks or stones they trust",
+        "Can give them showers of rain?",
+        "In vain they worship glittering dust,",
+        "And pray to gold in vain."
+      ]
+    },
+    {
+      "lines": [
+        "Their gods have tongues that cannot talk,",
+        "Such as their makers gave:",
+        "Their feet were ne'er design'd to walk,",
+        "Nor hands have power to save."
+      ]
+    },
+    {
+      "lines": [
+        "Blind are their eyes, their ears are deaf,",
+        "Nor hear when mortals pray;",
+        "Mortals, that wait for their relief,",
+        "Are blind, and deaf as they."
+      ]
+    },
+    {
+      "lines": [
+        "O Britain, know thy living God,",
+        "Serve him with faith and fear;",
+        "He makes thy churches his abode,",
+        "And claims thine honours there."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 135:3"
+}

@@ -1,0 +1,70 @@
+{
+  "title": "Let Me but Hear My Saviour Say",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Let Me but Hear My Saviour Say in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 15, headed “Our own weakness, and Christ our strength, 2 Cor. 12. 7 9 10”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Let me but hear my Sa-viour say, \"Strength shall be e-qual to thy day,\" Then I re-joice in deep dis-tress, Lean-ing on all su-ffic-ient Grace.",
+  "verses": [
+    {
+      "lines": [
+        "Let me but hear my Saviour say,",
+        "\"Strength shall be equal to thy day,\"",
+        "Then I rejoice in deep distress,",
+        "Leaning on all-sufficient Grace."
+      ]
+    },
+    {
+      "lines": [
+        "I glory in infirmity,",
+        "That Christ's own power may rest on me;",
+        "When I am weak, then am I strong,",
+        "Grace is my shield, and Christ my song."
+      ]
+    },
+    {
+      "lines": [
+        "I can do all things, or can bear",
+        "All sufferings, if my Lord be there;",
+        "Sweet pleasures mingle with the pains,",
+        "While his left hand my head sustains."
+      ]
+    },
+    {
+      "lines": [
+        "But if the Lord be once withdrawn,",
+        "And we attempt the work alone,",
+        "When new temptations spring and rise",
+        "We find how great our weakness is."
+      ]
+    },
+    {
+      "lines": [
+        "So Samson, when his hair was lost,",
+        "Met the Philistines to his cost;",
+        "Shook his vain limbs with sad surprise,",
+        "Made feeble fight, and lost his eyes."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:15"
+}

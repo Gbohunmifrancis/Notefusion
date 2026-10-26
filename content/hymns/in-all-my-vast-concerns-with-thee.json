@@ -1,0 +1,110 @@
+{
+  "title": "In All My Vast Concerns with Thee",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "In All My Vast Concerns with Thee in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 10 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 139, part 4, headed “God is every where”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "In all my vast con-cerns with thee In vain my soul would try To shun thy pre-sence, Lord, or flee The no-tice of thine eye.",
+  "verses": [
+    {
+      "lines": [
+        "In all my vast concerns with thee",
+        "In vain my soul would try",
+        "To shun thy presence, Lord, or flee",
+        "The notice of thine eye."
+      ]
+    },
+    {
+      "lines": [
+        "Thy all-surrounding sight surveys",
+        "My rising and my rest,",
+        "My public walks, my private ways,",
+        "And secrets of my breast."
+      ]
+    },
+    {
+      "lines": [
+        "My thoughts lie open to the Lord",
+        "Before they're form'd within:",
+        "And ere my lips pronounce the word,",
+        "He knows the sense I mean."
+      ]
+    },
+    {
+      "lines": [
+        "O wondrous knowledge, deep and high!",
+        "Where can a creature hide?",
+        "Within thy circling arms I lie,",
+        "Beset on every side."
+      ]
+    },
+    {
+      "lines": [
+        "So let thy grace surround me still,",
+        "And like a bulwark prove,",
+        "To guard my soul from every ill,",
+        "Secur'd by sovereign love."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, where shall guilty souls retire,",
+        "Forgotten and unknown?",
+        "In hell they meet thy dreadful fire,",
+        "In heaven thy glorious throne."
+      ]
+    },
+    {
+      "lines": [
+        "Should I suppress my vital breath",
+        "To 'scape the wrath divine,",
+        "Thy voice would break the bars of death,",
+        "And make the grave resign."
+      ]
+    },
+    {
+      "lines": [
+        "If wing'd with beams of morning light,",
+        "I fly beyond the west,",
+        "Thy hand, which must support my flight,",
+        "Would soon betray my rest."
+      ]
+    },
+    {
+      "lines": [
+        "If o'er my sins I think to draw",
+        "The curtains of the night,",
+        "Those flaming eyes that guard thy law",
+        "Would turn the shades to light."
+      ]
+    },
+    {
+      "lines": [
+        "The beams of noon, the midnight hour,",
+        "Are both alike to thee:",
+        "O may I ne'er provoke that power",
+        "From which I cannot flee!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 139:4"
+}

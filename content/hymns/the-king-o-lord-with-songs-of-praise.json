@@ -1,0 +1,78 @@
+{
+  "title": "The King, O Lord, with Songs of Praise",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "The King, O Lord, with Songs of Praise in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 21, part 1, headed “Our king is the care of heaven”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The king, O Lord, with songs of praise, Shall in thy strength re-joice; And, blest with thy sal-va-tion, raise To heaven his cheer-ful voice.",
+  "verses": [
+    {
+      "lines": [
+        "The king, O Lord, with songs of praise,",
+        "Shall in thy strength rejoice;",
+        "And, blest with thy salvation, raise",
+        "To heaven his cheerful voice."
+      ]
+    },
+    {
+      "lines": [
+        "Thy sure defence, thro' nations round,",
+        "Has spread his glorious name;",
+        "And his successful actions crown'd",
+        "With majesty and fame."
+      ]
+    },
+    {
+      "lines": [
+        "Then let the king on God alone",
+        "For timely aid rely;",
+        "His mercy shall support the throne,",
+        "And all our wants supply."
+      ]
+    },
+    {
+      "lines": [
+        "But, righteous Lord, his stubborn foes",
+        "Shall feel thy dreadful hand",
+        "Thy vengeful arm shall find out those",
+        "That hate his mild command."
+      ]
+    },
+    {
+      "lines": [
+        "When thou against them dost engage,",
+        "Thy just but dreadful doom",
+        "Shall, like a fiery oven's rage,",
+        "Their hopes and them consume."
+      ]
+    },
+    {
+      "lines": [
+        "Thus, Lord, thy wondrous power declare,",
+        "And thus exalt thy fame;",
+        "Whilst we glad songs of praise prepare",
+        "For thine almighty name."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 21:1"
+}

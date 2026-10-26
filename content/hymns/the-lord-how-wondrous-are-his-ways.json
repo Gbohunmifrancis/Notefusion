@@ -1,0 +1,102 @@
+{
+  "title": "The Lord, How Wondrous Are His Ways",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "The Lord, How Wondrous Are His Ways in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 103, part 2, headed “God's gentle chastisement; or, His tender mercy to his people”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The Lord, how won-drous are his ways: How firm his truth how large his grace; He takes his mer-cy for his throne, And thence he makes his glo-ries known.",
+  "verses": [
+    {
+      "lines": [
+        "The Lord, how wondrous are his ways:",
+        "How firm his truth how large his grace;",
+        "He takes his mercy for his throne,",
+        "And thence he makes his glories known."
+      ]
+    },
+    {
+      "lines": [
+        "Not half so high his power hath spread",
+        "The starry heavens above our head,",
+        "As his rich love exceeds our praise,",
+        "Exceeds the highest hopes we raise."
+      ]
+    },
+    {
+      "lines": [
+        "Not half so far hath nature plac'd",
+        "The rising morning from the west,",
+        "As his forgiving grace removes",
+        "The daily guilt of those he loves."
+      ]
+    },
+    {
+      "lines": [
+        "How slowly doth his wrath arise!",
+        "On swifter wings salvation flies;",
+        "And if he lets his anger burn,",
+        "How soon his frowns to pity turn!"
+      ]
+    },
+    {
+      "lines": [
+        "Amidst his wrath compassion shines;",
+        "His strokes are lighter than our sins;",
+        "And while his rod corrects his saints,",
+        "His ear indulges their complaints."
+      ]
+    },
+    {
+      "lines": [
+        "So fathers their young sons chastise,",
+        "With gentle hand and melting eyes;",
+        "The children weep beneath the smart,",
+        "And move the pity of their heart."
+      ]
+    },
+    {
+      "lines": [
+        "The mighty God, the wise, and just,",
+        "Knows that our frame is feeble dust;",
+        "And will no heavy loads impose",
+        "Beyond the strength that he bestows."
+      ]
+    },
+    {
+      "lines": [
+        "He knows how soon our nature dies,",
+        "Blasted by every wind that flies;",
+        "Like grass we spring, and die as soon,",
+        "Or morning flowers that fade at noon."
+      ]
+    },
+    {
+      "lines": [
+        "But his eternal love is sure",
+        "To all the saints, and shall endure:",
+        "From age to age his truth shall reign,",
+        "Nor children's children hope in vain."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 103:2"
+}

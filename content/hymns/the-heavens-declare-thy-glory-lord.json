@@ -1,0 +1,78 @@
+{
+  "title": "The Heavens Declare Thy Glory, Lord",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "The Heavens Declare Thy Glory, Lord in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 19, part 3, headed “The books of nature and of scripture compared; or, The glory and success of the gospel”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The heavens de-clare thy glo-ry, Lord, In ev-ery star thy wis-dom shines; But when our eyes be-hold thy word We read thy name in fair-er lines.",
+  "verses": [
+    {
+      "lines": [
+        "The heavens declare thy glory, Lord,",
+        "In every star thy wisdom shines;",
+        "But when our eyes behold thy word",
+        "We read thy name in fairer lines."
+      ]
+    },
+    {
+      "lines": [
+        "The rolling sun, the changing light,",
+        "And nights and days thy power confess;",
+        "But the blest volume thou hast writ",
+        "Reveals thy justice and thy grace."
+      ]
+    },
+    {
+      "lines": [
+        "Sun, moon, and stars convey thy praise",
+        "Round the whole earth, and never stand;",
+        "So when thy truth begun its race,",
+        "It touch'd and glanc'd on every land."
+      ]
+    },
+    {
+      "lines": [
+        "Nor shall thy spreading gospel rest,",
+        "Till thro' the world thy truth has run;",
+        "Till Christ has all the nations blest,",
+        "That see the light, or feel the sun."
+      ]
+    },
+    {
+      "lines": [
+        "Great Sun of Righteousness, arise,",
+        "Bless the dark world with heavenly light;",
+        "Thy gospel makes the simple wise,",
+        "Thy laws are pure, thy judgments right."
+      ]
+    },
+    {
+      "lines": [
+        "Thy noblest wonders here we view",
+        "In souls renew'd and sins forgiven:",
+        "Lord, cleanse my sins, my soul renew,",
+        "And make thy word my guide to heaven."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 19:3"
+}

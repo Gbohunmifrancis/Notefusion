@@ -1,0 +1,78 @@
+{
+  "title": "Songs of Immortal Praise Belong",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Songs of Immortal Praise Belong in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 111, part 1, headed “The wisdom of God in his works”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Songs of im-mor-tal praise be-long To my al-might-y God; He has my heart, and he my tongue To spread his Name a-broad.",
+  "verses": [
+    {
+      "lines": [
+        "Songs of immortal praise belong",
+        "To my almighty God;",
+        "He has my heart, and he my tongue",
+        "To spread his Name abroad."
+      ]
+    },
+    {
+      "lines": [
+        "How great the works his hand has wrought!",
+        "How glorious in our sight!",
+        "And men in every age have sought",
+        "His wonders with delight."
+      ]
+    },
+    {
+      "lines": [
+        "How most exact is nature's frame!",
+        "How wise th' Eternal mind!",
+        "His counsels never change the scheme",
+        "That his first thoughts design'd."
+      ]
+    },
+    {
+      "lines": [
+        "When he redeem'd his chosen Son,",
+        "He fix'd his covenant sure:",
+        "The orders that his lips pronounce",
+        "To endless years endure."
+      ]
+    },
+    {
+      "lines": [
+        "Nature and time, and earth and skies,",
+        "Thy heavenly skill proclaim:",
+        "What shall we do to make us wise,",
+        "But learn to read thy Name?"
+      ]
+    },
+    {
+      "lines": [
+        "To fear thy power, to trust thy grace",
+        "Is our divinest skill;",
+        "And he's the wisest of our race,",
+        "That best obeys thy will."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 111:1"
+}

@@ -1,0 +1,126 @@
+{
+  "title": "Loud Hallelujahs to the Lord",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Loud Hallelujahs to the Lord in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 12 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 148, part 2, headed “Universal praise to God”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Loud hal-le-lu-jahs to the Lord, From dis-tant worlds where crea-tures dwell: Let heaven be-gin the sol-emn word, And sound it dread-ful down to hell.",
+  "verses": [
+    {
+      "lines": [
+        "Loud hallelujahs to the Lord,",
+        "From distant worlds where creatures dwell:",
+        "Let heaven begin the solemn word,",
+        "And sound it dreadful down to hell."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord! how absolute he reigns!",
+        "Let every angel bend the knee;",
+        "Sing of his love in heavenly strains,",
+        "And speak how fierce his terrors be."
+      ]
+    },
+    {
+      "lines": [
+        "High on a throne his glories dwell,",
+        "An awful throne of shining bliss:",
+        "Fly thro' the world, O sun, and tell",
+        "How dark thy beams compar'd to his."
+      ]
+    },
+    {
+      "lines": [
+        "Awake, ye tempests, and his fame",
+        "In sounds of dreadful praise declare;",
+        "And the sweet whisper of his Name",
+        "Fill every gentler breeze of air."
+      ]
+    },
+    {
+      "lines": [
+        "Let clouds, and winds, and waves agree",
+        "To join their praise with blazing fire;",
+        "Let the firm earth, and rolling sea,",
+        "In this eternal song conspire."
+      ]
+    },
+    {
+      "lines": [
+        "Ye flowery plains, proclaim his skill;",
+        "Vallies, lie low before his eye;",
+        "And let his praise from every hill",
+        "Rise tuneful to the neighbouring sky."
+      ]
+    },
+    {
+      "lines": [
+        "Ye stubborn oaks, and stately pines,",
+        "Bend your high branches and adore:",
+        "Praise him, ye beasts, in different strains;",
+        "The lamb must bleat, the lion roar."
+      ]
+    },
+    {
+      "lines": [
+        "Birds, ye must make his praise your theme,",
+        "Nature demands a song from you;",
+        "While the dumb fish that cut the stream",
+        "Leap up, and mean his praises too."
+      ]
+    },
+    {
+      "lines": [
+        "Mortals, can you refrain your tongue,",
+        "When nature all around you sings?",
+        "O for a shout from old and young,",
+        "From humble swains, and lofty kings!"
+      ]
+    },
+    {
+      "lines": [
+        "Wide as his vast dominion lies",
+        "Make the Creator's name be known;",
+        "Loud as his thunder shout his praise,",
+        "And sound it lofty as his throne."
+      ]
+    },
+    {
+      "lines": [
+        "Jehovah! 'tis a glorious word,",
+        "O may it dwell on every tongue!",
+        "But saints who best have known the Lord",
+        "Are bound to raise the noblest song."
+      ]
+    },
+    {
+      "lines": [
+        "Speak of the wonders of that love",
+        "Which Gabriel plays on every chord:",
+        "From all below and all above,",
+        "Loud hallelujahs to the Lord!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 148:2"
+}

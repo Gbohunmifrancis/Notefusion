@@ -1,0 +1,78 @@
+{
+  "title": "Come, Children, Learn to Fear the Lord",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Come, Children, Learn to Fear the Lord in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 34, part 4, headed “Exhortations to peace and Holiness”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Come, child-ren, learn to fear the Lord; And that your days be long, Let not a false or spite-ful word Be found up-on your tongue.",
+  "verses": [
+    {
+      "lines": [
+        "Come, children, learn to fear the Lord;",
+        "And that your days be long,",
+        "Let not a false or spiteful word",
+        "Be found upon your tongue."
+      ]
+    },
+    {
+      "lines": [
+        "Depart from mischief, practise love,",
+        "Pursue the works of peace;",
+        "So shall the Lord your ways approve,",
+        "And set your souls at ease."
+      ]
+    },
+    {
+      "lines": [
+        "His eyes awake to guard the just,",
+        "His ears attend their cry;",
+        "When broken spirits dwell in dust,",
+        "The God of grace is nigh."
+      ]
+    },
+    {
+      "lines": [
+        "What tho' the sorrows here they taste",
+        "Are sharp and tedious too,",
+        "The Lord, who saves them all at last,",
+        "Is their supporter now."
+      ]
+    },
+    {
+      "lines": [
+        "Evil shall smite the wicked dead;",
+        "But God secures his own,",
+        "Prevents the mischief when they slide,",
+        "Or heals the broken bone."
+      ]
+    },
+    {
+      "lines": [
+        "When desolation like a flood,",
+        "O'er the proud sinner rolls,",
+        "Saints find a refuge in their God,",
+        "For he redeem'd their souls."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 34:4"
+}

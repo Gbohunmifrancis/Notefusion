@@ -1,0 +1,86 @@
+{
+  "title": "My Saviour and My King",
+  "tune": "st-bride",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "My Saviour and My King in Tonic Solfa to ST. BRIDE, doh is Bb: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 45, part 1, headed “The glory of Christ; the success of the gospel; and the Gentile church”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to ST. BRIDE; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "My Sa-viour and my King, Thy beau-ties are di-vine; Thy lips with bless-ings o-ver-flow, And ev-ery grace is thine.",
+  "verses": [
+    {
+      "lines": [
+        "My Saviour and my King,",
+        "Thy beauties are divine;",
+        "Thy lips with blessings overflow,",
+        "And every grace is thine."
+      ]
+    },
+    {
+      "lines": [
+        "Now make thy glory known,",
+        "Gird on thy dreadful sword,",
+        "And ride in majesty to spread",
+        "The conquests of thy word."
+      ]
+    },
+    {
+      "lines": [
+        "Thy laws, O God, are right;",
+        "Thy throne shall ever end;",
+        "And thy victorious gospel proves",
+        "A sceptre in thy hand."
+      ]
+    },
+    {
+      "lines": [
+        "Thy Father and thy God",
+        "Hath without measure shed",
+        "His Spirit, like a joyful oil,",
+        "T'anoint thy sacred head."
+      ]
+    },
+    {
+      "lines": [
+        "Behold, at thy right hand",
+        "The Gentile church is seen,",
+        "Like a fair bride in rich attire,",
+        "And princes guard the queen."
+      ]
+    },
+    {
+      "lines": [
+        "Fair bride, receive his love,",
+        "Forget thy father's house;",
+        "Forsake thy gods, thy idol gods,",
+        "And pay thy Lord thy vows."
+      ]
+    },
+    {
+      "lines": [
+        "O let thy God and King",
+        "Thy sweetest thoughts employ;",
+        "Thy children shall his honours sing",
+        "In palaces of joy."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. BRIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 45:1"
+}

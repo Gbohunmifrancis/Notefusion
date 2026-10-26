@@ -1,0 +1,110 @@
+{
+  "title": "Amidst Thy Wrath Remember Love",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Amidst Thy Wrath Remember Love in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 10 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 38, headed “Guilt of conscience and relief; or, Repentance, and prayer for pardon and health”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "A-midst thy wrath re-mem-ber love, Re-store thy ser-vant, Lord; Nor let a fa-ther's chas-tening prove Like an a-ven-ger's sword.",
+  "verses": [
+    {
+      "lines": [
+        "Amidst thy wrath remember love,",
+        "Restore thy servant, Lord;",
+        "Nor let a father's chastening prove",
+        "Like an avenger's sword."
+      ]
+    },
+    {
+      "lines": [
+        "Thine arrows stick within my heart,",
+        "My flesh is sorely prest;",
+        "Between the sorrow and the smart",
+        "My spirit finds no rest."
+      ]
+    },
+    {
+      "lines": [
+        "My sins a heavy load appear,",
+        "And o'er my head are gone;",
+        "Too heavy they for me to bear,",
+        "Too hard for me t' atone."
+      ]
+    },
+    {
+      "lines": [
+        "My thoughts are like a troubled sea,",
+        "My head still bending down;",
+        "And I go mourning all the day",
+        "Beneath my Father's frown."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, I am weak, and broken sore,",
+        "None of my powers are whole;",
+        "The inward anguish makes me roar,",
+        "The anguish of my soul."
+      ]
+    },
+    {
+      "lines": [
+        "All my desire to thee is known,",
+        "Thine eye counts every tear,",
+        "And every sigh, and every groan",
+        "Is notic'd by thine ear."
+      ]
+    },
+    {
+      "lines": [
+        "Thou art my God, my only hope;",
+        "My God will hear my cry;",
+        "My God will bear my spirit up",
+        "When Satan bids me die."
+      ]
+    },
+    {
+      "lines": [
+        "My foot is ever apt to slide,",
+        "My foes rejoice to see't;",
+        "They raise their pleasure and their pride",
+        "When they supplant my feet."
+      ]
+    },
+    {
+      "lines": [
+        "But I'll confess my guilt to thee,",
+        "And grieve for all my sin,",
+        "I'll mourn how weak my graces be,",
+        "And beg support divine."
+      ]
+    },
+    {
+      "lines": [
+        "My God, forgive my follies past,",
+        "And be for ever nigh;",
+        "O Lord of my salvation, haste,",
+        "Before thy servant die."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 38"
+}

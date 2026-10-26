@@ -1,0 +1,70 @@
+{
+  "title": "The Earth for Ever Is the Lord's",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "The Earth for Ever Is the Lord's in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 24, part 1, headed “Dwelling with God”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The earth for ev-er is the Lord's, With A-dam's nu-merous race; He rais'd its arch-es o'er the floods, And built it on the seas.",
+  "verses": [
+    {
+      "lines": [
+        "The earth for ever is the Lord's,",
+        "With Adam's numerous race;",
+        "He rais'd its arches o'er the floods,",
+        "And built it on the seas."
+      ]
+    },
+    {
+      "lines": [
+        "But who among the sons of men",
+        "May visit thine abode?",
+        "He that has hands from mischief clean,",
+        "Whose heart is right with God."
+      ]
+    },
+    {
+      "lines": [
+        "This is the man may rise, and take",
+        "The blessings of his grace;",
+        "This is the lot of those that seek",
+        "The God of Jacob's face."
+      ]
+    },
+    {
+      "lines": [
+        "Now let our soul's immortal powers",
+        "To meet the Lord prepare,",
+        "Lift up their everlasting doors,",
+        "The King of glory's near."
+      ]
+    },
+    {
+      "lines": [
+        "The King of glory! who can tell",
+        "The wonders of his might!",
+        "He rules the nations; but to dwell",
+        "With saints is his delight."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 24:1"
+}

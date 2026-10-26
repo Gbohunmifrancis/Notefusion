@@ -1,0 +1,78 @@
+{
+  "title": "When Israel, Freed from Pharaoh's Hand",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "When Israel, Freed from Pharaoh's Hand in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 114, headed “Miracles attending Israel's journey”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When Is-rael, freed from Pha-raoh's hand, Left the proud ty-rant and his land, The tribes with cheer-ful hom-age own Their King, and Ju-dah was his throne.",
+  "verses": [
+    {
+      "lines": [
+        "When Israel, freed from Pharaoh's hand,",
+        "Left the proud tyrant and his land,",
+        "The tribes with cheerful homage own",
+        "Their King, and Judah was his throne."
+      ]
+    },
+    {
+      "lines": [
+        "Across the deep their journey lay;",
+        "The deep divides to make them way:",
+        "Jordan beheld their march, and fled",
+        "With backward current to his head."
+      ]
+    },
+    {
+      "lines": [
+        "The mountains shook like frighted sheep,",
+        "Like lambs the little hillocks leap;",
+        "Not Sinai on her base could stand,",
+        "Conscious of sovereign power at hand."
+      ]
+    },
+    {
+      "lines": [
+        "What power could make the deep divide?",
+        "Make Jordan backward roll his tide?",
+        "Why did ye leap, ye little hills?",
+        "And whence the fright that Sinai feels?"
+      ]
+    },
+    {
+      "lines": [
+        "Let every mountain, every flood,",
+        "Retire and know th' approaching God,",
+        "The king of Israel: see him here;",
+        "Tremble, thou earth, adore and fear."
+      ]
+    },
+    {
+      "lines": [
+        "He thunders, and all nature mourns,",
+        "The rock to standing pools he turns;",
+        "Flints spring with fountains at his word,",
+        "And fires and seas confess the Lord."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 114"
+}
