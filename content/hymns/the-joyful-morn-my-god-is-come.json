@@ -1,0 +1,61 @@
+{
+  "title": "The Joyful Morn, My God, Is Come",
+  "tune": "meribah",
+  "text": [
+    {
+      "name": "James Merrick",
+      "born": 1720,
+      "died": 1769,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "The Joyful Morn, My God, Is Come in Tonic Solfa to MERIBAH, doh is Eb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "James Merrick wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 62 of its twenty-second edition (1853), “The Sabbath and the Earthly Temple”.",
+    "The book printed the words without tunes, marked Common Particular Metre (8.8.6.8.8.6), to be sung to any tune of that metre. This page sets them to MERIBAH; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "The joy-ful morn, my God, is come, That calls me to thy sa-cred dome, Thy pre-sence to a-dore: My feet the sum-mons shall at-tend, With will-ing steps thy courts as-cend And tread the hal-lowed floor.",
+  "verses": [
+    {
+      "lines": [
+        "The joyful morn, my God, is come,",
+        "That calls me to thy sacred dome,",
+        "Thy presence to adore:",
+        "My feet the summons shall attend,",
+        "With willing steps thy courts ascend",
+        "And tread the hallowed floor."
+      ]
+    },
+    {
+      "lines": [
+        "With holy joy I hail the day,",
+        "That warns my thirsting soul away;",
+        "What transports fill my breast!",
+        "For, lo! my great Redeemer's power",
+        "Unfolds the everlasting door,",
+        "And leads me to his rest!"
+      ]
+    },
+    {
+      "lines": [
+        "Hither, from earth's remotest end,",
+        "Lo! the redeemed of God ascend,",
+        "Their tribute hither bring;",
+        "Here, crowned with everlasting joy,",
+        "In hymns of praise their tongues employ,",
+        "And hail the immortal King."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Merrick died in 1769.",
+  "credits": "Words by James Merrick (1720–1769), public domain, as printed in Hymns for Christian Devotion (1853); set to MERIBAH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:62"
+}

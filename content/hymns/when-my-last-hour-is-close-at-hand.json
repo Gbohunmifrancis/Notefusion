@@ -1,0 +1,91 @@
+{
+  "title": "When My Last Hour Is Close at Hand",
+  "tune": "mit-freuden-zart",
+  "text": [
+    {
+      "name": "Nikolaus Herman",
+      "died": 1561,
+      "role": "Words"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "When My Last Hour Is Close at Hand in Tonic Solfa to MIT FREUDEN ZART, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Nikolaus Herman wrote these words in German. Catherine Winkworth's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 528.",
+    "The book printed the words without tunes, marked 8.7.8.7.8.8.7, to be sung to any tune of that metre. This page sets them to MIT FREUDEN ZART; any other 8.7.8.7.8.8.7 tune fits them as well."
+  ],
+  "underlay": "When my last hour is close at hand And_ I must hence be_-take me, Lord Je-sus Christ, be-side me stand, Nor_ let Thy help for_-sake me; To Thy blest hands I now com-mend My soul, at this my earth-ly end, And Thou wilt safe-ly_ keep it.",
+  "verses": [
+    {
+      "lines": [
+        "When my last hour is close at hand",
+        "And I must hence betake me,",
+        "Lord Jesus Christ, beside me stand,",
+        "Nor let Thy help forsake me;",
+        "To Thy blest hands I now commend",
+        "My soul, at this my earthly end,",
+        "And Thou wilt safely keep it."
+      ]
+    },
+    {
+      "lines": [
+        "My sins, dear Lord, disturb me sore,",
+        "My conscience cannot slumber;",
+        "But though as sands upon the shore",
+        "My sins may be in number,",
+        "I will not quail, but think of Thee;",
+        "Thy death, Thy sorrow, borne for me,",
+        "Thy sufferings, shall uphold me."
+      ]
+    },
+    {
+      "lines": [
+        "I have been grafted in the Vine",
+        "And hence my comfort borrow,",
+        "For Thou wilt surely keep me Thine",
+        "Through fear and pain and sorrow;",
+        "Yea, though I die, I die to Thee,",
+        "Who through Thy death hast won for me",
+        "The right to life eternal."
+      ]
+    },
+    {
+      "lines": [
+        "Since Thou from death didst rise again,",
+        "In death Thou wilt not leave me;",
+        "Lord, Thy ascension soothes my pain,",
+        "No fear of death shall grieve me;",
+        "For Thou wilt have me where Thou art,",
+        "And so with joy I can depart",
+        "To be with Thee forever."
+      ]
+    },
+    {
+      "lines": [
+        "And so I stretch mine arms to Thee",
+        "And gladly hence betake me;",
+        "Peaceful and calm my sleep shall be,",
+        "No human voice can wake me.",
+        "But Christ is with me through the strife,",
+        "And He will bear me into life",
+        "And open heaven before me."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 8 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Nikolaus Herman died in 1561; Catherine Winkworth died in 1878.",
+  "credits": "Words by Nikolaus Herman (died 1561), translated by Catherine Winkworth (1827–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to MIT FREUDEN ZART by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:528"
+}

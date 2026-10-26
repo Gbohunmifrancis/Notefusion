@@ -1,0 +1,61 @@
+{
+  "title": "O, Could We Speak the Matchless Worth",
+  "tune": "meribah",
+  "text": [
+    {
+      "name": "Samuel Medley",
+      "born": 1738,
+      "died": 1799,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O, Could We Speak the Matchless Worth in Tonic Solfa to MERIBAH, doh is Eb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Samuel Medley wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 240 of its twenty-second edition (1853), “Excellency of Christ”.",
+    "The book printed the words without tunes, marked Common Particular Metre (8.8.6.8.8.6), to be sung to any tune of that metre. This page sets them to MERIBAH; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "O, could we speak the match-less worth, O, could we sound the glo-ries forth, Which in our Sa-viour shine, We'd soar, and touch the heav-enly strings, And vie with Ga-briel, while he sings, In notes al-most di-vine.",
+  "verses": [
+    {
+      "lines": [
+        "O, could we speak the matchless worth,",
+        "O, could we sound the glories forth,",
+        "Which in our Saviour shine,",
+        "We'd soar, and touch the heavenly strings,",
+        "And vie with Gabriel, while he sings,",
+        "In notes almost divine."
+      ]
+    },
+    {
+      "lines": [
+        "We'd sing the characters he bears,",
+        "And all the forms of love he wears,",
+        "Exalted on his throne:",
+        "In loftiest songs of sweetest praise,",
+        "We would, to everlasting days,",
+        "Make all his glories known."
+      ]
+    },
+    {
+      "lines": [
+        "O, the delightful day will come,",
+        "When Christ our Lord will bring us home",
+        "And we shall see his face;",
+        "Then, with our Saviour, Brother, Friend,",
+        "A blest eternity we'll spend,",
+        "Triumphant in his grace."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Samuel Medley died in 1799.",
+  "credits": "Words by Samuel Medley (1738–1799), public domain, as printed in Hymns for Christian Devotion (1853); set to MERIBAH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:240"
+}

@@ -1,0 +1,96 @@
+{
+  "title": "To Thee My Soul Enraptured Sings",
+  "tune": "holy-matrimony",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "To Thee My Soul Enraptured Sings in Tonic Solfa to HOLY MATRIMONY, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Common Particular Metre (8.8.6.8.8.6), and this page sets them to HOLY MATRIMONY; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "To Thee my soul en-rap-tured sings, O Thou, Im-mor-tal King of kings En-throned where glo-ry shines; The gar-land of the prais-es sweet, That I would o-ffer at Thy feet, My grate-ful heart en-twines.",
+  "verses": [
+    {
+      "lines": [
+        "To Thee my soul enraptured sings,",
+        "O Thou, Immortal King of kings",
+        "Enthroned where glory shines;",
+        "The garland of the praises sweet,",
+        "That I would offer at Thy feet,",
+        "My grateful heart entwines."
+      ]
+    },
+    {
+      "lines": [
+        "More rare Thy beauty than the best",
+        "By highest heaven or earth possessed;",
+        "More radiant than the sun,",
+        "The glory shining from Thy face",
+        "That fills with light the holy place,",
+        "O Thou Immortal One!"
+      ]
+    },
+    {
+      "lines": [
+        "Greater Thy might than lord of war, —",
+        "Thy vast dominions stretch afar",
+        "Beyond a kingly sway;",
+        "Thy hand upholds the earth and sea,",
+        "And heaven, and all that therein be,",
+        "Thy wise decrees obey."
+      ]
+    },
+    {
+      "lines": [
+        "But not by rule of power alone",
+        "Are subjects loyal to Thy throne,",
+        "Thy love their fealty wins, —",
+        "A love that, by its winning grace",
+        "Allured our fallen, guilty race",
+        "From their rebellious sins."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, by Thy cross that won my soul,",
+        "From bondage to benign control,",
+        "My every power possess;",
+        "That, daily, I my cross may bear,",
+        "And find, to serve Thee everywhere,",
+        "Is praising Thee the best."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee my soul enraptured sings,",
+        "O Thou Immortal King of kings,",
+        "But I would join the song,",
+        "Of myriad souls in realms of light,",
+        "Who praise their King by day and night,",
+        "Through all the ages long."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to HOLY MATRIMONY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:75"
+}

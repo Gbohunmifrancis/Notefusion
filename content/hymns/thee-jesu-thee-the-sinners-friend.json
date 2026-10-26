@@ -1,0 +1,108 @@
+{
+  "title": "Thee, Jesu, Thee, the Sinner's Friend",
+  "tune": "holy-matrimony",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Thee, Jesu, Thee, the Sinner's Friend in Tonic Solfa to HOLY MATRIMONY, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 144. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Common Particular Metre (8.8.6.8.8.6), and this page sets them to HOLY MATRIMONY; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "Thee, Je-su, thee, the sin-ner's friend, I fol-low on to ap-pre-hend, Re-new the glo-rious strife; Di-vine-ly con-fi-dent and bold, With faith's strong arm on thee lay hold, Thee my e-ter-nal life.",
+  "verses": [
+    {
+      "lines": [
+        "Thee, Jesu, thee, the sinner's friend,",
+        "I follow on to apprehend,",
+        "Renew the glorious strife;",
+        "Divinely confident and bold,",
+        "With faith's strong arm on thee lay hold,",
+        "Thee my eternal life."
+      ]
+    },
+    {
+      "lines": [
+        "Thy heart, I know, thy tender heart",
+        "Doth in my sorrows feel its part,",
+        "And at my tears relent;",
+        "My powerful sighs thou canst not bear",
+        "Nor stand the violence of my prayer,",
+        "My prayer omnipotent."
+      ]
+    },
+    {
+      "lines": [
+        "Give me the grace, the love I claim;",
+        "Thy Spirit now demands thy name;",
+        "Thou know'st the Spirit's will;",
+        "He helps my souls infirmity,",
+        "And strongly intercedes for me",
+        "With groans unspeakable."
+      ]
+    },
+    {
+      "lines": [
+        "Prisoner of hope, to thee I turn,",
+        "And, calmly confident, I mourn,",
+        "And pray, and weep for thee:",
+        "Tell me thy love, thy secret tell,",
+        "Thy mystic name in me reveal,",
+        "Reveal thyself in me."
+      ]
+    },
+    {
+      "lines": [
+        "Descend, pass by me, and proclaim,",
+        "O Lord of hosts, thy glorious name,",
+        "The Lord, the gracious Lord,",
+        "Long-suffering, merciful, and kind;",
+        "The God who always bears in mind",
+        "His everlasting word."
+      ]
+    },
+    {
+      "lines": [
+        "Plenteous he is in truth and grace;",
+        "He wills that all the fallen race",
+        "Should turn, repent, and live;",
+        "His pardoning grace for all is free;",
+        "Transgression, sin, iniquity,",
+        "He freely doth forgive."
+      ]
+    },
+    {
+      "lines": [
+        "Mercy he doth for thousands keep;",
+        "He goes and seeks the one lost sheep,",
+        "And brings his wanderer home;",
+        "And every soul that sheep might be:",
+        "Come then, my Lord, and gather me,",
+        "My Jesus, quickly come!"
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to HOLY MATRIMONY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:144"
+}

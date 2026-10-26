@@ -1,0 +1,51 @@
+{
+  "title": "But We from Such Assaults Are Freed",
+  "tune": "meribah",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "But We from Such Assaults Are Freed in Tonic Solfa to MERIBAH, doh is Eb: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 95, “Often thy public means of grace, Thy thirsty people's wat'ring place, The archers have beset; Judg 5:11 Attacked them in thy house of prayer, To prison dragged, or to the bar, When thus together met”.",
+    "The book printed the words without tunes, marked Common Particular Metre (8.8.6.8.8.6), to be sung to any tune of that metre. This page sets them to MERIBAH; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "But we from such as-saults are freed, Can pray, and sing, and hear, and read, And meet, and part, in peace: May we our priv-i-le-ges prize, In their im-prove-ment make us wise, And bless us with in-crease.",
+  "verses": [
+    {
+      "lines": [
+        "But we from such assaults are freed,",
+        "Can pray, and sing, and hear, and read,",
+        "And meet, and part, in peace:",
+        "May we our privileges prize,",
+        "In their improvement make us wise,",
+        "And bless us with increase."
+      ]
+    },
+    {
+      "lines": [
+        "Unless thy presence thou afford;",
+        "Unless thy blessing clothe the word,",
+        "In vain our liberty!",
+        "What would it profit to maintain",
+        "A name for life, should we remain",
+        "Formal and dead to thee?"
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MERIBAH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:95"
+}

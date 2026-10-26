@@ -1,0 +1,60 @@
+{
+  "title": "O Lord! How Happy Should We Be",
+  "tune": "meribah",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O Lord! How Happy Should We Be in Tonic Solfa to MERIBAH, doh is Eb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 230, “Self-Renunciation”.",
+    "The book printed the words without tunes, marked Common Particular Metre (8.8.6.8.8.6), to be sung to any tune of that metre. This page sets them to MERIBAH; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "O Lord! how hap-py should we be, If we could leave our cares to Thee, If we from self could rest, And feel at heart that One a-bove, In per-fect wis-dom, per-fect love, Is work-ing for the best.",
+  "verses": [
+    {
+      "lines": [
+        "O Lord! how happy should we be,",
+        "If we could leave our cares to Thee,",
+        "If we from self could rest,",
+        "And feel at heart that One above,",
+        "In perfect wisdom, perfect love,",
+        "Is working for the best."
+      ]
+    },
+    {
+      "lines": [
+        "For when we kneel and cast our care",
+        "Upon our God in humble prayer,",
+        "With strengthened souls we rise;",
+        "Sure that our Father, who is nigh",
+        "To hear the ravens when they cry,",
+        "Will hear His children's cries."
+      ]
+    },
+    {
+      "lines": [
+        "O, may these trustless hearts of ours",
+        "The lesson learn from birds and flowers,",
+        "And learn from self to cease, —",
+        "Leave all things to our Father's will,",
+        "And, on His mercy, leaning still,",
+        "Find, in each trial, peace!"
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MERIBAH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:230"
+}

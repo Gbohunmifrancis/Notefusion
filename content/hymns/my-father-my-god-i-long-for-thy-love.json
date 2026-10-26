@@ -1,0 +1,94 @@
+{
+  "title": "My Father, My God, I Long for Thy Love",
+  "tune": "lyons",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "My Father, My God, I Long for Thy Love in Tonic Solfa to LYONS, doh is Ab: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 200. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in 10.10.11.11, and this page sets them to LYONS; any other 10.10.11.11 tune fits them as well."
+  ],
+  "underlay": "My Fa-ther, my God, I long for thy love, O shed it a-broad; Send Christ_ from a-bove! My heart ev-er faint-ing, He on-ly can cheer, And all things are want-ing, Till Je_-sus is here.",
+  "verses": [
+    {
+      "lines": [
+        "My Father, my God, I long for thy love,",
+        "O shed it abroad; Send Christ from above!",
+        "My heart ever fainting, He only can cheer,",
+        "And all things are wanting, Till Jesus is here."
+      ]
+    },
+    {
+      "lines": [
+        "O when shall my tongue Be filled with thy praise!",
+        "While all the day long I publish thy grace,",
+        "Thy honour and glory To sinners forth show,",
+        "Till sinners adore thee, And own thou art true."
+      ]
+    },
+    {
+      "lines": [
+        "Thy strength and thy power I now can proclaim,",
+        "Preserved every hour Through Jesus's name;",
+        "For thou art still by me, And holdest my hand;",
+        "No ill can come nigh me, By faith while I stand."
+      ]
+    },
+    {
+      "lines": [
+        "My God is my guide; Thy mercies abound,",
+        "On every side They compass me round;",
+        "Thou sav'st me from sickness, From sin dost retrieve,",
+        "And strengthen my weakness, And bid me believe."
+      ]
+    },
+    {
+      "lines": [
+        "Thou holdest my soul In spiritual life,",
+        "My foes dost control, And quiet their strife;",
+        "Thou rulest my passion, My pride and self-will,",
+        "To see thy salvation, Thou bidd'st me \"Stand still!\""
+      ]
+    },
+    {
+      "lines": [
+        "I stand, and admire Thine outstretched arm,",
+        "I walk through the fire, And suffer no harm;",
+        "Assaulted by evil, I scorn to submit,",
+        "The world and the devil Fall under my feet."
+      ]
+    },
+    {
+      "lines": [
+        "I wrestle not now, But trample on sin,",
+        "For with me art thou, And shalt be within;",
+        "While stronger and stronger In Jesus's power,",
+        "I go on to conquer, Till sin is no more."
+      ]
+    }
+  ],
+  "metre": "10 10 11 11",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to LYONS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:200"
+}

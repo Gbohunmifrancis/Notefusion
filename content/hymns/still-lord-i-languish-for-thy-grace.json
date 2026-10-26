@@ -1,0 +1,71 @@
+{
+  "title": "Still Lord, I Languish for Thy Grace",
+  "tune": "holy-matrimony",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Still Lord, I Languish for Thy Grace in Tonic Solfa to HOLY MATRIMONY, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 146.",
+    "The book printed the words without tunes. They are in Common Particular Metre (8.8.6.8.8.6), and this page sets them to HOLY MATRIMONY; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "Still Lord, I lan-guish for thy grace; Re-veal the beau-ties of thy face, The mid-dle wall re-move; Ap-pear, and ban-ish my com-plaint, Come, and sup-ply my on-ly want, Fill all my soul with love.",
+  "verses": [
+    {
+      "lines": [
+        "Still Lord, I languish for thy grace;",
+        "Reveal the beauties of thy face,",
+        "The middle wall remove;",
+        "Appear, and banish my complaint,",
+        "Come, and supply my only want,",
+        "Fill all my soul with love."
+      ]
+    },
+    {
+      "lines": [
+        "O conquer this rebellious will!",
+        "Willing thou art and ready still,",
+        "Thy help is always nigh;",
+        "The hardness from my heart remove",
+        "And give me, Lord, O give me love,",
+        "Or at thy feet I die!"
+      ]
+    },
+    {
+      "lines": [
+        "To thee I lift my mournful eye:",
+        "Why am I thus? - O tell me why",
+        "I cannot love my God!",
+        "The hindrance must be all in me",
+        "It cannot in my Saviour be,",
+        "Witness that streaming blood!"
+      ]
+    },
+    {
+      "lines": [
+        "It cost thy blood my heart to, win,",
+        "To buy me from the power of sin,",
+        "And make me love again;",
+        "Come then, my Lord, thy right assert,",
+        "Take to thyself my ransomed heart,",
+        "Nor bleed, nor die in vain."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to HOLY MATRIMONY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:146"
+}

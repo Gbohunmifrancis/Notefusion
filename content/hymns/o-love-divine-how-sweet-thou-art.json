@@ -1,0 +1,91 @@
+{
+  "title": "O Love Divine, How Sweet Thou Art",
+  "tune": "meribah",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "O Love Divine, How Sweet Thou Art in Tonic Solfa to MERIBAH, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 147.",
+    "The book printed the words without tunes. They are in Common Particular Metre (8.8.6.8.8.6), and this page sets them to MERIBAH; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "O love di-vine, how sweet thou art! When shall I find my will-ing heart All ta-ken up by thee? I thirst, I faint, I die to prove The great-ness of re-deem-ing love, The love of Christ to me!",
+  "verses": [
+    {
+      "lines": [
+        "O love divine, how sweet thou art!",
+        "When shall I find my willing heart",
+        "All taken up by thee?",
+        "I thirst, I faint, I die to prove",
+        "The greatness of redeeming love,",
+        "The love of Christ to me!"
+      ]
+    },
+    {
+      "lines": [
+        "Stronger his love than death or hell;",
+        "Its riches are unsearchable;",
+        "The first-born sons of light",
+        "Desire in vain its depths to see,",
+        "They cannot reach the mystery,",
+        "The length, and breadth, and height."
+      ]
+    },
+    {
+      "lines": [
+        "God only knows the love of God;",
+        "O that it now were shed abroad",
+        "In this poor stony heart!",
+        "For love I sigh, for love I pine:",
+        "This only portion, Lord, be mine,",
+        "Be mine this better part!"
+      ]
+    },
+    {
+      "lines": [
+        "O that I could for ever sit",
+        "With Mary at the Master's feet!",
+        "Be this my happy choice:",
+        "My only care, delight, and bliss,",
+        "My joy, my heaven on earth, be this,",
+        "To hear the Bridegroom's voice!"
+      ]
+    },
+    {
+      "lines": [
+        "O that with humbled Peter I",
+        "Could weep, believe, and thrice reply",
+        "My faithfulness to prove,",
+        "\"Thou know'st (for all to thee is known),",
+        "\"Thou know'st, O Lord, and thou alone,",
+        "Thou know'st that thee I love!\""
+      ]
+    },
+    {
+      "lines": [
+        "O that I could with favoured John",
+        "Recline my weary head upon",
+        "The great Redeemer's breast!",
+        "From care, and sin, and sorrow free,",
+        "Give me, O Lord, to find in thee",
+        "My everlasting rest."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MERIBAH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:147"
+}

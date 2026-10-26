@@ -1,0 +1,46 @@
+{
+  "title": "Acquaint Thee, O Spirit, Acquaint Thee with God",
+  "tune": "foundation-funk",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Acquaint Thee, O Spirit, Acquaint Thee with God in Tonic Solfa to FOUNDATION (FUNK), doh is Ab: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 199, “Acquaint Thee with God”.",
+    "The book printed the words without tunes, marked Elevens (11.11.11.11), to be sung to any tune of that metre. This page sets them to FOUNDATION (FUNK); any other Elevens tune fits them as well."
+  ],
+  "underlay": "Ac_-quaint thee, O spir-it, ac-quaint thee with God, And joy, like the sun-shine, shall beam on thy road; And peace, like the dew, shall de-scend round thy head, And sleep, like an an-gel, shall vis-it thy bed.",
+  "verses": [
+    {
+      "lines": [
+        "Acquaint thee, O spirit, acquaint thee with God,",
+        "And joy, like the sunshine, shall beam on thy road;",
+        "And peace, like the dew, shall descend round thy head,",
+        "And sleep, like an angel, shall visit thy bed."
+      ]
+    },
+    {
+      "lines": [
+        "Acquaint thee, O spirit, acquaint thee with God,",
+        "And he shall be with thee when fears are abroad;",
+        "Thy safeguard in danger that threatens thy path,",
+        "Thy joy in the valley and shadow of death."
+      ]
+    }
+  ],
+  "metre": "11 11 11 11",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to FOUNDATION (FUNK) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:199"
+}

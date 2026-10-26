@@ -1,0 +1,97 @@
+{
+  "title": "The Lord, My God, Be Praised",
+  "tune": "was-frag-ich-nach-der-welt",
+  "text": [
+    {
+      "name": "Johann Olearius",
+      "born": 1611,
+      "died": 1684,
+      "role": "Words"
+    },
+    {
+      "name": "August Crull",
+      "born": 1845,
+      "died": 1923,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "The Lord, My God, Be Praised in Tonic Solfa to WAS FRAG ICH NACH DER WELT, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Johann Olearius wrote these words in German. August Crull's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 272.",
+    "The book printed the words without tunes, marked 6.7.6.7.6.6.6.6, to be sung to any tune of that metre. This page sets them to WAS FRAG ICH NACH DER WELT; any other 6.7.6.7.6.6.6.6 tune fits them as well."
+  ],
+  "underlay": "The Lord, my God, be praised, My Light, my Life from hea_-ven; My Mak-er, who to me Hath soul and bo-dy giv_-en; My Fa-ther, who pro-tects My life from in-fan-cy And might-y gifts of love Hath e’er be-stowed on me.",
+  "verses": [
+    {
+      "lines": [
+        "The Lord, my God, be praised,",
+        "My Light, my Life from heaven;",
+        "My Maker, who to me",
+        "Hath soul and body given;",
+        "My Father, who protects",
+        "My life from infancy",
+        "And mighty gifts of love",
+        "Hath e’er bestowed on me."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord, my God, be praised,",
+        "My Trust, my Life from heaven,",
+        "The Father’s own dear Son,",
+        "Whose life for me was given;",
+        "Who thus atoned for me",
+        "With His most precious blood;",
+        "Who giveth to my faith",
+        "The greatest heavenly good."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord, my God, be praised,",
+        "My Hope, my Life from heaven,",
+        "The Father’s Spirit, whom",
+        "The Son to me hath given;",
+        "He who revives my heart",
+        "And gives me strength and power,",
+        "Help, comfort, and support",
+        "In sorrow’s gloomy hour."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord, my God, be praised,",
+        "He who forever liveth,",
+        "To whom the heavenly host",
+        "E’er praise and honor giveth.",
+        "The Lord, my God, be praised,",
+        "In whose great name I boast,",
+        "God Father, God the Son,",
+        "And God the Holy Ghost."
+      ]
+    },
+    {
+      "lines": [
+        "To Him we now sing praise,",
+        "With joy our offering bringing",
+        "And with the angel host",
+        "The “Holy! Holy!” singing.",
+        "To Him all Christendom",
+        "Sings praises joyfully;",
+        "The Lord, my God, be praised",
+        "Throughout eternity!"
+      ]
+    }
+  ],
+  "metre": "6 7 6 7 6 6 6 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Johann Olearius died in 1684; August Crull died in 1923.",
+  "credits": "Words by Johann Olearius (1611–1684), translated by August Crull (1845–1923), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to WAS FRAG ICH NACH DER WELT by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:272"
+}

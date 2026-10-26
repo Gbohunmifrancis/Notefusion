@@ -1,0 +1,67 @@
+{
+  "title": "Arm These Thy Soldiers, Mighty Lord",
+  "tune": "sweet-hour",
+  "text": [
+    {
+      "name": "Christopher Wordsworth",
+      "born": 1807,
+      "died": 1885,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Arm These Thy Soldiers, Mighty Lord in Tonic Solfa to SWEET HOUR, doh is Db: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Christopher Wordsworth wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 410.",
+    "The book printed the words without tunes, marked Long Metre Double (8.8.8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SWEET HOUR; any other Long Metre Double tune fits them as well."
+  ],
+  "underlay": "Arm these Thy sol-diers, might-y Lord, With shield of faith_ and Spi-rit’s sword. Forth to the bat-tle may they go And bold-ly fight_ a-gainst the foe, With ban-ner of the Cross un-furled, And by it o-ver-come the world; And so at last re-ceive from Thee The palm and crown_ of vic-to-ry.",
+  "verses": [
+    {
+      "lines": [
+        "Arm these Thy soldiers, mighty Lord,",
+        "With shield of faith and Spirit’s sword.",
+        "Forth to the battle may they go",
+        "And boldly fight against the foe,",
+        "With banner of the Cross unfurled,",
+        "And by it overcome the world;",
+        "And so at last receive from Thee",
+        "The palm and crown of victory."
+      ]
+    },
+    {
+      "lines": [
+        "Come, ever-blessed Spirit, come",
+        "And make Thy servants’ hearts Thy home;",
+        "May each a living temple be,",
+        "Hallowed forever, Lord, to Thee!",
+        "Enrich that temple’s holy shrine",
+        "With sevenfold gifts of grace divine;",
+        "With wisdom, light, and knowledge bless,",
+        "With counsel, strength, fear, godliness."
+      ]
+    },
+    {
+      "lines": [
+        "O Trinity in Unity,",
+        "One only God and Persons Three;",
+        "In whom, through whom, by whom we live,",
+        "To Thee we praise and glory give.",
+        "O grant us so to use Thy grace",
+        "That we may see Thy glorious face",
+        "And ever with the heavenly host",
+        "Praise Father, Son, and Holy Ghost."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Christopher Wordsworth died in 1885.",
+  "credits": "Words by Christopher Wordsworth (1807–1885), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to SWEET HOUR by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:410"
+}

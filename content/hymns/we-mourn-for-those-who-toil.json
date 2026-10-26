@@ -1,0 +1,67 @@
+{
+  "title": "We Mourn for Those Who Toil",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Lydia Sigourney",
+      "born": 1791,
+      "died": 1865,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "We Mourn for Those Who Toil in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Lydia Sigourney wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 570 of its twenty-second edition (1853), “\"Weep for yourselves, and for your children.\"”.",
+    "The book printed the words without tunes, marked Short Metre Double (6.6.8.6.6.6.8.6), to be sung to any tune of that metre. This page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "We mourn for those who toil, The slave who ploughs the main, Or him who hope-less tills the_ soil Be-neath the stripe and chain: For those who, in the race, O'er-wea-ried and un-blest, A host of rest-less phan-toms chase; Why mourn for those who rest?",
+  "verses": [
+    {
+      "lines": [
+        "We mourn for those who toil,",
+        "The slave who ploughs the main,",
+        "Or him who hopeless tills the soil",
+        "Beneath the stripe and chain:",
+        "For those who, in the race,",
+        "O'erwearied and unblest,",
+        "A host of restless phantoms chase; —",
+        "Why mourn for those who rest?"
+      ]
+    },
+    {
+      "lines": [
+        "We mourn for those who sin?",
+        "Bound in the tempter's snare,",
+        "Whom syren pleasure beckons in",
+        "To prisons of despair;",
+        "Whose hearts, by passions torn,",
+        "Are wrecked on folly's shore; —",
+        "But why in sorrow should we mourn",
+        "For those who sin no more?"
+      ]
+    },
+    {
+      "lines": [
+        "We mourn for those who weep;",
+        "Whom stern afflictions bend",
+        "With anguish o'er the lowly sleep",
+        "Of lover or of friend:",
+        "But they to whom the sway",
+        "Of pain and grief is o'er,",
+        "Whose tears our God hath wiped away,",
+        "O mourn for them no more!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Lydia Sigourney died in 1865.",
+  "credits": "Words by Lydia Sigourney (1791–1865), public domain, as printed in Hymns for Christian Devotion (1853); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:570"
+}

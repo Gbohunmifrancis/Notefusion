@@ -1,0 +1,81 @@
+{
+  "title": "Blinded in Youth by Satan's Arts",
+  "tune": "meribah",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Blinded in Youth by Satan's Arts in Tonic Solfa to MERIBAH, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 100, “The enchantment dissolved”.",
+    "The book printed the words without tunes, marked Common Particular Metre (8.8.6.8.8.6), to be sung to any tune of that metre. This page sets them to MERIBAH; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "Blind-ed in youth by Sa-tan's arts, The world to our un-prac-ticed hearts, A flat-t'ring pro-spect bows; Our fan-cy forms a thou-sand schemes, Of gay de-lights, and gol-den dreams, And un-dis-turbed re-pose.",
+  "verses": [
+    {
+      "lines": [
+        "Blinded in youth by Satan's arts,",
+        "The world to our unpracticed hearts,",
+        "A flatt'ring prospect bows;",
+        "Our fancy forms a thousand schemes,",
+        "Of gay delights, and golden dreams,",
+        "And undisturbed repose."
+      ]
+    },
+    {
+      "lines": [
+        "So in the desert's dreary waste,",
+        "By magic pow'r produced in haste,",
+        "(As ancient fables say)",
+        "Castles, and groves, and music sweet,",
+        "The senses of the trav'ller meet,",
+        "And stop him in his way."
+      ]
+    },
+    {
+      "lines": [
+        "But while he listens with surprise,",
+        "The charm dissolves, the vision dies,",
+        "'Twas but enchanted ground;",
+        "Thus if the Lord our spirits touch,",
+        "The world, which promised us so much,",
+        "A wilderness is found."
+      ]
+    },
+    {
+      "lines": [
+        "At first we start, and feel distressed,",
+        "Convinced we never can have rest,",
+        "In such a wretched place;",
+        "But he whose mercy breaks the charm,",
+        "Reveals his own almighty arm,",
+        "And bids us seek his face."
+      ]
+    },
+    {
+      "lines": [
+        "Then we begin to live indeed,",
+        "When from our sin and bondage freed,",
+        "By this beloved Friend;",
+        "We follow him from day to day,",
+        "Assured of grace through all the way,",
+        "And glory at the end."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MERIBAH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:100"
+}

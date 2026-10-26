@@ -1,0 +1,86 @@
+{
+  "title": "Safe in the Comfort of Thy Grace",
+  "tune": "holy-matrimony",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "Safe in the Comfort of Thy Grace in Tonic Solfa to HOLY MATRIMONY, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904).",
+    "The book printed the words without tunes. They are in Common Particular Metre (8.8.6.8.8.6), and this page sets them to HOLY MATRIMONY; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "Safe in the com-fort of Thy grace, Give me, O Lord, a rest-ing place, From ev-ery tu-mult free; From strife of sin, and sense of guilt, For lo, my con-fi-dence is built, Most gra-cious Lord, on Thee.",
+  "verses": [
+    {
+      "lines": [
+        "Safe in the comfort of Thy grace,",
+        "Give me, O Lord, a resting place,",
+        "From every tumult free;",
+        "From strife of sin, and sense of guilt,",
+        "For lo, my confidence is built,",
+        "Most gracious Lord, on Thee."
+      ]
+    },
+    {
+      "lines": [
+        "There is no other comfort nigh,",
+        "And sad of heart I mourning sigh —",
+        "Lord, Thou alone canst aid;",
+        "Wilt Thou my prayer in anger spurn,",
+        "And from Thy trembling servant turn,",
+        "Whose soul is sore dismayed?"
+      ]
+    },
+    {
+      "lines": [
+        "Nay, if I doubting, still believe,",
+        "Thou wilt my faulty prayer receive,",
+        "And grant the boon I crave;",
+        "For 'tis Thy promise I would claim,",
+        "And in the all-availing name",
+        "Of Him Who came to save."
+      ]
+    },
+    {
+      "lines": [
+        "So shall Thy peace my heart control,",
+        "And fill with calm my troubled soul,",
+        "My every tumult still;",
+        "And thus I learn to trust Thee more,",
+        "For billows surge, and tempests roar",
+        "Obedient at Thy will."
+      ]
+    },
+    {
+      "lines": [
+        "And in the shining of Thy face,",
+        "A man shall be an hiding place,",
+        "And covert from the wind;",
+        "And while the tempest breaks around,",
+        "I peaceful rest on tranquil ground,",
+        "Where Thou, O Lord, art kind."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to HOLY MATRIMONY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:47"
+}

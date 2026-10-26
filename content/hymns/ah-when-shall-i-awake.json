@@ -1,0 +1,110 @@
+{
+  "title": "Ah, When Shall I Awake",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Ah, When Shall I Awake in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 303. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Short Metre Double (6.6.8.6.6.6.8.6), and this page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "Ah, when shall I a-wake From sin's soft sooth-ing power, The slum-ber from my spir-it_ shake, And rise to fall no more! A-wake, no more to sleep, But stand with con-stant care, Look-ing for God my soul to keep, And watch-ing un-to prayer!",
+  "verses": [
+    {
+      "lines": [
+        "Ah, when shall I awake",
+        "From sin's soft-soothing power,",
+        "The slumber from my spirit shake,",
+        "And rise to fall no more!",
+        "Awake, no more to sleep,",
+        "But stand with constant care,",
+        "Looking for God my soul to keep,",
+        "And watching unto prayer!"
+      ]
+    },
+    {
+      "lines": [
+        "O could I always pray?",
+        "And never, never faint,",
+        "But simply to my God display",
+        "My every care and want!",
+        "I know that thou wouldst give.",
+        "More than I can request;",
+        "Thou still art ready to receive",
+        "My soul to perfect rest."
+      ]
+    },
+    {
+      "lines": [
+        "I feel thee willing, Lord,",
+        "A sinful world to save,",
+        "All may obey thy gracious word,",
+        "May peace and pardon have;",
+        "Not one of all the race",
+        "But may return to thee,",
+        "But at the throne of sovereign grace",
+        "May fall and weep, like me."
+      ]
+    },
+    {
+      "lines": [
+        "Here will I ever lie,",
+        "And tell thee all my care,",
+        "And, Father, Abba, Father, cry,",
+        "And pour a ceaseless prayer;",
+        "Till thou my sins subdue,",
+        "Till thou my sins destroy,",
+        "My spirit after God renew,",
+        "And fill with peace and joy."
+      ]
+    },
+    {
+      "lines": [
+        "Messiah, Prince of peace,",
+        "Into my soul bring in",
+        "Thy everlasting righteousness,",
+        "And make an end of sin.",
+        "Into all those that seek",
+        "Redemption through thy blood",
+        "The sanctifying Spirit speak,",
+        "The plenitude of God."
+      ]
+    },
+    {
+      "lines": [
+        "Let us in patience wait",
+        "Till faith shall make us whole;",
+        "Till thou shalt all things new create",
+        "In each believing soul;",
+        "Who can resist thy will?",
+        "Speak, and it shall be done!",
+        "Thou shalt the work of faith fulfil,",
+        "And perfect us in one."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:303"
+}

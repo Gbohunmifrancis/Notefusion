@@ -1,0 +1,79 @@
+{
+  "title": "All Thanks to the Lamb, Who Gives Us to Meet",
+  "tune": "lyons",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "All Thanks to the Lamb, Who Gives Us to Meet in Tonic Solfa to LYONS, doh is Ab: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 481.",
+    "The book printed the words without tunes. They are in 10.10.11.11, and this page sets them to LYONS; any other 10.10.11.11 tune fits them as well."
+  ],
+  "underlay": "All thanks to the Lamb, Who gives us to meet! His love we pro-claim, His prais_-es re-peat; We own him our Je-sus, Con-tin-u-ally near To par-don and bless us, And per_-fect us here.",
+  "verses": [
+    {
+      "lines": [
+        "All thanks to the Lamb, Who gives us to meet!",
+        "His love we proclaim, His praises repeat;",
+        "We own him our Jesus, Continually near",
+        "To pardon and bless us, And perfect us here."
+      ]
+    },
+    {
+      "lines": [
+        "In him we have peace, In him we have power,",
+        "Preserved by his grace Throughout the dark hour,",
+        "In all our temptation He keeps us to prove",
+        "His utmost salvation, His fulness of love."
+      ]
+    },
+    {
+      "lines": [
+        "Through pride and desire Unhurt we have gone,",
+        "Through water and fire In him we went on;",
+        "The world and the devil Through him we o'ercame,",
+        "Our Saviour from evil, For ever the same."
+      ]
+    },
+    {
+      "lines": [
+        "When we would have spurned His mercy and grace,",
+        "To Egypt returned, And fled from his face,",
+        "He hindered our flying, (His goodness to show)",
+        "And stopped us, by crying, \"Will ye also go?\""
+      ]
+    },
+    {
+      "lines": [
+        "O what shall we do Our Saviour to love?",
+        "To make us anew, Come, Lord, from above!",
+        "The fruit of thy passion, Thy holiness give,",
+        "Give us the salvation Of all that believe."
+      ]
+    },
+    {
+      "lines": [
+        "Come, Jesus, and loose The stammerer's tongue,",
+        "And teach even us The spiritual song;",
+        "Let us without ceasing Give thanks for thy grace,",
+        "And glory, and blessing, And honour, and praise."
+      ]
+    }
+  ],
+  "metre": "10 10 11 11",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to LYONS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:481"
+}

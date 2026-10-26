@@ -1,0 +1,66 @@
+{
+  "title": "Hark! What Celestial Notes",
+  "tune": "darwall",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Hark! What Celestial Notes in Tonic Solfa to DARWALL, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 207 of its twenty-second edition (1853), “The Same”, where the book credits them to the Salisbury Collection.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.4.4.4.4), to be sung to any tune of that metre. This page sets them to DARWALL; any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "Hark! what ce-les-tial notes, What mel-o-dy, we hear! Soft on the morn it floats, And fills the rav-ished ear. The tune-ful shell, The gol-den lyre, And vo-cal choir, The con-cert swell.",
+  "verses": [
+    {
+      "lines": [
+        "Hark! what celestial notes,",
+        "What melody, we hear!",
+        "Soft on the morn it floats,",
+        "And fills the ravished ear.",
+        "The tuneful shell,",
+        "The golden lyre,",
+        "And vocal choir,",
+        "The concert swell."
+      ]
+    },
+    {
+      "lines": [
+        "Angelic hosts descend,",
+        "With harmony divine;",
+        "See, how from heaven they bend,",
+        "And in full chorus join!",
+        "\"Fear not,\" say they;",
+        "Jesus, your King,",
+        "\"Great joy we bring:",
+        "Is born to day.\""
+      ]
+    },
+    {
+      "lines": [
+        "\"Glory to God on high!",
+        "Ye mortals, spread the sound,",
+        "And let your raptures fly",
+        "To earth's remotest bound!",
+        "For peace on earth,",
+        "From God in heaven,",
+        "To man is given,",
+        "At Jesus' birth.\""
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 4 4 4 4",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to DARWALL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:207"
+}

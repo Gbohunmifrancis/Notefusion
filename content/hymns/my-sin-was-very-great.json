@@ -1,0 +1,84 @@
+{
+  "title": "My Sin Was Very Great",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "My Sin Was Very Great in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904).",
+    "The book printed the words without tunes. They are in Short Metre Double (6.6.8.6.6.6.8.6), and this page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "My sin was ve-ry great, Its bur-den bore me down, I dared not lift my eyes to_ God, So much I feared his frown. And sore my con-science smote, And all was sad with-in, For I had turned a-way from God, Who loved me in my sin.",
+  "verses": [
+    {
+      "lines": [
+        "My sin was very great,",
+        "Its burden bore me down,",
+        "I dared not lift my eyes to God,",
+        "So much I feared his frown.",
+        "And sore my conscience smote,",
+        "And all was sad within,",
+        "For I had turned away from God,",
+        "Who loved me in my sin."
+      ]
+    },
+    {
+      "lines": [
+        "I said, \"I'll tell it all,",
+        "The sin, the grief, the pain,",
+        "Mayhap He'll pardon my offence,",
+        "And take me back again.\"",
+        "And then my heart was glad,",
+        "To think it might be done,",
+        "If I but cast myself upon",
+        "The merits of His Son."
+      ]
+    },
+    {
+      "lines": [
+        "I said, \"Ah God, receive",
+        "The sacrifice I bring —",
+        "A broken and a contrite heart,",
+        "That is my offering;",
+        "And for His sake Who came",
+        "To bear the Cross of pain,",
+        "Forgive the error of my life,",
+        "And take me back again.\""
+      ]
+    },
+    {
+      "lines": [
+        "'Twas then the heart of love",
+        "That I had wounded sore,",
+        "In loving accents spake to me,",
+        "And bade me grieve no more;",
+        "And spake the word of grace",
+        "That made my spirit whole;",
+        "And now the pain and grief are gone,",
+        "For gladness fills my soul."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:41"
+}

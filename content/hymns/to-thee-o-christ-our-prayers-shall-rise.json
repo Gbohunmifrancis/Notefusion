@@ -1,0 +1,68 @@
+{
+  "title": "To Thee, O Christ, Our Prayers Shall Rise",
+  "tune": "dominus-regit-me",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "To Thee, O Christ, Our Prayers Shall Rise in Tonic Solfa to DOMINUS REGIT ME, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), where he gives them as “By Ennodius, Bishop of Pavia”, headed “_Advent_”.",
+    "The book printed the words without tunes. They are in Eights and Sevens (8.7.8.7), and this page sets them to DOMINUS REGIT ME; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "To Thee, O Christ, our prayers shall rise, With tears of sor-row blend-ing; Come for our_ help Thou Ho-ly_ One, On our dark night de-scend_-ing.",
+  "verses": [
+    {
+      "lines": [
+        "To Thee, O Christ, our prayers shall rise,",
+        "With tears of sorrow blending;",
+        "Come for our help Thou Holy One,",
+        "On our dark night descending."
+      ]
+    },
+    {
+      "lines": [
+        "Our hearts shall find their rest in Thee,",
+        "And e’en in dreams shall praise Thee;",
+        "And with each rising of the sun,",
+        "Anew their songs shall raise Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Impart a noble life, and may",
+        "Our spirit’s warmth be heightened.",
+        "Bid night depart, and with Thy love,",
+        "O may our lives be brightened."
+      ]
+    },
+    {
+      "lines": [
+        "In hymns we pay our vows to Thee:",
+        "At vesper-hour we pray,",
+        "Erase the writing we have made,",
+        "Thine own let stand for aye."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to DOMINUS REGIT ME by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:19"
+}

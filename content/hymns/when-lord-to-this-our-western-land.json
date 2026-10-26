@@ -1,0 +1,70 @@
+{
+  "title": "When, Lord, to This Our Western Land",
+  "tune": "meribah",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "When, Lord, to This Our Western Land in Tonic Solfa to MERIBAH, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 736 of its twenty-second edition (1853), “On Western Missions”, where the book credits them to the Episcopal Collection.",
+    "The book printed the words without tunes, marked Common Particular Metre (8.8.6.8.8.6), to be sung to any tune of that metre. This page sets them to MERIBAH; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "When, Lord, to this our west-ern land, Led by thy prov-i-den-tial hand, Our wan-dering fa-thers came, Their an-cient homes, their friends in youth Sent forth the her-alds of thy truth, To keep them in thy name.",
+  "verses": [
+    {
+      "lines": [
+        "When, Lord, to this our western land,",
+        "Led by thy providential hand,",
+        "Our wandering fathers came,",
+        "Their ancient homes, their friends in youth",
+        "Sent forth the heralds of thy truth,",
+        "To keep them in thy name."
+      ]
+    },
+    {
+      "lines": [
+        "Then, through our solitary coast,",
+        "The desert features soon were lost;",
+        "Thy temples there arose;",
+        "Our shores, as culture made them fair,",
+        "Were hallowed by thy rites, by prayer,",
+        "And blossomed as the rose."
+      ]
+    },
+    {
+      "lines": [
+        "And O, may we repay this debt",
+        "To regions solitary yet",
+        "Within our spreading land!",
+        "There brethren, from our common home,",
+        "Still westward, like our fathers, roam,",
+        "Still guided by thy hand."
+      ]
+    },
+    {
+      "lines": [
+        "Father, we own this debt of love;",
+        "O, shed thy Spirit from above,",
+        "To move each Christian breast,",
+        "Till heralds shall thy truth proclaim,",
+        "And temples rise, to fix thy name,",
+        "Through all our boundless West!"
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to MERIBAH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:736"
+}

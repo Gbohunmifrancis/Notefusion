@@ -1,0 +1,66 @@
+{
+  "title": "Thou Art the Way — and He Who Sighs",
+  "tune": "saved-by-grace",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Thou Art the Way — and He Who Sighs in Tonic Solfa to SAVED BY GRACE, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 243 of its twenty-second edition (1853), “\"I am the Way, the Truth and the Life.\"”.",
+    "The book printed the words without tunes, marked Long Metre Double (8.8.8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SAVED BY GRACE; any other Long Metre Double tune fits them as well."
+  ],
+  "underlay": "Thou art the Way and he who sighs A-mid this star-less waste of woe To find a path-way to the skies, A light from heaven's e-ter-nal glow By thee must come, thou Gate of love, Through which the saints un-doubt-ing trod, Till faith dis-cov-ers, like the dove, An ark, a rest-ing place in God.",
+  "verses": [
+    {
+      "lines": [
+        "Thou art the Way — and he who sighs",
+        "Amid this starless waste of woe",
+        "To find a pathway to the skies,",
+        "A light from heaven's eternal glow —",
+        "By thee must come, thou Gate of love,",
+        "Through which the saints undoubting trod,",
+        "Till faith discovers, like the dove,",
+        "An ark, a resting-place in God."
+      ]
+    },
+    {
+      "lines": [
+        "Thou art the Truth — whose steady day",
+        "Shines on through earthly blight and bloom,",
+        "The pure, the everlasting ray,",
+        "The lamp that shines e'en in the tomb;",
+        "The light that out of darkness springs,",
+        "And guideth those that blindly go;",
+        "The word whose precious radiance flings",
+        "Its lustre upon all below."
+      ]
+    },
+    {
+      "lines": [
+        "Thou art the Life — the blessed well,",
+        "With living waters gushing o'er,",
+        "Which those that drink shall ever dwell",
+        "Where sin and thirst are known no more.",
+        "Thou art the mystic pillar given,",
+        "Our lamp by night, our light by day;",
+        "Thou art the sacred bread from heaven;",
+        "Thou art the Life — the Truth — the Way."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to SAVED BY GRACE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:243"
+}

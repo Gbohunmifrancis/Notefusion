@@ -1,0 +1,51 @@
+{
+  "title": "With Grateful Hearts with Joyful Tongues",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Andrew Kippis",
+      "born": 1725,
+      "died": 1795,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "With Grateful Hearts with Joyful Tongues in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Andrew Kippis wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 848 of its twenty-second edition (1853), “National Praise and Prayer”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "With grate-ful hearts with joy-ful tongues, To God we raise u-ni-ted songs; His power and mer-cy we pro-claim: Through ev-ery age, O, may we own Je-ho-vah here has fixed his throne, And tri-umph in his might-y name.",
+  "verses": [
+    {
+      "lines": [
+        "With grateful hearts with joyful tongues,",
+        "To God we raise united songs;",
+        "His power and mercy we proclaim:",
+        "Through every age, O, may we own",
+        "Jehovah here has fixed his throne,",
+        "And triumph in his mighty name."
+      ]
+    },
+    {
+      "lines": [
+        "Long as the moon her course shall run,",
+        "Or men behold the circling sun,",
+        "Lord, in our land support thy reign;",
+        "Crown her just counsels with success,",
+        "With truth and peace her borders bless,",
+        "And all thy sacred rights maintain."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Andrew Kippis died in 1795.",
+  "credits": "Words by Andrew Kippis (1725–1795), public domain, as printed in Hymns for Christian Devotion (1853); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:848"
+}

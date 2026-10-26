@@ -1,0 +1,55 @@
+{
+  "title": "O That I Could Repent",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "O That I Could Repent in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 102.",
+    "The book printed the words without tunes. They are in Short Metre Double (6.6.8.6.6.6.8.6), and this page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "O that I could re-pent! With all my i-dols part, And to thy gra-cious eye pre_-sent A hum-ble, con-trite heart; A heart with grief op-prest For hav-ing grieved my God, A trou-bled heart that can-not rest, Till sprin-kled with thy blood.",
+  "verses": [
+    {
+      "lines": [
+        "O that I could repent!",
+        "With all my idols part,",
+        "And to thy gracious eye present",
+        "A humble, contrite heart;",
+        "A heart with grief opprest",
+        "For having grieved my God,",
+        "A troubled heart that cannot rest,",
+        "Till sprinkled with thy blood."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, on me bestow",
+        "The penitent desire;",
+        "With true sincerity of woe",
+        "My aching breast inspire;",
+        "With softening pity look,",
+        "And melt my hardness down,",
+        "Strike with thy love's resistless stroke,",
+        "And break this heart of stone!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:102"
+}

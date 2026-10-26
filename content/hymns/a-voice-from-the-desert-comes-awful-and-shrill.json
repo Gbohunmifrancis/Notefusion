@@ -1,0 +1,55 @@
+{
+  "title": "A Voice from the Desert Comes Awful and Shrill",
+  "tune": "st-denio",
+  "text": [
+    {
+      "name": "William Drummond of Hawthornden",
+      "born": 1585,
+      "died": 1649,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "A Voice from the Desert Comes Awful and Shrill in Tonic Solfa to ST DENIO, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "William Drummond of Hawthornden wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 103, “\"Prepare Ye the Way of the Lord!\"”.",
+    "The book printed the words without tunes, marked Elevens (11.11.11.11), to be sung to any tune of that metre. This page sets them to ST DENIO; any other Elevens tune fits them as well."
+  ],
+  "underlay": "A Voice from the des-ert comes aw-ful and shrill; The Lord is ad-vanc-ing; pre-pare ye the way! The word of Je-ho-vah he comes to ful-fil, And o'er the dark world pour the splen-dor of day.",
+  "verses": [
+    {
+      "lines": [
+        "A Voice from the desert comes awful and shrill;",
+        "The Lord is advancing; prepare ye the way!",
+        "The word of Jehovah he comes to fulfil,",
+        "And o'er the dark world pour the splendor of day."
+      ]
+    },
+    {
+      "lines": [
+        "Bring down the proud mountain, though towering to heaven,",
+        "And be the low valley exalted on high;",
+        "The rough path and crooked be made smooth and even,",
+        "For, Zion! your King, your Redeemer, is nigh."
+      ]
+    },
+    {
+      "lines": [
+        "The beams of salvation his progress illume,",
+        "The lone, dreary wilderness sings of her God;",
+        "The rose and the myrtle there suddenly bloom,",
+        "And the olive of peace spreads its branches abroad."
+      ]
+    }
+  ],
+  "metre": "11 11 11 11",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Drummond of Hawthornden died in 1649.",
+  "credits": "Words by William Drummond of Hawthornden (1585–1649), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST DENIO by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:103"
+}

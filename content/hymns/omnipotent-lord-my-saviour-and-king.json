@@ -1,0 +1,102 @@
+{
+  "title": "Omnipotent Lord, My Saviour and King",
+  "tune": "lyons",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Omnipotent Lord, My Saviour and King in Tonic Solfa to LYONS, doh is Ab: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 273. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in 10.10.11.11, and this page sets them to LYONS; any other 10.10.11.11 tune fits them as well."
+  ],
+  "underlay": "Om-ni-po-tent Lord, My Sa-viour and King, Thy suc-cour af-ford, Thy right_-eous-ness bring; Thy prom-is-es bind thee Com-pas-sion to have, Now, now let me find thee Al-might_-y to save.",
+  "verses": [
+    {
+      "lines": [
+        "Omnipotent Lord, My Saviour and King,",
+        "Thy succour afford, Thy righteousness bring;",
+        "Thy promises bind thee Compassion to have,",
+        "Now, now let me find thee Almighty to save."
+      ]
+    },
+    {
+      "lines": [
+        "Rejoicing, in hope, And patient in grief,",
+        "To thee I look up For certain relief;",
+        "I fear no denial, No danger I fear,",
+        "Nor start from the trial, While Jesus is near."
+      ]
+    },
+    {
+      "lines": [
+        "I every hour In jeopardy stand;",
+        "But thou art my power, And holdest my hand;",
+        "While yet I am calling, Thy succour I feel,",
+        "It saves me from falling, Or plucks me from hell."
+      ]
+    },
+    {
+      "lines": [
+        "O who can explain This struggle for life!",
+        "This travail and pain, This trembling and strife!",
+        "Plague, earthquake, and famine, And tumult, and war,",
+        "The wonderful coming Of Jesus declare."
+      ]
+    },
+    {
+      "lines": [
+        "For every fight Is dreadful and loud,",
+        "The warrior's delight Is slaughter and blood,",
+        "His foes overturning, Till all shall expire;",
+        "But this is with burning And fuel of fire."
+      ]
+    },
+    {
+      "lines": [
+        "Yet God is above Men, devils, and sin,",
+        "My Jesus's love The battle shall win,",
+        "So terribly glorious His coming shall be,",
+        "His love all victorious Shall conquer for me"
+      ]
+    },
+    {
+      "lines": [
+        "He all shall break through; His truth and his grace",
+        "Shall bring me into The plentiful place,",
+        "Through much tribulation, Through water and fire,",
+        "Through floods of temptation, And flames of desire."
+      ]
+    },
+    {
+      "lines": [
+        "On Jesus, my power, Till then I rely,",
+        "All evil before His presence shall fly;",
+        "When I have my Saviour, My Sin shall depart",
+        "And Jesus for ever Shall reign in my heart."
+      ]
+    }
+  ],
+  "metre": "10 10 11 11",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to LYONS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:273"
+}

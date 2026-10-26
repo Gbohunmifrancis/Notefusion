@@ -1,0 +1,98 @@
+{
+  "title": "Thou Great Mysterious God Unknown",
+  "tune": "holy-matrimony",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Thou Great Mysterious God Unknown in Tonic Solfa to HOLY MATRIMONY, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 97. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Common Particular Metre (8.8.6.8.8.6), and this page sets them to HOLY MATRIMONY; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "Thou great mys-te-rious God un-known, Whose love hath gen-tly led me on, Even from my in-fant days, Mine in-most soul ex-pose to view, And tell me if I ev-er knew Thy jus-ti-fy-ing grace.",
+  "verses": [
+    {
+      "lines": [
+        "Thou great mysterious God unknown,",
+        "Whose love hath gently led me on,",
+        "Even from my infant days,",
+        "Mine inmost soul expose to view,",
+        "And tell me if I ever knew",
+        "Thy justifying grace."
+      ]
+    },
+    {
+      "lines": [
+        "If I have only known thy fear,",
+        "And followed with a heart sincere",
+        "Thy drawings from above,",
+        "Now, now the further grace bestow,",
+        "And let my sprinkled conscience know",
+        "Thy sweet forgiving love."
+      ]
+    },
+    {
+      "lines": [
+        "Short of Thy love I would not stop,",
+        "A stranger to the gospel hope,",
+        "The sense of sin forgiven;",
+        "I would not, Lord, my soul deceive,",
+        "Without the inward witness live,",
+        "That antepast of heaven."
+      ]
+    },
+    {
+      "lines": [
+        "If now the witness were in me,",
+        "Would He not testify of thee",
+        "In Jesus reconciled?",
+        "And should I not with faith draw nigh,",
+        "And boldly Abba, Father, cry,",
+        "And know myself thy child?"
+      ]
+    },
+    {
+      "lines": [
+        "Whate'er obstructs thy pardoning love,",
+        "Or sin or righteousness, remove,",
+        "Thy glory to display;",
+        "Mine heart of unbelief convince,",
+        "And now absolve me from my sins,",
+        "And take them all away."
+      ]
+    },
+    {
+      "lines": [
+        "Father, in me reveal thy Son,",
+        "And to my inmost soul make known",
+        "How merciful thou art:",
+        "The secret of thy love reveal,",
+        "And by thine hallowing Spirit dwell",
+        "For ever in my heart!"
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to HOLY MATRIMONY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:97"
+}

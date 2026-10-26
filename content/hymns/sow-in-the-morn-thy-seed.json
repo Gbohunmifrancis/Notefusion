@@ -1,6 +1,6 @@
 {
   "title": "Sow in the Morn Thy Seed",
-  "tune": "southwell",
+  "tune": "diademata",
   "text": [
     {
       "name": "James Montgomery",
@@ -9,25 +9,33 @@
       "role": "Words"
     }
   ],
-  "textPublished": 1853,
+  "textPublished": 1866,
   "textPublishedBy": true,
-  "description": "Sow in the Morn Thy Seed in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "description": "Sow in the Morn Thy Seed in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
   "about": [
-    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 772 of its twenty-second edition (1853), “Active Effort to do Good”.",
-    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+    "James Montgomery wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 540, “The Sower”.",
+    "The book printed the words without tunes, marked Short Metre Double (6.6.8.6.6.6.8.6), to be sung to any tune of that metre. This page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
   ],
-  "underlay": "Sow in the morn thy seed; At eve hold not thy hand; To doubt and fear give thou no heed; Broad-cast it o'er the land;",
+  "underlay": "Sow in the morn thy seed, At eve hold not thy hand; To doubt and fear give thou no_ heed, Broad-cast it o'er the land! Be-side all wa-ters sow, The high-way fur-rows stock, Drop it where thorns and this-tles grow, Drop it up-on the rock!",
   "verses": [
     {
       "lines": [
-        "Sow in the morn thy seed;",
+        "Sow in the morn thy seed,",
         "At eve hold not thy hand;",
-        "To doubt and fear give thou no heed;",
-        "Broadcast it o'er the land; —"
+        "To doubt and fear give thou no heed,",
+        "Broadcast it o'er the land!",
+        "Beside all waters sow,",
+        "The highway furrows stock,",
+        "Drop it where thorns and thistles grow,",
+        "Drop it upon the rock!"
       ]
     },
     {
       "lines": [
+        "The good, the fruitful ground",
+        "Expect not here nor there;",
+        "O'er hill and dale and plain 'tis found,",
+        "Go forth, then, everywhere!",
         "And duly shall appear,",
         "In verdure, beauty, strength,",
         "The tender blade, the stalk, the ear,",
@@ -37,19 +45,23 @@
     {
       "lines": [
         "Thou canst not toil in vain;",
-        "Cold, heat, and moist, and dry,",
+        "Cold, heat, and moist and dry,",
         "Shall foster and mature the grain",
-        "For garners in the sky."
+        "For garners in the sky;",
+        "Then when the glorious end,",
+        "The day of God, shall come,",
+        "The angel-reapers shall descend,",
+        "At heaven's great harvest-home."
       ]
     }
   ],
-  "metre": "6 6 8 6",
-  "source": "Hymns for Christian Devotion (1846)",
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
   "licence": "Public domain: James Montgomery died in 1854.",
-  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
   "updated": "2026-10-26",
   "reviewed": false,
   "draft": false,
   "setByMetre": true,
-  "importedFrom": "hymns-1846:772"
+  "importedFrom": "hymns-1848:540"
 }

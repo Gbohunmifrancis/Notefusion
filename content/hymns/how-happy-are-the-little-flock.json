@@ -1,0 +1,91 @@
+{
+  "title": "How Happy Are the Little Flock",
+  "tune": "holy-matrimony",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "How Happy Are the Little Flock in Tonic Solfa to HOLY MATRIMONY, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 62.",
+    "The book printed the words without tunes. They are in Common Particular Metre (8.8.6.8.8.6), and this page sets them to HOLY MATRIMONY; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "How hap-py are the lit-tle flock, Who, safe be-neath their guar-dian Rock, In all com-mo-tions rest! When war's and tu-mult's waves run high, Re-moved a-bove the storm they lie, They lodge in Je-su's breast.",
+  "verses": [
+    {
+      "lines": [
+        "How happy are the little flock,",
+        "Who, safe beneath their guardian Rock,",
+        "In all commotions rest!",
+        "When war's and tumult's waves run high,",
+        "Removed above the storm they lie,",
+        "They lodge in Jesu's breast."
+      ]
+    },
+    {
+      "lines": [
+        "Such happiness, O Lord, have we,",
+        "By mercy gathered into thee,",
+        "Before the floods descend:",
+        "And while the bursting clouds come down,",
+        "We mark the vengeful day begun,",
+        "And calmly wait the end."
+      ]
+    },
+    {
+      "lines": [
+        "The plague, and dearth, and din of war,",
+        "Our Saviour's swift approach declare,",
+        "And bid our hearts arise;",
+        "Earth's basis shook confirms our hope;",
+        "Its cities' fall but lifts us up,",
+        "To meet thee in the skies."
+      ]
+    },
+    {
+      "lines": [
+        "Thy tokens we with joy confess:",
+        "The war proclaims the Prince of peace,",
+        "The earthquake speaks thy power,",
+        "The famine all thy fulness brings,",
+        "The plague presents thy healing wings,",
+        "And nature's final hour."
+      ]
+    },
+    {
+      "lines": [
+        "Whatever ills the world befall,",
+        "A pledge of endless good we call,",
+        "A sign of Jesus near;",
+        "His chariot will not long delay,",
+        "We hear the rumbling wheels, and pray,",
+        "Triumphant Lord, appear!"
+      ]
+    },
+    {
+      "lines": [
+        "Appear with clouds on Sion's hill,",
+        "Thy word and mystery to fulfil,",
+        "Thy confessors to approve,",
+        "Thy members on thy throne to place,",
+        "And stamp thy name on every face,",
+        "In glorious, heavenly love!"
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to HOLY MATRIMONY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:62"
+}

@@ -1,0 +1,86 @@
+{
+  "title": "Equip Me for the War",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Equip Me for the War in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 270. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Short Metre Double (6.6.8.6.6.6.8.6), and this page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "E-quip me for the war, And teach my hands to fight, My sim-ple, up-right heart pre_-pare, And guide my words a-right; Con-trol my ev-ery thought, My whole of sin re-move; Let all my works in thee be wrought, Let all be wrought in love.",
+  "verses": [
+    {
+      "lines": [
+        "Equip me for the war,",
+        "And teach my hands to fight,",
+        "My simple, upright heart prepare,",
+        "And guide my words aright;",
+        "Control my every thought,",
+        "My whole of sin remove;",
+        "Let all my works in thee be wrought,",
+        "Let all be wrought in love."
+      ]
+    },
+    {
+      "lines": [
+        "O arm me with the mind,",
+        "Meek Lamb! which was in thee,",
+        "And let my knowing zeal be joined",
+        "With perfect charity;",
+        "With calm and tempered zeal",
+        "Let me enforce thy call,",
+        "And vindicate thy gracious will",
+        "Which offers life to all."
+      ]
+    },
+    {
+      "lines": [
+        "O do not let me trust",
+        "In any arm but thine!",
+        "Humble, O humble to the dust",
+        "This stubborn soul of mine",
+        "A feeble thing of nought,",
+        "With lowly shame I own,",
+        "The help which upon earth is wrought,",
+        "Thou dost it all alone."
+      ]
+    },
+    {
+      "lines": [
+        "O may I love like thee!",
+        "In all thy footsteps tread,",
+        "Thou hatest all iniquity,",
+        "But nothing thou hast made.",
+        "O may I learn the art",
+        "With meekness to reprove;",
+        "To hate the sin with all my heart,",
+        "But still the sinner love."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:270"
+}

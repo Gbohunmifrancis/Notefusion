@@ -1,0 +1,91 @@
+{
+  "title": "My God, My Strength, My Hope",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "My God, My Strength, My Hope in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 225, “Spiritual Wants”.",
+    "The book printed the words without tunes, marked Short Metre Double (6.6.8.6.6.6.8.6), to be sung to any tune of that metre. This page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "My God, my strength, my hope, On Thee I cast my care, With hum-ble con-fi-dence look_ up, And know Thou hear'st my prayer. Give me on Thee to wait, Till I can all things do; On Thee, al-might-y to cre-ate, Al-might-y to re-new.",
+  "verses": [
+    {
+      "lines": [
+        "My God, my strength, my hope,",
+        "On Thee I cast my care,",
+        "With humble confidence look up,",
+        "And know Thou hear'st my prayer.",
+        "Give me on Thee to wait,",
+        "Till I can all things do;",
+        "On Thee, almighty to create,",
+        "Almighty to renew."
+      ]
+    },
+    {
+      "lines": [
+        "I want a sober mind,",
+        "A self-renouncing will,",
+        "That tramples down and casts behind",
+        "The baits of pleasing ill;",
+        "A soul inured to pain,",
+        "To hardship, grief, and loss,",
+        "Bold to take up, firm to sustain,",
+        "The consecrated cross."
+      ]
+    },
+    {
+      "lines": [
+        "I want a godly fear,",
+        "A quick-discerning eye,",
+        "That looks to Thee when sin is near,",
+        "And bids the tempter fly;",
+        "A spirit still prepared,",
+        "And armed with jealous care,",
+        "Forever standing on its guard,",
+        "And watching unto prayer."
+      ]
+    },
+    {
+      "lines": [
+        "I want a true regard,",
+        "A single, steady aim,",
+        "Unmoved by threatening or reward,",
+        "To Thee and Thy great name;",
+        "This blessing above all,",
+        "Always to pray, I want:",
+        "Out of the deep on Thee to call,",
+        "And never, never faint."
+      ]
+    },
+    {
+      "lines": [
+        "I rest upon Thy word;",
+        "The promise is for me;",
+        "My succor and salvation, Lord,",
+        "Shall surely come from Thee;",
+        "But let me still abide,",
+        "Nor from my hope remove,",
+        "Till Thou my patient spirit guide",
+        "Into Thy perfect love."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:225"
+}

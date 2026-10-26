@@ -1,0 +1,81 @@
+{
+  "title": "Author of Faith, to Thee I Cry",
+  "tune": "holy-matrimony",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Author of Faith, to Thee I Cry in Tonic Solfa to HOLY MATRIMONY, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 118.",
+    "The book printed the words without tunes. They are in Common Particular Metre (8.8.6.8.8.6), and this page sets them to HOLY MATRIMONY; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "Au-thor of faith, to thee I cry, To thee, who wouldst not have me die, But know the truth and live; O-pen mine eyes to see thy face, Work in my heart the sa-ving grace, The life e-ter-nal give.",
+  "verses": [
+    {
+      "lines": [
+        "Author of faith, to thee I cry,",
+        "To thee, who wouldst not have me die,",
+        "But know the truth and live;",
+        "Open mine eyes to see thy face,",
+        "Work in my heart the saving grace,",
+        "The life eternal give."
+      ]
+    },
+    {
+      "lines": [
+        "Shut up in unbelief I groan,",
+        "And blindly serve a God unknown,",
+        "Till thou the veil remove;",
+        "The gift unspeakable impart,",
+        "And write thy name upon my heart,",
+        "And manifest thy love."
+      ]
+    },
+    {
+      "lines": [
+        "I know the work is only thine,",
+        "The gift of faith is all divine;",
+        "But, if on thee we call,",
+        "Thou wilt the benefit bestow,",
+        "And give us hearts to feel and know",
+        "That thou hast died for all."
+      ]
+    },
+    {
+      "lines": [
+        "Thou bidd'st us knock and enter in,",
+        "Come unto thee, and rest from sin,",
+        "The blessing seek and find;",
+        "Thou bidd'st us ask thy grace, and have;",
+        "Thou canst, thou wouldst, this moment save",
+        "Both me and all mankind."
+      ]
+    },
+    {
+      "lines": [
+        "Be it according to thy word!",
+        "Now let me find my pardoning Lord,",
+        "Let what I ask be given;",
+        "The bar of unbelief remove,",
+        "Open the door of faith and love,",
+        "And take me into heaven."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to HOLY MATRIMONY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:118"
+}

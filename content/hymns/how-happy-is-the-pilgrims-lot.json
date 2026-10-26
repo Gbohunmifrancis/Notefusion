@@ -1,0 +1,118 @@
+{
+  "title": "How Happy Is the Pilgrim's Lot",
+  "tune": "holy-matrimony",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "How Happy Is the Pilgrim's Lot in Tonic Solfa to HOLY MATRIMONY, doh is G: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 68. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Common Particular Metre (8.8.6.8.8.6), and this page sets them to HOLY MATRIMONY; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "How hap-py is the pil-grim's lot! How free from ev-ery anx-ious thought, From world-ly hope and fear! Con-fined to nei-ther court nor cell, His soul dis-dains on earth to dwell, He on-ly so-journs here.",
+  "verses": [
+    {
+      "lines": [
+        "How happy is the pilgrim's lot!",
+        "How free from every anxious thought,",
+        "From worldly hope and fear!",
+        "Confined to neither court nor cell,",
+        "His soul disdains on earth to dwell,",
+        "He only sojourns here."
+      ]
+    },
+    {
+      "lines": [
+        "This happiness in part is mine,",
+        "Already saved from self-design,",
+        "From every creature-love;",
+        "Blest with the scorn of finite good,",
+        "My soul is lightened of its load,",
+        "And seeks the things above."
+      ]
+    },
+    {
+      "lines": [
+        "The things eternal I pursue,",
+        "A happiness beyond the view",
+        "Of those that basely pant",
+        "For things by nature felt and seen;",
+        "Their honours, wealth, and pleasures mean",
+        "I neither have nor want."
+      ]
+    },
+    {
+      "lines": [
+        "I have no babes to hold me here;",
+        "But children more securely dear",
+        "For mine I humbly claim,",
+        "Better than daughters or than sons,",
+        "Temples divine of living stones,",
+        "Inscribed with Jesu's name."
+      ]
+    },
+    {
+      "lines": [
+        "No foot of land do I possess,",
+        "No cottage in this wilderness,",
+        "A poor wayfaring man,",
+        "I lodge awhile in tents below;",
+        "Or gladly wander to and fro,",
+        "Till I my Canaan gain."
+      ]
+    },
+    {
+      "lines": [
+        "Nothing on earth I call my own;",
+        "A stranger, to the world unknown,",
+        "I all their goods despise;",
+        "I trample on their whole delight,",
+        "And seek a country out of sight,",
+        "A country in the skies."
+      ]
+    },
+    {
+      "lines": [
+        "There is my house and portion fair,",
+        "My treasure and my heart are there.",
+        "And my abiding home;",
+        "For me my elder brethren stay,",
+        "And angels beckon me away,",
+        "And Jesus bids me come."
+      ]
+    },
+    {
+      "lines": [
+        "I come, thy servant, Lord, replies,",
+        "I come to meet thee in the skies,",
+        "And claim my heavenly rest;",
+        "Now let the pilgrim's journey end,",
+        "Now, O my Saviour, Brother, Friend.",
+        "Receive me to thy breast!"
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to HOLY MATRIMONY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:68"
+}

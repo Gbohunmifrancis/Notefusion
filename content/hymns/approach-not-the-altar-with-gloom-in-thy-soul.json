@@ -1,0 +1,55 @@
+{
+  "title": "Approach Not the Altar with Gloom in Thy Soul",
+  "tune": "st-denio",
+  "text": [
+    {
+      "name": "Frances Sargent Osgood",
+      "born": 1811,
+      "died": 1850,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Approach Not the Altar with Gloom in Thy Soul in Tonic Solfa to ST DENIO, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Frances Sargent Osgood wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 464, “Glad Worship”.",
+    "The book printed the words without tunes, marked Elevens (11.11.11.11), to be sung to any tune of that metre. This page sets them to ST DENIO; any other Elevens tune fits them as well."
+  ],
+  "underlay": "Ap-proach not the al-tar with gloom in thy soul, Nor let thy feet fal-ter from ter-ror's con-trol; God loves not the sad-ness of fear and mis-trust; O, serve Him with glad-ness, the Lov-ing and Just!",
+  "verses": [
+    {
+      "lines": [
+        "Approach not the altar with gloom in thy soul,",
+        "Nor let thy feet falter from terror's control;",
+        "God loves not the sadness of fear and mistrust;",
+        "O, serve Him with gladness, — the Loving and Just!"
+      ]
+    },
+    {
+      "lines": [
+        "His bounty is tender, His being is love;",
+        "His smile fills with splendor the blue arch above;",
+        "Confiding, believing, O, enter always",
+        "His courts with thanksgiving, His portals with praise!"
+      ]
+    },
+    {
+      "lines": [
+        "Come not to His temple with pride in thy mien",
+        "But lowly and simple, in courage serene;",
+        "Bring meekly before Him the faith of a child,",
+        "Bow down and adore Him with heart undefiled!"
+      ]
+    }
+  ],
+  "metre": "11 11 11 11",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Frances Sargent Osgood died in 1850.",
+  "credits": "Words by Frances Sargent Osgood (1811–1850), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST DENIO by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:464"
+}

@@ -1,0 +1,54 @@
+{
+  "title": "Great Source of Life and Light",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Great Source of Life and Light in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 1001 of its twenty-second edition (1853), “For a Holy Heart”, where the book credits them to a Wesleyan source.",
+    "The book printed the words without tunes, marked Short Metre Double (6.6.8.6.6.6.8.6), to be sung to any tune of that metre. This page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "Great Source of life and light, Thy heav-enly grace im-part, And by thy ho-ly spir-it_ write Thy law up-on my heart. My soul would cleave to thee; Let nought my pur-pose move; O, let my faith more stead-fast be, And more in-tense my love!",
+  "verses": [
+    {
+      "lines": [
+        "Great Source of life and light,",
+        "Thy heavenly grace impart,",
+        "And by thy holy spirit write",
+        "Thy law upon my heart.",
+        "My soul would cleave to thee;",
+        "Let nought my purpose move;",
+        "O, let my faith more steadfast be,",
+        "And more intense my love!"
+      ]
+    },
+    {
+      "lines": [
+        "Long as my trials last,",
+        "Long as the cross I bear,",
+        "O, let my soul on thee be cast",
+        "In confidence and prayer!",
+        "Conduct me to the shore",
+        "Of everlasting peace,",
+        "Where storm and tempest rise no more,",
+        "Where sin and sorrow cease."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:1001"
+}

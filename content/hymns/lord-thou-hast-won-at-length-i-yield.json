@@ -1,0 +1,101 @@
+{
+  "title": "Lord, Thou Hast Won, at Length I Yield",
+  "tune": "meribah",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Lord, Thou Hast Won, at Length I Yield in Tonic Solfa to MERIBAH, doh is Eb: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 121, “The rebel's surrender to grace. Lord, what wilt thou have me to do? Acts 9:6”.",
+    "The book printed the words without tunes, marked Common Particular Metre (8.8.6.8.8.6), to be sung to any tune of that metre. This page sets them to MERIBAH; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "Lord, thou hast won, at length I yield, My heart, by might-y grace com-pelled, Sur-ren-ders all to thee; A-gainst thy ter-rors long I strove, But who can stand a-gainst thy love? Love con-quers e-ven me.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, thou hast won, at length I yield,",
+        "My heart, by mighty grace compelled,",
+        "Surrenders all to thee;",
+        "Against thy terrors long I strove,",
+        "But who can stand against thy love?",
+        "Love conquers even me."
+      ]
+    },
+    {
+      "lines": [
+        "All that a wretch could do, I tried,",
+        "Thy patience scorned, thy pow'r defied,",
+        "And trampled on thy laws;",
+        "Scarcely thy martyrs at the stake,",
+        "Could stand more steadfast for thy sake,",
+        "Than I in Satan's cause."
+      ]
+    },
+    {
+      "lines": [
+        "But since thou hast thy love revealed,",
+        "And shown my soul a pardon sealed,",
+        "I can resist no more:",
+        "Couldst thou for such a sinner bleed?",
+        "Canst thou for such a rebel plead?",
+        "I wonder and adore!"
+      ]
+    },
+    {
+      "lines": [
+        "If thou hadst bid thy thunders roll,",
+        "And lightnings flash to blast my soul,",
+        "I still had stubborn been:",
+        "But mercy has my heart subdued,",
+        "A bleeding Savior I have viewed,",
+        "And now, I hate my sin."
+      ]
+    },
+    {
+      "lines": [
+        "Now, Lord, I would be thine alone,",
+        "Come take possession of thine own,",
+        "For thou hast set me free",
+        "Released from Satan's hard commands",
+        "See all my powers waiting stand,",
+        "To be employed by thee."
+      ]
+    },
+    {
+      "lines": [
+        "My will conformed to thine would move,",
+        "On thee my hope, desire, and love,",
+        "In fixed attention join;",
+        "My hands, my eyes, my ears, my tongue,",
+        "Have Satan's servants been too long,",
+        "But now they shall be thine."
+      ]
+    },
+    {
+      "lines": [
+        "And can I be the very same,",
+        "Who lately durst blaspheme thy name;",
+        "And on thy gospel tread?",
+        "Surely each one, who hears my case,",
+        "Will praise thee, and confess thy grace",
+        "Invincible indeed!"
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MERIBAH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:121"
+}

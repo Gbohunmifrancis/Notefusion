@@ -1,0 +1,91 @@
+{
+  "title": "Except the Lord Conduct the Plan",
+  "tune": "meribah",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Except the Lord Conduct the Plan in Tonic Solfa to MERIBAH, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 526.",
+    "The book printed the words without tunes. They are in Common Particular Metre (8.8.6.8.8.6), and this page sets them to MERIBAH; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "Ex-cept the Lord con-duct the plan, The best con-cert-ed schemes are vain, And nev-er can suc-ceed; We spend our wret-ched strength for nought: But if our works in thee be wrought, They shall be blest in-deed.",
+  "verses": [
+    {
+      "lines": [
+        "Except the Lord conduct the plan,",
+        "The best concerted schemes are vain,",
+        "And never can succeed;",
+        "We spend our wretched strength for nought:",
+        "But if our works in thee be wrought,",
+        "They shall be blest indeed."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, if thou didst thyself inspire",
+        "Our souls with this intense desire",
+        "Thy goodness to proclaim,",
+        "Thy glory if we now intend,",
+        "O let our deed begin and end",
+        "Complete in Jesu's name!"
+      ]
+    },
+    {
+      "lines": [
+        "In Jesu's name, behold, we meet,",
+        "Far from an evil world retreat,",
+        "And all its frantic ways;",
+        "One only thing resolved to know,",
+        "And square our useful lives below",
+        "By reason and by grace."
+      ]
+    },
+    {
+      "lines": [
+        "Not in the tombs we pine to dwell,",
+        "Not in the dark monastic cell,",
+        "By vows and grates confined;",
+        "Freely to all ourselves we give,",
+        "Constrained by Jesu's love to live",
+        "The servants of mankind."
+      ]
+    },
+    {
+      "lines": [
+        "Now, Jesus, now thy love impart,",
+        "To govern each devoted heart,",
+        "And fit us for thy will:",
+        "Deep founded in the truth of grace,",
+        "Build up thy rising church, and place",
+        "The city on the hill."
+      ]
+    },
+    {
+      "lines": [
+        "O let our faith and love abound!",
+        "O let our lives to all around",
+        "With purest lustre shine!",
+        "That all around our works may see,",
+        "And give the glory, Lord, to thee,",
+        "The heavenly light divine."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MERIBAH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:526"
+}

@@ -1,0 +1,61 @@
+{
+  "title": "If Solid Happiness We Prize",
+  "tune": "meribah",
+  "text": [
+    {
+      "name": "Nathaniel Cotton",
+      "born": 1705,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "If Solid Happiness We Prize in Tonic Solfa to MERIBAH, doh is Eb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Nathaniel Cotton wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 625 of its twenty-second edition (1853), “Contentment and Resignation”.",
+    "The book printed the words without tunes, marked Common Particular Metre (8.8.6.8.8.6), to be sung to any tune of that metre. This page sets them to MERIBAH; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "If so-lid happ-i-ness we prize, With-in our breasts the jew-el lies; Nor need we roam a-broad: The world has lit-tle to be-stow; From pi-ous hearts our joys must flow, Hearts that de-light in God.",
+  "verses": [
+    {
+      "lines": [
+        "If solid happiness we prize,",
+        "Within our breasts the jewel lies;",
+        "Nor need we roam abroad:",
+        "The world has little to bestow;",
+        "From pious hearts our joys must flow,",
+        "Hearts that delight in God."
+      ]
+    },
+    {
+      "lines": [
+        "To be resigned, when ills betide,",
+        "Patient, when favors are denied,",
+        "And pleased with favors given;",
+        "This is the wise, the virtuous part;",
+        "This is that incense of the heart,",
+        "Whose fragrance reaches heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Thus through life's changing scenes we'll go,",
+        "Its checkered paths of joy and woe,",
+        "With holy care we'll tread:",
+        "Quit its vain scenes without a tear,",
+        "Without a trouble or a fear,",
+        "And mingle with the dead."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Nathaniel Cotton died in 1788.",
+  "credits": "Words by Nathaniel Cotton (1705–1788), public domain, as printed in Hymns for Christian Devotion (1853); set to MERIBAH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:625"
+}

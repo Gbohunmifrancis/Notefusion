@@ -1,0 +1,79 @@
+{
+  "title": "Though Sore Beset with Guilt and Fear",
+  "tune": "sweet-hour",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Though Sore Beset with Guilt and Fear in Tonic Solfa to SWEET HOUR, doh is Db: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 32, “Cast down, but not destroyed”.",
+    "The book printed the words without tunes, marked Long Metre Double (8.8.8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SWEET HOUR; any other Long Metre Double tune fits them as well."
+  ],
+  "underlay": "Though sore be-set with guilt and fear, I can-not, dare_ not, quite de-spair; If I must per-ish, would the Lord Have taught my heart_ to love his word? Would he have giv'n me eyes to see My dan-ger, and my rem-e-dy, Re-vealed his name, and bid me pray, Had he re-solved_ to say me nay?",
+  "verses": [
+    {
+      "lines": [
+        "Though sore beset with guilt and fear,",
+        "I cannot, dare not, quite despair;",
+        "If I must perish, would the Lord",
+        "Have taught my heart to love his word?",
+        "Would he have giv'n me eyes to see",
+        "My danger, and my remedy,",
+        "Revealed his name, and bid me pray,",
+        "Had he resolved to say me nay?"
+      ]
+    },
+    {
+      "lines": [
+        "No--though cast down I am not slain;",
+        "I fall, but I shall rise again;",
+        "The present Satan is thy hour,",
+        "But Jesus shall control thy pow'r:",
+        "His love will plead for my relief,",
+        "He hears my groans, he sees my grief;",
+        "Nor will he suffer thee to boast,",
+        "A soul, that sought his help, was lost."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis true, I have unfaithful been,",
+        "And grieved his Spirit by my sin;",
+        "Yet still his mercy he'll reveal,",
+        "And all my wounds and follies heal:",
+        "Abounding sin, I must confess,",
+        "But more abounding is his grace;",
+        "He once vouchsafed for me to bleed,",
+        "And now he lives my cause to plead."
+      ]
+    },
+    {
+      "lines": [
+        "I'll cast myself before his feet,",
+        "I see him on his mercy-seat,",
+        "('Tis sprinkled with atoning blood)",
+        "There sinners find access to God:",
+        "Ye burdened souls approach with me,",
+        "And make the Savior's name your plea;",
+        "Jesus will pardon all who come,",
+        "And strike our fierce accuser dumb."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to SWEET HOUR by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:32"
+}

@@ -1,0 +1,110 @@
+{
+  "title": "Jesus, My Strength, My Hope",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Jesus, My Strength, My Hope in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 301. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Short Metre Double (6.6.8.6.6.6.8.6), and this page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "Je-sus, my strength, my hope, On thee I cast my care, With hum-ble con-fi-dence look_ up, And know thou hear'st my prayer. Give me on thee to wait, Till I can all things do, On thee, al-might-y to cre-ate, Al-might-y to re-new.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, my strength, my hope,",
+        "On thee I cast my care,",
+        "With humble confidence look up,",
+        "And know thou hear'st my prayer.",
+        "Give me on thee to wait,",
+        "Till I can all things do,",
+        "On thee, almighty to create,",
+        "Almighty to renew."
+      ]
+    },
+    {
+      "lines": [
+        "I want a sober mind,",
+        "A self-renouncing will,",
+        "That tramples down and casts behind",
+        "The baits of pleasing ill;",
+        "A soul inured to pain,",
+        "To hardship, grief, and loss,",
+        "Bold to take up, firm to sustain",
+        "The consecrated cross."
+      ]
+    },
+    {
+      "lines": [
+        "I want a godly fear,",
+        "A quick-discerning eye,",
+        "That looks to thee when sin is near,",
+        "And sees the Tempter fly;",
+        "A spirit still prepared,",
+        "And armed with jealous care,",
+        "For ever standing on its guard,",
+        "And watching unto prayer."
+      ]
+    },
+    {
+      "lines": [
+        "I want a heart to pray,",
+        "To pray and never cease,",
+        "Never to murmur at thy stay,",
+        "Or wish my sufferings less.",
+        "This blessing, above all,",
+        "Always to pray, I want,",
+        "Out of the deep on thee to call,",
+        "And never, never faint."
+      ]
+    },
+    {
+      "lines": [
+        "I want a true regard,",
+        "A single, steady aim,",
+        "(Unmoved by threatening or reward)",
+        "To thee and thy great name;",
+        "A jealous, just concern",
+        "For thine immortal praise;",
+        "A pure desire that all may learn,",
+        "And glorify thy grace."
+      ]
+    },
+    {
+      "lines": [
+        "I rest upon thy word;",
+        "The promise is for me;",
+        "My succour and salvation, Lord,",
+        "Shall surely come from thee;",
+        "But let me still abide,",
+        "Nor from my hope remove,",
+        "Till thou my patient spirit guide",
+        "Into thy perfect love."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:301"
+}

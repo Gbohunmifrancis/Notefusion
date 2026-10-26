@@ -1,0 +1,67 @@
+{
+  "title": "When Dread Misfortune's Tempests Rise",
+  "tune": "sweet-hour",
+  "text": [
+    {
+      "name": "Hosea Ballou II",
+      "born": 1796,
+      "died": 1861,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "When Dread Misfortune's Tempests Rise in Tonic Solfa to SWEET HOUR, doh is Db: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Hosea Ballou II wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 983 of its twenty-second edition (1853), “\"A Hiding-place from the Wind,\" &c”.",
+    "The book printed the words without tunes, marked Long Metre Double (8.8.8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SWEET HOUR; any other Long Metre Double tune fits them as well."
+  ],
+  "underlay": "When dread mis-for-tune's tem-pests rise, And roar through all_ the dark-ened skies, Where shall the anx-ious pil-grim gain A shel-ter from_ the wind and rain? With-in the co-vert of thy grace, O Lord, there is a hid-ing place, Where, un-con-cerned, we hear the sound, Though storm and tem_-pest rage a-round.",
+  "verses": [
+    {
+      "lines": [
+        "When dread misfortune's tempests rise,",
+        "And roar through all the darkened skies,",
+        "Where shall the anxious pilgrim gain",
+        "A shelter from the wind and rain?",
+        "Within the covert of thy grace,",
+        "O Lord, there is a hiding-place,",
+        "Where, unconcerned, we hear the sound,",
+        "Though storm and tempest rage around."
+      ]
+    },
+    {
+      "lines": [
+        "When, wandering o'er the desert bare",
+        "Of burning sands and sultry air,",
+        "We've sought the cheerless region through,",
+        "But found no stream to meet our view, —",
+        "'Tis then, the rivers of thy love,",
+        "Descending from thy throne above,",
+        "Supply our wants, and soothe our pain,",
+        "And raise our fainting souls again."
+      ]
+    },
+    {
+      "lines": [
+        "When in a weary land we tire,",
+        "And our exhausted powers expire,",
+        "With toil, and care, and heat oppressed,",
+        "Where shall our languid spirits rest?",
+        "O, who could bear the blasting ray,",
+        "And all the burden of the day,",
+        "Did not a Rock in Zion stand,",
+        "O'ershading all this weary land!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Hosea Ballou II died in 1861.",
+  "credits": "Words by Hosea Ballou II (1796–1861), public domain, as printed in Hymns for Christian Devotion (1853); set to SWEET HOUR by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:983"
+}

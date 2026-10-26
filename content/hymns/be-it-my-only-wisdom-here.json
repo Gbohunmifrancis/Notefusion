@@ -1,0 +1,50 @@
+{
+  "title": "Be It My Only Wisdom Here",
+  "tune": "meribah",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Be It My Only Wisdom Here in Tonic Solfa to MERIBAH, doh is Eb: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 457 of its twenty-second edition (1853), “True Wisdom”, where the book credits them to Wesley's Collection.",
+    "The book printed the words without tunes, marked Common Particular Metre (8.8.6.8.8.6), to be sung to any tune of that metre. This page sets them to MERIBAH; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "Be it my on-ly wis-dom here, To serve the Lord with fil-ial fear, With lov-ing grat-i-tude; Su-pe-rior sense may I dis-play, By shun-ning ev-ery e-vil way, And walk-ing in the good.",
+  "verses": [
+    {
+      "lines": [
+        "Be it my only wisdom here,",
+        "To serve the Lord with filial fear,",
+        "With loving gratitude;",
+        "Superior sense may I display,",
+        "By shunning every evil way,",
+        "And walking in the good."
+      ]
+    },
+    {
+      "lines": [
+        "O may I still from sin depart!",
+        "A wise and understanding heart,",
+        "Father, to me be given!",
+        "And let me through thy Spirit know",
+        "To glorify my God below,",
+        "And find my way to heaven."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to MERIBAH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:457"
+}

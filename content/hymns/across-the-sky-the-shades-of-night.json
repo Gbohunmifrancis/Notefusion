@@ -1,0 +1,97 @@
+{
+  "title": "Across the Sky the Shades of Night",
+  "tune": "es-ist-das-heil-uns-kommen-her",
+  "text": [
+    {
+      "name": "James Hamilton",
+      "born": 1819,
+      "died": 1896,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Across the Sky the Shades of Night in Tonic Solfa to ES IST DAS HEIL UNS KOMMEN HER, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "James Hamilton wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 164.",
+    "The book printed the words without tunes, marked 8.7.8.7.8.8.7, to be sung to any tune of that metre. This page sets them to ES IST DAS HEIL UNS KOMMEN HER; any other 8.7.8.7.8.8.7 tune fits them as well."
+  ],
+  "underlay": "A-cross the sky the shades of night This win-ter’s eve are fleet_-ing; We deck Thine al-tar, Lord, with light, In sol-emn wor-ship meet_-ing; And as the year’s last hours go by, We raise to Thee our ear-nest cry, Once more Thy love en-treat_-ing.",
+  "verses": [
+    {
+      "lines": [
+        "Across the sky the shades of night",
+        "This winter’s eve are fleeting;",
+        "We deck Thine altar, Lord, with light,",
+        "In solemn worship meeting;",
+        "And as the year’s last hours go by,",
+        "We raise to Thee our earnest cry,",
+        "Once more Thy love entreating."
+      ]
+    },
+    {
+      "lines": [
+        "Before the cross subdued we bow,",
+        "To Thee our prayers addressing,",
+        "Recounting all Thy mercies now,",
+        "And all our sins confessing;",
+        "Beseeching Thee this coming year",
+        "To keep us in Thy faith and fear",
+        "And crown us with Thy blessing."
+      ]
+    },
+    {
+      "lines": [
+        "And while we pray, we lift our eyes",
+        "To dear ones gone before us,",
+        "Safe home with Thee in Paradise,",
+        "Whose peace descendeth o’er us;",
+        "And beg of Thee, when life is past",
+        "To reunite us all at last",
+        "With those who’ve gone before us."
+      ]
+    },
+    {
+      "lines": [
+        "We gather up, in this brief hour,",
+        "The memory of Thy mercies:",
+        "Thy wondrous goodness, love, and power",
+        "Our grateful song rehearses:",
+        "For Thou hast been our Strength and Stay",
+        "In many a dark and dreary day",
+        "Of sorrows and reverses."
+      ]
+    },
+    {
+      "lines": [
+        "In many an hour, when fear and dread,",
+        "Like evil spells, have bound us",
+        "And clouds were gathering overhead,",
+        "Thy providence hath found us.",
+        "In many a night, when seas ran high,",
+        "Thy gracious presence, drawing nigh,",
+        "Hath made all calm around us."
+      ]
+    },
+    {
+      "lines": [
+        "Then, O great God, in years to come,",
+        "Whatever may betide us,",
+        "Right onward through our journey home",
+        "Be Thou at hand to guide us;",
+        "Nor leave us till, at close of life,",
+        "Safe from all perils, toil, and strife.",
+        "Heaven shall enfold and hide us."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 8 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: James Hamilton died in 1896.",
+  "credits": "Words by James Hamilton (1819–1896), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ES IST DAS HEIL UNS KOMMEN HER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:164"
+}

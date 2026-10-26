@@ -1,0 +1,67 @@
+{
+  "title": "When Long the Soul Had Slept in Chains",
+  "tune": "saved-by-grace",
+  "text": [
+    {
+      "name": "Edwin Hubbell Chapin",
+      "born": 1814,
+      "died": 1880,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "When Long the Soul Had Slept in Chains in Tonic Solfa to SAVED BY GRACE, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Edwin Hubbell Chapin wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 574, “For a Charitable Occasion”.",
+    "The book printed the words without tunes, marked Long Metre Double (8.8.8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SAVED BY GRACE; any other Long Metre Double tune fits them as well."
+  ],
+  "underlay": "When long the soul had slept in chains And man to man was stern and cold; When love and wor-ship were but strains That swept the gift-ed chords of old By sha-dy mount and peace-ful lake, A meek and low-ly stran-ger came, The wea-ry drank the words he spake, The poor and suf-fering blessed his name.",
+  "verses": [
+    {
+      "lines": [
+        "When long the soul had slept in chains",
+        "And man to man was stern and cold;",
+        "When love and worship were but strains",
+        "That swept the gifted chords of old —",
+        "By shady mount and peaceful lake,",
+        "A meek and lowly stranger came,",
+        "The weary drank the words he spake,",
+        "The poor and suffering blessed his name."
+      ]
+    },
+    {
+      "lines": [
+        "He went where frenzy held its rule,",
+        "Where sickness breathed its spell of pain;",
+        "By famed Bethesda's mystic pool,",
+        "And by the darkened gate of Nain.",
+        "He soothed the mourner's troubled breast,",
+        "He raised the contrite sinner's head,",
+        "And on the loved ones' lowly rest",
+        "The light of better life he shed."
+      ]
+    },
+    {
+      "lines": [
+        "Father, the spirit Jesus knew",
+        "We humbly ask of Thee to-night,",
+        "That we may be disciples too",
+        "Of him whose way was love and light.",
+        "Bright be the places where we tread",
+        "Amid earth's suffering and its poor,",
+        "Until that day when tears are shed,",
+        "And broken sighs are heard, no more."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Edwin Hubbell Chapin died in 1880.",
+  "credits": "Words by Edwin Hubbell Chapin (1814–1880), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to SAVED BY GRACE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:574"
+}

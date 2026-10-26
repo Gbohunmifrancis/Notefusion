@@ -1,0 +1,67 @@
+{
+  "title": "The Spacious Firmament on High",
+  "tune": "sweet-hour",
+  "text": [
+    {
+      "name": "Joseph Addison",
+      "born": 1672,
+      "died": 1719,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "The Spacious Firmament on High in Tonic Solfa to SWEET HOUR, doh is Db: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Joseph Addison wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 175 of its twenty-second edition (1853), “The Heavens declare the Glory of God”.",
+    "The book printed the words without tunes, marked Long Metre Double (8.8.8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SWEET HOUR; any other Long Metre Double tune fits them as well."
+  ],
+  "underlay": "The spa-cious fir-ma-ment on high, With all the blue_ ethe-re-al sky, And spangled hea-vens, a shin-ing frame, Their great o-rig_-i-nal pro-claim. Th'un-wea-ried sun, from day to day, Doth his Cre-a-tor's power dis-play; And pub-lish-es to ev-ery land The work of an_ Al-might-y hand.",
+  "verses": [
+    {
+      "lines": [
+        "The spacious firmament on high,",
+        "With all the blue ethereal sky,",
+        "And spangled heavens, a shining frame,",
+        "Their great original proclaim.",
+        "Th' unwearied sun, from day to day,",
+        "Doth his Creator's power display;",
+        "And publishes to every land",
+        "The work of an Almighty hand."
+      ]
+    },
+    {
+      "lines": [
+        "Soon as the evening shades prevail,",
+        "The moon takes up the wondrous tale,",
+        "And nightly to the listening earth",
+        "Repeats the story of her birth:",
+        "Whilst all the stars which round her burn,",
+        "And all the planets in their turn,",
+        "Confirm the tidings as they roll,",
+        "And spread the truth from pole to pole."
+      ]
+    },
+    {
+      "lines": [
+        "What though, in solemn silence, all",
+        "Move round this dark terrestrial ball;",
+        "What though no real voice nor sound",
+        "Amidst their radiant orbs be found;",
+        "In reason's ear they all rejoice,",
+        "And utter forth a glorious voice;",
+        "Forever singing, as they shine, —",
+        "\"The hand that made us is divine.\""
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Joseph Addison died in 1719.",
+  "credits": "Words by Joseph Addison (1672–1719), public domain, as printed in Hymns for Christian Devotion (1853); set to SWEET HOUR by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:175"
+}

@@ -1,0 +1,96 @@
+{
+  "title": "O God, in Mercy Hear",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "O God, in Mercy Hear in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Short Metre Double (6.6.8.6.6.6.8.6), and this page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "O God, in mer-cy hear, I lift my cry to Thee, And let Thy gra-cious help be_ sent In my per-plex-i-ty; But Thou art far a-way, And I am filled with shame, I can-not see Thy bless-ed face, And fear to name Thy name.",
+  "verses": [
+    {
+      "lines": [
+        "O God, in mercy hear,",
+        "I lift my cry to Thee,",
+        "And let Thy gracious help be sent",
+        "In my perplexity;",
+        "But Thou art far away,",
+        "And I am filled with shame,",
+        "I cannot see Thy blessed face,",
+        "And fear to name Thy name."
+      ]
+    },
+    {
+      "lines": [
+        "And now a sense of guilt",
+        "Inspires me with dismay, —",
+        "I know that none on earth can take",
+        "That awful load away;",
+        "'Tis mine, the sin, 'tis mine,",
+        "And mine the guilt to bear,",
+        "The awful burden of the blame,",
+        "The cloud of dark despair."
+      ]
+    },
+    {
+      "lines": [
+        "Is there no balm to heal?",
+        "No pity that can bless? —",
+        "O God, Who art so far away,",
+        "Be near in my distress;",
+        "And heed the tears I shed,",
+        "And hear my woeful cry;",
+        "And since there is no hand to help,",
+        "Come Thou in mercy nigh."
+      ]
+    },
+    {
+      "lines": [
+        "'Twas then a voice I heard, —",
+        "It came in winning tone,",
+        "Across my night, from far away,",
+        "To where I prayed alone;",
+        "It told me of a love,",
+        "That sought me long ago,",
+        "And on the cross my burden bore,",
+        "Of sin, and guilt, and woe."
+      ]
+    },
+    {
+      "lines": [
+        "O blessed cross of Christ!",
+        "Thou hast my need supplied,",
+        "For there, upon thy outstretched arms",
+        "I see the Crucified;",
+        "And He has sin to bear,",
+        "That none can call His own, —",
+        "O Christ, the sin and guilt Thou bor'st,",
+        "Are mine, are mine, alone."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:48"
+}

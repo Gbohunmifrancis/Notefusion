@@ -1,0 +1,66 @@
+{
+  "title": "I Want a Sober Mind",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "I Want a Sober Mind in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 416 of its twenty-second edition (1853), “For a Right Spirit”.",
+    "The book printed the words without tunes, marked Short Metre Double (6.6.8.6.6.6.8.6), to be sung to any tune of that metre. This page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "I want a so-ber mind, A self re-nounc-ing will, That tram-ples down and casts be_-hind The baits of pleas-ing ill; A soul in-ured to pain, To hard-ship, grief and loss, Bold to take up, firm to sus-tain The con-se-cra-ted cross.",
+  "verses": [
+    {
+      "lines": [
+        "I want a sober mind,",
+        "A self-renouncing will,",
+        "That tramples down and casts behind",
+        "The baits of pleasing ill;",
+        "A soul inured to pain,",
+        "To hardship, grief and loss,",
+        "Bold to take up, firm to sustain",
+        "The consecrated cross."
+      ]
+    },
+    {
+      "lines": [
+        "I want a godly fear,",
+        "A quick-discerning eye,",
+        "That looks to thee when sin is near,",
+        "And sees the tempter fly;",
+        "A spirit still prepared,",
+        "And armed with jealous care,",
+        "Forever standing on its guard,",
+        "And watching unto prayer."
+      ]
+    },
+    {
+      "lines": [
+        "I want a true regard,",
+        "A single, steady aim,",
+        "Unmoved by threatening or reward,",
+        "To thee and thy great name;",
+        "A zealous, just concern",
+        "For thine immortal praise;",
+        "A pure desire that all may learn",
+        "And glorify thy grace."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:416"
+}

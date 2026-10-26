@@ -1,0 +1,66 @@
+{
+  "title": "Sweet Is the Time of Spring",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Sweet Is the Time of Spring in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 745 of its twenty-second edition (1853), “Youth and the Spring-time”.",
+    "The book printed the words without tunes, marked Short Metre Double (6.6.8.6.6.6.8.6), to be sung to any tune of that metre. This page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "Sweet is the time of spring, When na-ture's charms ap-pear; The birds with cease-less plea-sure_ sing, And hail th'o-pen-ing year: But sweet-er far the spring Of wis-dom and of grace, When child-ren bless and praise their King, Who loves the youth-ful race.",
+  "verses": [
+    {
+      "lines": [
+        "Sweet is the time of spring,",
+        "When nature's charms appear;",
+        "The birds with ceaseless pleasure sing,",
+        "And hail the opening year:",
+        "But sweeter far the spring",
+        "Of wisdom and of grace,",
+        "When children bless and praise their King,",
+        "Who loves the youthful race."
+      ]
+    },
+    {
+      "lines": [
+        "Sweet is the dawn of day,",
+        "When light just streaks the sky;",
+        "When shades and darkness pass away,",
+        "And morning's beams are nigh:",
+        "But sweeter far the dawn",
+        "Of piety in youth;",
+        "When doubt and darkness are withdrawn,",
+        "Before the light of truth."
+      ]
+    },
+    {
+      "lines": [
+        "Sweet is the early dew,",
+        "Which gilds the mountain tops,",
+        "And decks each plant and flower we view,",
+        "With pearly, glittering drops;",
+        "But sweeter far the scene",
+        "On Zion's holy hill,",
+        "When there the dew of youth is seen",
+        "Its freshness to distil."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:745"
+}

@@ -1,0 +1,67 @@
+{
+  "title": "Eternal, Spotless Lamb of God",
+  "tune": "sweet-hour",
+  "text": [
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Eternal, Spotless Lamb of God in Tonic Solfa to SWEET HOUR, doh is Db: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Wesley wrote these words. John Wesley printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 237.",
+    "The book printed the words without tunes. They are in Long Metre Double (8.8.8.8.8.8.8.8), and this page sets them to SWEET HOUR; any other Long Metre Double tune fits them as well."
+  ],
+  "underlay": "E-ter-nal, spot-less Lamb of God, Be-fore the world's_ foun-da-tion slain, Sprin-kle us ev-er with thy blood, O cleanse, and keep_ us ev-er clean! To ev-ery soul (all praise to thee!) Our bow-els of com-pas-sion move; And all man-kind by this may see God is in us_; for God is love.",
+  "verses": [
+    {
+      "lines": [
+        "Eternal, spotless Lamb of God,",
+        "Before the world's foundation slain,",
+        "Sprinkle us ever with thy blood,",
+        "O cleanse, and keep us ever clean!",
+        "To every soul (all praise to thee!)",
+        "Our bowels of compassion move;",
+        "And all mankind by this may see",
+        "God is in us; for God is love."
+      ]
+    },
+    {
+      "lines": [
+        "Giver and Lord of life, whose power",
+        "And guardian care for all are free,",
+        "To thee, in fierce temptation's hour,",
+        "From sin and Satan let us flee;",
+        "Thine, Lord, we are, and ours thou art,",
+        "In us be all thy goodness showed;",
+        "Renew, enlarge, and fill our heart",
+        "With peace, and joy, and heaven, and God."
+      ]
+    },
+    {
+      "lines": [
+        "Blessing and honour, praise and love,",
+        "Co-equal, co-eternal Three,",
+        "In earth below, and heaven above,",
+        "By all thy works be paid to thee!",
+        "Thrice Holy! thine the kingdom is,",
+        "The power omnipotent is thine,",
+        "And when created nature dies,",
+        "Thy never-ceasing glories shine."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: John Wesley died in 1791.",
+  "credits": "Words by John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SWEET HOUR by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:237"
+}

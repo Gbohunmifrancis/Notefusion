@@ -1,0 +1,78 @@
+{
+  "title": "Thy Faithfulness, Lord, Each Moment We Find",
+  "tune": "lyons",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Thy Faithfulness, Lord, Each Moment We Find in Tonic Solfa to LYONS, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 5. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in 10.10.11.11, and this page sets them to LYONS; any other 10.10.11.11 tune fits them as well."
+  ],
+  "underlay": "Thy faith-ful-ness, Lord, Each mo-ment we find, So true to thy word, So lov_-ing and kind! Thy mer-cy so ten-der To all the lost race, The vi-lest of-fend-er May turn_ and find grace.",
+  "verses": [
+    {
+      "lines": [
+        "Thy faithfulness, Lord, Each moment we find,",
+        "So true to thy word, So loving and kind!",
+        "Thy mercy so tender To all the lost race,",
+        "The vilest offender May turn and find grace."
+      ]
+    },
+    {
+      "lines": [
+        "The mercy I feel To others I show,",
+        "I set to my seal That Jesus is true:",
+        "Ye all may find favour Who come at his call,",
+        "O come to my Saviour, His grace is for all!"
+      ]
+    },
+    {
+      "lines": [
+        "To save what was lost, from heaven he came;",
+        "Come, sinners, and trust In Jesus's name.",
+        "He offers you pardon; He bids you be free;",
+        "\"If sin be your burden, O come unto me!\""
+      ]
+    },
+    {
+      "lines": [
+        "O let me commend My Saviour to you,",
+        "The publican's friend And Advocate too,",
+        "For you he is pleading His merits and death,",
+        "With God interceding for sinners beneath."
+      ]
+    },
+    {
+      "lines": [
+        "Then let us submit His grace to receive,",
+        "Fall down at his feet And gladly believe:",
+        "We all are forgiven For Jesus's sake:",
+        "Our title to heaven His merits we take."
+      ]
+    }
+  ],
+  "metre": "10 10 11 11",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to LYONS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:5"
+}

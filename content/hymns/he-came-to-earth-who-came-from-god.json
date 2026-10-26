@@ -1,0 +1,66 @@
+{
+  "title": "He Came to Earth Who Came from God",
+  "tune": "holy-matrimony",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "He Came to Earth Who Came from God in Tonic Solfa to HOLY MATRIMONY, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904).",
+    "The book printed the words without tunes. They are in Common Particular Metre (8.8.6.8.8.6), and this page sets them to HOLY MATRIMONY; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "He came to earth who came from God, And left in heaven His blest a-bode, And all the joy He had; To share our lot, and all its woe, And wan-der home-less here be-low, All sor-row-ing and sad.",
+  "verses": [
+    {
+      "lines": [
+        "He came to earth who came from God,",
+        "And left in heaven His blest abode,",
+        "And all the joy He had;",
+        "To share our lot, and all its woe,",
+        "And wander homeless here below,",
+        "All sorrowing and sad."
+      ]
+    },
+    {
+      "lines": [
+        "He came to earth who came from God,",
+        "And ah! our rugged paths He trod,",
+        "And faint, and tired, and lone,",
+        "He bore the burden of our guilt,",
+        "And on a Cross His blood was spilt",
+        "For sinners to atone."
+      ]
+    },
+    {
+      "lines": [
+        "He went to God who came to earth;",
+        "Now sing the new creation's birth,",
+        "And mankind born again;",
+        "For death is dead, and He who lives,",
+        "Eternal life to mortals gives,",
+        "The Faithful, True, Amen."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to HOLY MATRIMONY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:45"
+}

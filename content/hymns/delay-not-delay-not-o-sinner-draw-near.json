@@ -1,0 +1,71 @@
+{
+  "title": "Delay Not, Delay Not, O Sinner, Draw Near",
+  "tune": "gordon",
+  "text": [
+    {
+      "name": "Thomas Hastings",
+      "born": 1784,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Delay Not, Delay Not, O Sinner, Draw Near in Tonic Solfa to GORDON, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Thomas Hastings wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 57.",
+    "The book printed the words without tunes, marked Elevens (11.11.11.11), to be sung to any tune of that metre. This page sets them to GORDON; any other Elevens tune fits them as well."
+  ],
+  "underlay": "De-lay not, de-lay_ not, O sin-ner, draw near, The wa-ters of life_ are now flow-ing for thee; No price is de-mand-ed_; the Sa_-vior is here_; Re-demp-tion is pur_-chased, sal-va_-tion is free.",
+  "verses": [
+    {
+      "lines": [
+        "Delay not, delay not, O sinner, draw near,",
+        "The waters of life are now flowing for thee;",
+        "No price is demanded; the Savior is here;",
+        "Redemption is purchased, salvation is free."
+      ]
+    },
+    {
+      "lines": [
+        "Delay not, delay not, why longer abuse",
+        "The love and compassion of Jesus, thy God?",
+        "A fountain is opened; how canst thou refuse",
+        "To wash and be cleansed in His pardoning blood?"
+      ]
+    },
+    {
+      "lines": [
+        "Delay not, delay not, O sinner, to come,",
+        "For mercy still lingers and calls thee to-day;",
+        "Her voice is not heard in the vale of the tomb;",
+        "Her message, unheeded, will soon pass away."
+      ]
+    },
+    {
+      "lines": [
+        "Delay not, delay not, the Spirit of Grace,",
+        "Long grieved and resisted, may take its sad flight",
+        "And leave thee in darkness to finish thy race,",
+        "To sink in the gloom of eternity’s night."
+      ]
+    },
+    {
+      "lines": [
+        "Delay not, delay not, the hour is at hand;",
+        "The earth shall dissolve, and the heavens shall fade;",
+        "The dead, small and great, in the Judgment shall stand;",
+        "What power then, O sinner, shall lend thee its aid?"
+      ]
+    }
+  ],
+  "metre": "11 11 11 11",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Thomas Hastings died in 1872.",
+  "credits": "Words by Thomas Hastings (1784–1872), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to GORDON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:57"
+}

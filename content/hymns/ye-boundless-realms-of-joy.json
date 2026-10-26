@@ -1,0 +1,61 @@
+{
+  "title": "Ye Boundless Realms of Joy",
+  "tune": "belsize",
+  "text": [
+    {
+      "name": "Nahum Tate",
+      "born": 1652,
+      "died": 1715,
+      "role": "Words"
+    },
+    {
+      "name": "Nicholas Brady",
+      "born": 1659,
+      "died": 1726,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Ye Boundless Realms of Joy in Tonic Solfa to BELSIZE, doh is F: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Nahum Tate and Nicholas Brady wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 160 of its twenty-second edition (1853), “Praise from Heaven and Earth”.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.4.4.4.4), to be sung to any tune of that metre. This page sets them to BELSIZE; any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "Ye bound-less realms of joy, Ex-alt your Mak-er's name; His praise your songs em-ploy A-bove the star-ry frame: Your voi-ces raise, Ye che-ru-bim And ser-a-phim, To sing his praise.",
+  "verses": [
+    {
+      "lines": [
+        "Ye boundless realms of joy,",
+        "Exalt your Maker's name;",
+        "His praise your songs employ",
+        "Above the starry frame:",
+        "Your voices raise,",
+        "Ye cherubim",
+        "And seraphim,",
+        "To sing his praise."
+      ]
+    },
+    {
+      "lines": [
+        "Let all adore the Lord,",
+        "And praise his holy name,",
+        "By whose almighty word",
+        "They all from nothing came;",
+        "And all shall last,",
+        "From changes free;",
+        "His firm decree",
+        "Stands ever fast."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 4 4 4 4",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Nahum Tate died in 1715; Nicholas Brady died in 1726.",
+  "credits": "Words by Nahum Tate (1652–1715) and Nicholas Brady (1659–1726), public domain, as printed in Hymns for Christian Devotion (1853); set to BELSIZE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:160"
+}

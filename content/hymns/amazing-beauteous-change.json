@@ -1,0 +1,91 @@
+{
+  "title": "Amazing, Beauteous Change",
+  "tune": "darwall",
+  "text": [
+    {
+      "name": "Philip Doddridge",
+      "born": 1702,
+      "died": 1751,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Amazing, Beauteous Change in Tonic Solfa to DARWALL, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Philip Doddridge wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 312 of its twenty-second edition (1853), “The Wilderness Transformed. Is. 41:18, 19”.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.4.4.4.4), to be sung to any tune of that metre. This page sets them to DARWALL; any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "A-ma-zing, beau-teous change! A world cre-a-ted new! My thoughts with trans-port range, The love-ly scene to view: In all I trace, The work is thine; Sa-viour di-vine, Be thine the praise!",
+  "verses": [
+    {
+      "lines": [
+        "Amazing, beauteous change!",
+        "A world created new!",
+        "My thoughts with transport range,",
+        "The lovely scene to view:",
+        "In all I trace,",
+        "The work is thine;",
+        "Saviour divine,",
+        "Be thine the praise!"
+      ]
+    },
+    {
+      "lines": [
+        "See crystal fountains play",
+        "Amidst the burning sands;",
+        "The river's winding way",
+        "Shines through the thirsty lands;",
+        "New grass is seen,",
+        "Its carpet spreads",
+        "And o'er the meads",
+        "Of living green."
+      ]
+    },
+    {
+      "lines": [
+        "Where pointed brambles grew,",
+        "Entwined with horrid thorn,",
+        "Gay flowers, forever new,",
+        "The painted fields adorn;",
+        "The blushing rose,",
+        "In union fair,",
+        "And lily there,",
+        "Their sweets disclose."
+      ]
+    },
+    {
+      "lines": [
+        "The tyrants of the plain",
+        "Their savage chase give o'er;",
+        "No more they rend the slain.",
+        "And thirst for blood no more;",
+        "But infant hands",
+        "And lions yoke",
+        "Fierce tigers stroke,",
+        "In flowery bands."
+      ]
+    },
+    {
+      "lines": [
+        "O, when, Almighty Lord,",
+        "Shall these glad scenes arise,",
+        "To verify thy word,",
+        "And bless our wondering eyes?",
+        "That earth may raise,",
+        "United songs",
+        "With all its tongues,",
+        "Of ardent praise."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 4 4 4 4",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Philip Doddridge died in 1751.",
+  "credits": "Words by Philip Doddridge (1702–1751), public domain, as printed in Hymns for Christian Devotion (1853); set to DARWALL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:312"
+}

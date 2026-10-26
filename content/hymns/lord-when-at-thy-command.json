@@ -1,0 +1,55 @@
+{
+  "title": "Lord, When at Thy Command",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Lord, When at Thy Command in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 487.",
+    "The book printed the words without tunes, marked Short Metre Double (6.6.8.6.6.6.8.6), to be sung to any tune of that metre. This page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "Lord, when at Thy com-mand The Word of Life we sow, Wa-tered by Thy al-might-y_ hand, The seed shall sure-ly grow; The vir-tue of Thy grace A large in-crease shall give And mul-ti-ply the faith-ful race Who to Thy glo-ry live.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, when at Thy command",
+        "The Word of Life we sow,",
+        "Watered by Thy almighty hand,",
+        "The seed shall surely grow;",
+        "The virtue of Thy grace",
+        "A large increase shall give",
+        "And multiply the faithful race",
+        "Who to Thy glory live."
+      ]
+    },
+    {
+      "lines": [
+        "Now, then, the ceaseless shower",
+        "Of Gospel-blessings send",
+        "And let the soul-converting power",
+        "Thy ministers attend;",
+        "On multitudes confer",
+        "The heart-renewing love",
+        "And by the joy of grace prepare",
+        "For fuller joys above."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:487"
+}

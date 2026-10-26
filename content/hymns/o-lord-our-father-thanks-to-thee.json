@@ -1,0 +1,81 @@
+{
+  "title": "O Lord, Our Father, Thanks to Thee",
+  "tune": "es-ist-das-heil-uns-kommen-her",
+  "text": [
+    {
+      "name": "Cyriacus Schneegass",
+      "born": 1546,
+      "died": 1597,
+      "role": "Words"
+    },
+    {
+      "name": "August Crull",
+      "born": 1845,
+      "died": 1923,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "O Lord, Our Father, Thanks to Thee in Tonic Solfa to ES IST DAS HEIL UNS KOMMEN HER, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Cyriacus Schneegass wrote these words in German. August Crull's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 170.",
+    "The book printed the words without tunes, marked 8.7.8.7.8.8.7, to be sung to any tune of that metre. This page sets them to ES IST DAS HEIL UNS KOMMEN HER; any other 8.7.8.7.8.8.7 tune fits them as well."
+  ],
+  "underlay": "O Lord, our Fa-ther, thanks to Thee In this new year we ren_-der, For Thou hast been from mis-e-ry And dan-gers our De-fend_-er; Through all the year that now has fled Hast given us life and dail-y bread And peace with-in our bor_-ders.",
+  "verses": [
+    {
+      "lines": [
+        "O Lord, our Father, thanks to Thee",
+        "In this new year we render,",
+        "For Thou hast been from misery",
+        "And dangers our Defender;",
+        "Through all the year that now has fled",
+        "Hast given us life and daily bread",
+        "And peace within our borders."
+      ]
+    },
+    {
+      "lines": [
+        "Lord Jesus Christ, our thanks to Thee",
+        "In this new year we render,",
+        "For Thou still rulest zealously",
+        "Thy fold, with mercy tender;",
+        "Thou hast redeemed us with Thy blood,",
+        "Thou art our only Trust and Good,",
+        "In life and death our Savior."
+      ]
+    },
+    {
+      "lines": [
+        "Lord Holy Ghost, our thanks to Thee",
+        "In this new year we render,",
+        "For by Thy grace it is that we",
+        "Enjoy Thy Word’s pure splendor;",
+        "Thus Thou hast kindled from above",
+        "Within our hearts true faith and love",
+        "And other Christian virtues."
+      ]
+    },
+    {
+      "lines": [
+        "Our faithful God, we cry to Thee:",
+        "Still bless us with Thy favor,",
+        "Blot out all our iniquity,",
+        "And hide our sins forever;",
+        "Grant us a happy, good New Year",
+        "And, when the hour of death draws near,",
+        "A blest departure. Amen."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 8 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Cyriacus Schneegass died in 1597; August Crull died in 1923.",
+  "credits": "Words by Cyriacus Schneegass (1546–1597), translated by August Crull (1845–1923), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ES IST DAS HEIL UNS KOMMEN HER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:170"
+}

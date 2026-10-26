@@ -1,0 +1,81 @@
+{
+  "title": "Come, Wisdom, Power, and Grace Divine",
+  "tune": "holy-matrimony",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Come, Wisdom, Power, and Grace Divine in Tonic Solfa to HOLY MATRIMONY, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 527.",
+    "The book printed the words without tunes. They are in Common Particular Metre (8.8.6.8.8.6), and this page sets them to HOLY MATRIMONY; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "Come, wis-dom, power, and grace di-vine, Come, Je-sus, in thy name to join A hap-py cho-sen band; Who fain would prove thine ut-most will, And all thy right-eous laws ful-fil, In love's be-nign com-mand.",
+  "verses": [
+    {
+      "lines": [
+        "Come, wisdom, power, and grace divine,",
+        "Come, Jesus, in thy name to join",
+        "A happy chosen band;",
+        "Who fain would prove thine utmost will,",
+        "And all thy righteous laws fulfil,",
+        "In love's benign command."
+      ]
+    },
+    {
+      "lines": [
+        "If pure essential love thou art,",
+        "Thy nature into every heart,",
+        "Thy loving self, inspire;",
+        "Bid all our simple souls be one,",
+        "United in a bond unknown,",
+        "Baptized with heavenly fire."
+      ]
+    },
+    {
+      "lines": [
+        "Still may we to our centre tend,",
+        "To spread thy praise our common end,",
+        "To help each other on;",
+        "Companions through the wilderness,",
+        "To share a moment's pain, and seize",
+        "An everlasting crown."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, our tendered souls prepare!",
+        "Infuse the softest social care,",
+        "The warmest charity,",
+        "The pity of the bleeding Lamb,",
+        "The virtues of thy wondrous name,",
+        "The heart that was in thee."
+      ]
+    },
+    {
+      "lines": [
+        "Supply what every member wants;",
+        "To found the fellowship of saints,",
+        "Thy Spirit, Lord, supply;",
+        "So shall we all thy love receive,",
+        "Together to thy glory live,",
+        "And to thy glory die."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to HOLY MATRIMONY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:527"
+}

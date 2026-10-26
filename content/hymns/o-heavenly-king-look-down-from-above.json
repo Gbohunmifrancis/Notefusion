@@ -1,0 +1,78 @@
+{
+  "title": "O Heavenly King, Look Down from Above",
+  "tune": "lyons",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "O Heavenly King, Look Down from Above in Tonic Solfa to LYONS, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 199. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in 10.10.11.11, and this page sets them to LYONS; any other 10.10.11.11 tune fits them as well."
+  ],
+  "underlay": "O heav-en-ly King, Look down from a-bove! As-sist us to sing Thy mer_-cy and love: So sweet-ly o'er-flow-ing, So plen-teous the store, Thou still art be-stow-ing, And giv_-ing us more.",
+  "verses": [
+    {
+      "lines": [
+        "O heavenly King, Look down from above!",
+        "Assist us to sing Thy mercy and love:",
+        "So sweetly o'erflowing, So plenteous the store,",
+        "Thou still art bestowing, And giving us more."
+      ]
+    },
+    {
+      "lines": [
+        "O God of our life, We hallow thy name!",
+        "Our business and strife Is thee to proclaim;",
+        "Accept our thanksgiving For creating grace;",
+        "The living, the living Shall show forth thy praise."
+      ]
+    },
+    {
+      "lines": [
+        "Our Father and Lord, Almighty art thou;",
+        "Preserved by thy word, We worship thee now;",
+        "The bountiful donor Of all we enjoy,",
+        "Our tongues to thine honour, And lives we employ."
+      ]
+    },
+    {
+      "lines": [
+        "But O! above all, Thy kindness we praise,",
+        "From sin and from thrall Which saves the lost race;",
+        "Thy Son thou hast given The world to redeem,",
+        "And bring us to heaven Whose trust is in him."
+      ]
+    },
+    {
+      "lines": [
+        "Wherefore of thy love We sing and rejoice,",
+        "With angels above We lift up our voice:",
+        "Thy love each believer Shall gladly adore,",
+        "For ever and ever, When time is no more."
+      ]
+    }
+  ],
+  "metre": "10 10 11 11",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to LYONS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:199"
+}
