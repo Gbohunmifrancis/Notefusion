@@ -49,6 +49,10 @@ HYMN_REPORT_PATH = Path(__file__).parent / "hymn_report.json"
 HYMN_BASELINE_PATH = Path(__file__).parent / "hymn_baseline.json"
 SONG_REPORT_PATH = Path(__file__).parent / "song_report.json"
 SONG_BASELINE_PATH = Path(__file__).parent / "song_baseline.json"
+# The Afrobeats set (``afro_songs``) is kept apart: its own report and baseline, so the studio songs'
+# baseline is unchanged by it.
+AFRO_REPORT_PATH = Path(__file__).parent / "afro_report.json"
+AFRO_BASELINE_PATH = Path(__file__).parent / "afro_baseline.json"
 
 # Bumped only if the JSON layout changes in a way a reader must notice.
 SCHEMA_VERSION = 1
@@ -313,8 +317,9 @@ def main(argv: list[str] | None = None) -> int:
         help="with --hymns or --songs: only the dev half (tune on it) or the held-out test half",
     )
     parser.add_argument("--jobs", type=int, default=1, help="with --hymns or --songs: processes to run cases in")
-    parser.add_argument("--set", default="both", choices=("both", "csd", "hymns"), dest="song_set",
-                        help="with --songs: the real studio takes (csd), the synthetic singer's hymns, or both")
+    parser.add_argument("--set", default="both", choices=("both", "csd", "hymns", "afro"), dest="song_set",
+                        help="with --songs: the real studio takes (csd), the synthetic singer's hymns, both, or the "
+                        "Afrobeats songs (afro: afro_report.json / afro_baseline.json)")
     parser.add_argument("--stem", default="auto", choices=("auto", "mdx", "sim"),
                         help="with --songs: the MDX model's vocal stem, a simulated one (no model needed), or "
                         "auto (the model's for the real takes, simulated for the synthetic singer)")
@@ -573,12 +578,15 @@ def _main_songs(args, parser) -> int:
 
     data = args.data or ss.DEFAULT_DATA
     sets = ss.SETS if args.song_set == "both" else (args.song_set,)
+    afro = args.song_set == "afro"
+    report_path, baseline_path, full_set = (
+        (AFRO_REPORT_PATH, AFRO_BASELINE_PATH, "afro") if afro else (SONG_REPORT_PATH, SONG_BASELINE_PATH, "both"))
     cases = ss.select(args.split, args.filter, sets=sets, data=data)
     if not cases:
         parser.error("no song case matches")
-    if args.write_baseline and (args.filter or args.split or args.song_set != "both" or args.stem != "auto"
+    if args.write_baseline and (args.filter or args.split or args.song_set != full_set or args.stem != "auto"
                                 or args.lane != "pro"):
-        parser.error("--write-baseline needs both sets in full, stems on auto and the Pro lane")
+        parser.error("--write-baseline needs both sets (or the afro set) in full, stems on auto and the Pro lane")
     outcomes = ss.run(cases, data=data, stem=args.stem, fast=args.lane == "pro", jobs=max(1, args.jobs))
     groups = ss.groups(outcomes)
     document = {
@@ -607,11 +615,11 @@ def _main_songs(args, parser) -> int:
             for o in outcomes
         },
     }
-    baseline = json.loads(SONG_BASELINE_PATH.read_text(encoding="utf-8")) if SONG_BASELINE_PATH.exists() else None
+    baseline = json.loads(baseline_path.read_text(encoding="utf-8")) if baseline_path.exists() else None
     print()
-    if baseline is not None and not args.filter and not args.split and args.song_set == "both" and (
+    if baseline is not None and not args.filter and not args.split and args.song_set == full_set and (
             baseline.get("corpus", {}).get("fingerprint") != document["corpus"]["fingerprint"]):
-        print(f"WARNING: {SONG_BASELINE_PATH.name} was recorded against different songs; re-record it.")
+        print(f"WARNING: {baseline_path.name} was recorded against different songs; re-record it.")
         print()
     print(f"{'case':<44} {'key ref -> est':>22} {'tempo':>8} {'time':>9} {'n':>7} {'notes':>6} {'read':>6}")
     for o in outcomes:
@@ -636,11 +644,11 @@ def _main_songs(args, parser) -> int:
                 ok = isinstance(a, (int, float)) and isinstance(b, (int, float))
                 deltas.append(f"{float(a) - float(b):>+8.3f}" if ok else f"{'-':>8}")
             print(f"{'  vs baseline':<34} {'':>4} " + " ".join(deltas))
-    SONG_REPORT_PATH.write_text(json.dumps(document, indent=2, sort_keys=False) + "\n", encoding="utf-8")
-    print(f"\nwrote {SONG_REPORT_PATH.name}")
+    report_path.write_text(json.dumps(document, indent=2, sort_keys=False) + "\n", encoding="utf-8")
+    print(f"\nwrote {report_path.name}")
     if args.write_baseline:
-        SONG_BASELINE_PATH.write_text(json.dumps(document, indent=2, sort_keys=False) + "\n", encoding="utf-8")
-        print(f"wrote {SONG_BASELINE_PATH.name}")
+        baseline_path.write_text(json.dumps(document, indent=2, sort_keys=False) + "\n", encoding="utf-8")
+        print(f"wrote {baseline_path.name}")
     failed = [o.name for o in outcomes if not o.ok]
     if failed:
         print(f"\n{len(failed)} case(s) raised: {', '.join(failed)}")
