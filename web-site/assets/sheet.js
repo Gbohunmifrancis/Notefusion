@@ -130,7 +130,7 @@
             var span = document.createElement("span"); span.className = "cell";
             var bEl = document.createElement("b"); bEl.textContent = cell.solfa; var iEl = document.createElement("i"); iEl.textContent = cell.lyric;
             span.appendChild(bEl); span.appendChild(iEl); td.appendChild(span);
-            cells.push({ el: bEl, beat: ((r * 4 + b) * C.beatsPerBar(sheet.timeSignature)) + c * 0.5 });
+            cells.push({ el: bEl, beat: ((r * 4 + b) * C.beatsPerBar(sheet.timeSignature)) + c / C.divisionsFor(melody) });
           });
           tr.appendChild(td);
         });

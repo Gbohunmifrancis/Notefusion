@@ -135,7 +135,8 @@ export interface HymnCell {
 }
 
 /**
- * Hymn-book layout: each line is four bars, each bar `beatsPerBar × 2` cells, each cell
+ * Hymn-book layout: each line is four bars, each bar `beatsPerBar × divisions` cells (2, or the
+ * sheet's `divisionsFor` from lib/solfa: 4 when it has sixteenths), each cell
  * the solfa token the grid renderer prints ("d", "-", "_") with the lyric syllable sung
  * on the note starting there. Mirrors renderSolfaLines' quantisation so the two agree.
  */
@@ -144,11 +145,11 @@ export function hymnRows(
   lyrics: string,
   timeSignature: string,
   barsPerLine = 4,
+  divisions = 2,
 ): HymnCell[][][] {
   if (notes.length === 0) return [];
   const [num, den] = timeSignature.split("/").map(Number);
   const barBeats = num && den ? (num * 4) / den : 4;
-  const divisions = 2;
   const cellBeats = 1 / divisions;
   const cellsPerBar = Math.max(1, Math.round(barBeats * divisions));
   const maxEnd = Math.max(...notes.map((n) => n.startBeat + Math.max(0, n.durBeats)));

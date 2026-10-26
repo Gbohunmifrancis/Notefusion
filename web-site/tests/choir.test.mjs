@@ -8,7 +8,7 @@ import vm from "node:vm";
 
 const window = {};
 vm.runInNewContext(readFileSync(new URL("../assets/choir.js", import.meta.url), "utf8"), { window });
-const { keyHeader, label, partReference, shiftKeyName } = window.NfChoir;
+const { divisionsFor, keyHeader, label, partReference, renderLines, shiftKeyName } = window.NfChoir;
 
 test("the doh header is spelled like the key signature", () => {
   assert.equal(keyHeader("A# major"), "Doh is Bb"); // doh 10, however the key was typed
@@ -109,4 +109,20 @@ test("Transpose names the new key as its signature spells it, as MusicalKey.cs a
   assert.equal(shiftKeyName("C minor", 3), "Eb minor");
   assert.equal(shiftKeyName("Bb major", 2), "C major");
   assert.equal(shiftKeyName("not a key", 2), "not a key");
+});
+
+// Quarter beats: the same cases as the worker's tests/test_solfa_render.py and mobile lib/solfa.test.ts.
+const line = (...notes) => notes.map(([startBeat, durBeats, solfa]) => ({ startBeat, durBeats, solfa, octaveMark: "" }));
+
+test("a sheet on eighths keeps two cells a beat and one on sixteenths gets four", () => {
+  assert.equal(divisionsFor(line([0, 1, "d"], [1, 0.5, "r"], [1.5, 2.5, "m"])), 2);
+  assert.equal(divisionsFor(line([0, 0.75, "d"], [0.75, 0.25, "r"])), 4);
+  assert.equal(divisionsFor(line([0, 0.25, "d"], [0.5, 0.5, "r"])), 4); // ends between
+  assert.equal(divisionsFor([]), 2);
+});
+
+test("the grid gives sixteenths a cell each instead of a chord", () => {
+  const lines = renderLines(line([0, 0.25, "d"], [0.25, 0.25, "r"], [0.5, 0.5, "m"], [1, 3, "f"]), "Doh is C", "4/4");
+  assert.equal(lines[1], "| d r m - f - - - - - - - - - - - |");
+  assert.equal(renderLines(line([0, 1, "d"], [1, 1, "r"], [2, 2, "m"]), "Doh is C", "4/4")[1], "| d - r - m - - - |");
 });

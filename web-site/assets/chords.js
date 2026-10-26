@@ -8,7 +8,6 @@
   "use strict";
 
   var C = window.NfChoir;
-  var CELL = 0.5; // beats per cell, as in the hymn layout
   var BARS_PER_LINE = 4;
 
   function has(chords) { return !!(chords && chords.length); }
@@ -19,7 +18,8 @@
    * marked held, so every bar can be read on its own. Bars run on past the tune if the chords do.
    */
   function grid(notes, lyrics, chords, ts) {
-    var bpb = C.beatsPerBar(ts), perBar = Math.max(1, Math.round(bpb / CELL));
+    var cellBeats = 1 / C.divisionsFor(notes || []); // as in the hymn layout
+    var bpb = C.beatsPerBar(ts), perBar = Math.max(1, Math.round(bpb / cellBeats));
     var bars = [];
     C.hymnRows(notes || [], lyrics || "", ts, Infinity).forEach(function (row) { row.forEach(function (bar) { bars.push(bar); }); });
     var end = 0;
@@ -31,11 +31,11 @@
     }
     var cells = [];
     bars.forEach(function (bar, b) {
-      bar.forEach(function (cell, c) { cells.push({ solfa: cell.solfa, lyric: cell.lyric, chord: null, beat: b * bpb + c * CELL }); });
+      bar.forEach(function (cell, c) { cells.push({ solfa: cell.solfa, lyric: cell.lyric, chord: null, beat: b * bpb + c * cellBeats }); });
     });
     var ordered = chords.slice().sort(function (a, b) { return a.startBeat - b.startBeat; });
     ordered.forEach(function (ch) {
-      var at = Math.min(cells.length - 1, Math.max(0, Math.round(ch.startBeat / CELL)));
+      var at = Math.min(cells.length - 1, Math.max(0, Math.round(ch.startBeat / cellBeats)));
       if (at < 0) return; // no cells: nothing to hang a chord on
       var mark = { symbol: ch.symbol || "", solfa: ch.solfa || "", held: false };
       cells[at].chord = cells[at].chord ? { symbol: cells[at].chord.symbol + " " + mark.symbol, solfa: cells[at].chord.solfa + " " + mark.solfa, held: false } : mark;

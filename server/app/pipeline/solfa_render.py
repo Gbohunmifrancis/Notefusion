@@ -19,6 +19,22 @@ def _beats_per_bar(time_signature: str) -> float:
     return 4.0
 
 
+def divisions_for(notes: Sequence) -> int:
+    """Cells per beat a sheet needs: 4 when a note starts or ends between the eighths, else 2.
+
+    A line read on sixteenths (``transcriber._sixteenths``) or a hymn's dotted rhythm would
+    otherwise put two notes in one eighth cell, printed as a chord ("d+r").  Every sheet on
+    eighths keeps the two cells it always had.  Mirrored as ``divisionsFor`` in mobile
+    ``lib/solfa.ts`` and web ``assets/choir.js``.
+    """
+    for note in notes:
+        start = float(getattr(note, "start_beat", 0.0))
+        for at in (start, start + max(0.0, float(getattr(note, "dur_beats", 0.0)))):
+            if abs(at * 2.0 - round(at * 2.0)) > 0.01:
+                return 4
+    return 2
+
+
 def render_lines(
     notes: Sequence,
     header: str,
@@ -32,7 +48,7 @@ def render_lines(
     being held, and ``_`` for a rest.  Simultaneous starts are joined with ``+``
     so polyphonic output remains explicit instead of silently dropping a voice.
     """
-    divisions_per_beat = max(1, int(divisions_per_beat))
+    divisions_per_beat = max(1, int(divisions_per_beat), divisions_for(notes))
     bars_per_line = max(1, int(bars_per_line))
     bar_beats = _beats_per_bar(time_signature)
     cell_beats = 1.0 / divisions_per_beat
@@ -101,21 +117,27 @@ def render_curwen_lines(
       - Barline: ``|``
       - Beat delimiter: ``:``
       - Half-beat division: ``.``
+      - Quarter-beat division: ``,`` (only on a sheet that has them, ``divisions_for``)
       - Held note: ``-``
       - Rest: empty space
 
     Example (4/4 time):
       ``| d : r . m : f : - |``
+
+    Quarters, each within its half: ``d,r . m,f`` four sixteenths, ``d . ,r`` a dotted
+    eighth and a sixteenth, ``d,r`` a sixteenth and a dotted eighth.  A held quarter inside
+    the beat is left empty, as the hymn books do.
     """
     bars_per_line = max(1, int(bars_per_line))
     bar_beats = _beats_per_bar(time_signature)
     beats_per_bar = max(1, int(round(bar_beats)))
-    divisions_per_beat = 2
-    cell_beats = 1.0 / divisions_per_beat
-    cells_per_bar = beats_per_bar * divisions_per_beat
-
     if not notes:
         return [header]
+
+    divisions_per_beat = divisions_for(notes)
+    half = divisions_per_beat // 2
+    cell_beats = 1.0 / divisions_per_beat
+    cells_per_bar = beats_per_bar * divisions_per_beat
 
     max_end = max(
         float(getattr(note, "start_beat", 0.0)) + max(0.0, float(getattr(note, "dur_beats", 0.0)))
@@ -137,10 +159,6 @@ def render_curwen_lines(
         beat_strings: list[str] = []
         for beat_idx in range(beats_per_bar):
             c0 = (b * beats_per_bar + beat_idx) * divisions_per_beat
-            c1 = c0 + 1
-
-            # Check if second half-beat has a new note start
-            has_subbeat = bool(starts_by_cell.get(c1))
 
             def _cell_token(c_idx: int) -> str:
                 t_start = c_idx * cell_beats
@@ -161,12 +179,17 @@ def render_curwen_lines(
                     return "-"
                 return " "
 
-            tok0 = _cell_token(c0)
-            if has_subbeat:
-                tok1 = _cell_token(c1)
-                beat_strings.append(f"{tok0} . {tok1}")
-            else:
-                beat_strings.append(tok0)
+            def _half(first: int, opens_beat: bool) -> str:
+                # A half beat, split at its quarter when a note starts there.
+                token = _cell_token(first) if opens_beat or starts_by_cell.get(first) else ""
+                if half > 1 and starts_by_cell.get(first + 1):
+                    token += "," + _cell_token(first + 1)
+                return token
+
+            beat = _half(c0, True)
+            if any(starts_by_cell.get(c) for c in range(c0 + half, c0 + divisions_per_beat)):
+                beat += " . " + _half(c0 + half, False)
+            beat_strings.append(beat)
 
         bar_strings.append(" : ".join(beat_strings))
 
