@@ -1,0 +1,47 @@
+{
+  "title": "Ah Lord, with Trembling I Confess",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Ah Lord, with Trembling I Confess in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 317.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Ah Lord, with trem-bling I con-fess, A gra-cious soul may fall from grace; The salt may lose its sea-soning power, And nev-er, nev-er, find it more.",
+  "verses": [
+    {
+      "lines": [
+        "Ah Lord, with trembling I confess,",
+        "A gracious soul may fall from grace;",
+        "The salt may lose its seasoning power,",
+        "And never, never, find it more."
+      ]
+    },
+    {
+      "lines": [
+        "Lest that my fearful case should be,",
+        "Each moment knit my soul to thee;",
+        "And lead me to the mount above,",
+        "Through the low vale of humble love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:317"
+}

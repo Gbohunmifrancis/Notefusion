@@ -1,0 +1,63 @@
+{
+  "title": "Lovers of Pleasure More Than God",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Lovers of Pleasure More Than God in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 36.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Lo-vers of plea-sure more than God, For you he suff-ered pain; Swear-ers, for you he spilt his blood; And shall he bleed in vain?",
+  "verses": [
+    {
+      "lines": [
+        "Lovers of pleasure more than God,",
+        "For you he suffered pain;",
+        "Swearers, for you he spilt his blood;",
+        "And shall he bleed in vain?"
+      ]
+    },
+    {
+      "lines": [
+        "Misers, for you his life he paid,",
+        "Your basest crime he bore:",
+        "Drunkards, your sins on him were laid,",
+        "That you might sin no more."
+      ]
+    },
+    {
+      "lines": [
+        "The God of love, to earth he came,",
+        "That you might come to heaven;",
+        "Believe, believe in Jesu's name,",
+        "And all your sin's forgiven."
+      ]
+    },
+    {
+      "lines": [
+        "Believe in him that died for thee,",
+        "And, sure as he hath died,",
+        "Thy debt is paid, thy soul is free,",
+        "And thou art justified."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:36"
+}

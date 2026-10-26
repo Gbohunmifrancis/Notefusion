@@ -1,0 +1,110 @@
+{
+  "title": "Depth of Mercy! Can There Be",
+  "tune": "hollingside",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Depth of Mercy! Can There Be in Tonic Solfa to HOLLINGSIDE, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 168. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Sevens Double (7.7.7.7.7.7.7.7), and this page sets them to HOLLINGSIDE; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Depth of mer-cy! can there be Mer-cy still re-served for me? Can my God his wrath for-bear? Me, the chief of sin-ners, spare? I have long with-stood his grace, Long pro-voked him to his face, Would not hear-ken to his calls, Grieved him by a thou-sand falls.",
+  "verses": [
+    {
+      "lines": [
+        "Depth of mercy! can there be",
+        "Mercy still reserved for me?",
+        "Can my God his wrath forbear?",
+        "Me, the chief of sinners, spare?",
+        "I have long withstood his grace,",
+        "Long provoked him to his face,",
+        "Would not hearken to his calls,",
+        "Grieved him by a thousand falls."
+      ]
+    },
+    {
+      "lines": [
+        "I have spilt his precious blood,",
+        "Trampled on the Son of God,",
+        "Filled with pangs unspeakable,",
+        "I, who yet am not in hell!",
+        "Whence to me this waste of love?",
+        "Ask my Advocate above!",
+        "See the cause in Jesu's face,",
+        "Now before the throne of grace."
+      ]
+    },
+    {
+      "lines": [
+        "Lo! I cumber still the ground:",
+        "Lo! an Advocate is found:",
+        "\"Hasten not to cut l him down,",
+        "Let this barren soul alone.\"",
+        "Jesus speaks, and pleads his blood!",
+        "He disarms the wrath of God;",
+        "Now my Father's bowels move,",
+        "Justice lingers into love."
+      ]
+    },
+    {
+      "lines": [
+        "Kindled his relentings are,",
+        "Me he now delights to spare,",
+        "Cries, \"How shall I give thee up?\"",
+        "Lets the lifted thunder drop.",
+        "There for me the Saviour stands;",
+        "Shows his wounds, and spreads his hands!",
+        "God is love! I know, I feel;",
+        "Jesus weeps, and loves me still."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, answer from above,",
+        "Is not all thy nature love?",
+        "Wilt thou not the wrong forget,",
+        "Suffer me to kiss thy feet?",
+        "If I rightly read thy heart,",
+        "If thou all compassion art,",
+        "Bow thine ear, in mercy bow,",
+        "Pardon and accept me now."
+      ]
+    },
+    {
+      "lines": [
+        "Pity from thine eye let fall,",
+        "By a look my soul recall;",
+        "Now the stone to flesh convert,",
+        "Cast a look, and break my heart.",
+        "Now incline me to repent,",
+        "Let me now my fall lament,",
+        "Now my foul revolt deplore,",
+        "Weep, believe, and sin no more."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to HOLLINGSIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:168"
+}

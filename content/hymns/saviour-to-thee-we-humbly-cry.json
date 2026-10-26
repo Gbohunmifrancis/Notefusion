@@ -1,0 +1,91 @@
+{
+  "title": "Saviour, to Thee We Humbly Cry",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Saviour, to Thee We Humbly Cry in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 461.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Sa-viour, to thee we hum-bly cry! The bre-thren we have lost re-store; Re-call them by thy pity-ing eye, Re-trieve them from the Temp-ter's power; By thy vic-to-rious blood cast down, Nor suf-fer him to take their crown.",
+  "verses": [
+    {
+      "lines": [
+        "Saviour, to thee we humbly cry!",
+        "The brethren we have lost restore;",
+        "Recall them by thy pitying eye,",
+        "Retrieve them from the Tempter's power;",
+        "By thy victorious blood cast down,",
+        "Nor suffer him to take their crown."
+      ]
+    },
+    {
+      "lines": [
+        "Beguiled alas! by Satan's art,",
+        "We see them now far off removed,",
+        "The burden of our bleeding heart,",
+        "The souls whom once in thee we loved;",
+        "Whom still we love with grief and pain,",
+        "And weep for their return in vain."
+      ]
+    },
+    {
+      "lines": [
+        "In vain, till thou the power bestow,",
+        "The double power of quickening grace.",
+        "And make the happy sinners know",
+        "Their Tempter, with his angel-face,",
+        "Who leads them captive at his will,",
+        "Captive - but happy sinners still!"
+      ]
+    },
+    {
+      "lines": [
+        "O wouldst thou break the fatal snare",
+        "Of carnal self-security;",
+        "And let them feel the wrath they bear,",
+        "And let them groan their want of thee,",
+        "Robbed of their false, pernicious peace,",
+        "Stripped of their fancied righteousness!"
+      ]
+    },
+    {
+      "lines": [
+        "The men of careless lives, who deem",
+        "Thy righteousness accounted theirs,",
+        "Awake out of the soothing dream,",
+        "Alarm their souls with humble fears:",
+        "Thou jealous God, stir up thy power,",
+        "And let them sleep in sin no more!"
+      ]
+    },
+    {
+      "lines": [
+        "Long as the guilt of sin shall last,",
+        "Them in its misery detain;",
+        "Hold their licentious spirits fast,",
+        "Bind them with their own nature's chain,",
+        "Nor ever let the wanderers rest,",
+        "Till lodged again in Jesu's breast."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:461"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "Jesus Hath Died That I Might Live",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Jesus Hath Died That I Might Live in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 415.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus hath died that I might live, Might live to God a-lone; In him e-ter-nal life re-ceive, And be in spir-it one.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus hath died that I might live,",
+        "Might live to God alone;",
+        "In him eternal life receive,",
+        "And be in spirit one."
+      ]
+    },
+    {
+      "lines": [
+        "Saviour, I thank thee for the grace,",
+        "The gift unspeakable!",
+        "And wait with arms of faith to embrace,",
+        "And all thy love to feel."
+      ]
+    },
+    {
+      "lines": [
+        "My soul breaks out in strong desire",
+        "The perfect bliss to prove;",
+        "My longing heart is all on fire",
+        "To be dissolved in love."
+      ]
+    },
+    {
+      "lines": [
+        "Give me thyself; from every boast,",
+        "From every wish set free;",
+        "Let all I am in thee be lost;",
+        "But give thyself to me."
+      ]
+    },
+    {
+      "lines": [
+        "Thy gifts, alas, cannot suffice",
+        "Unless thyself be given;",
+        "Thy presence makes my paradise,",
+        "And where thou art is heaven!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:415"
+}

@@ -1,0 +1,87 @@
+{
+  "title": "God of All Power, and Truth, and Grace",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "God of All Power, and Truth, and Grace in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 391.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "God of all power, and truth, and grace, Which shall from age to age en-dure, Whose word, when heaven and earth shall pass, Re-mains and stands for ev-er sure;",
+  "verses": [
+    {
+      "lines": [
+        "God of all power, and truth, and grace,",
+        "Which shall from age to age endure,",
+        "Whose word, when heaven and earth shall pass,",
+        "Remains and stands for ever sure;"
+      ]
+    },
+    {
+      "lines": [
+        "That I thy mercy may proclaim,",
+        "That all mankind thy truth may see,",
+        "Hallow thy great and glorious name,",
+        "And perfect holiness in me."
+      ]
+    },
+    {
+      "lines": [
+        "Thy sanctifying Spirit pour,",
+        "To quench my thirst, and make me clean;",
+        "Now, Father, let the gracious shower",
+        "Descend, and make me pure from sin."
+      ]
+    },
+    {
+      "lines": [
+        "Purge me from every sinful blot;",
+        "My idols all be cast aside;",
+        "Cleanse me from every sinful thought,",
+        "From all the filth of self and pride."
+      ]
+    },
+    {
+      "lines": [
+        "Give me a new, a perfect heart,",
+        "From doubt, and fear, and sorrow free;",
+        "The mind which was in Christ impart,",
+        "And let my spirit cleave to thee."
+      ]
+    },
+    {
+      "lines": [
+        "O take this heart of stone away!",
+        "Thy sway it doth not, cannot own;",
+        "In me no longer let it stay,",
+        "O take away this heart of stone!"
+      ]
+    },
+    {
+      "lines": [
+        "O that I now, from sin released,",
+        "Thy word may to the utmost prove,",
+        "Enter into the promised rest,",
+        "The Canaan of thy perfect love!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:391"
+}

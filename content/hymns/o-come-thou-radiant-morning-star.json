@@ -1,0 +1,61 @@
+{
+  "title": "O COME, Thou Radiant Morning Star",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "O COME, Thou Radiant Morning Star in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 445.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "O COME, thou ra-diant morn-ing Star, A-gain in hu-man dark-ness shine! A-rise re-splen-dent from a-far! As-sert thy roy-al-ty di-vine! Thy sway o'er all the earth main-tain, And now be-gin thy glo-rious reign.",
+  "verses": [
+    {
+      "lines": [
+        "O COME, thou radiant morning Star,",
+        "Again in human darkness shine!",
+        "Arise resplendent from afar!",
+        "Assert thy royalty divine!",
+        "Thy sway o'er all the earth maintain,",
+        "And now begin thy glorious reign."
+      ]
+    },
+    {
+      "lines": [
+        "Thy kingdom, Lord, we long to see:",
+        "Thy sceptre o'er the nations shake!",
+        "To erect that final monarchy,",
+        "Edom for thy possession take;",
+        "Take (for thou didst their ransom find)",
+        "The purchased souls of all mankind."
+      ]
+    },
+    {
+      "lines": [
+        "Now let thy chosen ones appear,",
+        "And valiantly the truth maintain!",
+        "Dispread thy gracious kingdom here,",
+        "Fly on the rebel sons of men,",
+        "Seize them with faith divinely bold,",
+        "And force the world into thy fold."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:445"
+}

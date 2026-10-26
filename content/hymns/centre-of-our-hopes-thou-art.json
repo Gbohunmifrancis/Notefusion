@@ -1,0 +1,61 @@
+{
+  "title": "Centre of Our Hopes Thou Art",
+  "tune": "ratisbon-werner",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Centre of Our Hopes Thou Art in Tonic Solfa to RATISBON (WERNER), doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 512.",
+    "The book printed the words without tunes. They are in Sevens, six lines (7.7.7.7.7.7), and this page sets them to RATISBON (WERNER); any other Sevens, six lines tune fits them as well."
+  ],
+  "underlay": "Cen-tre of our hopes thou art, End of our en-larged de-sires; Stamp thine i-mage on our heart, Fill us now with heav-enly fires; Ce-ment-ed by love di-vine, Seal our souls for ev-er thine.",
+  "verses": [
+    {
+      "lines": [
+        "Centre of our hopes thou art,",
+        "End of our enlarged desires;",
+        "Stamp thine image on our heart,",
+        "Fill us now with heavenly fires;",
+        "Cemented by love divine,",
+        "Seal our souls for ever thine."
+      ]
+    },
+    {
+      "lines": [
+        "All our works in thee be wrought,",
+        "Levelled at one common aim;",
+        "Every word, and every thought,",
+        "Purge in the refining flame:",
+        "Lead us through the paths of peace,",
+        "On to perfect holiness."
+      ]
+    },
+    {
+      "lines": [
+        "Let us all together rise,",
+        "To thy glorious life restored,",
+        "Here regain our paradise,",
+        "Here prepare to meet our Lord;",
+        "Here enjoy the earnest given,",
+        "Travel hand in hand to heaven!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to RATISBON (WERNER) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:512"
+}

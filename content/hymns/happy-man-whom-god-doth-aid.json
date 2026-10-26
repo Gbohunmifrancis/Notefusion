@@ -1,0 +1,67 @@
+{
+  "title": "Happy Man Whom God Doth Aid",
+  "tune": "messiah-herald",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Happy Man Whom God Doth Aid in Tonic Solfa to MESSIAH (HERALD), doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 233.",
+    "The book printed the words without tunes. They are in Sevens Double (7.7.7.7.7.7.7.7), and this page sets them to MESSIAH (HERALD); any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Hap-py man whom God doth aid! God our souls and bod-ies made; God on us, in gra-cious showers, Bless-ings ev-ery mo-ment pours; Com-pass-es with an-gel bands, Bids them bear us in their hands; Par-ents, friends, 'twas God be-stowed, Life, and all, de-scend from God.",
+  "verses": [
+    {
+      "lines": [
+        "Happy man whom God doth aid!",
+        "God our souls and bodies made;",
+        "God on us, in gracious showers,",
+        "Blessings every moment pours;",
+        "Compasses with angel-bands,",
+        "Bids them bear us in their hands;",
+        "Parents, friends, 'twas God bestowed,",
+        "Life, and all, descend from God."
+      ]
+    },
+    {
+      "lines": [
+        "He this flowery carpet spread,",
+        "Made the earth on which we tread;",
+        "God refreshes in the air,",
+        "Covers with the clothes we wear,",
+        "Feeds us with the food we eat,",
+        "Cheers us by his light and heat,",
+        "Makes his sun on us to shine;",
+        "All our blessings are divine!"
+      ]
+    },
+    {
+      "lines": [
+        "Give him then, and ever give,",
+        "Thanks for all that we receive!",
+        "Man we for his kindness love,",
+        "How much more our God above?",
+        "Worthy thou, our heavenly Lord,",
+        "To be honoured and adored;",
+        "God of all-creating grace,",
+        "Take the everlasting praise!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MESSIAH (HERALD) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:233"
+}

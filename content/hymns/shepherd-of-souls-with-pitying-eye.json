@@ -1,0 +1,102 @@
+{
+  "title": "Shepherd of Souls, with Pitying Eye",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Shepherd of Souls, with Pitying Eye in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 82. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Shep-herd of souls, with pity-ing eye The thou-sands of our Is-rael see: To thee in their be-half we cry, Our-selves but new-ly found in thee.",
+  "verses": [
+    {
+      "lines": [
+        "Shepherd of souls, with pitying eye",
+        "The thousands of our Israel see:",
+        "To thee in their behalf we cry,",
+        "Ourselves but newly found in thee."
+      ]
+    },
+    {
+      "lines": [
+        "See where o'er desert wastes they err,",
+        "And neither food nor feeder have,",
+        "Nor fold, nor place of refuge near,",
+        "For no man cares their souls to save."
+      ]
+    },
+    {
+      "lines": [
+        "Wild as the ill-taught Indian's brood",
+        "The Christian savages remain;",
+        "Strangers, yea, enemies to God,",
+        "They make thee spill thy blood in vain."
+      ]
+    },
+    {
+      "lines": [
+        "Thy people, Lord, are sold for nought,",
+        "Nor know they their Redeemer nigh;",
+        "They perish, whom thyself hast bought,",
+        "Their souls for lack of knowledge die."
+      ]
+    },
+    {
+      "lines": [
+        "The pit its mouth hath opened wide,",
+        "To swallow up its careless prey:",
+        "Why should they die, when thou hast died,",
+        "Hast died to bear their sins away?"
+      ]
+    },
+    {
+      "lines": [
+        "Why should the foe thy purchase seize?",
+        "Remember, Lord, thy dying groans:",
+        "The meed of all thy sufferings these,",
+        "O claim them for thy ransomed ones!"
+      ]
+    },
+    {
+      "lines": [
+        "Extend to these thy pardoning grace,",
+        "To these be thy salvation showed:",
+        "O add them to thy chosen race!",
+        "O sprinkle all their hearts with blood!"
+      ]
+    },
+    {
+      "lines": [
+        "Still let the publicans draw near:",
+        "Open the door of faith and heaven,",
+        "And grant their hearts thy word to hear,",
+        "And witness all their sins forgiven."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:82"
+}

@@ -1,0 +1,94 @@
+{
+  "title": "Abraham, When Severely Tried",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Abraham, When Severely Tried in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 286. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "A-bra-ham, when se-vere-ly tried, His faith by his obe-di-ence showed, He with the harsh com-mand com-plied, And gave his I-saac back to God.",
+  "verses": [
+    {
+      "lines": [
+        "Abraham, when severely tried,",
+        "His faith by his obedience showed,",
+        "He with the harsh command complied,",
+        "And gave his Isaac back to God."
+      ]
+    },
+    {
+      "lines": [
+        "His son the father offered np,",
+        "Son of his age, his only son,",
+        "Object of all his joy and hope,",
+        "And less beloved than God alone."
+      ]
+    },
+    {
+      "lines": [
+        "O for a faith like his, that we",
+        "The bright example may pursue!",
+        "May gladly give up all to thee,",
+        "To whom our more than all is due."
+      ]
+    },
+    {
+      "lines": [
+        "Now, Lord, to thee our all we leave,",
+        "Our willing soul thy call obeys;",
+        "Pleasure, and wealth, and fame we give,",
+        "Freedom, and life to win thy grace."
+      ]
+    },
+    {
+      "lines": [
+        "Is there a thing than life more dear?",
+        "A thing from which we cannot part?",
+        "We can; we now rejoice to tear",
+        "The idol from our bleeding heart."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, accept our sacrifice;",
+        "All things for thee we count but loss,",
+        "Lo! at thy word our Isaac dies,",
+        "Dies on the altar of thy cross."
+      ]
+    },
+    {
+      "lines": [
+        "For what to thee, O Lord, we give,",
+        "A hundred-fold we here obtain;",
+        "And soon with thee shall all receive,",
+        "And loss shall be eternal gain."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:286"
+}

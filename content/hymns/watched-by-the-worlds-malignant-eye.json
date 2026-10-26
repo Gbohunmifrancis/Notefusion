@@ -1,0 +1,51 @@
+{
+  "title": "Watched by the World's Malignant Eye",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Watched by the World's Malignant Eye in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 319.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Watched by the world's ma-lig-nant eye, Who load us with re-proach and shame. As ser-vants of the Lord most High, As zeal-ous for his glo-rious name, We ought in all his paths to move, With ho-ly fear and hum-ble love.",
+  "verses": [
+    {
+      "lines": [
+        "Watched by the world's malignant eye,",
+        "Who load us with reproach and shame.",
+        "As servants of the Lord most High,",
+        "As zealous for his glorious name,",
+        "We ought in all his paths to move,",
+        "With holy fear and humble love."
+      ]
+    },
+    {
+      "lines": [
+        "That wisdom, Lord, on us bestow,",
+        "From every evil to depart;",
+        "To stop the mouth of every foe,",
+        "While, upright both in life and heart,",
+        "The proofs of godly fear we give,",
+        "And show them how the Christians live."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:319"
+}

@@ -1,0 +1,95 @@
+{
+  "title": "By Faith We Find the Place Above",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "By Faith We Find the Place Above in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 64.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "By faith we find the place a-bove, The Rock that rent in twain; Be-neath the shade of di-vine love, And in the clefts re-main.",
+  "verses": [
+    {
+      "lines": [
+        "By faith we find the place above,",
+        "The Rock that rent in twain;",
+        "Beneath the shade of divine love,",
+        "And in the clefts remain."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, to thy dear wounds we flee,",
+        "We sink into thy side;",
+        "Assured that all who trust in thee",
+        "Shall evermore abide."
+      ]
+    },
+    {
+      "lines": [
+        "Then let the thundering trumpet sound,",
+        "The latest lightning glare,",
+        "The mountains melt, the solid ground",
+        "Dissolve as liquid air;"
+      ]
+    },
+    {
+      "lines": [
+        "The huge celestial bodies roll,",
+        "Amidst that general fire,",
+        "And shrivel as a parchment-scroll,",
+        "And all in smoke expire!"
+      ]
+    },
+    {
+      "lines": [
+        "Yet still the Lord, the Saviour reigns,",
+        "When nature is destroyed,",
+        "And no created thing remains",
+        "Throughout the flaming void."
+      ]
+    },
+    {
+      "lines": [
+        "Sublime upon his azure throne,",
+        "He speaks the almighty word;",
+        "His fiat is obeyed! 'tis done;",
+        "And Paradise restored."
+      ]
+    },
+    {
+      "lines": [
+        "So be it! let this system end,",
+        "This ruinous earth and skies,",
+        "The new Jerusalem descend,",
+        "The new creation rise!"
+      ]
+    },
+    {
+      "lines": [
+        "Thy power omnipotent assume,",
+        "Thy brightest majesty!",
+        "And when thou dost in glory come,",
+        "My Lord, remember me!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:64"
+}

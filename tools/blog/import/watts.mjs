@@ -42,7 +42,7 @@ export const REPORT_PATH = BOOKS.hymns.report;
  * the first book's page: a book leaves alone what is hand-set or in a book before it, and takes no notice of the pages
  * of the books after it, so the result does not depend on which ran last.
  */
-export const SET_BY_METRE_ORDER = ["watts-1707", "watts-1719", "olney-1779", "hymns-1848", "hymns-1846", "brownlie-1896", "brownlie-1900", "brownlie-1904", "brownlie-east", "brownlie-1911", "lutheran-1927"];
+export const SET_BY_METRE_ORDER = ["watts-1707", "watts-1719", "olney-1779", "hymns-1848", "hymns-1846", "brownlie-1896", "brownlie-1900", "brownlie-1904", "brownlie-east", "brownlie-1911", "lutheran-1927", "wesley-1780"];
 export function fromLaterBook(h, id) {
   const at = (x) => SET_BY_METRE_ORDER.indexOf(String(x || "").split(":")[0]);
   return Boolean(h.setByMetre) && at(h.importedFrom) > at(id);

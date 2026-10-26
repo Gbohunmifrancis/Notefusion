@@ -1,0 +1,71 @@
+{
+  "title": "Come, Thou Omniscient Son of Man",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Come, Thou Omniscient Son of Man in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 502.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Come, thou om-ni-scient Son of man, Dis-play thy sift-ing power; Come with thy Spirit's win-no-wing fan, And through-ly purge thy floor.",
+  "verses": [
+    {
+      "lines": [
+        "Come, thou omniscient Son of man,",
+        "Display thy sifting power;",
+        "Come with thy Spirit's winnowing fan,",
+        "And throughly purge thy floor."
+      ]
+    },
+    {
+      "lines": [
+        "The chaff of sin, the accursed thing,",
+        "Far from our souls be driven!",
+        "The wheat into thy garner bring,",
+        "And lay us up for heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Look through us with thy eyes of flame,",
+        "The clouds and darkness chase;",
+        "And tell me what by sin I am,",
+        "And what I am by grace."
+      ]
+    },
+    {
+      "lines": [
+        "Whate'er offends thy glorious eyes,",
+        "Far from our hearts remove;",
+        "As dust before the whirlwind flies,",
+        "Disperse it by thy love."
+      ]
+    },
+    {
+      "lines": [
+        "Then let us all thy fulness know,",
+        "From every sin set free;",
+        "Saved, to the utmost saved below,",
+        "And perfectly like thee."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:502"
+}

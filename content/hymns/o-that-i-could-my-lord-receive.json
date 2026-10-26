@@ -1,0 +1,79 @@
+{
+  "title": "O THAT I Could My Lord Receive",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "O THAT I Could My Lord Receive in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 125.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O THAT I could my Lord re-ceive, Who did the world re-deem, Who gave his life, that I might live A life con-cealed in him!",
+  "verses": [
+    {
+      "lines": [
+        "O THAT I could my Lord receive,",
+        "Who did the world redeem,",
+        "Who gave his life, that I might live",
+        "A life concealed in him!"
+      ]
+    },
+    {
+      "lines": [
+        "O that I could the blessing prove,",
+        "My heart's extreme desire,",
+        "Live happy in my Saviour's love,",
+        "And in his arms expire!"
+      ]
+    },
+    {
+      "lines": [
+        "Mercy I ask to seal my peace,",
+        "That, kept by mercy's power,",
+        "I may from every evil cease,",
+        "And never grieve thee more"
+      ]
+    },
+    {
+      "lines": [
+        "Now if thy gracious will it be,",
+        "Even now, my sins remove,",
+        "And set my soul at liberty",
+        "By thy victorious love."
+      ]
+    },
+    {
+      "lines": [
+        "In answer to ten thousand prayers,",
+        "Thou pardoning God, descend;",
+        "Number me with salvation's heirs,",
+        "My sins and troubles end."
+      ]
+    },
+    {
+      "lines": [
+        "Nothing I ask or want beside,",
+        "Of all in earth or heaven,",
+        "But let me feel thy blood applied,",
+        "And live and die forgiven."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:125"
+}

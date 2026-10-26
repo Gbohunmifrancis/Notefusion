@@ -1,0 +1,68 @@
+{
+  "title": "Come, O Thou Prophet of the Lord",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Come, O Thou Prophet of the Lord in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 90. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Come, O thou Pro-phet of the Lord, Thou great In-ter-pre-ter di-vine, Ex-plain thine own trans-mit-ted word, To teach and to in-spire is thine; Thou on-ly canst thy-self re-veal, O-pen the book, and loose the seal.",
+  "verses": [
+    {
+      "lines": [
+        "Come, O thou Prophet of the Lord,",
+        "Thou great Interpreter divine,",
+        "Explain thine own transmitted word,",
+        "To teach and to inspire is thine;",
+        "Thou only canst thyself reveal,",
+        "Open the book, and loose the seal."
+      ]
+    },
+    {
+      "lines": [
+        "Whate'er the ancient prophets spoke",
+        "Concerning thee, O Christ, make known;",
+        "Chief subject of the sacred book,",
+        "Thou fillest all, and thou alone;",
+        "Yet there our Lord we cannot see,",
+        "Unless thy Spirit lend the key."
+      ]
+    },
+    {
+      "lines": [
+        "Now, Jesus, now the veil remove,",
+        "The folly of our darkened heart;",
+        "Unfold the wonders of thy love,",
+        "The knowledge of thyself impart;",
+        "Our ear, our inmost soul, we bow,",
+        "Speak, Lord, thy servants hearken now."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:90"
+}

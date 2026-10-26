@@ -1,0 +1,79 @@
+{
+  "title": "Hail! Holy, Holy, Holy Lord",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Hail! Holy, Holy, Holy Lord in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 259.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Hail! ho-ly, ho-ly, ho-ly Lord! Whom One in Three we know; By all thy heav-enly host a-dored, By all thy church be-low.",
+  "verses": [
+    {
+      "lines": [
+        "Hail! holy, holy, holy Lord!",
+        "Whom One in Three we know;",
+        "By all thy heavenly host adored,",
+        "By all thy church below."
+      ]
+    },
+    {
+      "lines": [
+        "One undivided Trinity",
+        "With triumph we proclaim;",
+        "Thy universe is full of thee,",
+        "And speaks thy glorious name."
+      ]
+    },
+    {
+      "lines": [
+        "Thee, Holy Father, we confess,",
+        "Thee, Holy Son, adore,",
+        "Thee, Spirit of truth and holiness,",
+        "We worship evermore."
+      ]
+    },
+    {
+      "lines": [
+        "The incommunicable right,",
+        "Almighty God! receive,",
+        "Which angel-choirs, and saints in light,",
+        "And saints embodied give."
+      ]
+    },
+    {
+      "lines": [
+        "Three Persons equally divine",
+        "We magnify and love;",
+        "And both the choirs ere long shall join,",
+        "To sing thy praise above."
+      ]
+    },
+    {
+      "lines": [
+        "Hail! holy, holy, holy Lord,",
+        "(Our heavenly song shall be)",
+        "Supreme, essential One, adored",
+        "In co-eternal Three!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:259"
+}

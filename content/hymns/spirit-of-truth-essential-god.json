@@ -1,0 +1,61 @@
+{
+  "title": "Spirit of Truth, Essential God",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Spirit of Truth, Essential God in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 255.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Spir-it of truth, es-sen-tial God, Who didst thy an-cient saints in-spire, Shed in their hearts thy love a-broad, And touch their hal-lowed lips with fire; Our God from all e-ter-ni-ty, World with-out end we wor-ship thee!",
+  "verses": [
+    {
+      "lines": [
+        "Spirit of truth, essential God,",
+        "Who didst thy ancient saints inspire,",
+        "Shed in their hearts thy love abroad,",
+        "And touch their hallowed lips with fire;",
+        "Our God from all eternity,",
+        "World without end we worship thee!"
+      ]
+    },
+    {
+      "lines": [
+        "Still we believe, almighty Lord,",
+        "Whose presence fills both earth and heaven,",
+        "The meaning of the written word",
+        "Is by thy inspiration given;",
+        "Thou only dost thyself explain",
+        "The secret mind of God to man."
+      ]
+    },
+    {
+      "lines": [
+        "Come, then, divine Interpreter,",
+        "The scriptures to our hearts apply;",
+        "And, taught by thee, we God revere,",
+        "Him in Three Persons magnify;",
+        "In each the Triune God adore,",
+        "Who was, and is for evermore."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:255"
+}

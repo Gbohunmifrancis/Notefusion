@@ -1,0 +1,70 @@
+{
+  "title": "Come, Holy Ghost, Our Hearts Inspire",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Come, Holy Ghost, Our Hearts Inspire in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 87. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Come, Ho-ly Ghost, our hearts in-spire, Let us thine in-fluence prove, Source of the old pro-phet-ic fire, Foun-tain of light and love.",
+  "verses": [
+    {
+      "lines": [
+        "Come, Holy Ghost, our hearts inspire,",
+        "Let us thine influence prove,",
+        "Source of the old prophetic fire,",
+        "Fountain of light and love."
+      ]
+    },
+    {
+      "lines": [
+        "Come, Holy Ghost, (for moved by thee",
+        "The prophets wrote and spoke)",
+        "Unlock the truth, thyself the key,",
+        "Unseal the sacred book."
+      ]
+    },
+    {
+      "lines": [
+        "Expand thy wings, celestial Dove,",
+        "Brood o'er our nature's night;",
+        "On our disordered spirits move,",
+        "And let there now be light."
+      ]
+    },
+    {
+      "lines": [
+        "God, through himself, we then shall know,",
+        "If thou within us shine,",
+        "And sound, with all thy saints below,",
+        "The depths of love divine."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:87"
+}

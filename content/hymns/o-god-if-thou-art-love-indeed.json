@@ -1,0 +1,78 @@
+{
+  "title": "O GOD, If Thou Art Love Indeed",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "O GOD, If Thou Art Love Indeed in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 171. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "O GOD, if thou art love in-deed, Let it once more be proved in me, That I thy mer-cy's praise may spread, For ev-ery child of A-dam free; O let me now the gift em-brace! O let me now be saved by grace!",
+  "verses": [
+    {
+      "lines": [
+        "O GOD, if thou art love indeed,",
+        "Let it once more be proved in me,",
+        "That I thy mercy's praise may spread,",
+        "For every child of Adam free;",
+        "O let me now the gift embrace!",
+        "O let me now be saved by grace!"
+      ]
+    },
+    {
+      "lines": [
+        "If all long-suffering thou hast shown",
+        "On me, that others may believe,",
+        "Now make thy loving-kindness known,",
+        "Now the all-conquering Spirit give,",
+        "Spirit of victory and power,",
+        "That I may never grieve thee more."
+      ]
+    },
+    {
+      "lines": [
+        "Grant my importunate request!",
+        "It is not my desire, but thine;",
+        "Since thou wouldst have the sinner blest,",
+        "Now let me in thine image shine,",
+        "Nor ever from thy footsteps move,",
+        "But more than conquer through thy love."
+      ]
+    },
+    {
+      "lines": [
+        "Be it according to thy will!",
+        "Set my imprisoned spirit free;",
+        "The counsel of thy grace fulfil;",
+        "Into thy glorious liberty",
+        "My spirit, soul, and flesh restore,",
+        "And I shall never grieve thee more."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:171"
+}

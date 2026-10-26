@@ -1,0 +1,81 @@
+{
+  "title": "Master, I Own Thy Lawful Claim",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Master, I Own Thy Lawful Claim in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 332.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Mas-ter, I own thy law-ful claim, Thine, whol-ly thine, I long to be! Thou seest, at last, I will-ing am Wher-e'er thou go'st to fol-low thee; My-self in all things to de-ny, Thine, whol-ly thine, to live and die.",
+  "verses": [
+    {
+      "lines": [
+        "Master, I own thy lawful claim,",
+        "Thine, wholly thine, I long to be!",
+        "Thou seest, at last, I willing am",
+        "Where'er thou go'st to follow thee;",
+        "Myself in all things to deny,",
+        "Thine, wholly thine, to live and die."
+      ]
+    },
+    {
+      "lines": [
+        "Whate'er my sinful flesh require",
+        "For thee I cheerfully forego,",
+        "My covetous and vain desires,",
+        "My hopes of happiness below,",
+        "My senses' and my passions' food,",
+        "And all my thirst for creature-good."
+      ]
+    },
+    {
+      "lines": [
+        "Pleasure, and wealth, and praise no more",
+        "Shall lead my captive soul astray,",
+        "My fond pursuits I all give o'er,",
+        "Thee, only thee, resolved to obey;",
+        "My own in all things to resign,",
+        "And know no other will but thine."
+      ]
+    },
+    {
+      "lines": [
+        "All power is thine in earth and heaven,",
+        "All fulness dwells in thee alone;",
+        "Whate'er I have was freely given,",
+        "Nothing but sin I call my own,",
+        "Other propriety disclaim;",
+        "Thou only art the great I AM."
+      ]
+    },
+    {
+      "lines": [
+        "Wherefore to thee I all resign;",
+        "Being thou art, and love, and power;",
+        "Thy only will be done, not mine!",
+        "Thee, Lord, let heaven and earth adore!",
+        "Flow back the rivers to the sea,",
+        "And let our all be lost in thee!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:332"
+}

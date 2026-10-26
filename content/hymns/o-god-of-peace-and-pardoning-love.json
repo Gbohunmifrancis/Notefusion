@@ -1,0 +1,71 @@
+{
+  "title": "O GOD of Peace and Pardoning Love",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "O GOD of Peace and Pardoning Love in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 438.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "O GOD of peace and par-doning love, Whose bow-els of com-pas-sion move To ev-ery sin-ful child of man, Je-sus, our Shep-herd great and good, Who dy-ing bought us with his blood, Thou hast brought back to life a-gain!",
+  "verses": [
+    {
+      "lines": [
+        "O GOD of peace and pardoning love,",
+        "Whose bowels of compassion move",
+        "To every sinful child of man,",
+        "Jesus, our Shepherd great and good,",
+        "Who dying bought us with his blood,",
+        "Thou hast brought back to life again!"
+      ]
+    },
+    {
+      "lines": [
+        "His blood to all our souls apply",
+        "(His blood alone can sanctify,",
+        "Which first did for our sins atone)",
+        "The covenant of redemption seal;",
+        "The depth of love, of God, reveal,",
+        "And speak us perfected in one."
+      ]
+    },
+    {
+      "lines": [
+        "O might our every work and word",
+        "Express the tempers of our Lord,",
+        "The nature of our Head above!",
+        "His Spirit send into our hearts,",
+        "Engraving on our inmost parts",
+        "The living law of holiest love."
+      ]
+    },
+    {
+      "lines": [
+        "Then shall we do, with pure delight,",
+        "Whate'er is pleasing in thy sight,",
+        "As vessels of thy richest grace;",
+        "And, having thy whole counsel done,",
+        "To thee and thy co-equal Son",
+        "Ascribe the everlasting praise."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:438"
+}

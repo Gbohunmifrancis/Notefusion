@@ -1,0 +1,79 @@
+{
+  "title": "Try Us, O God, and Search the Ground",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Try Us, O God, and Search the Ground in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 503.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Try us, O God, and search the ground Of ev-ery sin-ful heart, What-e'er of sin in us is found, O bid it all de-part!",
+  "verses": [
+    {
+      "lines": [
+        "Try us, O God, and search the ground",
+        "Of every sinful heart,",
+        "Whate'er of sin in us is found,",
+        "O bid it all depart!"
+      ]
+    },
+    {
+      "lines": [
+        "When to the right or left we stray,",
+        "Leave us not comfortless;",
+        "But guide our feet into the way",
+        "Of everlasting peace."
+      ]
+    },
+    {
+      "lines": [
+        "Help us to help each other, Lord,",
+        "Each other's cross to bear,",
+        "Let each his friendly aid afford,",
+        "And feel his brother's care."
+      ]
+    },
+    {
+      "lines": [
+        "Help us to build each other up,",
+        "Our little stock improve;",
+        "Increase our faith, confirm our hope,",
+        "And perfect us in love."
+      ]
+    },
+    {
+      "lines": [
+        "Up into thee, our living Head,",
+        "Let us in all things grow,",
+        "Till thou hast made us free indeed,",
+        "And spotless here below."
+      ]
+    },
+    {
+      "lines": [
+        "Then, when the mighty work is wrought,",
+        "Receive thy ready bride:",
+        "Give us in heaven a happy lot",
+        "With all the sanctified."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:503"
+}

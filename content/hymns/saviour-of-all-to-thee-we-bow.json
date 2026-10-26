@@ -1,0 +1,86 @@
+{
+  "title": "Saviour of All, to Thee We Bow",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Saviour of All, to Thee We Bow in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 507. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Sa-viour of all, to thee we bow, And own thee faith-ful to thy word; We hear thy voice, and o-pen now Our hearts to en-ter-tain our Lord.",
+  "verses": [
+    {
+      "lines": [
+        "Saviour of all, to thee we bow,",
+        "And own thee faithful to thy word;",
+        "We hear thy voice, and open now",
+        "Our hearts to entertain our Lord."
+      ]
+    },
+    {
+      "lines": [
+        "Come in, come in, thou heavenly guest,",
+        "Delight in what thyself hast given;",
+        "On thy own gifts and graces feast,",
+        "And make the contrite heart thy heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Smell the sweet odour of our prayers,",
+        "Our sacrifice of praise approve,",
+        "And treasure up our gracious tears,",
+        "And rest in thy redeeming love."
+      ]
+    },
+    {
+      "lines": [
+        "Beneath thy shadow let us sit,",
+        "Call us thy friends, and love, and bride,",
+        "And bid us freely drink and eat",
+        "Thy dainties, and be satisfied."
+      ]
+    },
+    {
+      "lines": [
+        "O let us on thy fulness feed,",
+        "And eat thy flesh, and drink thy blood!",
+        "Jesu, thy blood is drink indeed,",
+        "Jesu, thy flesh is angels' food."
+      ]
+    },
+    {
+      "lines": [
+        "The heavenly manna faith imparts,",
+        "Faith makes thy fulness all our own;",
+        "We feed upon thee in our hearts,",
+        "And find that heaven and thou are one."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:507"
+}

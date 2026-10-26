@@ -1,0 +1,98 @@
+{
+  "title": "Jesu, If Still the Same Thou Art",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Jesu, If Still the Same Thou Art in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 134. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Je-su, if still the same thou art, If all thy prom-is-es are sure, Set up thy king-dom in my heart, And make me rich, for I am poor: To me be all thy trea-sures given, The king-dom of an in-ward heaven.",
+  "verses": [
+    {
+      "lines": [
+        "Jesu, if still the same thou art,",
+        "If all thy promises are sure,",
+        "Set up thy kingdom in my heart,",
+        "And make me rich, for I am poor:",
+        "To me be all thy treasures given,",
+        "The kingdom of an inward heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Thou hast pronounced the mourners blest,",
+        "And lo! for thee I ever mourn:",
+        "I cannot, no, I will not rest,",
+        "Till thou, my only rest, return,",
+        "Till thou, the Prince of peace, appear,",
+        "And I receive the Comforter."
+      ]
+    },
+    {
+      "lines": [
+        "Where is the blessedness bestowed",
+        "On all that hunger after thee?",
+        "I hunger now, I thirst for God;",
+        "See the poor fainting sinner, see,",
+        "And satisfy with endless peace,",
+        "And fill me with thy righteousness."
+      ]
+    },
+    {
+      "lines": [
+        "Ah, Lord! if thou art in that sigh,",
+        "Then hear thyself within me pray",
+        "Hear in my heart thy Spirit's cry,",
+        "Mark what my labouring soul would say:",
+        "Answer the deep unuttered groan,",
+        "And show that thou and I are one."
+      ]
+    },
+    {
+      "lines": [
+        "Shine on thy work, disperse the gloom,",
+        "Light in thy light I then shall see,",
+        "Say to my soul, \"Thy light is come,",
+        "Glory divine is risen on thee,",
+        "Thy warfare's past, thy mourning's o'er;",
+        "Look up, for thou shalt weep no more.\""
+      ]
+    },
+    {
+      "lines": [
+        "Lord, I believe the promise sure,",
+        "And trust thou wilt not long delay:",
+        "Hungry, and sorrowful, and poor,",
+        "Upon thy word myself I stay;",
+        "Into thine hands my all resign,",
+        "And wait till all thou art is mine."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:134"
+}

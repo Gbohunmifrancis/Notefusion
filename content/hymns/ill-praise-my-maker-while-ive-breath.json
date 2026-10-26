@@ -1,0 +1,71 @@
+{
+  "title": "I'LL Praise My Maker While I've Breath",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "I'LL Praise My Maker While I've Breath in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. John Wesley printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 224.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "I'LL praise my Mak-er while I've breath, And when my voice is lost in death, Praise shall em-ploy my no-bler powers; My days of praise shall ne'er be past, While life, and thought, and be-ing last, Or im-mor-tal-i-ty en-dures.",
+  "verses": [
+    {
+      "lines": [
+        "I'LL praise my Maker while I've breath,",
+        "And when my voice is lost in death,",
+        "Praise shall employ my nobler powers;",
+        "My days of praise shall ne'er be past,",
+        "While life, and thought, and being last,",
+        "Or immortality endures."
+      ]
+    },
+    {
+      "lines": [
+        "Happy the man whose hopes rely",
+        "On Israel's God: he made the sky,",
+        "And earth, and seas, with all their train;",
+        "His truth for ever stands secure,",
+        "He saves the opprest, he feeds the poor,",
+        "And none shall find his promise vain."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord pours eye-sight on the blind;",
+        "The Lord supports the fainting mind;",
+        "He sends the labouring conscience peace;",
+        "He helps the stranger in distress,",
+        "The widow, and the fatherless,",
+        "And grants the prisoner sweet release."
+      ]
+    },
+    {
+      "lines": [
+        "I'll praise him while he lends me breath,",
+        "And when my voice is lost in death,",
+        "Praise shall employ my nobler powers;",
+        "My days of praise shall ne'er be past,",
+        "While life, and thought, and being last,",
+        "Or immortality endures."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:224"
+}

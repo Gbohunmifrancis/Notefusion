@@ -1,0 +1,70 @@
+{
+  "title": "Pierce, Fill Me with an Humble Fear",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Pierce, Fill Me with an Humble Fear in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 313. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Pierce, fill me with an hum-ble fear; My ut-ter help-less-ness re-veal! Sa-tan and sin are al-ways near, Thee may I al-ways near-er feel.",
+  "verses": [
+    {
+      "lines": [
+        "Pierce, fill me with an humble fear;",
+        "My utter helplessness reveal!",
+        "Satan and sin are always near,",
+        "Thee may I always nearer feel."
+      ]
+    },
+    {
+      "lines": [
+        "O that to thee my constant mind",
+        "Might with an even flame aspire,",
+        "Pride in its earliest motions find,",
+        "And mark the risings of desire!"
+      ]
+    },
+    {
+      "lines": [
+        "O that my tender soul might fly",
+        "The first abhorred approach of ill,",
+        "Quick as the apple of an eye,",
+        "The slightest touch of sin to feel!"
+      ]
+    },
+    {
+      "lines": [
+        "Till thou anew my soul create,",
+        "Still may I strive, and watch, and pray,",
+        "Humbly and confidently wait,",
+        "And long to see the perfect day."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:313"
+}

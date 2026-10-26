@@ -1,0 +1,71 @@
+{
+  "title": "Saviour, Cast a Pitying Eye",
+  "tune": "spanish-hymn",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Saviour, Cast a Pitying Eye in Tonic Solfa to SPANISH HYMN, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 116.",
+    "The book printed the words without tunes. They are in Sevens, six lines (7.7.7.7.7.7), and this page sets them to SPANISH HYMN; any other Sevens, six lines tune fits them as well."
+  ],
+  "underlay": "Sa-viour, cast a pity-ing eye, Bid my sins and sor-rows end; Whith-er should a sin-ner fly? Art not thou the sin-ner's friend? Rest in thee I gasp to find, Wret-ched I, and poor, and blind.",
+  "verses": [
+    {
+      "lines": [
+        "Saviour, cast a pitying eye,",
+        "Bid my sins and sorrows end;",
+        "Whither should a sinner fly?",
+        "Art not thou the sinner's friend?",
+        "Rest in thee I gasp to find,",
+        "Wretched I, and poor, and blind."
+      ]
+    },
+    {
+      "lines": [
+        "Haste, O haste, to my relief!",
+        "From the iron furnace take;",
+        "Bid me of my sin and grief,",
+        "For thy love and mercy's sake;",
+        "Set my heart at liberty,",
+        "Show forth all thy power in me."
+      ]
+    },
+    {
+      "lines": [
+        "Me, the vilest of the race,",
+        "Most unholy, most unclean;",
+        "Me, the farthest from thy face,",
+        "Full of misery and sin;",
+        "Me with arms of love receive,",
+        "Me, of sinners chief, forgive!"
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, on thine only name",
+        "For salvation I depend,",
+        "In thy gracious hands I am,",
+        "Save me, save me to the end;",
+        "Let the utmost grace be given,",
+        "Save me quite from hell to heaven."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SPANISH HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:116"
+}

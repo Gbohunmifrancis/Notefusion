@@ -1,0 +1,110 @@
+{
+  "title": "The Lord unto My Lord Hath Said",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "The Lord unto My Lord Hath Said in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 275. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The Lord un-to my Lord hath said, \"Sit thou, in glo-ry sit, Till I thine en-e-mies have made To bow be-neath thy feet.\"",
+  "verses": [
+    {
+      "lines": [
+        "The Lord unto my Lord hath said,",
+        "\"Sit thou, in glory sit,",
+        "Till I thine enemies have made",
+        "To bow beneath thy feet.\""
+      ]
+    },
+    {
+      "lines": [
+        "Jesu, my Lord, mighty to save,",
+        "What can my hopes withstand,",
+        "While thee my Advocate I have,",
+        "Enthroned at God's right hand?"
+      ]
+    },
+    {
+      "lines": [
+        "Nature is subject to thy word,",
+        "All power to thee is given,",
+        "The uncontrolled, almighty Lord",
+        "Of hell, and earth, and heaven."
+      ]
+    },
+    {
+      "lines": [
+        "And shall my sins thy will oppose?",
+        "Master, thy right maintain!",
+        "O let not thy usurping foes",
+        "In me thy servant reign!"
+      ]
+    },
+    {
+      "lines": [
+        "Come then, and claim me for thine own,",
+        "Saviour, thy right assert!",
+        "Come, gracious Lord, set up thy throne,",
+        "And reign within my heart!"
+      ]
+    },
+    {
+      "lines": [
+        "So shall I bless thy pleasing sway;",
+        "And sitting at thy feet,",
+        "Thy laws with all my heart obey,",
+        "With all my soul submit."
+      ]
+    },
+    {
+      "lines": [
+        "So shall I do thy will below,",
+        "As angels do above;",
+        "The virtue of thy passion show,",
+        "The triumphs of thy love"
+      ]
+    },
+    {
+      "lines": [
+        "Thy love the conquest more than gains;",
+        "To all I shall proclaim,",
+        "Jesus the King, the conqueror, reigns,",
+        "Bow down to Jesu's name!"
+      ]
+    },
+    {
+      "lines": [
+        "To thee shall earth and hell submit,",
+        "And every foe shall fall,",
+        "Till death expires beneath thy feet,",
+        "And God is all in all."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:275"
+}

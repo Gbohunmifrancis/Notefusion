@@ -1,0 +1,111 @@
+{
+  "title": "Master Supreme, I Look to Thee",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Master Supreme, I Look to Thee in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 10 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 470.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Mas-ter su-preme, I look to thee For grace and wis-dom from a-bove; Vest-ed with thy au-thor-i-ty, En-due me with thy pa-tient love;",
+  "verses": [
+    {
+      "lines": [
+        "Master supreme, I look to thee",
+        "For grace and wisdom from above;",
+        "Vested with thy authority,",
+        "Endue me with thy patient love;"
+      ]
+    },
+    {
+      "lines": [
+        "That, taught according to thy will",
+        "To rule my family aright,",
+        "I may the appointed charge fulfil,",
+        "With all my heart, and all my might."
+      ]
+    },
+    {
+      "lines": [
+        "Inferiors as a sacred trust",
+        "I from the sovereign Lord receive,",
+        "That what is suitable and just",
+        "Impartial I to all may give:"
+      ]
+    },
+    {
+      "lines": [
+        "O'erlook them with a guardian eye;",
+        "From vice and wickedness restrain;",
+        "Mistakes and lesser faults pass by,",
+        "And govern with a looser rein."
+      ]
+    },
+    {
+      "lines": [
+        "The servant faithfully discreet,",
+        "Gentle to him, and good, and mild,",
+        "Him would I tenderly entreat,",
+        "And scarce distinguish from a child."
+      ]
+    },
+    {
+      "lines": [
+        "Yet let me not my place forsake,",
+        "The occasion of his stumbling prove,",
+        "The servant to my bosom take,",
+        "Or mar him by familiar love."
+      ]
+    },
+    {
+      "lines": [
+        "Order if some invert, confound,",
+        "Their Lord's authority betray,",
+        "I hearken to the gospel sound,",
+        "And trace the providential way."
+      ]
+    },
+    {
+      "lines": [
+        "As far from abjectness as pride,",
+        "With condescending dignity,",
+        "Jesus, I make thy word my guide,",
+        "And keep the post assigned by thee."
+      ]
+    },
+    {
+      "lines": [
+        "O could I emulate the zeal",
+        "Thou dost to thy poor servants hear!",
+        "The troubles, griefs, and burdens feel",
+        "Of souls entrusted to my care:"
+      ]
+    },
+    {
+      "lines": [
+        "In daily prayer to God commend",
+        "The souls whom Jesus died to save;",
+        "And think how soon my sway may end,",
+        "And all be equal in the grave!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:470"
+}

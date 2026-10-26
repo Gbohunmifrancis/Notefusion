@@ -1,0 +1,102 @@
+{
+  "title": "The Lord Is King, and Earth Submits",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "The Lord Is King, and Earth Submits in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 280. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The Lord is King, and earth sub-mits, Ho-we'er im-pa-tient, to his sway, Be-tween the che-ru-bim he sits, And makes his rest-less foes o-bey.",
+  "verses": [
+    {
+      "lines": [
+        "The Lord is King, and earth submits,",
+        "Howe'er impatient, to his sway,",
+        "Between the cherubim he sits,",
+        "And makes his restless foes obey."
+      ]
+    },
+    {
+      "lines": [
+        "All power is to our Jesus given,",
+        "O'er earth's rebellious sons he reigns;",
+        "He mildly rules the hosts of heaven,",
+        "And holds the powers of hell in chains."
+      ]
+    },
+    {
+      "lines": [
+        "In vain doth Satan rage his hour,",
+        "Beyond his chain he cannot go;",
+        "Our Jesus shall stir up his power,",
+        "And soon avenge us of our foe."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus shall his great arm reveal;",
+        "Jesus, the woman's conquering Seed,",
+        "(Though now the Serpent bruise his heel)",
+        "Jesus shall bruise the Serpent's head."
+      ]
+    },
+    {
+      "lines": [
+        "The enemy his tares hath sown,",
+        "But Christ shall shortly root them up,",
+        "Shall cast the dire accuser down,",
+        "And disappoint his children's hope;"
+      ]
+    },
+    {
+      "lines": [
+        "Shall still the proud Philistine's noise,",
+        "Baffle the sons of unbelief,",
+        "Nor long permit them to rejoice,",
+        "But turn their triumph into grief."
+      ]
+    },
+    {
+      "lines": [
+        "Come, glorious Lord, the rebels spurn,",
+        "Scatter thy foes, victorious King!",
+        "And Gath and Askelon shall mourn,",
+        "And all the sons of God shall sing;"
+      ]
+    },
+    {
+      "lines": [
+        "Shall magnify the sovereign grace",
+        "Of him that sits upon the throne;",
+        "And earth and heaven conspire to praise",
+        "Jehovah, and his conquering, Son."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:280"
+}

@@ -1,0 +1,70 @@
+{
+  "title": "O LET Us Our Own Works Forsake",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "O LET Us Our Own Works Forsake in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 455. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O LET us our own works for-sake, Our-selves, and all we have de-ny; Thy con-de-scend-ing coun-sel take, And come to thee pure gold to buy!",
+  "verses": [
+    {
+      "lines": [
+        "O LET us our own works forsake,",
+        "Ourselves, and all we have deny;",
+        "Thy condescending counsel take,",
+        "And come to thee pure gold to buy!"
+      ]
+    },
+    {
+      "lines": [
+        "O might we, through thy grace, attain",
+        "The faith thou never wilt reprove,",
+        "The faith that purges every stain,",
+        "The faith that always works by love!"
+      ]
+    },
+    {
+      "lines": [
+        "O might we see, in this our day,",
+        "The things belonging to our peace",
+        "And timely meet thee in thy way",
+        "Of judgments, and our sins confess!"
+      ]
+    },
+    {
+      "lines": [
+        "Thy fatherly chastisements own,",
+        "With filial awe revere thy rod;",
+        "And turn, with zealous haste, and run",
+        "Into the outstretched arms of God."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:455"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "Jesus, My Lord, I Cry to Thee",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Jesus, My Lord, I Cry to Thee in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 409.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus, my Lord, I cry to thee A-gainst the spirit un-clean; I want a con-stant lib-er-ty, A per-fect rest from sin.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, my Lord, I cry to thee",
+        "Against the spirit unclean;",
+        "I want a constant liberty,",
+        "A perfect rest from sin."
+      ]
+    },
+    {
+      "lines": [
+        "Expel the fiend out of my heart,",
+        "By love's almighty power;",
+        "Now, now command him to depart,",
+        "And never enter more."
+      ]
+    },
+    {
+      "lines": [
+        "Thy killing and thy quickening power,",
+        "Jesus, in me display;",
+        "The life of nature from this hour,",
+        "My pride and passion, slay."
+      ]
+    },
+    {
+      "lines": [
+        "Then, then, my utmost Saviour, raise",
+        "My soul with saints above,",
+        "To serve thy will, and spread thy praise,",
+        "And sing thy perfect love."
+      ]
+    },
+    {
+      "lines": [
+        "This moment I thy truth confess;",
+        "This moment I receive",
+        "The heavenly gift, the dew of grace,",
+        "And by thy mercy live."
+      ]
+    },
+    {
+      "lines": [
+        "The next, and every moment, Lord,",
+        "On me thy Spirit pour;",
+        "And bless me, who believe thy word,",
+        "With that last glorious shower."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:409"
+}

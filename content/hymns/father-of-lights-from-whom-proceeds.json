@@ -1,0 +1,88 @@
+{
+  "title": "Father of Lights, from Whom Proceeds",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Father of Lights, from Whom Proceeds in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 99. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Fa-ther of lights, from whom pro-ceeds What-e'er thy ev-ery crea-ture needs, Whose good-ness, prov-i-dent-ly nigh, Heeds the young ra-vens when they cry, To thee I look; my heart pre-pare, Sug-gest, and hear-ken to my prayer.",
+  "verses": [
+    {
+      "lines": [
+        "Father of lights, from whom proceeds",
+        "Whate'er thy every creature needs,",
+        "Whose goodness, providently nigh,",
+        "Heeds the young ravens when they cry,",
+        "To thee I look; my heart prepare,",
+        "Suggest, and hearken to my prayer."
+      ]
+    },
+    {
+      "lines": [
+        "Since by thy light myself I see",
+        "Naked, and poor, and void of thee,",
+        "Thy eyes must all my thoughts survey,",
+        "Preventing what my lips would say;",
+        "Thou seest my wants, for help they call,",
+        "And ere I speak thou know'st them all."
+      ]
+    },
+    {
+      "lines": [
+        "Thou know'st the baseness of my mind,",
+        "Wayward, and impotent, and blind;",
+        "Thou know'st how unsubdued my will,",
+        "Averse from good and prone to ill;",
+        "Thou know'st now wide my passions rove,",
+        "Nor checked by fear, nor charmed by love!"
+      ]
+    },
+    {
+      "lines": [
+        "Fain would I know, as known by thee,",
+        "And feel the indigence I see;",
+        "Fain would I all my vileness own,",
+        "And deep beneath the burden groan;",
+        "Abhor the pride that lurks within,",
+        "Detest and loathe myself and sin."
+      ]
+    },
+    {
+      "lines": [
+        "Ah! give me, Lord, myself to feel,",
+        "My total misery reveal;",
+        "Ah! give me, Lord (I still would say)",
+        "A heart to mourn, a heart to pray;",
+        "My business this, my only care,",
+        "My life, my every breath, be prayer."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:99"
+}

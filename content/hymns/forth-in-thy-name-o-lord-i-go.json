@@ -1,0 +1,71 @@
+{
+  "title": "Forth in Thy Name, O Lord, I Go",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Forth in Thy Name, O Lord, I Go in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 324.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Forth in thy name, O Lord, I go, My dail-y la-bour to pur-sue, Thee, on-ly thee, re-solved to know, In all I think, or speak, or do.",
+  "verses": [
+    {
+      "lines": [
+        "Forth in thy name, O Lord, I go,",
+        "My daily labour to pursue,",
+        "Thee, only thee, resolved to know,",
+        "In all I think, or speak, or do."
+      ]
+    },
+    {
+      "lines": [
+        "The task thy wisdom hath assigned",
+        "O let me cheerfully fulfil,",
+        "In all my works thy presence find,",
+        "And prove thy acceptable will!"
+      ]
+    },
+    {
+      "lines": [
+        "Thee may I set at my right hand,",
+        "Whose eyes my inmost substance see;",
+        "And labour on at thy command,",
+        "And offer all my works to thee."
+      ]
+    },
+    {
+      "lines": [
+        "Give me to bear thy easy yoke,",
+        "And every moment watch and pray,",
+        "And still to things eternal look,",
+        "And hasten to thy glorious day."
+      ]
+    },
+    {
+      "lines": [
+        "For thee delightfully employ",
+        "Whate'er thy bounteous grace hath given;",
+        "And run my course with even joy,",
+        "And closely walk with thee to heaven."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:324"
+}

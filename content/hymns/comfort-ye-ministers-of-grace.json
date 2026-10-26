@@ -1,0 +1,58 @@
+{
+  "title": "Comfort, Ye Ministers of Grace",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Comfort, Ye Ministers of Grace in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 120. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Com-fort, ye min-is-ters of grace, Com-fort my peo-ple, saith your God! Ye soon shall see his smil-ing face, His gol-den scep-tre, not his rod, And own, when now the cloud's re-moved, He on-ly chas-tened whom he loved.",
+  "verses": [
+    {
+      "lines": [
+        "Comfort, ye ministers of grace,",
+        "Comfort my people, saith your God!",
+        "Ye soon shall see his smiling face,",
+        "His golden sceptre, not his rod,",
+        "And own, when now the cloud's removed,",
+        "He only chastened whom he loved."
+      ]
+    },
+    {
+      "lines": [
+        "Who sow in tears, in joy shall reap;",
+        "The Lord shall comfort all that mourn;",
+        "Who now go on their way and weep,",
+        "With joy they doubtless shall return,",
+        "And bring their sheaves with vast increase,",
+        "And have their fruit to holiness."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:120"
+}

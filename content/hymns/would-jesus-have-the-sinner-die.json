@@ -1,0 +1,88 @@
+{
+  "title": "Would Jesus Have the Sinner Die",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Would Jesus Have the Sinner Die in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 33. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Would Je-sus have the sin-ner die? Why hangs he then on yon-der tree? What means that strange ex-pir-ing cry? (Sin-ners, he prays for you and me) \"For-give them, Fa-ther, O for-give, They know not that by me they live!\"",
+  "verses": [
+    {
+      "lines": [
+        "Would Jesus have the sinner die?",
+        "Why hangs he then on yonder tree?",
+        "What means that strange expiring cry?",
+        "(Sinners, he prays for you and me)",
+        "\"Forgive them, Father, O forgive,",
+        "They know not that by me they live!\""
+      ]
+    },
+    {
+      "lines": [
+        "Adam descended from above,",
+        "Our loss of Eden to retrieve,",
+        "Great God of universal love,",
+        "If all the world through thee may live,",
+        "In us a quickening Spirit be,",
+        "And witness thou hast died for me!"
+      ]
+    },
+    {
+      "lines": [
+        "Thou loving, all-atoning Lamb,",
+        "Thee - by thy painful agony,",
+        "Thy bloody sweat, thy grief and shame,",
+        "Thy cross and passion on the tree,",
+        "Thy precious death and life - I pray,",
+        "Take all, take all my sins away!"
+      ]
+    },
+    {
+      "lines": [
+        "O let me kiss thy bleeding feet,",
+        "And bathe and wash them with my tears!",
+        "The story of thy love repeat",
+        "In every drooping sinner's ears,",
+        "That all may hear the quickening sound,",
+        "Since I, even I, have mercy found."
+      ]
+    },
+    {
+      "lines": [
+        "O let thy love my heart constrain!",
+        "Thy love for every sinner free,",
+        "That every fallen soul of man",
+        "May taste the grace that found out me;",
+        "That all mankind with me may prove",
+        "Thy sovereign everlasting love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:33"
+}

@@ -1,0 +1,95 @@
+{
+  "title": "Jesus Comes with All His Grace",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Jesus Comes with All His Grace in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 400.",
+    "The book printed the words without tunes. They are in Sevens (7.7.7.7), and this page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Je-sus comes with all his grace, Comes to save a fall-en race, Ob-ject of our glo-rious hope, Je-sus comes to lift us up!",
+  "verses": [
+    {
+      "lines": [
+        "Jesus comes with all his grace,",
+        "Comes to save a fallen race,",
+        "Object of our glorious hope,",
+        "Jesus comes to lift us up!"
+      ]
+    },
+    {
+      "lines": [
+        "Let the living stones cry out!",
+        "Let the sons of Abraham shout!",
+        "Praise we all our lowly King,",
+        "Give him thanks, rejoice, and sing!"
+      ]
+    },
+    {
+      "lines": [
+        "He hath our salvation wrought,",
+        "He our captive souls hath bought,",
+        "He hath reconciled to God,",
+        "He hath washed us in his blood."
+      ]
+    },
+    {
+      "lines": [
+        "We are now his lawful right,",
+        "Walk as children of the light;",
+        "We shall soon obtain the grace,",
+        "Pure in heart, to see his face."
+      ]
+    },
+    {
+      "lines": [
+        "We shall gain our calling's prize;",
+        "After God we all shall rise,",
+        "Filled with joy, and love, and peace,",
+        "Perfected in holiness."
+      ]
+    },
+    {
+      "lines": [
+        "Let us then rejoice in hope,",
+        "Steadily to Christ look up;",
+        "Trust to be redeemed from sin,",
+        "Wait, till he appear within."
+      ]
+    },
+    {
+      "lines": [
+        "Fools and madmen let us be,",
+        "Yet is our sure trust in thee;",
+        "Faithful is the promised word,",
+        "We shall all be as our Lord."
+      ]
+    },
+    {
+      "lines": [
+        "Hasten, Lord, the perfect day!",
+        "Let thy every servant say,",
+        "I have now obtained the power,",
+        "Born of God, to sin no more."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:400"
+}

@@ -1,0 +1,87 @@
+{
+  "title": "Come, O Thou All-victorious Lord",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Come, O Thou All-victorious Lord in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 84.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Come, O thou all vic-to-rious Lord! Thy power to us make known; Strike with the ham-mer of thy word, And break these hearts of stone.",
+  "verses": [
+    {
+      "lines": [
+        "Come, O thou all-victorious Lord!",
+        "Thy power to us make known;",
+        "Strike with the hammer of thy word,",
+        "And break these hearts of stone."
+      ]
+    },
+    {
+      "lines": [
+        "O that we all might now begin",
+        "Our foolishness to mourn;",
+        "And turn at once from every sin,",
+        "And to our Saviour turn!"
+      ]
+    },
+    {
+      "lines": [
+        "Give us ourselves and thee to know,",
+        "In this our gracious day;",
+        "Repentance unto life bestow,",
+        "And take our sins away."
+      ]
+    },
+    {
+      "lines": [
+        "Conclude us first in unbelief,",
+        "And freely then release;",
+        "Fill every soul with sacred grief,",
+        "And then with sacred peace."
+      ]
+    },
+    {
+      "lines": [
+        "Impoverish, Lord, and then relieve,",
+        "And then enrich the poor;",
+        "The knowledge of our sickness give,",
+        "The knowledge of our cure."
+      ]
+    },
+    {
+      "lines": [
+        "That blessed sense of guilt impart,",
+        "And then remove the load;",
+        "Trouble, and wash the troubled heart",
+        "In the atoning blood."
+      ]
+    },
+    {
+      "lines": [
+        "Our desperate state through sin declare,",
+        "And speak our sins forgiven;",
+        "By perfect holiness prepare,",
+        "And take us up to heaven."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:84"
+}

@@ -1,0 +1,103 @@
+{
+  "title": "Jesus, from Whom All Blessings Flow",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Jesus, from Whom All Blessings Flow in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 17.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus, from whom all bless-ings flow, Great buil-der of thy church be-low, If now thy Spir-it moves my breast, Hear, and ful-fil thine own re-quest!",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, from whom all blessings flow,",
+        "Great builder of thy church below,",
+        "If now thy Spirit moves my breast,",
+        "Hear, and fulfil thine own request!"
+      ]
+    },
+    {
+      "lines": [
+        "The few that truly call thee Lord,",
+        "And wait thy sanctifying word,",
+        "And thee their utmost Saviour own,",
+        "Unite, and perfect them in one."
+      ]
+    },
+    {
+      "lines": [
+        "O let them all thy mind express,",
+        "Stand forth thy chosen witnesses,",
+        "Thy power unto salvation show,",
+        "And perfect holiness below!"
+      ]
+    },
+    {
+      "lines": [
+        "In them let all mankind behold",
+        "How Christians lived in days of old,",
+        "Mighty their envious foes to move,",
+        "A proverb of reproach - and love."
+      ]
+    },
+    {
+      "lines": [
+        "From every sinful wrinkle free,",
+        "Redeemed from all iniquity,",
+        "The fellowship of saints make known;",
+        "And, O my God, might I be one!"
+      ]
+    },
+    {
+      "lines": [
+        "O might my lot be cast with these,",
+        "The least of Jesu's witnesses!",
+        "O that my Lord would count me meet",
+        "To wash his dear disciples' feet!"
+      ]
+    },
+    {
+      "lines": [
+        "This only thing do I require:",
+        "Thou knowest 'tis all my heart's desire",
+        "Freely what I receive to give,",
+        "The servant of thy church to live;"
+      ]
+    },
+    {
+      "lines": [
+        "After my lowly Lord to go,",
+        "And wait upon thy saints below;",
+        "Enjoy the grace to angels given,",
+        "And serve the royal heirs of heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, if I now thy drawings feel,",
+        "And ask according to thy will,",
+        "Confirm the prayer, the seal impart,",
+        "And speak the answer to my heart."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:17"
+}

@@ -1,0 +1,81 @@
+{
+  "title": "Expand Thy Wings, Celestial Dove",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Expand Thy Wings, Celestial Dove in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 121.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Ex-pand thy wings, ce-les-tial Dove, And, brood-ing o'er my na-ture's night, Call forth the ray of heav-enly love; Let there in my dark soul be light; And fill th'il-lus-trat-ed a-byss With glo-rious beams of end-less bliss.",
+  "verses": [
+    {
+      "lines": [
+        "Expand thy wings, celestial Dove,",
+        "And, brooding o'er my nature's night,",
+        "Call forth the ray of heavenly love;",
+        "Let there in my dark soul be light;",
+        "And fill the illustrated abyss",
+        "With glorious beams of endless bliss."
+      ]
+    },
+    {
+      "lines": [
+        "Let there be light, again command,",
+        "And light there in our hearts shall be,",
+        "We then through faith shall understand",
+        "Thy great mysterious majesty;",
+        "And, by the shining of thy grace,",
+        "Behold in Christ thy glorious face."
+      ]
+    },
+    {
+      "lines": [
+        "Father of everlasting grace,",
+        "Be mindful of thy changeless word;",
+        "We worship toward that holy place",
+        "In which thou dost thy name record,",
+        "Dost make thy gracious nature known,",
+        "That living temple of thy Son."
+      ]
+    },
+    {
+      "lines": [
+        "Thou dost with sweet complacence see",
+        "The temple filled with light divine;",
+        "And art thou not well pleased with me,",
+        "Who, turning to that heavenly shrine,",
+        "Through Jesus to thy throne apply,",
+        "Through Jesus for acceptance cry '"
+      ]
+    },
+    {
+      "lines": [
+        "With all who for redemption groan,",
+        "Father, in Jesu's name I pray,",
+        "And still we cry and wrestle on,",
+        "Till mercy take our sins away:",
+        "Hear from thy dwelling-place in heaven,",
+        "And now pronounce our sins forgiven."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:121"
+}

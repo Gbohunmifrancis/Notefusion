@@ -1,0 +1,103 @@
+{
+  "title": "Omnipresent God! Whose Aid",
+  "tune": "martyn",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Omnipresent God! Whose Aid in Tonic Solfa to MARTYN, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 287.",
+    "The book printed the words without tunes. They are in Sevens Double (7.7.7.7.7.7.7.7), and this page sets them to MARTYN; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Om-ni-pre-sent God! whose aid No one ev-er asked in vain, Be this night a-bout my bed, Ev-ery e-vil thought re-strain; Lay thy hand up-on my soul, God of my un-guard-ed hours! All my en-e-mies con-trol, Hell, and earth, and na-ture's powers.",
+  "verses": [
+    {
+      "lines": [
+        "Omnipresent God! whose aid",
+        "No one ever asked in vain,",
+        "Be this night about my bed,",
+        "Every evil thought restrain;",
+        "Lay thy hand upon my soul,",
+        "God of my unguarded hours!",
+        "All my enemies control,",
+        "Hell, and earth, and nature's powers."
+      ]
+    },
+    {
+      "lines": [
+        "O thou jealous God! come down,",
+        "God of spotless purity,",
+        "Claim, and seize me for thy own,",
+        "Consecrate my heart to thee;",
+        "Under thy protection take,",
+        "Songs in the night season give;",
+        "Let me sleep to thee, and wake,",
+        "Let me die to thee, and live."
+      ]
+    },
+    {
+      "lines": [
+        "Only tell me I am thine,",
+        "And thou wilt not quit thy right;",
+        "Answer me in dreams divine,",
+        "Dreams and visions of the night:",
+        "Bid me even in sleep go on,",
+        "Restlessly my God desire,",
+        "Mourn for God in every groan,",
+        "God in every thought require."
+      ]
+    },
+    {
+      "lines": [
+        "Loose me from the chains of sense,",
+        "Set me from the body free,",
+        "Draw with stronger influence",
+        "My unfettered soul to thee;",
+        "In me, Lord, thyself reveal,",
+        "Fill me with a sweet surprise:",
+        "Let me thee when waking feel,",
+        "Let me in thy image rise."
+      ]
+    },
+    {
+      "lines": [
+        "Let me of thy life partake,",
+        "Thy own holiness impart,",
+        "O that I might sweetly wake",
+        "With my Saviour in my heart!",
+        "O that I might know thee mine!",
+        "O that I might thee receive!",
+        "Only live the life divine,",
+        "Only to thy glory live!"
+      ]
+    },
+    {
+      "lines": [
+        "Or if thou my soul require",
+        "Ere I see the morning light,",
+        "Grant me, Lord, my heart's desire,",
+        "Perfect me in love to-night;",
+        "Finish thy great work of love,",
+        "Cut it short in righteousness,",
+        "Fit me for the realms above,",
+        "Change, and bid me die in peace."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MARTYN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:287"
+}

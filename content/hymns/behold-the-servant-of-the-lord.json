@@ -1,0 +1,71 @@
+{
+  "title": "Behold the Servant of the Lord",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Behold the Servant of the Lord in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 429.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Be-hold the ser-vant of the Lord! I wait thy gui-ding eye to feel, To hear and keep thy ev-ery word, To prove and do thy per-fect will, Joy-ful from my own works to cease, Glad to ful-fil all right-eous-ness.",
+  "verses": [
+    {
+      "lines": [
+        "Behold the servant of the Lord!",
+        "I wait thy guiding eye to feel,",
+        "To hear and keep thy every word,",
+        "To prove and do thy perfect will,",
+        "Joyful from my own works to cease,",
+        "Glad to fulfil all righteousness."
+      ]
+    },
+    {
+      "lines": [
+        "Me if thy grace vouchsafe to use,",
+        "Meanest of all thy creatures, me,",
+        "The deed, the time, the manner choose,",
+        "Let all my fruit be found of thee;",
+        "Let all my works in thee be wrought,",
+        "By thee to full perfection brought."
+      ]
+    },
+    {
+      "lines": [
+        "My every weak, though good design,",
+        "O'errule, or change, as seems thee meet;",
+        "Jesus, let all my work be thine!",
+        "Thy work, O Lord, is all complete,",
+        "And pleasing in thy Father's sight;",
+        "Thou only hast done all things right."
+      ]
+    },
+    {
+      "lines": [
+        "Here then to thee thy own I leave;",
+        "Mould as thou wilt thy passive clay;",
+        "But let me all thy stamp receive,",
+        "But let me all thy words obey,",
+        "Serve with a single heart and eye,",
+        "And to thy glory live and die."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:429"
+}

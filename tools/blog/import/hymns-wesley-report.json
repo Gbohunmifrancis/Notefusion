@@ -1,0 +1,3015 @@
+{
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780), hymns 1–539 from the Christian Classics Ethereal Library's text of the 1876 edition; writers from the 1877 printing's index",
+  "date": "2026-10-26",
+  "written": [
+    {
+      "ref": "2",
+      "slug": "come-sinners-to-the-gospel-feast",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "4",
+      "slug": "ho-every-one-that-thirsts-draw-nigh",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "7",
+      "slug": "let-the-beasts-their-breath-resign",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "messiah-herald",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "9",
+      "slug": "sinners-obey-the-gospel-word",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "11",
+      "slug": "god-the-offended-god-most-high",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "17",
+      "slug": "jesus-from-whom-all-blessings-flow",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "20",
+      "slug": "weary-souls-that-wander-wide",
+      "metre": "7 7 7 7 7 7",
+      "tune": "ratisbon-werner",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "33",
+      "slug": "would-jesus-have-the-sinner-die",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "36",
+      "slug": "lovers-of-pleasure-more-than-god",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "39",
+      "slug": "father-whose-everlasting-love",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "46",
+      "slug": "the-morning-flowers-display-their-sweets",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Samuel Wesley Jr."
+    },
+    {
+      "ref": "48",
+      "slug": "pass-a-few-swiftly-fleeting-years",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "50",
+      "slug": "blessing-honour-thanks-and-praise",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "messiah-herald",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "57",
+      "slug": "the-great-archangels-trump-shall-sound",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "60",
+      "slug": "righteous-god-whose-vengeful-phials",
+      "metre": "8 7 8 7 8 7 8 7",
+      "tune": "rustington",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "64",
+      "slug": "by-faith-we-find-the-place-above",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "69",
+      "slug": "thou-lord-on-whom-i-still-depend",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "80",
+      "slug": "terrible-thought-shall-i-alone",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "82",
+      "slug": "shepherd-of-souls-with-pitying-eye",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "83",
+      "slug": "thou-son-of-god-whose-flaming-eyes",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "84",
+      "slug": "come-o-thou-all-victorious-lord",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "87",
+      "slug": "come-holy-ghost-our-hearts-inspire",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "88",
+      "slug": "father-of-all-in-whom-alone",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "90",
+      "slug": "come-o-thou-prophet-of-the-lord",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "94",
+      "slug": "the-men-who-slight-thy-faithful-word",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "95",
+      "slug": "author-of-faith-eternal-word",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "99",
+      "slug": "father-of-lights-from-whom-proceeds",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "101",
+      "slug": "saviour-prince-of-israels-race",
+      "metre": "7 7 7 7 7 7",
+      "tune": "spanish-hymn",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "107",
+      "slug": "the-spirit-of-the-lord-our-god",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "108",
+      "slug": "enslaved-to-sense-to-pleasure-prone",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "113",
+      "slug": "o-thou-whom-fain-my-soul-would-love",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "116",
+      "slug": "saviour-cast-a-pitying-eye",
+      "metre": "7 7 7 7 7 7",
+      "tune": "spanish-hymn",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "120",
+      "slug": "comfort-ye-ministers-of-grace",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "121",
+      "slug": "expand-thy-wings-celestial-dove",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "125",
+      "slug": "o-that-i-could-my-lord-receive",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "126",
+      "slug": "too-strong-i-was-to-conquer-sin",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "130",
+      "slug": "thou-god-unsearchable-unknown",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "131",
+      "slug": "lord-i-despair-myself-to-heal",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "134",
+      "slug": "jesu-if-still-the-same-thou-art",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "137",
+      "slug": "when-shall-thy-love-constrain",
+      "metre": "6 6 8 6",
+      "tune": "aylesbury",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "138",
+      "slug": "o-that-thou-wouldst-the-heavens-rent",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "148",
+      "slug": "father-of-jesus-christ-the-just",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "155",
+      "slug": "god-of-my-life-what-just-return",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "156",
+      "slug": "o-disclose-thy-lovely-face",
+      "metre": "7 7 7 7 7 7",
+      "tune": "spanish-hymn",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "158",
+      "slug": "o-my-god-what-must-i-do",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "watchman",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "161",
+      "slug": "stay-thou-insulted-spirit-stay",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "163",
+      "slug": "when-gracious-lord-when-shall-it-be",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "168",
+      "slug": "depth-of-mercy-can-there-be",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "hollingside",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "169",
+      "slug": "jesus-the-all-restoring-word",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "170",
+      "slug": "o-tis-enough-my-god-my-god",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "171",
+      "slug": "o-god-if-thou-art-love-indeed",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "173",
+      "slug": "jesus-i-believe-thee-near",
+      "metre": "7 7 7 7 7 7",
+      "tune": "ratisbon-werner",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "176",
+      "slug": "o-god-thy-righteousness-we-own",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "180",
+      "slug": "saviour-i-now-with-shame-confess",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "183",
+      "slug": "jesu-shepherd-of-the-sheep",
+      "metre": "7 7 7 7 7 7",
+      "tune": "ratisbon-werner",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "184",
+      "slug": "my-god-my-god-to-thee-i-cry",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "185",
+      "slug": "after-all-that-i-have-done",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "hollingside",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "186",
+      "slug": "weary-of-wandering-from-my-god",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "197",
+      "slug": "happy-soul-who-sees-the-day",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "messiah-herald",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "206",
+      "slug": "what-am-i-o-thou-glorious-god",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "208",
+      "slug": "come-let-us-who-in-christ-believe",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "209",
+      "slug": "thou-hidden-source-of-calm-repose",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "216",
+      "slug": "infinite-unexhausted-love",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "217",
+      "slug": "jesus-to-thee-i-now-can-fly",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "224",
+      "slug": "ill-praise-my-maker-while-ive-breath",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Isaac Watts"
+    },
+    {
+      "ref": "227",
+      "slug": "how-do-thy-mercies-close-me-round",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "232",
+      "slug": "young-men-and-maidens-raise",
+      "metre": "6 6 6 6 8 8",
+      "tune": "darwall",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "233",
+      "slug": "happy-man-whom-god-doth-aid",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "messiah-herald",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "234",
+      "slug": "let-all-that-breathe-jehovah-praise",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "238",
+      "slug": "meet-and-right-it-is-to-praise",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "watchman",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "239",
+      "slug": "hail-father-son-and-holy-ghost",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "246",
+      "slug": "my-soul-through-my-redeemers-care",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "249",
+      "slug": "great-god-to-me-the-sight-afford",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "250",
+      "slug": "thy-ceaseless-unexhausted-love",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "255",
+      "slug": "spirit-of-truth-essential-god",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "256",
+      "slug": "hail-father-son-and-spirit-great",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "259",
+      "slug": "hail-holy-holy-holy-lord",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "263",
+      "slug": "father-how-wide-thy-glory-shines",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "Isaac Watts"
+    },
+    {
+      "ref": "272",
+      "slug": "peace-doubting-heart-my-gods-i-am",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "275",
+      "slug": "the-lord-unto-my-lord-hath-said",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "280",
+      "slug": "the-lord-is-king-and-earth-submits",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "286",
+      "slug": "abraham-when-severely-tried",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "287",
+      "slug": "omnipresent-god-whose-aid",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "martyn",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "293",
+      "slug": "jesus-my-king-to-thee-i-bow",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "307",
+      "slug": "god-of-all-grace-and-majesty",
+      "metre": "8 6 8 6 8 6 8 6",
+      "tune": "all-saints-new",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "310",
+      "slug": "jesus-my-master-and-my-lord",
+      "metre": "8 6 8 6 8 6 8 6",
+      "tune": "all-saints-new",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "312",
+      "slug": "jesu-my-saviour-brother-friend",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "313",
+      "slug": "pierce-fill-me-with-an-humble-fear",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "317",
+      "slug": "ah-lord-with-trembling-i-confess",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "319",
+      "slug": "watched-by-the-worlds-malignant-eye",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "321",
+      "slug": "summoned-my-labour-to-renew",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "324",
+      "slug": "forth-in-thy-name-o-lord-i-go",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "326",
+      "slug": "captain-of-israels-host-and-guide",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "329",
+      "slug": "thee-jesus-full-of-truth-and-grace",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "331",
+      "slug": "afflicted-by-a-gracious-god",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "332",
+      "slug": "master-i-own-thy-lawful-claim",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "341",
+      "slug": "o-jesus-let-thy-dying-cry",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "346",
+      "slug": "for-ever-here-my-rest-shall-be",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "347",
+      "slug": "jesus-my-life-thyself-apply",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "355",
+      "slug": "jesu-shall-i-never-be",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "357",
+      "slug": "jesu-the-life-the-truth-the-way",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "364",
+      "slug": "jesus-the-gift-divine-i-know",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "365",
+      "slug": "o-god-of-my-salvation-hear",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "377",
+      "slug": "father-of-everlasting-grace",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "378",
+      "slug": "what-shall-i-do-my-god-to-love",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "379",
+      "slug": "o-love-i-languish-at-thy-stay",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "381",
+      "slug": "when-my-saviour-shall-i-be",
+      "metre": "7 7 7 7",
+      "tune": "pleyels-hymn",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "388",
+      "slug": "o-that-my-load-of-sin-were-gone",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "391",
+      "slug": "god-of-all-power-and-truth-and-grace",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "393",
+      "slug": "holy-and-true-and-righteous-lord",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "395",
+      "slug": "o-god-to-whom-in-flesh-revealed",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "397",
+      "slug": "jesu-thy-far-extended-fame",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "398",
+      "slug": "saviour-of-the-sin-sick-soul",
+      "metre": "7 7 7 7",
+      "tune": "vienna",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "400",
+      "slug": "jesus-comes-with-all-his-grace",
+      "metre": "7 7 7 7",
+      "tune": "vienna",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "401",
+      "slug": "all-things-are-possible-to-him",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "405",
+      "slug": "o-joyful-sound-of-gospel-grace",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "406",
+      "slug": "what-is-our-callings-glorious-hope",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "409",
+      "slug": "jesus-my-lord-i-cry-to-thee",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "412",
+      "slug": "thou-god-that-answerest-by-fire",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "415",
+      "slug": "jesus-hath-died-that-i-might-live",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "417",
+      "slug": "come-o-my-god-the-promise-seal",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "419",
+      "slug": "quickened-with-our-immortal-head",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "425",
+      "slug": "the-voice-that-speaks-jehovah-near",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "426",
+      "slug": "lord-in-the-strength-of-grace",
+      "metre": "6 6 8 6",
+      "tune": "aylesbury",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "429",
+      "slug": "behold-the-servant-of-the-lord",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "432",
+      "slug": "father-into-thy-hands-alone",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "435",
+      "slug": "father-to-thee-my-soul-i-lift",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "438",
+      "slug": "o-god-of-peace-and-pardoning-love",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "439",
+      "slug": "thy-power-and-saving-truth-to-show",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "442",
+      "slug": "our-earth-we-now-lament-to-see",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "445",
+      "slug": "o-come-thou-radiant-morning-star",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "446",
+      "slug": "jesu-the-word-of-mercy-give",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "448",
+      "slug": "eternal-lord-of-earth-and-skies",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "454",
+      "slug": "god-of-unspotted-purity",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "455",
+      "slug": "o-let-us-our-own-works-forsake",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "458",
+      "slug": "author-of-faith-we-seek-thy-face",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "461",
+      "slug": "saviour-to-thee-we-humbly-cry",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "463",
+      "slug": "lamb-of-god-who-bearst-away",
+      "metre": "7 7 7 7 7 7",
+      "tune": "ratisbon-werner",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "468",
+      "slug": "god-only-wise-almighty-good",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "470",
+      "slug": "master-supreme-i-look-to-thee",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "474",
+      "slug": "captain-of-our-salvation-take",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "490",
+      "slug": "brethren-in-christ-and-well-beloved",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "493",
+      "slug": "the-people-that-in-darkness-lay",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "502",
+      "slug": "come-thou-omniscient-son-of-man",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "503",
+      "slug": "try-us-o-god-and-search-the-ground",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "504",
+      "slug": "jesus-united-by-thy-grace",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "505",
+      "slug": "unchangeable-almighty-lord",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "507",
+      "slug": "saviour-of-all-to-thee-we-bow",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "509",
+      "slug": "jesus-lord-we-look-to-thee",
+      "metre": "7 7 7 7",
+      "tune": "vienna",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "512",
+      "slug": "centre-of-our-hopes-thou-art",
+      "metre": "7 7 7 7 7 7",
+      "tune": "ratisbon-werner",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "513",
+      "slug": "jesus-with-kindest-pity-see",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "515",
+      "slug": "father-son-and-spirit-hear",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "watchman",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "516",
+      "slug": "other-ground-can-no-man-lay",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "martyn",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "518",
+      "slug": "christ-from-whom-all-blessings-flow",
+      "metre": "7 7 7 7",
+      "tune": "pleyels-hymn",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "519",
+      "slug": "come-and-let-us-sweetly-join",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "messiah-herald",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "520",
+      "slug": "come-thou-high-and-lofty-lord",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "watchman",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "521",
+      "slug": "let-us-join-tis-god-commands",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "hollingside",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "530",
+      "slug": "come-thou-all-inspiring-spirit",
+      "metre": "8 7 8 7 8 7 8 7",
+      "tune": "lux-eoi",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "533",
+      "slug": "lord-we-thy-will-obey",
+      "metre": "6 6 6 6 8 8",
+      "tune": "st-john-parish-choir",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "537",
+      "slug": "god-of-all-consolation-take",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Charles Wesley and John Wesley"
+    }
+  ],
+  "alreadyOurs": [
+    {
+      "ref": "1",
+      "first": "O FOR a thousand tongues to sing",
+      "page": "o-for-a-thousand-tongues"
+    },
+    {
+      "ref": "6",
+      "first": "Sinners, turn, why will ye die?",
+      "page": "sinners-turn-why-will-ye-die"
+    },
+    {
+      "ref": "12",
+      "first": "Come, ye that love the Lord,",
+      "page": "come-ye-that-love-the-lord"
+    },
+    {
+      "ref": "22",
+      "first": "Behold the Saviour of mankind",
+      "page": "behold-the-savior-of-mankind"
+    },
+    {
+      "ref": "41",
+      "first": "O GOD! our help in ages past,",
+      "page": "o-god-our-help-in-ages-past"
+    },
+    {
+      "ref": "42",
+      "first": "Thee we adore, eternal name!",
+      "page": "thee-we-adore-eternal-name"
+    },
+    {
+      "ref": "51",
+      "first": "Hark! a voice divides the sky,",
+      "page": "hark-a-voice-divides-the-sky"
+    },
+    {
+      "ref": "66",
+      "first": "Lo! He comes with clouds descending,",
+      "page": "lo-he-comes-with-clouds-descending"
+    },
+    {
+      "ref": "143",
+      "first": "Jesu, Lover of my soul,",
+      "page": "jesu-lover-of-my-soul"
+    },
+    {
+      "ref": "151",
+      "first": "Out of the deep I cry,",
+      "page": "out-of-the-deep-i-cry-to-thee-aus-tiefer-not-strassburg"
+    },
+    {
+      "ref": "194",
+      "first": "Arise, my soul, arise,",
+      "page": "arise-my-soul-arise"
+    },
+    {
+      "ref": "201",
+      "first": "And can it be, that I should gain",
+      "page": "and-can-it-be"
+    },
+    {
+      "ref": "202",
+      "first": "Arise, my soul, arise,",
+      "page": "arise-my-soul-arise"
+    },
+    {
+      "ref": "213",
+      "first": "My God, the spring of all my joys,",
+      "page": "my-god-the-spring-of-all-my-joys"
+    },
+    {
+      "ref": "214",
+      "first": "Talk with us, Lord, thyself reveal,",
+      "page": "talk-with-us-lord-thyself-reveal"
+    },
+    {
+      "ref": "218",
+      "first": "See how great a flame aspires,",
+      "page": "see-how-great-a-flame-aspires"
+    },
+    {
+      "ref": "225",
+      "first": "Praise ye the Lord! 'tis good to raise",
+      "page": "praise-ye-the-lord-tis-good-to-raise"
+    },
+    {
+      "ref": "226",
+      "first": "Eternal Wisdom! Thee we praise,",
+      "page": "eternal-wisdom-thee-we-praise"
+    },
+    {
+      "ref": "229",
+      "first": "God of my life, to thee",
+      "page": "god-of-my-life-to-thee-i-call"
+    },
+    {
+      "ref": "247",
+      "first": "Holy as thou, O Lord, is none!",
+      "page": "holy-as-thou-o-lord-is-none"
+    },
+    {
+      "ref": "251",
+      "first": "Father of me, and all mankind,",
+      "page": "father-of-me-and-all-mankind"
+    },
+    {
+      "ref": "253",
+      "first": "Father, in whom we live,",
+      "page": "father-in-whom-we-live"
+    },
+    {
+      "ref": "260",
+      "first": "Holy, holy, holy Lord,",
+      "page": "holy-holy-holy-lord"
+    },
+    {
+      "ref": "266",
+      "first": "Soldiers of Christ, arise,",
+      "page": "soldiers-of-christ-arise"
+    },
+    {
+      "ref": "289",
+      "first": "God of my life, whose gracious power",
+      "page": "god-of-my-life-whose-gracious-power"
+    },
+    {
+      "ref": "302",
+      "first": "Lord, that I may learn of thee,",
+      "page": "lord-that-i-may-learn-of-thee"
+    },
+    {
+      "ref": "308",
+      "first": "I WANT a principle within",
+      "page": "i-want-a-principle-within"
+    },
+    {
+      "ref": "318",
+      "first": "A CHARGE to keep I have,",
+      "page": "a-charge-to-keep-i-have"
+    },
+    {
+      "ref": "328",
+      "first": "When quiet in my house I sit,",
+      "page": "when-quiet-in-my-house-i-sit"
+    },
+    {
+      "ref": "343",
+      "first": "O FOR a heart to praise my God,",
+      "page": "o-for-a-heart-to-praise-my-god"
+    },
+    {
+      "ref": "344",
+      "first": "Thou hidden love of God, whose height,",
+      "page": "thou-hidden-love-of-god-whose-height"
+    },
+    {
+      "ref": "367",
+      "first": "O COME, and dwell in me,",
+      "page": "o-come-and-dwell-in-me"
+    },
+    {
+      "ref": "376",
+      "first": "I WANT the Spirit of power within,",
+      "page": "i-want-the-spirit-of-power-within"
+    },
+    {
+      "ref": "384",
+      "first": "I KNOW that my Redeemer lives,",
+      "page": "i-know-that-my-redeemer-lives"
+    },
+    {
+      "ref": "385",
+      "first": "Love Divine, all loves excelling,",
+      "page": "love-divine-all-loves-excelling"
+    },
+    {
+      "ref": "392",
+      "first": "Father, supply my every need,",
+      "page": "father-supply-my-every-need"
+    },
+    {
+      "ref": "399",
+      "first": "Light of life, seraphic fire,",
+      "page": "light-of-life-seraphic-fire"
+    },
+    {
+      "ref": "403",
+      "first": "Lord, I believe a rest remains",
+      "page": "lord-i-believe-a-rest-remains"
+    },
+    {
+      "ref": "494",
+      "first": "Lo! God is here! let us adore,",
+      "page": "lo-god-is-here-let-us-adore"
+    },
+    {
+      "ref": "511",
+      "first": "Forgive us, for thy mercy's sake,",
+      "page": "forgive-us-for-thy-mercys-sake"
+    },
+    {
+      "ref": "514",
+      "first": "Father, at thy footstool see",
+      "page": "father-at-thy-footstool-see"
+    },
+    {
+      "ref": "522",
+      "first": "Partners of a glorious hope,",
+      "page": "partners-of-a-glorious-hope"
+    },
+    {
+      "ref": "531",
+      "first": "Christ, whose glory fills the skies,",
+      "page": "christ-whose-glory-fills-the-skies"
+    }
+  ],
+  "skipped": [
+    {
+      "ref": "3",
+      "first": "All that pass by, To Jesus draw near,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "5",
+      "first": "Thy faithfulness, Lord, Each moment we find,",
+      "why": "only 11 of 20 lines sing as 10.10.10.10"
+    },
+    {
+      "ref": "8",
+      "first": "What could your Redeemer do",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "10",
+      "first": "Ye thirsty for God, To Jesus give ear,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "13",
+      "first": "Happy soul that free from harms",
+      "why": "verses of different lengths"
+    },
+    {
+      "ref": "14",
+      "first": "Happy the man that finds the grace,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "15",
+      "first": "Happy the souls to Jesus joined,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "16",
+      "first": "Happy the souls that first believed,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "18",
+      "first": "Father, Saviour of mankind,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "19",
+      "first": "Rejoice evermore With angels above,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "21",
+      "first": "Ye simple souls that stray",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "23",
+      "first": "Extended on a cursed tree,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "24",
+      "first": "Saviour, if thy precious love",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "25",
+      "first": "Stupendous love of God most high!",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "26",
+      "first": "I THIRST, thou wounded Lamb of God,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "27",
+      "first": "Saviour, the world's and mine,",
+      "why": "only 24 of 36 lines sing as 7.7.7.7.7.7"
+    },
+    {
+      "ref": "28",
+      "first": "Love divine! what hast thou done!",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "29",
+      "first": "Come, ye weary sinners, come,",
+      "why": "its first verse cannot be sung as 7.7.7.7.7.7.7.7"
+    },
+    {
+      "ref": "30",
+      "first": "Where shall my wondering soul begin?",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "31",
+      "first": "See, sinners, in the gospel glass,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "32",
+      "first": "Sinners, believe the gospel word,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "34",
+      "first": "Let earth and heaven agree,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "35",
+      "first": "Jesus, thou all-redeeming Lord,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "37",
+      "first": "Jesus! the name high over",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "38",
+      "first": "God, of good the unfathomed sea!",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "40",
+      "first": "Ye neighbours, and friends Of Jesus, draw near:",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "43",
+      "first": "And am I born to die?",
+      "why": "only 36 of 48 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "44",
+      "first": "And am I only born to die?",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "45",
+      "first": "Shrinking from the cold hand of death,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "47",
+      "first": "Come, let us anew",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "49",
+      "first": "Rejoice for a brother deceased,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "52",
+      "first": "Again we lift our voice,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "53",
+      "first": "Glory be to God on high,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "54",
+      "first": "Hearken to the solemn voice,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "55",
+      "first": "Thou Judge of quick and dead,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "56",
+      "first": "He comes! he comes! the Judge severe,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "59",
+      "first": "Thou God of glorious majesty,",
+      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+    },
+    {
+      "ref": "61",
+      "first": "Stand the omnipotent decree!",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "62",
+      "first": "How happy are the little flock,",
+      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+    },
+    {
+      "ref": "63",
+      "first": "Woe to the men on earth who dwell,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "65",
+      "first": "Ye virgin souls, arise,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "67",
+      "first": "How weak the thoughts, and vain,",
+      "why": "only 29 of 42 lines sing as 7.7.7.7.7.7"
+    },
+    {
+      "ref": "68",
+      "first": "How happy is the pilgrim's lot!",
+      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+    },
+    {
+      "ref": "70",
+      "first": "I LONG to behold Him arrayed",
+      "why": "words in iambs; the Eights and Sevens Double tunes we hold are in trochees"
+    },
+    {
+      "ref": "71",
+      "first": "Leader of faithful souls, and guide",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "72",
+      "first": "Saviour, on me the grace bestow",
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "73",
+      "first": "Away with our sorrow and fear!",
+      "why": "only 21 of 40 lines sing as 8.7.8.7.8.7.8.7"
+    },
+    {
+      "ref": "74",
+      "first": "We know, by faith we know,",
+      "why": "only 28 of 40 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "75",
+      "first": "Lift your eyes of faith, and see",
+      "why": "its first verse cannot be sung as 7.7.7.7.7.7.7.7"
+    },
+    {
+      "ref": "76",
+      "first": "What are these arrayed in white,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "77",
+      "first": "The Church in her militant state",
+      "why": "words in iambs; the Eights and Sevens Double tunes we hold are in trochees"
+    },
+    {
+      "ref": "78",
+      "first": "The thirsty are called to their Lord,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "79",
+      "first": "Fountain of life and of grace",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "81",
+      "first": "Father of omnipresent grace!",
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "85",
+      "first": "Spirit of faith, come down,",
+      "why": "only 21 of 32 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "86",
+      "first": "Sinners, your hearts lift up,",
+      "why": "only 30 of 42 lines sing as 7.7.7.7.7.7"
+    },
+    {
+      "ref": "89",
+      "first": "Inspirer of the ancient seers,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "91",
+      "first": "Long have I seemed to serve thee, Lord,",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "92",
+      "first": "Still for thy loving-kindness, Lord,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "93",
+      "first": "My gracious, loving Lord,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "96",
+      "first": "How can a sinner know",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "97",
+      "first": "Thou great mysterious God unknown,",
+      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+    },
+    {
+      "ref": "98",
+      "first": "Upright, both in heart and will,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "100",
+      "first": "Jesu, my Advocate above,",
+      "why": "only 15 of 32 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "102",
+      "first": "O THAT I could repent!",
+      "why": "only 12 of 16 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "103",
+      "first": "O THAT I could revere",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "104",
+      "first": "O FOR that tenderness of heart",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "105",
+      "first": "O THAT I could repent!",
+      "why": "only 22 of 32 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "106",
+      "first": "Jesu, let thy pitying eye",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "109",
+      "first": "Wretched, helpless, and distrest,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "110",
+      "first": "Jesu, friend of sinners, hear,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "111",
+      "first": "Thus saith the Lord! Who seek the Lamb,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "112",
+      "first": "Woe is me! what tongue can tell",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "114",
+      "first": "Jesu, in whom the weary find",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "115",
+      "first": "Let the world their virtue boast,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "117",
+      "first": "God is in this and every place;",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "118",
+      "first": "Author of faith, to thee I cry,",
+      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+    },
+    {
+      "ref": "119",
+      "first": "Father of Jesus Christ, my Lord,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "122",
+      "first": "O THOU who hast our sorrows borne,",
+      "why": "only 20 of 30 lines sing as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "123",
+      "first": "Let the redeemed give thanks and praise",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "124",
+      "first": "O THAT I, first of love possessed,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "127",
+      "first": "Wherewith, O God, shall I draw near,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "128",
+      "first": "With glorious clouds encompassed round,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "129",
+      "first": "Adam descended from above,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "132",
+      "first": "Jesu, the sinner's friend, to thee,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "133",
+      "first": "Jesu, whose glory's streaming rays,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "135",
+      "first": "Jesu, if still thou art to-day",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "136",
+      "first": "While dead in trespasses I lie,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "139",
+      "first": "Jesu! Redeemer! Saviour, Lord,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "140",
+      "first": "Come, O thou Traveller unknown,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "141",
+      "first": "Yield to me now, for I am weak,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "142",
+      "first": "Drooping soul, shake off thy fears,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "144",
+      "first": "Thee, Jesu, thee, the sinner's friend,",
+      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+    },
+    {
+      "ref": "145",
+      "first": "Jesus, let me bless thy name!",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "146",
+      "first": "Still Lord, I languish for thy grace;",
+      "why": "only 16 of 24 lines sing as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "147",
+      "first": "O LOVE divine, how sweet thou art!",
+      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+    },
+    {
+      "ref": "149",
+      "first": "God of love, in this my day",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "150",
+      "first": "Thou hidden God, for whom I groan,",
+      "why": "its first verse cannot be sung as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "152",
+      "first": "Ah whither should I go,",
+      "why": "only 24 of 32 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "153",
+      "first": "I SEEM desirous to repent,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "154",
+      "first": "Fain would I leave the world below,",
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "157",
+      "first": "My sufferings all to thee are known,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "159",
+      "first": "Lay to thy hand, O God of grace!",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "160",
+      "first": "O JESUS my Hope,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "162",
+      "first": "No other right have I",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "164",
+      "first": "Lord, regard my earnest cry,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "165",
+      "first": "Come holy celestial Dove,",
+      "why": "only 19 of 40 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "166",
+      "first": "Jesu, take my sins away,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "167",
+      "first": "Lamb of God, for sinners slain,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "172",
+      "first": "O UNEXHAUSTED grace!",
+      "why": "only 24 of 32 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "174",
+      "first": "How shall a lost sinner in pain",
+      "why": "only 17 of 32 lines sing as 8.7.8.7.8.7.8.7"
+    },
+    {
+      "ref": "175",
+      "first": "God of my salvation, hear,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "177",
+      "first": "Jesus, thou know'st my sinfulness,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "178",
+      "first": "Yes, from this instant now, I will",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "179",
+      "first": "Father, if thou must reprove",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "181",
+      "first": "Thou Man of griefs, remember me,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "182",
+      "first": "I WILL hearken what the Lord",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "187",
+      "first": "Son of God, if thy free grace",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "188",
+      "first": "Lord, and is thine anger gone?",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "189",
+      "first": "Now I have found the ground wherein",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "190",
+      "first": "Jesu, thy blood and righteousness",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "191",
+      "first": "Thee, O my God and King,",
+      "why": "only 15 of 24 lines sing as 7.7.7.7.7.7"
+    },
+    {
+      "ref": "192",
+      "first": "Oft I in my heart have said,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "193",
+      "first": "O FILIAL Deity,",
+      "why": "only 32 of 48 lines sing as 7.7.7.7.7.7"
+    },
+    {
+      "ref": "195",
+      "first": "High above every name,",
+      "why": "only 16 of 24 lines sing as 7.7.7.7.7.7"
+    },
+    {
+      "ref": "196",
+      "first": "Into thy gracious hands I fall,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "198",
+      "first": "What shall I do My Saviour to praise,",
+      "why": "only 14 of 24 lines sing as 11.10.11.10"
+    },
+    {
+      "ref": "199",
+      "first": "O HEAVENLY King, Look down from above!",
+      "why": "only 13 of 20 lines sing as 10.10.10.10"
+    },
+    {
+      "ref": "200",
+      "first": "My Father, my God, I long for thy love,",
+      "why": "only 16 of 28 lines sing as 11.10.11.10"
+    },
+    {
+      "ref": "203",
+      "first": "Glory to God, whose sovereign grace",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "204",
+      "first": "Jesus, thou soul of all our joys,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "205",
+      "first": "My God, I am thine,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "207",
+      "first": "Jesus is our common Lord,",
+      "why": "its first verse cannot be sung as 7.7.7.7.7.7.7.7"
+    },
+    {
+      "ref": "210",
+      "first": "Thee will I love, my strength, my tower,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "211",
+      "first": "Let all men rejoice, By Jesus restored!",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "212",
+      "first": "My brethren beloved, Your calling ye see;",
+      "why": "only 11 of 20 lines sing as 10.10.10.10"
+    },
+    {
+      "ref": "215",
+      "first": "Glorious Saviour of my soul,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "219",
+      "first": "All thanks be to God,",
+      "why": "only 19 of 56 lines sing as 6.5.6.5.6.6.6.5"
+    },
+    {
+      "ref": "220",
+      "first": "All glory to God in the sky,",
+      "why": "words in iambs; the Eights and Sevens Double tunes we hold are in trochees"
+    },
+    {
+      "ref": "221",
+      "first": "Meet and right it is to sing,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "222",
+      "first": "How happy, gracious Lord! are we",
+      "why": "only 15 of 24 lines sing as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "223",
+      "first": "When Israel out of Egypt came,",
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "228",
+      "first": "Thou Shepherd of Israel, and mine,",
+      "why": "words in iambs; the Eights and Sevens Double tunes we hold are in trochees"
+    },
+    {
+      "ref": "230",
+      "first": "Fountain of life and all my joy,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "231",
+      "first": "Away with our fears!",
+      "why": "only 26 of 72 lines sing as 6.6.6.6.8.8"
+    },
+    {
+      "ref": "235",
+      "first": "Father of all! whose powerful voice",
+      "why": "only 10 of 24 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "236",
+      "first": "Son of thy Sire's eternal love,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "237",
+      "first": "Eternal, spotless Lamb of God,",
+      "why": "only 12 of 24 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "240",
+      "first": "O GOD, thou bottomless abyss!",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "241",
+      "first": "Thou, true and only God, lead'st forth",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "242",
+      "first": "Glorious God, accept a heart",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "243",
+      "first": "Thou, my God, art good and wise,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "244",
+      "first": "Thou, the great, eternal Lord,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "245",
+      "first": "Good thou art, and good thou dost,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "248",
+      "first": "Blest be our everlasting Lord,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "252",
+      "first": "Come, Father, Son, and Holy Ghost,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "254",
+      "first": "The day of Christ, the day of God,",
+      "why": "only 13 of 24 lines sing as 8.7.8.7.8.7.8.7"
+    },
+    {
+      "ref": "257",
+      "first": "Glory be to God on high,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "258",
+      "first": "Jehovah, God the Father, bless,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "261",
+      "first": "Come, Father, Son, and Holy Ghost,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "264",
+      "first": "O ALL-CREATING God!",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "265",
+      "first": "O MAY thy powerful word",
+      "why": "its first verse cannot be sung as 6.6.8.6"
+    },
+    {
+      "ref": "267",
+      "first": "But, above all, lay hold",
+      "why": "only 24 of 32 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "268",
+      "first": "In fellowship, alone,",
+      "why": "only 22 of 32 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "269",
+      "first": "Surrounded by a host of foes,",
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "270",
+      "first": "Equip me for the war,",
+      "why": "only 24 of 32 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "271",
+      "first": "O ALMIGHTY God of love,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "273",
+      "first": "Omnipotent Lord, My Saviour and King,",
+      "why": "only 16 of 32 lines sing as 10.10.10.10"
+    },
+    {
+      "ref": "274",
+      "first": "O MY old, my bosom foe,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "276",
+      "first": "Worship, and thanks, and blessing,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "277",
+      "first": "Jesus, the conqueror, reigns,",
+      "why": "only 31 of 48 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "278",
+      "first": "Who is this gigantic foe",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "279",
+      "first": "Shall I, for fear of feeble man,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "281",
+      "first": "Are there not in the labourer's day",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "282",
+      "first": "But can it be, that I should prove",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "283",
+      "first": "O GOD, my hope, my heavenly rest,",
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "284",
+      "first": "To thee, great God of love! I bow,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "285",
+      "first": "Come, Saviour, Jesus, from above!",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "288",
+      "first": "O GOD, thy faithfulness I plead!",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "290",
+      "first": "My God, if I may call thee mine,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "291",
+      "first": "Fondly my foolish heart essays",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "292",
+      "first": "To the haven of thy breast,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "294",
+      "first": "Jesu, thou sovereign Lord of all,",
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "295",
+      "first": "Come, ye followers of the Lord,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "296",
+      "first": "Help, Lord! the busy foe",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "297",
+      "first": "Shepherd Divine, our wants relieve",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "298",
+      "first": "Wondrous power of faithful prayer!",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "299",
+      "first": "Jesus, thou hast bid us pray,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "300",
+      "first": "Jesus, I fain would find",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "301",
+      "first": "Jesus, my strength, my hope,",
+      "why": "only 35 of 48 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "303",
+      "first": "Ah, when shall I awake",
+      "why": "only 35 of 48 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "304",
+      "first": "Saviour, on me the want bestow,",
+      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+    },
+    {
+      "ref": "305",
+      "first": "Gracious Redeemer, shake",
+      "why": "only 30 of 40 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "306",
+      "first": "Father, to thee I lift mine eyes,",
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "309",
+      "first": "Help, Lord, to whom for help I fly,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "311",
+      "first": "Bid me of men beware,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "314",
+      "first": "Hark, how the watchmen cry,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "315",
+      "first": "Angels your march oppose,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "316",
+      "first": "Eternal Power, whose high abode",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "320",
+      "first": "Be it my only wisdom here",
+      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+    },
+    {
+      "ref": "322",
+      "first": "Servant of all, to toil for man",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "323",
+      "first": "God of almighty love,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "325",
+      "first": "Lo! I come with joy to do",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "327",
+      "first": "Thou who camest from above",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "330",
+      "first": "Saviour of all, what hast thou done,",
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "333",
+      "first": "Come on, my partners in distress,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "334",
+      "why": "no verses"
+    },
+    {
+      "ref": "335",
+      "first": "Cast on the fidelity",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "336",
+      "first": "Father, in the name I pray",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "337",
+      "first": "Eternal Beam of light divine,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "338",
+      "first": "Thou Lamb of God, thou Prince of peace,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "339",
+      "first": "O THOU to whose all-searching sight",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "340",
+      "first": "The thing my God doth hate",
+      "why": "only 18 of 24 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "342",
+      "first": "God of eternal truth and grace,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "345",
+      "first": "Ye ransomed sinners, hear,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "348",
+      "first": "Heavenly Father, sovereign Lord,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "349",
+      "first": "Where the ancient dragon lay,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "350",
+      "first": "Holy Lamb, who thee receive,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "351",
+      "first": "Come, Holy Ghost, all quickening fire!",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "352",
+      "first": "Jesus, thou art our King!",
+      "why": "only 16 of 24 lines sing as 7.7.7.7.7.7"
+    },
+    {
+      "ref": "353",
+      "first": "O JESU, source of calm repose,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "354",
+      "first": "Ever fainting with desire,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "356",
+      "first": "Lord, I believe thy every word,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "358",
+      "first": "Open, Lord, my inward ear,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "359",
+      "first": "God of Israel's faithful three,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "360",
+      "first": "Father of Jesus Christ, my Lord,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "361",
+      "first": "My God! I know, I feel thee mine,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "362",
+      "first": "Be it according to thy word;",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "363",
+      "first": "What! never speak one evil word,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "366",
+      "first": "I SOON shall hear thy quickening voice,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "368",
+      "first": "Father, see this living clod,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "369",
+      "first": "O GOD most merciful and true!",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "370",
+      "first": "Deepen the wound thy hands have made",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "371",
+      "first": "What now is my object and aim?",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "372",
+      "why": "no verses"
+    },
+    {
+      "ref": "373",
+      "first": "Jesu, thy boundless love to me",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "374",
+      "first": "Come, Holy Ghost, all quickening fire,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "375",
+      "first": "Saviour from sin, I wait to prove",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "380",
+      "first": "Prisoners of hope, lift up your heads,",
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "382",
+      "first": "O GREAT mountain, who art thou,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "383",
+      "first": "Who hath slighted or contemned",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "386",
+      "first": "Arm of the Lord, awake, awake!",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "387",
+      "first": "Prisoners of hope, arise,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "389",
+      "first": "O JESUS, at thy feet we wait,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "390",
+      "first": "Since the Son hath made me free,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "394",
+      "first": "O GOD of our forefathers, hear,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "396",
+      "first": "O THOU, whom once they flocked to hear,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "402",
+      "first": "O MIGHT I this moment cease",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "404",
+      "first": "O GLORIOUS hope of perfect love!",
+      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+    },
+    {
+      "ref": "407",
+      "first": "None is like Jeshurun's God,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "408",
+      "first": "He wills that I should holy be,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "410",
+      "first": "Father, I dare believe",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "411",
+      "first": "God! who didst so dearly buy",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "413",
+      "first": "Once thou didst on earth appear,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "414",
+      "first": "Now, even now, I yield, I yield,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "416",
+      "first": "I ASK the gift of righteousness,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "418",
+      "first": "True and faithful Witness, thee,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "420",
+      "first": "Ye faithful souls, who Jesus know,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "421",
+      "first": "\"I THE good fight have fought,\"",
+      "why": "only 11 of 16 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "422",
+      "first": "Let not the wise his wisdom boast,",
+      "why": "words in iambs; the Eights and Sevens Double tunes we hold are in trochees"
+    },
+    {
+      "ref": "423",
+      "first": "Who can worthily commend",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "424",
+      "first": "Us, who climb thy holy hill,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "427",
+      "first": "God of all-redeeming grace,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "428",
+      "first": "Let Him to whom we now belong",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "430",
+      "first": "Father, Son, and Holy Ghost,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "431",
+      "first": "O GOD, what offering shall I give",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "433",
+      "first": "Give me the faith which can remove",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "434",
+      "first": "Jesus, all-atoning Lamb,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "436",
+      "first": "Jesu, my Truth, my Way,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "437",
+      "first": "O GOD, my God, my all thou art!",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "440",
+      "first": "Thou, Jesu, thou my breast inspire,",
+      "why": "no tune we hold for “6-8s. 2nd. metre.” in 12-line verses"
+    },
+    {
+      "ref": "441",
+      "first": "Let God, who comforts the distrest,",
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "443",
+      "first": "Arm of the Lord, awake, awake!",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "444",
+      "first": "Lord over all, if thou hast made,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "447",
+      "first": "Messiah, Prince of peace!",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "449",
+      "first": "True and faithful Witness, thou",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "450",
+      "first": "Messiah, full of grace,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "451",
+      "first": "Father of faithful Abraham, hear",
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "452",
+      "first": "Almighty God of love,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "453",
+      "first": "Jesus, the word bestow,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "456",
+      "first": "Father, if justly still we claim",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "457",
+      "first": "On all the earth thy Spirit shower;",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "459",
+      "first": "Shepherd of Israel, hear",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "460",
+      "first": "Father of boundless grace,",
+      "why": "only 18 of 24 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "462",
+      "first": "O LET the prisoners' mournful cries",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "464",
+      "first": "Jesus, from thy heavenly place,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "465",
+      "first": "Sovereign of all! whose will ordains",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "466",
+      "first": "A NATION God delights to bless,",
+      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+    },
+    {
+      "ref": "467",
+      "first": "Father of all, by whom we are,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "469",
+      "first": "Father of lights! thy needful aid",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "471",
+      "first": "How shall I walk my God to please,",
+      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+    },
+    {
+      "ref": "472",
+      "first": "I AND my house will serve the Lord:",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "473",
+      "first": "Come, Father, Son, and Holy Ghost,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "475",
+      "first": "But who sufficient is to lead",
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "476",
+      "first": "Come, Father, Son, and Holy Ghost,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "477",
+      "first": "Father, Son, and Holy Ghost,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "478",
+      "first": "And are we yet alive,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "479",
+      "first": "Peace be on this house bestowed,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "480",
+      "first": "Glory be to God above,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "481",
+      "first": "All thanks to the Lamb, Who gives us to meet!",
+      "why": "only 13 of 24 lines sing as 11.10.11.10"
+    },
+    {
+      "ref": "482",
+      "first": "Saviour of sinful men,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "483",
+      "first": "Jesu, to thee our hearts we lift,",
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "484",
+      "first": "Appointed by thee, We meet in thy name,",
+      "why": "only 9 of 12 lines sing as 10.10.10.10"
+    },
+    {
+      "ref": "485",
+      "first": "Jesu, we look to thee,",
+      "why": "only 18 of 24 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "486",
+      "first": "See, Jesu, thy disciples see,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "487",
+      "first": "Two are better far than one",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "488",
+      "first": "How happy are we",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "489",
+      "first": "How good and pleasant 'tis to see,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "491",
+      "first": "Come away to the skies,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "492",
+      "first": "What shall we offer our good Lord,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "495",
+      "first": "Come, let us arise,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "496",
+      "first": "The earth is the Lord's, And all it contains;",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "497",
+      "first": "Come, all whoe'er have set",
+      "why": "its first verse cannot be sung as 6.6.6.6.8.8"
+    },
+    {
+      "ref": "498",
+      "first": "Come, let us anew",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "499",
+      "first": "Come, let us ascend,",
+      "why": "only 21 of 48 lines sing as 6.6.6.6.8.8"
+    },
+    {
+      "ref": "500",
+      "first": "All praise to our redeeming Lord,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "506",
+      "first": "Father of our dying Lord,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "508",
+      "first": "God of love, that hear'st the prayer,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "510",
+      "first": "Thou God of truth and love,",
+      "why": "its first verse cannot be sung as 6.6.6.6.8.8"
+    },
+    {
+      "ref": "517",
+      "first": "Christ, our Head, gone up on high",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "523",
+      "first": "O THOU, our Husband, Brother, Friend,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "524",
+      "first": "Our friendship sanctify and guide:",
+      "why": "no tune we hold for “6-8s. 2nd. metre.” in 11-line verses"
+    },
+    {
+      "ref": "525",
+      "first": "Jesu, thou great redeeming Lord,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "526",
+      "first": "Except the Lord conduct the plan,",
+      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+    },
+    {
+      "ref": "527",
+      "first": "Come, wisdom, power, and grace divine,",
+      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+    },
+    {
+      "ref": "528",
+      "first": "O SAVIOUR, cast a gracious smile!",
+      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+    },
+    {
+      "ref": "529",
+      "first": "Holy Lamb, who thee confess,",
+      "why": "its first verse cannot be sung as 7.7.7.7.7.7.7.7"
+    },
+    {
+      "ref": "532",
+      "first": "Come, let us use the grace divine,",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "534",
+      "first": "Blest be the dear uniting love,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "535",
+      "first": "And let our bodies part,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "536",
+      "first": "Jesus, accept the praise",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "538",
+      "first": "Jesus, soft, harmonious name,",
+      "why": "the index's scans do not say plainly who wrote it"
+    },
+    {
+      "ref": "539",
+      "first": "Lift up your hearts to things above,",
+      "why": "the index's scans do not say plainly who wrote it"
+    }
+  ],
+  "counts": {
+    "hymns": 536,
+    "written": 160,
+    "alreadyOurs": 43,
+    "skipped": 333,
+    "removed": 0
+  }
+}

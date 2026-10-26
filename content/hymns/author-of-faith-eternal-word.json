@@ -1,0 +1,86 @@
+{
+  "title": "Author of Faith, Eternal Word",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Author of Faith, Eternal Word in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 95. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Au-thor of faith, e-ter-nal Word, Whose Spir-it breathes the ac-tive flame: Faith, like its Fin-ish-er and Lord, To day as yes-ter-day the same;",
+  "verses": [
+    {
+      "lines": [
+        "Author of faith, eternal Word,",
+        "Whose Spirit breathes the active flame:",
+        "Faith, like its Finisher and Lord,",
+        "To-day as yesterday the same;"
+      ]
+    },
+    {
+      "lines": [
+        "To thee our humble hearts aspire,",
+        "And ask the gift unspeakable;",
+        "Increase in us the kindled fire,",
+        "In us the work of faith fulfil."
+      ]
+    },
+    {
+      "lines": [
+        "By faith we know thee strong to save;",
+        "(Save us, a present Saviour thou!)",
+        "Whate'er we hope, by faith we have,",
+        "Future and past subsisting now."
+      ]
+    },
+    {
+      "lines": [
+        "To him that in thy name believes",
+        "Eternal life with thee is given;",
+        "Into himself he all receives,",
+        "Pardon, and holiness, and heaven."
+      ]
+    },
+    {
+      "lines": [
+        "The things unknown to feeble sense,",
+        "Unseen by reason's glimmering ray,",
+        "With strong, commanding evidence,",
+        "Their heavenly origin display."
+      ]
+    },
+    {
+      "lines": [
+        "Faith lends its realizing light,",
+        "The clouds disperse, the shadows fly;",
+        "The Invisible appears in sight,",
+        "And God is seen by mortal eye."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:95"
+}

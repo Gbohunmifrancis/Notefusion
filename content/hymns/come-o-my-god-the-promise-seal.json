@@ -1,0 +1,79 @@
+{
+  "title": "Come, O My God, the Promise Seal",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Come, O My God, the Promise Seal in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 417.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Come, O my God, the pro-mise seal, This moun-tain, sin, re-move; Now in my gasp-ing soul re-veal The vir-tue of thy love.",
+  "verses": [
+    {
+      "lines": [
+        "Come, O my God, the promise seal,",
+        "This mountain, sin, remove;",
+        "Now in my gasping soul reveal",
+        "The virtue of thy love."
+      ]
+    },
+    {
+      "lines": [
+        "I want thy life, thy purity,",
+        "Thy righteousness, brought in;",
+        "I ask, desire, and trust in thee,",
+        "To be redeemed from sin."
+      ]
+    },
+    {
+      "lines": [
+        "For this, as taught by thee, I pray,",
+        "And can no longer doubt;",
+        "Remove from hence! to sin I say,",
+        "Be cast this moment out!"
+      ]
+    },
+    {
+      "lines": [
+        "Anger and sloth, desire and pride,",
+        "This moment be subdued!",
+        "Be cast into the crimson tide",
+        "Of my Redeemer's blood!"
+      ]
+    },
+    {
+      "lines": [
+        "Saviour, to thee my soul looks up,",
+        "My present Saviour thou!",
+        "In all the confidence of hope,",
+        "I claim the blessing now."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis done! thou dost this moment save,",
+        "With full salvation bless;",
+        "Redemption through thy blood I have,",
+        "And spotless love and peace."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:417"
+}

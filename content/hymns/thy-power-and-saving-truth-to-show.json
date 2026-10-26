@@ -1,0 +1,91 @@
+{
+  "title": "Thy Power and Saving Truth to Show",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Thy Power and Saving Truth to Show in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 439.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Thy power and sa-ving truth to show, A war-fare at thy charge I go, Strong in the Lord, and thy great might; Glad-ly take up the hal-lowed cross; And, suf-fering all things for thy cause, Be-neath thy bloo-dy ban-ner fight.",
+  "verses": [
+    {
+      "lines": [
+        "Thy power and saving truth to show,",
+        "A warfare at thy charge I go,",
+        "Strong in the Lord, and thy great might;",
+        "Gladly take up the hallowed cross;",
+        "And, suffering all things for thy cause,",
+        "Beneath thy bloody banner fight."
+      ]
+    },
+    {
+      "lines": [
+        "A spectacle to fiends and men,",
+        "To all their fierce or cool disdain",
+        "With calmest pity I submit;",
+        "Determined nought to know, beside",
+        "My Jesus and him crucified,",
+        "I tread the world beneath my feet."
+      ]
+    },
+    {
+      "lines": [
+        "Superior to their smile or frown,",
+        "On all their goods my soul looks down,",
+        "Their pleasures, wealth, and power, and state;",
+        "The man that dares their god despise,",
+        "The Christian, he alone is wise;",
+        "The Christian, he alone is great."
+      ]
+    },
+    {
+      "lines": [
+        "O God, let all my life declare",
+        "How happy all thy servants are,",
+        "How far above these earthly things;",
+        "How pure, when washed in Jesu's blood,",
+        "How intimately one with God,",
+        "A heaven-born race of priests and kings."
+      ]
+    },
+    {
+      "lines": [
+        "For this alone I live below,",
+        "The power of godliness to show,",
+        "The wonders wrought by Jesu's name:",
+        "O that I might but faithful prove;",
+        "Witness to all thy pardoning love,",
+        "And point them to the atoning Lamb!"
+      ]
+    },
+    {
+      "lines": [
+        "Let me to every creature cry,",
+        "The poor and rich, the low and high,",
+        "Believe, and feel thy sins forgiven!",
+        "Damned, till by Jesus saved, thou art!",
+        "Till Jesu's blood hath washed thy heart,",
+        "Thou canst not find the gate of heaven!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:439"
+}

@@ -1,0 +1,110 @@
+{
+  "title": "O THAT Thou Wouldst the Heavens Rent",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "O THAT Thou Wouldst the Heavens Rent in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 138. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O THAT thou wouldst the hea-vens rent, In maj-es-ty come down; Stretch out thine arm om-ni-po-tent, And seize me for thine own!",
+  "verses": [
+    {
+      "lines": [
+        "O THAT thou wouldst the heavens rent,",
+        "In majesty come down;",
+        "Stretch out thine arm omnipotent,",
+        "And seize me for thine own!"
+      ]
+    },
+    {
+      "lines": [
+        "Descend, and let thy lightning burn",
+        "The stubble of thy foe;",
+        "My sins o'erturn, o'erturn, o'erturn,",
+        "And make the mountains flow."
+      ]
+    },
+    {
+      "lines": [
+        "Thou my impetuous spirit guide,",
+        "And curb my headstrong will;",
+        "Thou only canst drive back the tide,",
+        "And bid the sun stand still."
+      ]
+    },
+    {
+      "lines": [
+        "What though I cannot break my chain,",
+        "Or e'er throw off my load?",
+        "The things impossible to men",
+        "Are possible to God."
+      ]
+    },
+    {
+      "lines": [
+        "Is there a thing too hard for thee,",
+        "Almighty Lord of all,",
+        "Whose threatening looks dry up the sea,",
+        "And make the mountains fall?"
+      ]
+    },
+    {
+      "lines": [
+        "Who, shall in thy presence stand,",
+        "And match Omnipotence,",
+        "Ungrasp the hold of thy right hand,",
+        "Or pluck the sinner thence?"
+      ]
+    },
+    {
+      "lines": [
+        "Sworn to destroy, let earth assail;",
+        "Nearer to save thou art,",
+        "Stronger than all the powers of hell,",
+        "And greater than my heart."
+      ]
+    },
+    {
+      "lines": [
+        "Lo! to the hills I lift mine eye,",
+        "Thy promised aid I claim;",
+        "Father of mercies, glorify",
+        "Thy favourite Jesu's name."
+      ]
+    },
+    {
+      "lines": [
+        "Salvation in that name is found",
+        "Balm of grief and care;",
+        "A medicine for my every wound,",
+        "All, all I want is there!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:138"
+}

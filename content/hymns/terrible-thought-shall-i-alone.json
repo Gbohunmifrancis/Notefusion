@@ -1,0 +1,79 @@
+{
+  "title": "Terrible Thought! Shall I Alone",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Terrible Thought! Shall I Alone in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 80.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Ter-ri-ble thought! shall I a-lone, Who may be saved shall I Of all, a-las! whom I have known, Through sin for ev-er die?",
+  "verses": [
+    {
+      "lines": [
+        "Terrible thought! shall I alone,",
+        "Who may be saved shall I",
+        "Of all, alas! whom I have known,",
+        "Through sin for ever die?"
+      ]
+    },
+    {
+      "lines": [
+        "While all my old companions dear,",
+        "With whom I once did live,",
+        "Joyful at God's right hand appear,",
+        "A blessing to receive;"
+      ]
+    },
+    {
+      "lines": [
+        "Shall I - amidst a ghastly band,",
+        "Dragged to the judgment-seat -",
+        "Far on the left with horror stand,",
+        "My fearful doom to meet?"
+      ]
+    },
+    {
+      "lines": [
+        "Ah, no! I still may turn and live,",
+        "For still his wrath delays;",
+        "He now vouchsafes a kind reprieve,",
+        "And offers me his grace."
+      ]
+    },
+    {
+      "lines": [
+        "I will accept his offers now,",
+        "From every sin depart,",
+        "Perform my oft-repeated vow",
+        "And render him my heart."
+      ]
+    },
+    {
+      "lines": [
+        "I will improve what I receive,",
+        "The grace through Jesus given;",
+        "Sure, if with God on earth I live,",
+        "To live with him in heaven."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:80"
+}

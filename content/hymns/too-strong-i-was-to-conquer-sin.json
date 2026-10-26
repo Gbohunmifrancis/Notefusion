@@ -1,0 +1,79 @@
+{
+  "title": "Too Strong I Was to Conquer Sin",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Too Strong I Was to Conquer Sin in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 126.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Too strong I was to con-quer sin, When 'gainst it first I turned my face; Nor knew my want of power with-in, Nor knew th'om-ni-po-tence of grace.",
+  "verses": [
+    {
+      "lines": [
+        "Too strong I was to conquer sin,",
+        "When 'gainst it first I turned my face;",
+        "Nor knew my want of power within,",
+        "Nor knew the omnipotence of grace."
+      ]
+    },
+    {
+      "lines": [
+        "In nature's strength I sought in vain",
+        "For what my God refused to give;",
+        "I could not then the mastery gain,",
+        "Or lord of all my passions live."
+      ]
+    },
+    {
+      "lines": [
+        "But, for the glory of thy name,",
+        "Vouchsafe me now the victory;",
+        "Weakness itself thou know'st I am,",
+        "And cannot share the praise with thee."
+      ]
+    },
+    {
+      "lines": [
+        "Because I now can nothing do,",
+        "Jesus, do all the work alone;",
+        "And bring my soul triumphant through,",
+        "To wave its palm before thy throne."
+      ]
+    },
+    {
+      "lines": [
+        "Great God, unknown, invisible,",
+        "Appear, my confidence to abase,",
+        "To make me all my vileness feel,",
+        "And blush at my own righteousness."
+      ]
+    },
+    {
+      "lines": [
+        "Thy glorious face in Christ display,",
+        "That, silenced by thy mercy's power,",
+        "My mouth I in the dust may lay,",
+        "And never boast or murmur more."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:126"
+}

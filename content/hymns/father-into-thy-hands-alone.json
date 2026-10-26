@@ -1,0 +1,78 @@
+{
+  "title": "Father, into Thy Hands Alone",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Father, into Thy Hands Alone in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 432. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther, in-to thy hands a-lone I have my all re-stored; My all thy prop-er-ty I own, The stew-ard of the Lord.",
+  "verses": [
+    {
+      "lines": [
+        "Father, into thy hands alone",
+        "I have my all restored;",
+        "My all thy property I own,",
+        "The steward of the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "Hereafter none can take away",
+        "My life, or goods, or fame;",
+        "Ready at thy demand to lay",
+        "Them down I always am."
+      ]
+    },
+    {
+      "lines": [
+        "Confiding in thy only love,",
+        "Through Jesus strengthening me,",
+        "I wait thy faithfulness to prove,",
+        "And give back all to thee."
+      ]
+    },
+    {
+      "lines": [
+        "Take when thou wilt into thy hands,",
+        "And as thou wilt require;",
+        "Resume by the Chaldean bands,",
+        "Or the devouring fire."
+      ]
+    },
+    {
+      "lines": [
+        "Determined all thy will to obey,",
+        "Thy blessings I restore;",
+        "Give, Lord, or take thy gifts away,",
+        "I praise thee evermore."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:432"
+}

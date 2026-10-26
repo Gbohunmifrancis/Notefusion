@@ -1,0 +1,95 @@
+{
+  "title": "Hail! Father, Son, and Holy Ghost",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Hail! Father, Son, and Holy Ghost in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 239.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Hail! Fa-ther, Son, and Ho-ly Ghost, One God, in Per-sons Three! Of Thee we make our joy-ful boast, Our songs we make of Thee.",
+  "verses": [
+    {
+      "lines": [
+        "Hail! Father, Son, and Holy Ghost,",
+        "One God, in Persons Three!",
+        "Of Thee we make our joyful boast,",
+        "Our songs we make of Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Thou neither canst be felt nor seen;",
+        "Thou art a Spirit pure;",
+        "Thou from eternity hast been,",
+        "And always shalt endure."
+      ]
+    },
+    {
+      "lines": [
+        "Present alike in every place,",
+        "Thy Godhead we adore;",
+        "Beyond the bounds of time and space,",
+        "Thou dwell'st for evermore."
+      ]
+    },
+    {
+      "lines": [
+        "In wisdom infinite thou art,",
+        "Thine eye doth all things see;",
+        "And every thought of every heart",
+        "Is fully known to thee."
+      ]
+    },
+    {
+      "lines": [
+        "Whate'er thou wilt, in earth below",
+        "Thou dost, in heaven above:",
+        "But chiefly we rejoice to know",
+        "The almighty God of love."
+      ]
+    },
+    {
+      "lines": [
+        "Thou lov'st whate'er thy hands have made,",
+        "Thy goodness we rehearse,",
+        "In shining characters displayed",
+        "Throughout our universe."
+      ]
+    },
+    {
+      "lines": [
+        "Mercy, with love and endless grace,",
+        "O'er all thy works doth reign;",
+        "But mostly thou delight'st to bless",
+        "Thy favourite creature, man."
+      ]
+    },
+    {
+      "lines": [
+        "Wherefore, let every creature give",
+        "To thee the praise designed,",
+        "But, chiefly, Lord, the thanks receive,",
+        "The hearts of all mankind."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:239"
+}

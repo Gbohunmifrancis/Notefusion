@@ -1,0 +1,91 @@
+{
+  "title": "God of All Grace and Majesty",
+  "tune": "all-saints-new",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "God of All Grace and Majesty in Tonic Solfa to ALL SAINTS, NEW, doh is Bb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 307.",
+    "The book printed the words without tunes. They are in Common Metre Double (8.6.8.6.8.6.8.6), and this page sets them to ALL SAINTS, NEW; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "God of all grace and maj-es-ty, Su-preme-ly great and good! If I have mer-cy found with thee, Through the a-ton-ing blood, The guard of all thy mer-cies give, And to my par-don join A fear lest I should ev-er grieve The gra-cious Spirit di-vine.",
+  "verses": [
+    {
+      "lines": [
+        "God of all grace and majesty,",
+        "Supremely great and good!",
+        "If I have mercy found with thee,",
+        "Through the atoning blood,",
+        "The guard of all thy mercies give,",
+        "And to my pardon join",
+        "A fear lest I should ever grieve",
+        "The gracious Spirit divine."
+      ]
+    },
+    {
+      "lines": [
+        "If mercy is indeed with thee,",
+        "May I obedient prove,",
+        "Nor e'er abuse my liberty,",
+        "Or sin against thy love:",
+        "This choicest fruit of faith bestow",
+        "On a poor sojourner;",
+        "And let me pass my days below",
+        "In humbleness and fear."
+      ]
+    },
+    {
+      "lines": [
+        "Rather I would in darkness mourn",
+        "The absence of thy peace,",
+        "Than e'er by light irreverence turn",
+        "Thy grace to wantonness:",
+        "Rather I would in painful awe",
+        "Beneath thine anger move,",
+        "Than sin against the gospel law",
+        "Of liberty and love."
+      ]
+    },
+    {
+      "lines": [
+        "But O! thou wouldst not have me live",
+        "In bondage, grief, or pain,",
+        "Thou dost not take delight to grieve",
+        "The helpless sons of men;",
+        "Thy will is my salvation, Lord;",
+        "And let it now take place,",
+        "And let me tremble at the word",
+        "Of reconciling grace."
+      ]
+    },
+    {
+      "lines": [
+        "Still may I walk as in thy sight,",
+        "My strict observer see;",
+        "And thou by reverent love unite",
+        "My child-like heart to thee;",
+        "Still let me, till my days are past,",
+        "At Jesu's feet abide,",
+        "So shall he lift me up at last,",
+        "And seat me by his side."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ALL SAINTS, NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:307"
+}

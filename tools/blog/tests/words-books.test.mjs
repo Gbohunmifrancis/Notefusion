@@ -305,3 +305,42 @@ test("the committed Lutheran pages: everyone named in full and dated, a translat
     assert.equal(N.syllabify(h.underlay).length, h.tuneData.parsed.notes.length, h.slug);
   }
 });
+
+test("Wesley's Collection: a hymn page read, and its writer only where the index's scans say so plainly", async () => {
+  const { parseWesley, wesleyWriters, creditWesley, aboutWesley } = await import("../import/wesley-1780.mjs");
+  const fs = await import("node:fs"), os = await import("node:os"), path = await import("node:path");
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "wesley-"));
+  const page = (n, first) => `<TITLE>Hymn ${n}, "A Collection of Hymns..."</TITLE><BODY><H3>L.M.</H3>
+<P>
+1 ${first}<BR>
+His faith by his obedience showed,<BR>
+He with the harsh command complied,<BR>
+And gave his Isaac back to God.
+</BODY>`;
+  fs.writeFileSync(path.join(dir, "jwg0286.html"), page(286, "ABRAHAM, when severely tried,"));
+  fs.writeFileSync(path.join(dir, "jwg0331.html"), page(331, "AFFLICTED by a gracious God,"));
+  fs.writeFileSync(path.join(dir, "jwg0112.html"), page(112, "A CHARGE to keep I have,"));
+  const hymns = parseWesley(dir);
+  assert.deepEqual(hymns.map((h) => [h.number, h.label, h.verses[0][0]]), [[112, "L.M.", "A CHARGE to keep I have,"], [286, "L.M.", "Abraham, when severely tried,"], [331, "L.M.", "Afflicted by a gracious God,"]]);
+  const scanA = "I.— INDEX TO THE HYMNS.\nAbraham, when severely tried . IT. 286\nAfflicted by a gracious God . . . . 331\nA charge to keep I have 112\n";
+  const scanB = "FIRST LINE, AUTHOR, HYMN\nAbraham, when severely tried . . W. 286\nAMlicted by a gracious God , . . . . 331\n";
+  const writers = wesleyWriters(hymns, [scanA, scanB]);
+  assert.equal(writers.get(286), "W");                 // "IT." and "W." are the OCR's two readings of "W."
+  assert.equal(writers.get(331), "C");                 // dots straight to the number: no name, so Charles
+  assert.equal(writers.get(112), undefined);           // one scan, no dots: not plain enough
+  assert.deepEqual(creditWesley({ writer: "W" }).people.map((p) => p.name), ["Charles Wesley", "John Wesley"]);
+  assert.match(aboutWesley({ writer: "W", number: 286 }), /cannot say which of the two/);
+  assert.match(creditWesley({ writer: null }).why, /do not say/);
+});
+
+test("the committed Wesley pages: the brothers' joint hymns say 'or', every underlay one syllable to a note", () => {
+  const { allHymns } = loadAll({ includeDrafts: true });
+  const pages = allHymns.filter((h) => /^wesley-1780:/.test(h.importedFrom || ""));
+  assert.ok(pages.length >= 150);
+  const N = loadEngine();
+  for (const h of pages) {
+    assert.equal(h.textPublished, 1780, h.slug);
+    if (h.textOneOf) assert.deepEqual(h.text.map((p) => p.name), ["Charles Wesley", "John Wesley"], h.slug);
+    assert.equal(N.syllabify(h.underlay).length, h.tuneData.parsed.notes.length, h.slug);
+  }
+});

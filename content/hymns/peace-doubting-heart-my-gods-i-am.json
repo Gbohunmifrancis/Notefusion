@@ -1,0 +1,108 @@
+{
+  "title": "Peace, Doubting Heart! My God's I Am",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Peace, Doubting Heart! My God's I Am in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 272. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Peace, doubt-ing heart! my God's I am; Who formed me man, for-bids my fear; The Lord hath called me by my name; The Lord pro-tects, for ev-er near; His blood for me did once a-tone, And still he loves and guards his own.",
+  "verses": [
+    {
+      "lines": [
+        "Peace, doubting heart! my God's I am;",
+        "Who formed me man, forbids my fear;",
+        "The Lord hath called me by my name;",
+        "The Lord protects, for ever near;",
+        "His blood for me did once atone,",
+        "And still he loves and guards his own."
+      ]
+    },
+    {
+      "lines": [
+        "When passing through the watery deep,",
+        "I ask in faith his promised aid,",
+        "The waves all awful distance keep,",
+        "And shrink from my devoted head;",
+        "Fearless their violence I dare;",
+        "They cannot harm, for God is there!"
+      ]
+    },
+    {
+      "lines": [
+        "To him mine eye of faith I turn,",
+        "And through the fire pursue my way;",
+        "The fire forgets its power to burn,",
+        "The lambent flames around me play;",
+        "I own his power, accept the sign,",
+        "And shout to prove the Saviour mine."
+      ]
+    },
+    {
+      "lines": [
+        "Still nigh me, O my Saviour, stand!",
+        "And guard in fierce temptation's hour;",
+        "Hide in the hollow of thy hand,",
+        "Show forth in me thy Saving power,",
+        "Still be thy arms my sure defence,",
+        "Nor earth nor hell shall pluck me thence."
+      ]
+    },
+    {
+      "lines": [
+        "Since thou hast bid me come to thee,",
+        "(Good as thou art, and strong to save)",
+        "I'll walk o'er life's tempestuous sea,",
+        "Upbourne by the unyielding wave,",
+        "Dauntless, though rocks of pride be near,",
+        "And yawning whirlpools of despair."
+      ]
+    },
+    {
+      "lines": [
+        "When darkness intercepts the skies,",
+        "And sorrow's waves around me roll,",
+        "When high the storms of passion rise,",
+        "And half o'erwhelm my sinking soul,",
+        "My soul a sudden calm shall feel,",
+        "And hear a whisper, \"Peace; be still!\""
+      ]
+    },
+    {
+      "lines": [
+        "Though in affliction's furnace tried,",
+        "Unhurt on snares and death I'll tread;",
+        "Though sin assail, and hell, thrown wide,",
+        "Pour all its flames upon my head,",
+        "Like Moses' bush, I'll mount the higher,",
+        "And flourish unconsumed in fire."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:272"
+}

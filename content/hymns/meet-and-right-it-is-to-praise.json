@@ -1,0 +1,79 @@
+{
+  "title": "Meet and Right It Is to Praise",
+  "tune": "watchman",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Meet and Right It Is to Praise in Tonic Solfa to WATCHMAN, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 238.",
+    "The book printed the words without tunes. They are in Sevens Double (7.7.7.7.7.7.7.7), and this page sets them to WATCHMAN; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Meet and right it is to praise God, the giv-er of all grace, God, whose mer-cies are be-stowed On the e-vil and the good; He pre-vents his crea-tures' call, Kind and mer-ci-ful to all; Makes his sun on sin-ners rise, Showers his bless-ings from the skies.",
+  "verses": [
+    {
+      "lines": [
+        "Meet and right it is to praise",
+        "God, the giver of all grace,",
+        "God, whose mercies are bestowed",
+        "On the evil and the good;",
+        "He prevents his creatures' call,",
+        "Kind and merciful to all;",
+        "Makes his sun on sinners rise,",
+        "Showers his blessings from the skies."
+      ]
+    },
+    {
+      "lines": [
+        "Least of all thy creatures, we",
+        "Daily thy salvation see;",
+        "As by heavenly manna fed,",
+        "Through a world of dangers led;",
+        "Through a wilderness of cares;",
+        "Through ten thousand thousand snares,",
+        "More than now our hearts conceive,",
+        "More than we could know, and live!"
+      ]
+    },
+    {
+      "lines": [
+        "Here, as in the lion's den,",
+        "Undevoured we still remain;",
+        "Pass secure the watery flood,",
+        "Hanging on the arm of God;",
+        "Here we raise our voices higher,",
+        "Shout in the refiner's fire,",
+        "Clap our hands amidst the flame,",
+        "Glory give to Jesu's name."
+      ]
+    },
+    {
+      "lines": [
+        "Jesu's name in Satan's hour",
+        "Stands our adamantine tower;",
+        "Jesus doth his own defend,",
+        "Love, and save us to the end.",
+        "Love shall make us persevere",
+        "Till our conquering Lord appear,",
+        "Bear us to our thrones above,",
+        "Crown us with his heavenly love."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to WATCHMAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:238"
+}

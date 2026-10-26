@@ -1,0 +1,79 @@
+{
+  "title": "Author of Faith, We Seek Thy Face",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Author of Faith, We Seek Thy Face in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 458.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Au-thor of faith, we seek thy face For all who feel thy work be-gun; Con-firm and strength-en them in grace, And bring thy fee-blest child-ren on.",
+  "verses": [
+    {
+      "lines": [
+        "Author of faith, we seek thy face",
+        "For all who feel thy work begun;",
+        "Confirm and strengthen them in grace,",
+        "And bring thy feeblest children on."
+      ]
+    },
+    {
+      "lines": [
+        "Thou seest their wants, thou know'st their names,",
+        "Be mindful of thy youngest care;",
+        "Be tender of thy new-born lambs,",
+        "And gently in thy bosom bear."
+      ]
+    },
+    {
+      "lines": [
+        "The lion roaring for his prey,",
+        "And ravening wolves on every side,",
+        "Watch over them to tear and slay,",
+        "If found one moment from their guide."
+      ]
+    },
+    {
+      "lines": [
+        "Satan his thousand arts essays,",
+        "His agents all their powers employ,",
+        "To blast the blooming work of grace,",
+        "The heavenly offspring to destroy."
+      ]
+    },
+    {
+      "lines": [
+        "Baffle the crooked serpent's skill,",
+        "And turn his sharpest dart aside;",
+        "Hide from their eyes the devilish ill,",
+        "O save them from the demon, pride!"
+      ]
+    },
+    {
+      "lines": [
+        "In safety lead thy little flock,",
+        "From hell, the world, and sin secure;",
+        "And set their feet upon the rock,",
+        "And make in thee their goings sure."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:458"
+}

@@ -1,0 +1,88 @@
+{
+  "title": "Father of Jesus Christ the Just",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Father of Jesus Christ the Just in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 148. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Fa-ther of Je-sus Christ the Just. My Friend and Ad-vo-cate with thee, Pi-ty a soul that fain would trust In him who lived and died for me; But on-ly thou canst make him known, And in my heart re-veal thy Son.",
+  "verses": [
+    {
+      "lines": [
+        "Father of Jesus Christ the Just.",
+        "My Friend and Advocate with thee,",
+        "Pity a soul that fain would trust",
+        "In him who lived and died for me;",
+        "But only thou canst make him known,",
+        "And in my heart reveal thy Son."
+      ]
+    },
+    {
+      "lines": [
+        "If, drawn by thine alluring grace,",
+        "My want of living faith I feel,",
+        "Show me in Christ thy smiling face;",
+        "What flesh and blood can ne'er reveal,",
+        "Thy co-eternal Son, display,",
+        "And call my darkness into day."
+      ]
+    },
+    {
+      "lines": [
+        "The gift unspeakable impart;",
+        "Command the light of faith to shine,",
+        "To shine in my dark, drooping heart,",
+        "And fill me with the life divine:",
+        "Now bid the new creation be!",
+        "O God, let there be faith in me!"
+      ]
+    },
+    {
+      "lines": [
+        "Thee without faith I cannot please,",
+        "Faith without thee I cannot have;",
+        "But thou hast sent the Prince of peace",
+        "To seek my wandering soul, and save;",
+        "O Father, glorify thy Son,",
+        "And save me for his sake alone!"
+      ]
+    },
+    {
+      "lines": [
+        "Save me through faith in Jesu's blood,",
+        "That blood which he for all did shed;",
+        "For me, for me, thou know'st it flowed,",
+        "For me, for me, thou hear'st it plead;",
+        "Assure me now my soul is thine,",
+        "And all thou art in Christ is mine!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:148"
+}

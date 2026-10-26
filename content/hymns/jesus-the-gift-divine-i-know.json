@@ -1,0 +1,81 @@
+{
+  "title": "Jesus, the Gift Divine I Know",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Jesus, the Gift Divine I Know in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 364.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Je-sus, the gift di-vine I know, The gift di-vine I ask of thee; That liv-ing wa-ter now be-stow, Thy Spir-it and thy-self, on me; Thou, Lord, of life the foun-tain art, Now let me find thee in my heart.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, the gift divine I know,",
+        "The gift divine I ask of thee;",
+        "That living water now bestow,",
+        "Thy Spirit and thyself, on me;",
+        "Thou, Lord, of life the fountain art,",
+        "Now let me find thee in my heart."
+      ]
+    },
+    {
+      "lines": [
+        "Thee let me drink, and thirst no more",
+        "For drops of finite happiness;",
+        "Spring up, O well, in heavenly power,",
+        "In streams of pure perennial peace,",
+        "In joy that none can take away,",
+        "In life which shall for ever stay."
+      ]
+    },
+    {
+      "lines": [
+        "Father, on me the grace bestow,",
+        "Unblamable before thy sight,",
+        "Whence all the streams of mercy flow;",
+        "Mercy, thy own supreme delight,",
+        "To me, for Jesu's sake, impart,",
+        "And plant thy nature in my heart."
+      ]
+    },
+    {
+      "lines": [
+        "Thy mind throughout my life be shown,",
+        "While, listening to the wretch's cry,",
+        "The widow's and the orphan's groan,",
+        "On mercy's wings I swiftly fly,",
+        "The poor and helpless to relieve,",
+        "My life, my all, for them to give."
+      ]
+    },
+    {
+      "lines": [
+        "Thus may I show the Spirit within,",
+        "Which purges me from every stain,",
+        "Unspotted from the world and sin,",
+        "My faith's integrity maintain;",
+        "The truth of my religion prove,",
+        "By perfect purity and love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:364"
+}

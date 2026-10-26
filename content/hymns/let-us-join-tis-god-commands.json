@@ -1,0 +1,86 @@
+{
+  "title": "Let Us Join, ('Tis God Commands)",
+  "tune": "hollingside",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Let Us Join, ('Tis God Commands) in Tonic Solfa to HOLLINGSIDE, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 521. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Sevens Double (7.7.7.7.7.7.7.7), and this page sets them to HOLLINGSIDE; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Let us join, ('tis God com-mands) Let us join our hearts and hands Help to gain our call-ing's hope, Build we each the oth-er up: God his bless-ings shall dis-pense, God shall crown his or-di-nance; Meet in his ap-point-ed ways; Nour-ish us with so-cial grace.",
+  "verses": [
+    {
+      "lines": [
+        "Let us join, ('tis God commands)",
+        "Let us join our hearts and hands",
+        "Help to gain our calling's hope,",
+        "Build we each the other up:",
+        "God his blessings shall dispense,",
+        "God shall crown his ordinance;",
+        "Meet in his appointed ways;",
+        "Nourish us with social grace."
+      ]
+    },
+    {
+      "lines": [
+        "Let us then as brethren love,",
+        "Faithfully his gifts improve,",
+        "Carry on the earnest strife,",
+        "Walk in holiness of life;",
+        "Still forget the things behind,",
+        "Follow Christ in heart and mind,",
+        "Toward the mark unwearied press,",
+        "Seize the crown of righteousness."
+      ]
+    },
+    {
+      "lines": [
+        "Plead we thus for faith alone,",
+        "Faith which by our works is shown:",
+        "God it is who justifies;",
+        "Only faith the grace applies;",
+        "Active faith that lives within,",
+        "Conquers earth, and hell, and sin,",
+        "Sanctifies, and makes us whole,",
+        "Forms the Saviour in the soul."
+      ]
+    },
+    {
+      "lines": [
+        "Let us for this faith contend,",
+        "Sure salvation is its end:",
+        "Heaven already is begun,",
+        "Everlasting life is won.",
+        "Only let us persevere,",
+        "Till we see our Lord appear,",
+        "Never from the rock remove,",
+        "Saved by faith, which works by love."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to HOLLINGSIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:521"
+}

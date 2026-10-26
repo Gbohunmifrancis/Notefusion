@@ -1,0 +1,71 @@
+{
+  "title": "What Shall I Do My God to Love",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "What Shall I Do My God to Love in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 378.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "What shall I do my God to love, My Sa-viour, and the world's, to praise? Whose bow-els of com-pas-sion move To me, and all the fall-en race, Whose mer-cy is di-vine-ly free For all the fall-en race, and me!",
+  "verses": [
+    {
+      "lines": [
+        "What shall I do my God to love,",
+        "My Saviour, and the world's, to praise?",
+        "Whose bowels of compassion move",
+        "To me, and all the fallen race,",
+        "Whose mercy is divinely free",
+        "For all the fallen race, and me!"
+      ]
+    },
+    {
+      "lines": [
+        "I long to know, and to make known,",
+        "The heights and depths of love divine,",
+        "The kindness thou to me hast shown,",
+        "Whose every sin was counted thine!",
+        "My God for me resigned his breath!",
+        "He died to save my soul from death!"
+      ]
+    },
+    {
+      "lines": [
+        "How shall I thank thee for the grace",
+        "On me and all mankind bestowed?",
+        "O that my every breath were praise!",
+        "O that my heart were filled with God!",
+        "My heart would then with love o'erflow,",
+        "And all my life thy glory show."
+      ]
+    },
+    {
+      "lines": [
+        "See me, O Lord, athirst and faint!",
+        "Me, weary of forbearing, see,",
+        "And let me feel thy love's constraint,",
+        "And freely give up all for thee;",
+        "True in the fiery trial prove,",
+        "And pay thee back thy dying love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:378"
+}

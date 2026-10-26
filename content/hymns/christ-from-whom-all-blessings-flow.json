@@ -1,0 +1,118 @@
+{
+  "title": "Christ, from Whom All Blessings Flow",
+  "tune": "pleyels-hymn",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Christ, from Whom All Blessings Flow in Tonic Solfa to PLEYEL'S HYMN, doh is G: the solfa with the words, staff notation, 10 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 518. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Sevens (7.7.7.7), and this page sets them to PLEYEL'S HYMN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Christ, from whom all bless-ings flow, Per-fect-ing the saints be-low, Hear us, who thy na-ture share, Who thy mys-tic bo-dy are.",
+  "verses": [
+    {
+      "lines": [
+        "Christ, from whom all blessings flow,",
+        "Perfecting the saints below,",
+        "Hear us, who thy nature share,",
+        "Who thy mystic body are."
+      ]
+    },
+    {
+      "lines": [
+        "Join us, in one spirit join,",
+        "Let us still receive of thine;",
+        "Still for more on thee we call;",
+        "Thou who fillest all in all."
+      ]
+    },
+    {
+      "lines": [
+        "Closer knit to thee, our Head;",
+        "Nourish us, O Christ, and feed!",
+        "Let us daily growth receive,",
+        "More and more in Jesus live."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, we thy members are,",
+        "Cherish us with kindest care,",
+        "Of thy flesh and of thy bone,",
+        "Love, for ever love thine own!"
+      ]
+    },
+    {
+      "lines": [
+        "Move, and actuate, and guide:",
+        "Divers gifts to each divide;",
+        "Placed according to thy will,",
+        "Let us all our work fulfil;"
+      ]
+    },
+    {
+      "lines": [
+        "Never from our office move,",
+        "Needful to each other prove;",
+        "Use the grace on each bestowed,",
+        "Tempered by the art of God."
+      ]
+    },
+    {
+      "lines": [
+        "Sweetly may we all agree,",
+        "Touched with softest sympathy;",
+        "Kindly for each other care;",
+        "Every member feel its share."
+      ]
+    },
+    {
+      "lines": [
+        "Wounded by the grief of one,",
+        "Now let all the members groan;",
+        "Honoured if one member is,",
+        "All partake the common bliss."
+      ]
+    },
+    {
+      "lines": [
+        "Many are we now and one,",
+        "We who Jesus have put on;",
+        "There is neither bond nor free,",
+        "Male nor female, Lord, in thee!"
+      ]
+    },
+    {
+      "lines": [
+        "Love, like death, hath all destroyed,",
+        "Rendered all distinctions void;",
+        "Names, and sects, and parties fall:",
+        "Thou, O Christ, art all in all!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to PLEYEL'S HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:518"
+}

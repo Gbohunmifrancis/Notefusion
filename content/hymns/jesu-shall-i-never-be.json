@@ -1,0 +1,142 @@
+{
+  "title": "Jesu, Shall I Never Be",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Jesu, Shall I Never Be in Tonic Solfa to HEINLEIN, doh is F: the solfa with the words, staff notation, 13 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 355. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Sevens (7.7.7.7), and this page sets them to HEINLEIN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Je-su, shall I nev-er be Firm-ly ground-ed up-on thee? Nev-er by thy work a-bide, Nev-er in thy wounds re-side?",
+  "verses": [
+    {
+      "lines": [
+        "Jesu, shall I never be",
+        "Firmly grounded upon thee?",
+        "Never by thy work abide,",
+        "Never in thy wounds reside?"
+      ]
+    },
+    {
+      "lines": [
+        "O how wavering is my mind,",
+        "Tossed about with every wind!",
+        "O how quickly doth my heart",
+        "From the living God depart!"
+      ]
+    },
+    {
+      "lines": [
+        "Jesu, let my nature feel,",
+        "Thou art God unchangeable:",
+        "JAH, JEHOVAH, great I AM,",
+        "Speak into my soul thy name."
+      ]
+    },
+    {
+      "lines": [
+        "Grant that every moment I",
+        "May believe, and feel thee nigh;",
+        "Steadfastly behold thy face,",
+        "Stablished with abiding grace."
+      ]
+    },
+    {
+      "lines": [
+        "Plant, and root, and fix in me",
+        "All the mind that was in thee;",
+        "Settled peace I then shall find;",
+        "Jesu's is a quiet mind."
+      ]
+    },
+    {
+      "lines": [
+        "Anger I no more shall feel,",
+        "Always even, always still,",
+        "Meekly on my God reclined;",
+        "Jesu's is a gentle mind."
+      ]
+    },
+    {
+      "lines": [
+        "I shall suffer and fulfil",
+        "All my Father's gracious will,",
+        "Be in all alike resigned;",
+        "Jesu's is a patient mind."
+      ]
+    },
+    {
+      "lines": [
+        "When 'tis deeply rooted here,",
+        "Perfect love shall cast out fear;",
+        "Fear doth servile spirits bind;",
+        "Jesu's is a noble mind."
+      ]
+    },
+    {
+      "lines": [
+        "When I feel it fixed within,",
+        "I shall have no power to sin;",
+        "How shall sin an entrance find?",
+        "Jesu's is a spotless mind."
+      ]
+    },
+    {
+      "lines": [
+        "I shall nothing know beside",
+        "Jesus, and him crucified;",
+        "Perfectly to him be joined;",
+        "Jesu's is a loving mind."
+      ]
+    },
+    {
+      "lines": [
+        "I shall triumph evermore,",
+        "Gratefully my God adore,",
+        "God so good, so true, so kind;",
+        "Jesu's is a thankful mind."
+      ]
+    },
+    {
+      "lines": [
+        "Lowly, loving, meek, and pure,",
+        "I shall to the end endure,",
+        "Be no more to sin inclined;",
+        "Jesu's is a constant mind."
+      ]
+    },
+    {
+      "lines": [
+        "I shall fully be restored",
+        "To the image of my Lord,",
+        "Witnessing to all mankind,",
+        "Jesu's is a perfect mind."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to HEINLEIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:355"
+}

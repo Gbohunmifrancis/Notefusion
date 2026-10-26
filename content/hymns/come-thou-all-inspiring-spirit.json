@@ -1,0 +1,79 @@
+{
+  "title": "Come, Thou All-inspiring Spirit",
+  "tune": "lux-eoi",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Come, Thou All-inspiring Spirit in Tonic Solfa to LUX EOI, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 530.",
+    "The book printed the words without tunes. They are in Eights and Sevens Double (8.7.8.7.8.7.8.7), and this page sets them to LUX EOI; any other Eights and Sevens Double tune fits them as well."
+  ],
+  "underlay": "Come, thou all in-spir-ing Spir-it, In-to ev-ery long-ing heart! Bought for us by Je-su's mer-it, Now thy bliss-ful self im-part; Sign our un-con-test-ed par-don, Wash us in th'a-ton-ing blood! Make our hearts a wa-tered gar-den; Fill our spot-less souls with God.",
+  "verses": [
+    {
+      "lines": [
+        "Come, thou all-inspiring Spirit,",
+        "Into every longing heart!",
+        "Bought for us by Jesu's merit,",
+        "Now thy blissful self impart;",
+        "Sign our uncontested pardon,",
+        "Wash us in the atoning blood!",
+        "Make our hearts a watered garden;",
+        "Fill our spotless souls with God."
+      ]
+    },
+    {
+      "lines": [
+        "If thou gav'st the enlarged desire,",
+        "Which for thee we ever feel,",
+        "Now our panting souls inspire,",
+        "Now our cancelled sin reveal;",
+        "Claim us for thy habitation;",
+        "Dwell within our hallowed breast;",
+        "Seal us heirs of full salvation,",
+        "Fitted for our heavenly rest."
+      ]
+    },
+    {
+      "lines": [
+        "Give us quietly to tarry,",
+        "Till for all thy glory meet,",
+        "Waiting, like attentive Mary,",
+        "Happy at the Saviour's feet;",
+        "Keep us from the world unspotted,",
+        "From all earthly passions free,",
+        "Wholly to thyself devoted,",
+        "Fixed to live and die for thee."
+      ]
+    },
+    {
+      "lines": [
+        "Wrestling on in mighty prayer,",
+        "Lord, we will not let thee go,",
+        "Till thou all thy mind declare,",
+        "All thy grace on us bestow;",
+        "Peace, the seal of sin forgiven,",
+        "Joy, and perfect love, impart,",
+        "Present, everlasting heaven,",
+        "All thou hast, and all thou art!"
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to LUX EOI by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:530"
+}

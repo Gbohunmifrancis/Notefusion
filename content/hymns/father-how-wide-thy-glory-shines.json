@@ -1,0 +1,87 @@
+{
+  "title": "Father, How Wide Thy Glory Shines",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Father, How Wide Thy Glory Shines in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. John Wesley printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 263.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther, how wide thy glo-ry shines! How high thy won-ders rise! Known through the earth by thou-sand signs By thou-sands through the skies.",
+  "verses": [
+    {
+      "lines": [
+        "Father, how wide thy glory shines!",
+        "How high thy wonders rise!",
+        "Known through the earth by thousand signs",
+        "By thousands through the skies."
+      ]
+    },
+    {
+      "lines": [
+        "Those mighty orbs proclaim thy power,",
+        "Their motions speak thy skill;",
+        "And on the wings of every hour",
+        "We read thy patience still."
+      ]
+    },
+    {
+      "lines": [
+        "Part of thy name divinely stands",
+        "On all thy creatures writ;",
+        "They show the labour of thy hands,",
+        "Or impress of thy feet."
+      ]
+    },
+    {
+      "lines": [
+        "But when we view thy strange design",
+        "To save rebellious worms,",
+        "Where vengeance and compassion join",
+        "In their divinest forms;"
+      ]
+    },
+    {
+      "lines": [
+        "Here the whole Deity is known,",
+        "Nor dares a creature guess",
+        "Which of the glories brightest shone,",
+        "The justice, or the grace."
+      ]
+    },
+    {
+      "lines": [
+        "Now the full glories of the Lamb",
+        "Adorn the heavenly plains!",
+        "Bright seraphs learn Immanuel's name,",
+        "And try their choicest strains."
+      ]
+    },
+    {
+      "lines": [
+        "O may I bear some humble part",
+        "In that immortal song!",
+        "Wonder and joy shall tune my heart,",
+        "And love command my tongue."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:263"
+}

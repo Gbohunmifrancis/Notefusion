@@ -1,0 +1,47 @@
+{
+  "title": "Lord, in the Strength of Grace",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Lord, in the Strength of Grace in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 426.",
+    "The book printed the words without tunes. They are in Short Metre (6.6.8.6), and this page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Lord, in the strength of grace, With a glad heart and free, My-self, my re-si-due of days, I con-se-crate to thee.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, in the strength of grace,",
+        "With a glad heart and free,",
+        "Myself, my residue of days,",
+        "I consecrate to thee."
+      ]
+    },
+    {
+      "lines": [
+        "Thy ransomed servant, I",
+        "Restore to thee thy own;",
+        "And, from this moment, live or die",
+        "To serve my God alone."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:426"
+}

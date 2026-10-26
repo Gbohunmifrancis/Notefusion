@@ -1,0 +1,51 @@
+{
+  "title": "Captain of Israel's Host, and Guide",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Captain of Israel's Host, and Guide in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 326.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Cap-tain of Is-rael's host, and guide Of all who seek the land a-bove, Be-neath thy sha-dow we a-bide, The cloud of thy pro-tect-ing love; Our strength, thy grace; our rule, thy word; Our end, the glo-ry of the Lord.",
+  "verses": [
+    {
+      "lines": [
+        "Captain of Israel's host, and guide",
+        "Of all who seek the land above,",
+        "Beneath thy shadow we abide,",
+        "The cloud of thy protecting love;",
+        "Our strength, thy grace; our rule, thy word;",
+        "Our end, the glory of the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "By thine unerring Spirit led,",
+        "We shall not in the desert stray;",
+        "We shall not full direction need,",
+        "Nor miss our providential way;",
+        "As far from danger as from fear,",
+        "While love, almighty love, is near."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:326"
+}

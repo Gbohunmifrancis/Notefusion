@@ -1,0 +1,102 @@
+{
+  "title": "God of Unspotted Purity",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "God of Unspotted Purity in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 454. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "God of un-spot-ted pu-ri-ty, Us and our works canst thou be-hold! Just-ly we are ab-horred by thee, For we are nei-ther hot nor cold.",
+  "verses": [
+    {
+      "lines": [
+        "God of unspotted purity,",
+        "Us and our works canst thou behold!",
+        "Justly we are abhorred by thee,",
+        "For we are neither hot nor cold."
+      ]
+    },
+    {
+      "lines": [
+        "We call thee Lord, thy faith profess,",
+        "But do not from our hearts obey;",
+        "In soft Laodicean ease",
+        "We sleep our useless lives away."
+      ]
+    },
+    {
+      "lines": [
+        "We live in pleasure, and are dead,",
+        "In search of fame and wealth we live:",
+        "Commanded in thy steps to tread,",
+        "We seek sometimes, but never strive."
+      ]
+    },
+    {
+      "lines": [
+        "A lifeless form we still retain;",
+        "Of this we make our empty boast,",
+        "Nor know the name we take in vain;",
+        "The power of godliness is lost!"
+      ]
+    },
+    {
+      "lines": [
+        "How long, great God, have we appeared",
+        "Abominable in thy sight!",
+        "Better that we had never heard",
+        "Thy word, or seen the gospel light."
+      ]
+    },
+    {
+      "lines": [
+        "Better that we had never known",
+        "The way to heaven through saving grace,",
+        "Than basely in our lives disown,",
+        "And slight and mock thee to thy face."
+      ]
+    },
+    {
+      "lines": [
+        "Thou rather wouldst that we were cold,",
+        "Than seem to serve thee without zeal;",
+        "Less guilty if, with those of old,",
+        "We worshipped Thor and Woden still."
+      ]
+    },
+    {
+      "lines": [
+        "Less grievous will the judgment-day",
+        "To Sodom and Gomorrah prove,",
+        "Than us, who cast our faith away,",
+        "And trample on thy richer love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:454"
+}
