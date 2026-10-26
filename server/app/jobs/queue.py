@@ -502,6 +502,11 @@ class JobQueue:
         the take holds no voice, the mixture is read in chords mode instead (chords per beat, the
         top line as the tune), since a melody read of strummed or comped chords is only the
         highest note of each chord. ``result.read_as_chords`` then says so.
+
+        Polyphonic and chords mode want the instruments, so they are read from the mixture and the
+        vocals are never isolated: the vocal stem kept only the singer, so a saxophone or a piano
+        went out with the backing, and a section the singer was silent in came back with notes
+        only where the voice was.
         """
         from app.pipeline import separate
 
@@ -509,7 +514,9 @@ class JobQueue:
         # What the mixture is read as when the vocal stem is not used: the job's own mode, or chords
         # for a melody take that asked for it (see ``no_voice_as_chords`` above).
         mixture_mode = "chords" if no_voice_as_chords and mode == "melody" else mode
-        if separate.available():
+        if mode in _MIXTURE_MODES:
+            vocals, separated = wav, False
+        elif separate.available():
             job.stage = STAGE_SEPARATING
             try:
                 vocals = separate.separate_file(
@@ -824,6 +831,10 @@ def _offer_hymn(job: Job, mode: str) -> None:
         # One line per offer, for counting how often it fires; the hymn is public, the take is not named.
         logger.info("hymn_match job=%s hymn=%s kind=%s confidence=%.3f",
                     job.id[:8], found["slug"], found["kind"], found["confidence"])
+
+
+#: Modes that transcribe every instrument, so a song in them is read whole, never its vocal stem.
+_MIXTURE_MODES = ("poly", "chords")
 
 
 def _stem_min_notes(wav: Path) -> int:
