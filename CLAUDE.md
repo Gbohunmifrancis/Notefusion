@@ -132,7 +132,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   under a rendered band, through the MDX model; and 80 hymn tunes sung by a synthetic singer on simulated stems, which the
   model would hand to the piano; scored on the audio clock, syllables as read in each side's key; dev/test halves;
   baseline `song_baseline.json`, three openings in pytest; the 80 tunes it uses and the words each hymn-corpus tune is sung
-  with are frozen in `tests/accuracy/hymn_corpus_frozen.json`, so a new words page only adds cases). Linked songs
+  with are frozen in `tests/accuracy/hymn_corpus_frozen.json`, so a new words page only adds cases), and Afrobeats
+  (`report --songs --set afro`, `tests/accuracy/afro_songs.py`: 40 songs composed from their names in Afrobeats, amapiano
+  and highlife styles — syncopated sixteenth-note lines, chants, runs, call and response, ad-libs, auto-tune — over the
+  style's band, log drum and talking drum included; simulated stems; its own `afro_baseline.json`). Linked songs
   (`POST /v1/transcribe/link`: YouTube, Spotify, Apple Music) are fetched by `app/ingest/links.py`
   (oEmbed metadata + yt-dlp), vocal-isolated by `app/pipeline/separate.py` (MDX-Net ONNX, model
   baked into the image at `NF_MDX_MODEL_PATH`; one pass needs ~1.6 GB and the process keeps ~320 MB of it,
