@@ -1,4 +1,4 @@
-/* Live support's chat (assets/support.js), loaded on its first tap. Phone first: full screen under 600 px, inputs at
+/* Live support's panel (assets/support.js): Home, Messages (the chat) and Help on a tab bar, loaded on its first tap. Phone first: full screen under 600 px, inputs at
  * 16 px so iOS does not zoom, tap targets 44 px; a card at the bottom right above that. The button's own look is
  * inline in support.js so it is right before this file loads. */
 
@@ -11,6 +11,50 @@
   font: 400 1rem/1.45 var(--font-sans, system-ui, sans-serif);
 }
 .nf-support[hidden] { display: none; }
+.nf-support-view { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.nf-support-view[hidden] { display: none; }
+
+/* Home and Help: cards on a soft wash. */
+.nf-support-top { display: flex; justify-content: flex-end; padding: calc(8px + env(safe-area-inset-top)) 8px 0; }
+.nf-support-scroll { flex: 1; overflow-y: auto; padding: 8px 16px 16px; display: flex; flex-direction: column; gap: 14px; overscroll-behavior: contain; }
+.nf-support-card {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 18px 18px; text-align: left;
+  border: 1px solid var(--line, #e2e8f0); border-radius: 16px; background: var(--surface, #fff); color: inherit;
+  font: inherit; text-decoration: none; cursor: pointer; box-shadow: 0 6px 18px -12px rgba(15, 23, 42, 0.35);
+}
+button.nf-support-card:hover, a.nf-support-card:hover { border-color: #93c5fd; }
+.nf-support-card > span { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.nf-support-card strong { font-size: 1.05rem; }
+.nf-support-card > span > span { color: var(--muted, #64748b); font-size: 0.95rem; overflow-wrap: anywhere; }
+.nf-support-card svg { flex: none; }
+.nf-support-faq { flex-direction: column; align-items: stretch; gap: 4px; padding: 12px; cursor: default; }
+.nf-support-search { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 14px; border-radius: 12px; background: var(--wash, #f1f5f9); color: var(--muted, #64748b); }
+.nf-support .nf-support-search input { border: 0; background: transparent; padding: 10px 0; min-height: 44px; outline: none; }
+.nf-support-qs { list-style: none; margin: 0; padding: 0; }
+.nf-support-qs button, .nf-support-answer summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 48px;
+  padding: 10px 8px; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; border-radius: 10px;
+}
+.nf-support-qs button:hover, .nf-support-answer summary:hover { background: var(--wash, #f1f5f9); }
+.nf-support-follow, .nf-support-follow:visited { justify-content: space-between; font-weight: 600; color: var(--ink, #0f172a); }
+.nf-support-answers { display: flex; flex-direction: column; }
+.nf-support-answer { border-bottom: 1px solid var(--line, #e2e8f0); }
+.nf-support-answer summary { list-style: none; font-weight: 600; }
+.nf-support-answer summary::-webkit-details-marker { display: none; }
+.nf-support-answer summary svg { transition: transform 0.15s; }
+.nf-support-answer[open] summary svg { transform: rotate(90deg); }
+.nf-support-answer p { margin: 0 8px 14px; color: var(--muted, #475569); }
+.nf-support-none { margin: 8px; color: var(--muted, #64748b); }
+.nf-support-none[hidden] { display: none; }
+
+/* The tab bar. */
+.nf-support-tabs { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line, #e2e8f0); padding-bottom: env(safe-area-inset-bottom); background: var(--surface, #fff); }
+.nf-support-tabs button {
+  display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 60px; padding: 8px 4px;
+  border: 0; background: transparent; color: var(--muted, #64748b); font: inherit; font-size: 0.85rem; cursor: pointer;
+}
+.nf-support-tabs button.is-on { color: var(--ink, #0f172a); font-weight: 600; }
+.nf-support-tabs button:focus-visible, .nf-support-card:focus-visible, .nf-support-qs button:focus-visible, .nf-support-answer summary:focus-visible { outline: 3px solid #93c5fd; outline-offset: 2px; }
 
 .nf-support-head { display: flex; align-items: center; gap: 12px; padding: calc(12px + env(safe-area-inset-top)) 16px 12px; border-bottom: 1px solid var(--line, #e2e8f0); }
 .nf-support-head div { flex: 1; display: flex; flex-direction: column; }
@@ -29,7 +73,7 @@
 .nf-support-msg.is-them { align-self: flex-start; }
 .nf-support-msg.is-them p { background: var(--wash, #f1f5f9); border-bottom-left-radius: 4px; }
 
-.nf-support-form { border-top: 1px solid var(--line, #e2e8f0); padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 8px; }
+.nf-support-form { border-top: 1px solid var(--line, #e2e8f0); padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
 .nf-support-who { display: grid; gap: 8px; }
 .nf-support-who[hidden] { display: none; }
 .nf-support-row { display: flex; gap: 8px; align-items: flex-end; }
@@ -44,9 +88,10 @@
 
 @media (min-width: 600px) {
   .nf-support {
-    inset: auto 16px calc(84px + env(safe-area-inset-bottom)) auto; width: 380px; height: min(560px, calc(100dvh - 120px));
+    inset: auto 16px calc(84px + env(safe-area-inset-bottom)) auto; width: 380px; height: min(640px, calc(100dvh - 120px));
     border: 1px solid var(--line, #e2e8f0); border-radius: 16px; box-shadow: 0 24px 64px -16px rgba(15, 23, 42, 0.35); overflow: hidden;
   }
   .nf-support-head { padding-top: 12px; }
+  .nf-support-top { padding-top: 8px; }
   .nf-support-who { grid-template-columns: 1fr 1fr; }
 }

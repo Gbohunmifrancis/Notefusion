@@ -193,4 +193,36 @@ public class SupportChatTests
         await w.Say("One more thing", ada.Id, key: null, source: "web");
         Assert.False(w.H.Db.SupportConversations.Single(c => c.Id == account).IsClosed);
     }
+
+    [Fact]
+    public async Task The_typical_reply_time_is_the_median_wait_from_a_customers_first_unanswered_message()
+    {
+        using var w = new World();
+        async Task<int?> Typical() => (await new GetSupportInfoQueryHandler(w.H.Db, w.H.Clock).Handle(new GetSupportInfoQuery(), default)).Value.TypicalReplyMinutes;
+
+        // Four answered waits: not enough to promise anything yet.
+        var waits = new[] { 2, 4, 6, 100 };
+        for (var i = 0; i < waits.Length; i++)
+        {
+            var customer = w.Customer($"c{i}@example.com");
+            w.H.Clock.UtcNow = Now.AddHours(i);
+            await w.Say("Hello?", customer.Id, key: null);
+            w.H.Clock.UtcNow = w.H.Clock.UtcNow.AddMinutes(1);
+            await w.Say("Anyone there?", customer.Id, key: null);   // the wait runs from the first of the run
+            w.H.Clock.UtcNow = Now.AddHours(i).AddMinutes(waits[i]);
+            await w.Answer(w.H.Db.SupportConversations.Single(c => c.UserId == customer.Id).Id, "Here!");
+        }
+        Assert.Null(await Typical());
+
+        // A fifth: 2, 4, 6, 8 and 100 minutes, so typically 6.
+        var fifth = w.Customer("c5@example.com");
+        w.H.Clock.UtcNow = Now.AddHours(10);
+        await w.Say("Hi", fifth.Id, key: null);
+        w.H.Clock.UtcNow = Now.AddHours(10).AddMinutes(8);
+        await w.Answer(w.H.Db.SupportConversations.Single(c => c.UserId == fifth.Id).Id, "Hi!");
+        // An unanswered message changes nothing.
+        await w.Say("Thanks", fifth.Id, key: null);
+
+        Assert.Equal(6, await Typical());
+    }
 }
