@@ -1,0 +1,54 @@
+{
+  "title": "When Called, O Lord, to Mourn the Doom",
+  "tune": "saved-by-grace",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "When Called, O Lord, to Mourn the Doom in Tonic Solfa to SAVED BY GRACE, doh is F: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 615 of its twenty-second edition (1853), “\"Thy will be done.\"”.",
+    "The book printed the words without tunes, marked Long Metre Double (8.8.8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SAVED BY GRACE; any other Long Metre Double tune fits them as well."
+  ],
+  "underlay": "When called, O Lord, to mourn the doom Of one af-fec-tion held most dear, While o'er the clos-ing, si-lent tomb, The bleed-ing heart dis-tils the tear, Though love its tri-bute sure will pay, And ear-ly streams of so-lace shun, Still, still the hum-ble soul would say, In low-ly dust, \"Thy will be done.\"",
+  "verses": [
+    {
+      "lines": [
+        "When called, O Lord, to mourn the doom",
+        "Of one affection held most dear, —",
+        "While o'er the closing, silent tomb,",
+        "The bleeding heart distils the tear, —",
+        "Though love its tribute sure will pay,",
+        "And early streams of solace shun,",
+        "Still, still the humble soul would say,",
+        "In lowly dust, \"Thy will be done.\""
+      ]
+    },
+    {
+      "lines": [
+        "Whate'er, O Lord, thou hast designed",
+        "To bring my soul to thee in trust,",
+        "If miseries or afflictions kind, —",
+        "For all thy dealings, Lord, are just, —",
+        "Take all, but grant, in goodness free,",
+        "That love which ne'er thy stroke should shun;",
+        "Support this heart and strengthen me",
+        "To say in faith, \"Thy will be done.\""
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to SAVED BY GRACE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:615"
+}

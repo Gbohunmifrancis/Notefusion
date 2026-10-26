@@ -1,0 +1,55 @@
+{
+  "title": "Appointed by Thee, We Meet in Thy Name",
+  "tune": "lyons",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Appointed by Thee, We Meet in Thy Name in Tonic Solfa to LYONS, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 484.",
+    "The book printed the words without tunes. They are in 10.10.11.11, and this page sets them to LYONS; any other 10.10.11.11 tune fits them as well."
+  ],
+  "underlay": "Ap-point-ed by thee, We meet in thy name, And meek-ly a-gree To fol_-low the Lamb, To trace thy e-xam-ple, The world to dis-dain, And con-stant-ly tram-ple On plea_-sure and pain.",
+  "verses": [
+    {
+      "lines": [
+        "Appointed by thee, We meet in thy name,",
+        "And meekly agree To follow the Lamb,",
+        "To trace thy example, The world to disdain,",
+        "And constantly trample On pleasure and pain."
+      ]
+    },
+    {
+      "lines": [
+        "Rejoicing, in hope, we humbly go on,",
+        "And daily take up The pledge of our crown;",
+        "In doing and bearing The will of our Lord,",
+        "We still are preparing To meet our reward."
+      ]
+    },
+    {
+      "lines": [
+        "O Jesus, appear! No longer delay",
+        "To sanctify here, And bear us away,",
+        "The end of our meeting On earth let us see,",
+        "Triumphantly sitting In glory with thee!"
+      ]
+    }
+  ],
+  "metre": "10 10 11 11",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to LYONS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:484"
+}

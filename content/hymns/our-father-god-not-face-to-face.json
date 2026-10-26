@@ -1,0 +1,67 @@
+{
+  "title": "Our Father God! Not Face to Face",
+  "tune": "higher-ground",
+  "text": [
+    {
+      "name": "Edwin Hubbell Chapin",
+      "born": 1814,
+      "died": 1880,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Our Father God! Not Face to Face in Tonic Solfa to HIGHER GROUND, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Edwin Hubbell Chapin wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 487, “The Gate of Heaven”.",
+    "The book printed the words without tunes, marked Long Metre Double (8.8.8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to HIGHER GROUND; any other Long Metre Double tune fits them as well."
+  ],
+  "underlay": "Our Fa-ther God! not face to face May mor-tal sense com-mune with Thee, Nor lift the cur-tains of that place Where dwells Thy se-cret Maj-es-ty. Yet whe-re-so'er our spi-rits bend In rev'-rent faith and hum-ble prayer, Thy pro-mised bless-ing will de-scend, And we shall find Thy spir-it there.",
+  "verses": [
+    {
+      "lines": [
+        "Our Father God! not face to face",
+        "May mortal sense commune with Thee,",
+        "Nor lift the curtains of that place",
+        "Where dwells Thy secret Majesty.",
+        "Yet whereso'er our spirits bend",
+        "In rev'rent faith and humble prayer,",
+        "Thy promised blessing will descend,",
+        "And we shall find Thy spirit there."
+      ]
+    },
+    {
+      "lines": [
+        "Lord! be the spot where now we meet",
+        "An open gateway into heaven;",
+        "Here may we sit at Jesus' feet,",
+        "And feel our deepest sins forgiven.",
+        "Here may desponding care look up;",
+        "And sorrow lay its burden down,",
+        "Or learn, of him, to drink the cup,",
+        "To bear the cross, and win the crown."
+      ]
+    },
+    {
+      "lines": [
+        "Here may the sick and wandering soul",
+        "To truth still blind, to sin a slave,",
+        "Find better than Bethesda's pool,",
+        "Or than Siloam's healing wave.",
+        "And may we learn, while here apart",
+        "From the world's passion and its strife;",
+        "That Thy true shrine's a loving heart,",
+        "And Thy best praise a holy life!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Edwin Hubbell Chapin died in 1880.",
+  "credits": "Words by Edwin Hubbell Chapin (1814–1880), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to HIGHER GROUND by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:487"
+}

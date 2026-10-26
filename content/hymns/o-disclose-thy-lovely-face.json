@@ -1,5 +1,5 @@
 {
-  "title": "O DISCLOSE Thy Lovely Face",
+  "title": "O Disclose Thy Lovely Face",
   "tune": "spanish-hymn",
   "text": [
     {
@@ -18,16 +18,16 @@
   "textPublished": 1780,
   "textPublishedBy": true,
   "textOneOf": true,
-  "description": "O DISCLOSE Thy Lovely Face in Tonic Solfa to SPANISH HYMN, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "description": "O Disclose Thy Lovely Face in Tonic Solfa to SPANISH HYMN, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
   "about": [
     "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 156. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
     "The book printed the words without tunes. They are in Sevens, six lines (7.7.7.7.7.7), and this page sets them to SPANISH HYMN; any other Sevens, six lines tune fits them as well."
   ],
-  "underlay": "O DIS-CLOSE thy love-ly face! Quick-en all my droop-ing powers; Gasps my faint-ing soul for grace, As a thirst-y land for showers; Haste, my Lord, no more de-lay, Come, my Sa-viour, come a-way!",
+  "underlay": "O dis-close thy love-ly face! Quick-en all my droop-ing powers; Gasps my faint-ing soul for grace, As a thirst-y land for showers; Haste, my Lord, no more de-lay, Come, my Sa-viour, come a-way!",
   "verses": [
     {
       "lines": [
-        "O DISCLOSE thy lovely face!",
+        "O disclose thy lovely face!",
         "Quicken all my drooping powers;",
         "Gasps my fainting soul for grace,",
         "As a thirsty land for showers;",

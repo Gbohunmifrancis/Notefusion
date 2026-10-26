@@ -1,0 +1,67 @@
+{
+  "title": "The Thing My God Doth Hate",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "The Thing My God Doth Hate in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 340.",
+    "The book printed the words without tunes. They are in Short Metre Double (6.6.8.6.6.6.8.6), and this page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "The thing my God doth hate That I no more may do, Thy crea-ture, Lord, a-gain cre_-ate, And all my soul re-new; My soul shall then, like thine, Ab-hor the thing un-clean, And, sanc-ti-fied by love di-vine, For ev-er cease from sin.",
+  "verses": [
+    {
+      "lines": [
+        "The thing my God doth hate",
+        "That I no more may do,",
+        "Thy creature, Lord, again create,",
+        "And all my soul renew;",
+        "My soul shall then, like thine,",
+        "Abhor the thing unclean,",
+        "And, sanctified by love divine,",
+        "For ever cease from sin."
+      ]
+    },
+    {
+      "lines": [
+        "That blessed law of thine,",
+        "Jesus, to me impart;",
+        "The Spirit's law of life divine,",
+        "O write it in my heart!",
+        "Implant it deep within,",
+        "Whence it may ne'er remove,",
+        "The law of liberty from sin,",
+        "The perfect law of love."
+      ]
+    },
+    {
+      "lines": [
+        "Thy nature be my law,",
+        "Thy spotless sanctity,",
+        "And sweetly every moment draw",
+        "My happy soul to thee.",
+        "Soul of my soul remain!",
+        "Who didst for all fulfil,",
+        "In me, O Lord, fulfil again",
+        "Thy heavenly Father's will!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:340"
+}

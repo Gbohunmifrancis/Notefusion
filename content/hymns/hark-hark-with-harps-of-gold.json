@@ -1,0 +1,79 @@
+{
+  "title": "Hark! Hark! with Harps of Gold",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Edwin Hubbell Chapin",
+      "born": 1814,
+      "died": 1880,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Hark! Hark! with Harps of Gold in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Edwin Hubbell Chapin wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 203 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Short Metre Double (6.6.8.6.6.6.8.6), to be sung to any tune of that metre. This page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "Hark! hark! with harps of gold, What an-them do they sing? The ra-diant clouds have back-ward_ rolled, And an-gels smite the string. \"Glo-ry to God!\" bright wings Spread glist'n-ing and a-far, And on the hal-lowed rap-ture rings From cir-cling star to star.",
+  "verses": [
+    {
+      "lines": [
+        "Hark! hark! with harps of gold,",
+        "What anthem do they sing? —",
+        "The radiant clouds have backward rolled,",
+        "And angels smite the string.",
+        "\"Glory to God!\" — bright wings",
+        "Spread glist'ning and afar,",
+        "And on the hallowed rapture rings",
+        "From circling star to star."
+      ]
+    },
+    {
+      "lines": [
+        "\"Glory to God!\" repeat",
+        "The glad earth and the sea;",
+        "And every wind and billow fleet,",
+        "Bears on the jubilee.",
+        "Where Hebrew bard hath sung,",
+        "Or Hebrew seer hath trod,",
+        "Each holy spot has found a tongue;",
+        "\"Let glory be to God.\""
+      ]
+    },
+    {
+      "lines": [
+        "Soft swells the music now",
+        "Along that shining choir,",
+        "And every seraph bends his brow",
+        "And breathes above his lyre.",
+        "What words of heavenly birth",
+        "Thrill deep our hearts again,",
+        "And fall like dew-drops to the earth?",
+        "\"Peace and good-will to men!\""
+      ]
+    },
+    {
+      "lines": [
+        "Soft! — yet the soul is bound",
+        "With rapture, like a chain:",
+        "Earth, vocal, whispers them around,",
+        "And heav'n repeats the strain.",
+        "Sound, harps, and hail the morn",
+        "With ev'ry golden string; —",
+        "For unto us this day is born",
+        "A Saviour and a King!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Edwin Hubbell Chapin died in 1880.",
+  "credits": "Words by Edwin Hubbell Chapin (1814–1880), public domain, as printed in Hymns for Christian Devotion (1853); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:203"
+}

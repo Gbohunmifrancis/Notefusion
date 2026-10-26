@@ -1,0 +1,67 @@
+{
+  "title": "My God! All Nature Owns Thy Sway",
+  "tune": "higher-ground",
+  "text": [
+    {
+      "name": "Helen Maria Williams",
+      "born": 1759,
+      "died": 1827,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "My God! All Nature Owns Thy Sway in Tonic Solfa to HIGHER GROUND, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Helen Maria Williams wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 86, “God in Nature”.",
+    "The book printed the words without tunes, marked Long Metre Double (8.8.8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to HIGHER GROUND; any other Long Metre Double tune fits them as well."
+  ],
+  "underlay": "My God! all na-ture owns Thy sway; Thou giv'st the night and Thou the day: When all Thy loved cre-a-tion wakes, When morn-ing, rich in lus-tre, breaks, And bathes in dew th'o-pening flo-wer, To Thee we owe her fra-grant hour; And when she pours her cho-ral song, Her me-lo-dies to Thee be-long.",
+  "verses": [
+    {
+      "lines": [
+        "My God! all nature owns Thy sway;",
+        "Thou giv'st the night and Thou the day:",
+        "When all Thy loved creation wakes,",
+        "When morning, rich in lustre, breaks,",
+        "And bathes in dew the opening flower,",
+        "To Thee we owe her fragrant hour;",
+        "And when she pours her choral song,",
+        "Her melodies to Thee belong."
+      ]
+    },
+    {
+      "lines": [
+        "Or when, in paler tints arrayed,",
+        "The evening slowly spreads her shade,",
+        "That soothing shade, that grateful gloom,",
+        "Can, more than day's enlivening bloom,",
+        "Still every fond and vain desire,",
+        "And calmer, purer thoughts inspire;",
+        "From earth the longing spirit free,",
+        "And lead the softened heart to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "As o'er Thy work the seasons roll,",
+        "And soothe, with change of bliss, the soul,",
+        "O, never may their smiling train",
+        "Pass o'er the human sense in vain!",
+        "But, oft as on their charms we gaze,",
+        "Attune the wondering soul to praise;",
+        "And be the joys that most we prize",
+        "The joys that from Thy favor rise!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Helen Maria Williams died in 1827.",
+  "credits": "Words by Helen Maria Williams (1759–1827), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to HIGHER GROUND by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:86"
+}

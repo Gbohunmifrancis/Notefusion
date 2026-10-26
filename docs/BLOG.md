@@ -457,9 +457,16 @@ node tools/blog/import/words-books.mjs --book olney --src /tmp/olney/olney.txt -
 ```
 
 The metre is the book's label read with the verse's length ("8 & 7s" or "8s. & 7s." in eight lines is 8.7.8.7 D; "L. M.
-6l." is 8.8.8.8.8.8; "P. M." and "(Peculiar.)" give none), set to a tune of that metre from `METRES` in the importer
-(Common, Long and Short Metre share Watts' tunes; 7s, 8.7s, 7.6 D, 10s, 11.10s, 6.6.4.6.6.6.4, H.M. and the doubles have
-their own). The books name most authors by surname: `AUTHORS` names those we can place, in full with their dates,
+6l." is 8.8.8.8.8.8; "C. P. M." 8.8.6.8.8.6; "H. M." in eight lines 6.6.6.6.4.4.4.4, its 8s halved; "P. M." and
+"(Peculiar.)" give none, since their lines vary too much to guess), set to a tune of that metre from `METRES` in the
+importer (Common, Long and Short Metre share Watts' tunes; 7s, 8.7s, 7.6 D, 10s, 11.10s, 6.6.4.6.6.6.4, H.M., the doubles,
+11s, C.P.M., the chorale metres and the rest have their own). A tune list is only ever added to as a new metre, never
+changed, so a published page keeps its tune.
+
+A tune that holds a syllable over two notes somewhere (a slur) is used too: `tuneShape` reads its slurs off its own words
+on our site, a published hymn page (not one set by metre) whose first verse has the metre's lines, and the new words are
+held at the same syllable ("re-turn_,"), as every verse of a hymn book is sung to the same slurs. A tune with a note a
+syllable needs none; one without such a page is not used. The books name most authors by surname: `AUTHORS` names those we can place, in full with their dates,
 matching the people already on our pages ("Tate & Brady" is both; ", alt." marks words the compilers changed); a surname
 that could be more than one writer, and a hymn translated by someone the book does not name (Breviary, German, Luther,
 Neale…), is left out. "Anonymous" and the collections the books cite stand as `Anonymous`, and the page says which
@@ -493,8 +500,13 @@ printed in a book the brothers published together (which of them wrote it the bo
 words are the hymn's own, and a writer only when the scans agree (`wesleyWriters`); a hymn they do not settle is left out.
 
 Every book is held to the stresses of its tunes: the 8.7 metres' tunes we hold are trochaic, so words whose 8-syllable
-lines mostly end on a stressed syllable ("Alas, my God! my sins are great") are iambs and are left out
-(`iambsOnTrochees`), rather than sung with every stress wrong.
+lines mostly end on a stressed syllable ("Alas, my God! my sins are great") are iambs (`iambsOnTrochees`). They go to the
+metre's iambic tunes where it has some (`METRES["8 7 8 7"].iambs`, DOMINUS REGIT ME) and are otherwise left out, rather than
+sung with every stress wrong. The iambic metres added with slurred tunes (Long and Short Metre Double, eight-line H.M.,
+C.P.M., the iambic chorale metres) also refuse words whose two-syllable trochees ("SOR-row", "GLAD-ness") start off the beat
+in more than one line in eight (`offBeat`): anapaests ("Away with our sorrow and fear") and trochees ("Deck thyself, my
+soul, with gladness") that a book printed as eights. JESUS SAVES was tried for 7.6.7.6.7.7.7.6 and dropped: its 6-syllable lines stress the third
+syllable, where Olney's and Wesley's iambic 6s fall light.
 
 A hymn several books print is the first book's page, in `SET_BY_METRE_ORDER` (watts.mjs): Watts' hymns, his psalms,
 Olney, the 1848 book, the 1846 book, Brownlie's, the 1927 Lutheran book, then Wesley's Collection. Each importer leaves alone what is hand-set or in a book before it and takes no notice of the

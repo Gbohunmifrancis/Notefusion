@@ -1,0 +1,55 @@
+{
+  "title": "Not Only Doth the Voiceful Day",
+  "tune": "saved-by-grace",
+  "text": [
+    {
+      "name": "William Henry Burleigh",
+      "born": 1812,
+      "died": 1871,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Not Only Doth the Voiceful Day in Tonic Solfa to SAVED BY GRACE, doh is F: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "William Henry Burleigh wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 89, “The Heavens Declare the Glory of God”.",
+    "The book printed the words without tunes, marked Long Metre Double (8.8.8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SAVED BY GRACE; any other Long Metre Double tune fits them as well."
+  ],
+  "underlay": "Not on-ly doth the voice-ful day Thy lov-ing kind-ness, Lord! pro-claim, But night, with its sub-lime ar-ray Of worlds, doth mag-ni-fy Thy name. Yea, while a-dor-ing ser-a-phim Be-fore Thee bend the will-ing knee, From ev-ery star a cho-ral hymn Goes up un-ceas-ing-ly to Thee.",
+  "verses": [
+    {
+      "lines": [
+        "Not only doth the voiceful day",
+        "Thy loving kindness, Lord! proclaim,",
+        "But night, with its sublime array",
+        "Of worlds, doth magnify Thy name.",
+        "Yea, while adoring seraphim",
+        "Before Thee bend the willing knee,",
+        "From every star a choral hymn",
+        "Goes up unceasingly to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Day unto day doth utter speech,",
+        "And night to night Thy voice makes known;",
+        "Through all the earth, where thought may reach,",
+        "Is heard the glad and solemn tone;",
+        "And worlds, beyond the farthest star",
+        "Whose light hath reached a human eye,",
+        "Catch the high anthem from afar,",
+        "That rolls along immensity."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Henry Burleigh died in 1871.",
+  "credits": "Words by William Henry Burleigh (1812–1871), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to SAVED BY GRACE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:89"
+}

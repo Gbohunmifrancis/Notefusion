@@ -1,0 +1,86 @@
+{
+  "title": "Ah Whither Should I Go",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Ah Whither Should I Go in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 152. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Short Metre Double (6.6.8.6.6.6.8.6), and this page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "Ah whith-er should I go, Bur-dened, and sick, and faint? To whom should I my trou-bles_ show, And pour out my com-plaint? My Sa-viour bids me come, Ah! why do I de-lay? He calls the wea-ry sin-ner home, And yet from him I stay!",
+  "verses": [
+    {
+      "lines": [
+        "Ah whither should I go,",
+        "Burdened, and sick, and faint?",
+        "To whom should I my troubles show,",
+        "And pour out my complaint?",
+        "My Saviour bids me come,",
+        "Ah! why do I delay?",
+        "He calls the weary sinner home,",
+        "And yet from him I stay!"
+      ]
+    },
+    {
+      "lines": [
+        "What is it keeps me back,",
+        "From which I cannot part,",
+        "Which will not let my Saviour take,",
+        "Possession of my heart?",
+        "Some cursed thing unknown",
+        "Must surely lurk within,",
+        "Some idol, which I will not own,",
+        "Some secret bosom-sin."
+      ]
+    },
+    {
+      "lines": [
+        "Jesu, the hindrance show,",
+        "Which I have feared to see:",
+        "Yet let me now consent to know",
+        "What keeps me out of thee:",
+        "Searcher of hearts, in mine",
+        "Thy trying power display;",
+        "Into its darkest corners shine,",
+        "And take the veil away."
+      ]
+    },
+    {
+      "lines": [
+        "I now believe in thee",
+        "Compassion reigns alone;",
+        "According to my faith to me",
+        "O let it, Lord, be done!",
+        "In me is all the bar,",
+        "Which thou wouldst fain remove;",
+        "Remove it, and I shall declare",
+        "That God is only love."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:152"
+}

@@ -1,0 +1,97 @@
+{
+  "title": "O God, Forsake Me Not",
+  "tune": "was-frag-ich-nach-der-welt",
+  "text": [
+    {
+      "name": "Salomo Franck",
+      "born": 1659,
+      "died": 1725,
+      "role": "Words"
+    },
+    {
+      "name": "August Crull",
+      "born": 1845,
+      "died": 1923,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "O God, Forsake Me Not in Tonic Solfa to WAS FRAG ICH NACH DER WELT, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Salomo Franck wrote these words in German. August Crull's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 347.",
+    "The book printed the words without tunes, marked 6.7.6.7.6.6.6.6, to be sung to any tune of that metre. This page sets them to WAS FRAG ICH NACH DER WELT; any other 6.7.6.7.6.6.6.6 tune fits them as well."
+  ],
+  "underlay": "O God, for-sake me not! Thy gra-cious pre-sence lend_ me; Lead Thou Thy help-less child, Thy Ho-ly Spir-it send_ me That I my course may run. Be Thou my Light, my Lot, My Staff, my Rock, my Shield,— O God, for-sake me not!",
+  "verses": [
+    {
+      "lines": [
+        "O God, forsake me not!",
+        "Thy gracious presence lend me;",
+        "Lead Thou Thy helpless child,",
+        "Thy Holy Spirit send me",
+        "That I my course may run.",
+        "Be Thou my Light, my Lot,",
+        "My Staff, my Rock, my Shield,—",
+        "O God, forsake me not!"
+      ]
+    },
+    {
+      "lines": [
+        "O God, forsake me not!",
+        "Take not Thy Spirit from me",
+        "And suffer not the might",
+        "Of sin to overcome me;",
+        "Increase my feeble faith,",
+        "Which Thou Thyself hast wrought;",
+        "Be Thou my Strength and Power,—",
+        "O God, forsake me not!"
+      ]
+    },
+    {
+      "lines": [
+        "O God, forsake me not!",
+        "Lord, hear my supplication!",
+        "In every evil hour",
+        "Help me o’ercome temptation;",
+        "And when the Prince of hell",
+        "My conscience seeks to blot,",
+        "Be Thou not far from me,—",
+        "O God, forsake me not!"
+      ]
+    },
+    {
+      "lines": [
+        "O God, forsake me not!",
+        "Thy mercy I’m addressing;",
+        "O Father, God of Love,",
+        "Grant me Thy heavenly blessing",
+        "To do the duty which",
+        "To me Thou didst allot,",
+        "To do what pleaseth Thee,—",
+        "O God, forsake me not!"
+      ]
+    },
+    {
+      "lines": [
+        "O God, forsake me not!",
+        "Lord, I am Thine forever.",
+        "Grant me true faith in Thee;",
+        "Grant that I leave Thee never;",
+        "Grant me a blessed end",
+        "When my good fight is fought,",
+        "Help me in life and death,—",
+        "O God, forsake me not!"
+      ]
+    }
+  ],
+  "metre": "6 7 6 7 6 6 6 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Salomo Franck died in 1725; August Crull died in 1923.",
+  "credits": "Words by Salomo Franck (1659–1725), translated by August Crull (1845–1923), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to WAS FRAG ICH NACH DER WELT by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:347"
+}

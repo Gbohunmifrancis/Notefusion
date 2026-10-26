@@ -1,0 +1,67 @@
+{
+  "title": "Jesu, We Look to Thee",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Jesu, We Look to Thee in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 485.",
+    "The book printed the words without tunes. They are in Short Metre Double (6.6.8.6.6.6.8.6), and this page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "Je-su, we look to thee, Thy pro-mised pre-sence claim! Thou in the midst of us shalt_ be, As-sem-bled in thy name: Thy name sal-va-tion is, Which here we come to prove; Thy name is life, and health, and peace, And ev-er-last-ing love.",
+  "verses": [
+    {
+      "lines": [
+        "Jesu, we look to thee,",
+        "Thy promised presence claim!",
+        "Thou in the midst of us shalt be,",
+        "Assembled in thy name:",
+        "Thy name salvation is,",
+        "Which here we come to prove;",
+        "Thy name is life, and health, and peace,",
+        "And everlasting love."
+      ]
+    },
+    {
+      "lines": [
+        "Not in the name of pride",
+        "Or selfishness we meet;",
+        "From nature's paths we turn aside,",
+        "And worldly thoughts forget.",
+        "We meet, the grace to take",
+        "Which thou hast freely given;",
+        "We meet on earth for thy dear sake,",
+        "That we may meet in heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Present we know thou art,",
+        "But O thyself reveal!",
+        "Now, Lord, let every bounding heart",
+        "The mighty comfort feel.",
+        "O may thy quickening voice",
+        "The death of sin remove;",
+        "And bid our inmost souls rejoice",
+        "In hope of perfect love!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:485"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "Savior, I Follow on",
+  "tune": "st-edmund-sullivan",
+  "text": [
+    {
+      "name": "Charles Seymour Robinson",
+      "born": 1829,
+      "died": 1899,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Savior, I Follow on in Tonic Solfa to ST. EDMUND (SULLIVAN), doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Seymour Robinson wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 337.",
+    "The book printed the words without tunes, marked 6.4.6.4.6.6.6.4, to be sung to any tune of that metre. This page sets them to ST. EDMUND (SULLIVAN); any other 6.4.6.4.6.6.6.4 tune fits them as well."
+  ],
+  "underlay": "Sa-vior, I fol-low on, Guid-ed by Thee, See-ing not yet the hand That lead-eth me. Hushed be my heart and still, Fear I no fur-ther ill, On-ly to meet Thy will_ My will shall be.",
+  "verses": [
+    {
+      "lines": [
+        "Savior, I follow on,",
+        "Guided by Thee,",
+        "Seeing not yet the hand",
+        "That leadeth me.",
+        "Hushed be my heart and still,",
+        "Fear I no further ill,",
+        "Only to meet Thy will",
+        "My will shall be."
+      ]
+    },
+    {
+      "lines": [
+        "Riven the rock for me",
+        "Thirst to relieve,",
+        "Manna from heaven falls",
+        "Fresh every eve;",
+        "Never a want severe",
+        "Causeth my eye a tear",
+        "But Thou dost whisper near,",
+        "“Only believe!”"
+      ]
+    },
+    {
+      "lines": [
+        "Often to Marah’s brink",
+        "Have I been brought;",
+        "Shrinking the cup to drink,",
+        "Help I have sought;",
+        "And with the prayer’s ascent",
+        "Jesus the branch hath rent,",
+        "Quickly relief hath sent,",
+        "Sweetening the draught."
+      ]
+    },
+    {
+      "lines": [
+        "Savior, I long to walk",
+        "Closer with Thee;",
+        "Led by Thy guiding hand,",
+        "Ever to be",
+        "Constantly near Thy side,",
+        "Quickened and purified,",
+        "Living for Him who died",
+        "Freely for me."
+      ]
+    }
+  ],
+  "metre": "6 4 6 4 6 6 6 4",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Charles Seymour Robinson died in 1899.",
+  "credits": "Words by Charles Seymour Robinson (1829–1899), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ST. EDMUND (SULLIVAN) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:337"
+}

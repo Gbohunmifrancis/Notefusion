@@ -1,0 +1,67 @@
+{
+  "title": "All, from the Sun's Uprise",
+  "tune": "darwall",
+  "text": [
+    {
+      "name": "George Sandys",
+      "born": 1578,
+      "died": 1644,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "All, from the Sun's Uprise in Tonic Solfa to DARWALL, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "George Sandys wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 495, “Praise Ye the Lord”.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.4.4.4.4), to be sung to any tune of that metre. This page sets them to DARWALL; any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "All, from the sun's up-rise Un-to his set-ting rays, Re-sound in ju-bi-lees The great Cre-a-tor's praise! Him serve a-lone; In tri-umph bring Your gifts, and sing Be-fore His throne!",
+  "verses": [
+    {
+      "lines": [
+        "All, from the sun's uprise",
+        "Unto his setting rays,",
+        "Resound in jubilees",
+        "The great Creator's praise!",
+        "Him serve alone;",
+        "In triumph bring",
+        "Your gifts, and sing",
+        "Before His throne!"
+      ]
+    },
+    {
+      "lines": [
+        "Man drew from man his birth;",
+        "But God his noble frame,",
+        "(Built of the ruddy earth,)",
+        "Filled with celestial flame.",
+        "His sons we are,",
+        "By Him are led,",
+        "Preserved and fed",
+        "With tender care."
+      ]
+    },
+    {
+      "lines": [
+        "Then to His portals press",
+        "In your divine resorts;",
+        "With thanks His power profess,",
+        "And praise Him in His courts.",
+        "How good! how pure!",
+        "His mercies last;",
+        "His promise past",
+        "Is ever sure."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 4 4 4 4",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: George Sandys died in 1644.",
+  "credits": "Words by George Sandys (1578–1644), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to DARWALL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:495"
+}

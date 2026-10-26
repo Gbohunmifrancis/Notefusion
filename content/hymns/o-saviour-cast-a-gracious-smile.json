@@ -1,0 +1,81 @@
+{
+  "title": "O Saviour, Cast a Gracious Smile",
+  "tune": "holy-matrimony",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "O Saviour, Cast a Gracious Smile in Tonic Solfa to HOLY MATRIMONY, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 528.",
+    "The book printed the words without tunes. They are in Common Particular Metre (8.8.6.8.8.6), and this page sets them to HOLY MATRIMONY; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "O Sa-viour, cast a gra-cious smile! Our gloo-my guilt, and self-ish guile, And shy dis-trust re-move; The true sim-plic-i-ty im-part, To fash-ion ev-ery pas-sive heart, And mould it in-to love.",
+  "verses": [
+    {
+      "lines": [
+        "O Saviour, cast a gracious smile!",
+        "Our gloomy guilt, and selfish guile,",
+        "And shy distrust remove;",
+        "The true simplicity impart,",
+        "To fashion every passive heart,",
+        "And mould it into love."
+      ]
+    },
+    {
+      "lines": [
+        "Our naked hearts to thee we raise;",
+        "Whate'er obstructs thy work of grace,",
+        "For ever drive it hence;",
+        "Exert thy all-subduing power,",
+        "And each regenerate soul restore",
+        "To child-like innocence."
+      ]
+    },
+    {
+      "lines": [
+        "Soon as in thee we gain a part,",
+        "Our spirit purged from nature's art",
+        "Appears, by grace forgiven;",
+        "We then pursue our sole design,",
+        "To lose our melting will in thine,",
+        "And want no other heaven."
+      ]
+    },
+    {
+      "lines": [
+        "O that we now the power might feel",
+        "To do on earth thy blessed will,",
+        "As angels do above!",
+        "In thee, the Life, the Truth, the Way,",
+        "To walk, and perfectly to obey",
+        "Thy sweet constraining love!"
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, fulfil our one desire,",
+        "And spread the spark of living fire",
+        "Through every hallowed breast;",
+        "Bless with divine conformity,",
+        "And give us now to find in thee",
+        "Our everlasting rest."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to HOLY MATRIMONY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:528"
+}

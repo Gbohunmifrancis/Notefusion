@@ -1,0 +1,76 @@
+{
+  "title": "At Early Dawn, with Pious Thought",
+  "tune": "meribah",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "At Early Dawn, with Pious Thought in Tonic Solfa to MERIBAH, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904), headed “Centos And Suggestions”.",
+    "The book printed the words without tunes. They are in Common Particular Metre (8.8.6.8.8.6), and this page sets them to MERIBAH; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "At ear-ly dawn, with pi-ous thought, The ho-ly wo-men spi-ces brought For Christ, their Lord, was dead; But lo! the stone was rolled a-way: \"Where are the seals?\" they won-dering say, \"The guard, where He was laid?\"",
+  "verses": [
+    {
+      "lines": [
+        "At early dawn, with pious thought,",
+        "The holy women spices brought —",
+        "For Christ, their Lord, was dead; —",
+        "But lo! the stone was rolled away:",
+        "\"Where are the seals?\" they wondering say,",
+        "\"The guard, where He was laid?\""
+      ]
+    },
+    {
+      "lines": [
+        "\"Why with your ointments mix your tears?",
+        "Why all this sighing, and those fears?\"",
+        "An angel near declares:",
+        "\"There lies the stone that barred the tomb,",
+        "No longer now its solemn gloom",
+        "Your Lord and Master shares.\""
+      ]
+    },
+    {
+      "lines": [
+        "\"Haste, haste with joy the tidings tell,",
+        "The Lord hath vanquished death and hell,",
+        "For He, the Death of death,",
+        "Hath burst asunder hades prison,",
+        "And, first-born from the dead hath risen,",
+        "Even as afore He saith.\""
+      ]
+    },
+    {
+      "lines": [
+        "Honour to Thee, O Christ, we bring,",
+        "Thy glorious rising now we sing,",
+        "Victorious is Thy strife;",
+        "Our Hope, our Trust, on Thee we call,",
+        "Our Joy, our Strength, our God, our All,",
+        "And our Immortal Life."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to MERIBAH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:20"
+}

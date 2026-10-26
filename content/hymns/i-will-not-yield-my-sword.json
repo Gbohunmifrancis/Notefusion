@@ -1,0 +1,84 @@
+{
+  "title": "I Will Not Yield My Sword",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "I Will Not Yield My Sword in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911), headed “Where gladness fills each heart, etc”.",
+    "The book printed the words without tunes. They are in Short Metre Double (6.6.8.6.6.6.8.6), and this page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "I will not yield my sword, I will not bow the knee, But I would hear the bless-ed_ word That calls my soul to Thee; And through the din of war, And in the midst of strife, That word shall be the gui-ding star To lead me on to life.",
+  "verses": [
+    {
+      "lines": [
+        "I will not yield my sword,",
+        "I will not bow the knee,",
+        "But I would hear the blessed word",
+        "That calls my soul to Thee;",
+        "And through the din of war,",
+        "And in the midst of strife,",
+        "That word shall be the guiding star",
+        "To lead me on to life."
+      ]
+    },
+    {
+      "lines": [
+        "And in the midst of snares",
+        "Which subtle fingers lay,",
+        "I shall not stumble unawares",
+        "Upon the upward way;",
+        "But keep before my eyes",
+        "The goal before me set,",
+        "Lest I should miss the glorious prize",
+        "Which loyal victors get."
+      ]
+    },
+    {
+      "lines": [
+        "O Christ, Who art my King,",
+        "Thy cause I make mine own,",
+        "Till proud rebellious foes shall bring",
+        "Their homage to Thy throne;",
+        "Till then my heart revive",
+        "With courage brave and strong,",
+        "And steel my feeble arm to strive",
+        "Against the power of wrong."
+      ]
+    },
+    {
+      "lines": [
+        "When from the fateful field",
+        "I hail my rightful King,",
+        "To Him my trusty sword I'll yield,",
+        "And all my trophies bring;",
+        "And He shall crown my head",
+        "With honours richer far",
+        "Than trophies from the conquered dead,",
+        "And all the spoils of war."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:69"
+}

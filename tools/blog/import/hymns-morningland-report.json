@@ -171,6 +171,13 @@
       "author": "Traditional Greek and John Brownlie"
     },
     {
+      "ref": "41",
+      "slug": "light-of-my-life-o-lord-thou-art",
+      "metre": "8 8 6 8 8 6",
+      "tune": "meribah",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
       "ref": "46",
       "slug": "now-with-my-weeping-would-i-cleanse-my-soul",
       "metre": "10 10 10 10",
@@ -182,6 +189,13 @@
       "slug": "o-god-of-love-on-bended-knee",
       "metre": "8 8 8 8",
       "tune": "old-hundredth",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "48",
+      "slug": "o-god-in-mercy-hear",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
       "author": "Traditional Greek and John Brownlie"
     },
     {
@@ -297,6 +311,13 @@
       "author": "Traditional Greek and John Brownlie"
     },
     {
+      "ref": "69",
+      "slug": "i-will-not-yield-my-sword",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
       "ref": "70",
       "slug": "if-in-the-cause-of-right-i-must",
       "metre": "8 6 8 6",
@@ -332,6 +353,13 @@
       "author": "Traditional Greek and John Brownlie"
     },
     {
+      "ref": "75",
+      "slug": "to-thee-my-soul-enraptured-sings",
+      "metre": "8 8 6 8 8 6",
+      "tune": "holy-matrimony",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
       "ref": "76",
       "slug": "christ-the-word-thine-incarnation",
       "metre": "8 7 8 7 8 7 8 7",
@@ -359,7 +387,7 @@
     {
       "ref": "9",
       "first": "O Light, resplendent of the morn",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+      "why": "its first verse cannot be sung as 8.8.6.8.8.6"
     },
     {
       "ref": "10",
@@ -422,11 +450,6 @@
       "why": "only 12 of 18 lines sing as 8.8.8.8.8.8"
     },
     {
-      "ref": "41",
-      "first": "Light of my life, O Lord, Thou art,",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
-    },
-    {
       "ref": "42",
       "first": "From the hills the light is streaming,",
       "why": "only 14 of 24 lines sing as 8.6.8.6"
@@ -445,11 +468,6 @@
       "ref": "45",
       "first": "Come, praise with gladness the Lord of all creation,",
       "why": "only 12 of 16 lines sing as 11.10.11.10"
-    },
-    {
-      "ref": "48",
-      "first": "O God, in mercy hear,",
-      "why": "only 29 of 40 lines sing as 8.6.8.6.8.6.8.6"
     },
     {
       "ref": "53",
@@ -472,16 +490,6 @@
       "why": "no tune we hold for “unmarked” in 5-line verses"
     },
     {
-      "ref": "69",
-      "first": "I will not yield my sword,",
-      "why": "only 24 of 32 lines sing as 8.6.8.6.8.6.8.6"
-    },
-    {
-      "ref": "75",
-      "first": "To Thee my soul enraptured sings,",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
-    },
-    {
       "ref": "77",
       "first": "Come, keep this Feast, who holy things revere,",
       "why": "no tune we hold for “unmarked” in 2-line verses"
@@ -489,9 +497,9 @@
   ],
   "counts": {
     "hymns": 77,
-    "written": 48,
+    "written": 52,
     "alreadyOurs": 0,
-    "skipped": 29,
+    "skipped": 25,
     "removed": 0
   }
 }

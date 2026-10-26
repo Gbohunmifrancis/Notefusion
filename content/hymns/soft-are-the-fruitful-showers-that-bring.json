@@ -1,0 +1,71 @@
+{
+  "title": "Soft Are the Fruitful Showers That Bring",
+  "tune": "holy-matrimony",
+  "text": [
+    {
+      "name": "Henry Moore",
+      "born": 1732,
+      "died": 1802,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Soft Are the Fruitful Showers That Bring in Tonic Solfa to HOLY MATRIMONY, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Henry Moore wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 336 of its twenty-second edition (1853), “Pardon”.",
+    "The book printed the words without tunes, marked Common Particular Metre (8.8.6.8.8.6), to be sung to any tune of that metre. This page sets them to HOLY MATRIMONY; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "Soft are the fruit-ful showers that bring The wel-come pro-mise of the spring, And soft the ver-nal gale: Sweet the wild war-blings of the grove, The voice of na-ture and of love, That glad-den ev-ery vale.",
+  "verses": [
+    {
+      "lines": [
+        "Soft are the fruitful showers that bring",
+        "The welcome promise of the spring,",
+        "And soft the vernal gale:",
+        "Sweet the wild warblings of the grove,",
+        "The voice of nature and of love,",
+        "That gladden every vale."
+      ]
+    },
+    {
+      "lines": [
+        "But softer in the mourner's ear",
+        "Sounds the mild voice of mercy near,",
+        "That whispers sins forgiven;",
+        "And sweeter far the music swells,",
+        "When to the raptured soul she tells",
+        "Of peace and promised heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Fair are the flowers that deck the ground;",
+        "And groves and gardens blooming round,",
+        "Unnumbered charms unfold:",
+        "Bright is the sun's meridian ray,",
+        "And bright the beams of setting day,",
+        "That robe the clouds in gold."
+      ]
+    },
+    {
+      "lines": [
+        "But far more fair the pious breast,",
+        "In richer robes of goodness dressed,",
+        "Where heaven's own graces shine;",
+        "And brighter far the prospects rise,",
+        "That burst on faith's delighted eyes,",
+        "From glories all divine."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Henry Moore died in 1802.",
+  "credits": "Words by Henry Moore (1732–1802), public domain, as printed in Hymns for Christian Devotion (1853); set to HOLY MATRIMONY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:336"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "I Was a Wandering Sheep",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Horatius Bonar",
+      "born": 1808,
+      "died": 1889,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "I Was a Wandering Sheep in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Horatius Bonar wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 105.",
+    "The book printed the words without tunes, marked Short Metre Double (6.6.8.6.6.6.8.6), to be sung to any tune of that metre. This page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "I was a wan-dering sheep, I did not love the fold; I did not love my Shep-herd’s_ voice, I would not be con-trolled; I was a way-ward child, I did not love my home; I did not love my Fa-ther’s voice, I loved a-far to roam.",
+  "verses": [
+    {
+      "lines": [
+        "I was a wandering sheep,",
+        "I did not love the fold;",
+        "I did not love my Shepherd’s voice,",
+        "I would not be controlled;",
+        "I was a wayward child,",
+        "I did not love my home;",
+        "I did not love my Father’s voice,",
+        "I loved afar to roam."
+      ]
+    },
+    {
+      "lines": [
+        "The Shepherd sought His sheep,",
+        "The Father sought His child;",
+        "They followed me o’er vale and hill,",
+        "O’er deserts waste and wild;",
+        "They found me nigh to death,",
+        "Famished and faint and lone;",
+        "They bound me with the bands of love,",
+        "They saved the wandering one."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus my Shepherd is,",
+        "’Twas He that loved my soul,",
+        "’Twas He that washed me in His blood,",
+        "’Twas He that made me whole;",
+        "’Twas He that sought the lost,",
+        "That found the wandering sheep;",
+        "’Twas He that brought me to the fold,",
+        "’Tis He that still doth keep."
+      ]
+    },
+    {
+      "lines": [
+        "I was a wandering sheep,",
+        "I would not be controlled.",
+        "But now I love my Shepherd’s voice,",
+        "I love, I love, the fold.",
+        "I was a wayward child,",
+        "I once preferred to roam,",
+        "But now I love my Father’s voice,",
+        "I love, I love, His home."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Horatius Bonar died in 1889.",
+  "credits": "Words by Horatius Bonar (1808–1889), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:105"
+}

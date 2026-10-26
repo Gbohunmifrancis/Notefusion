@@ -1,0 +1,55 @@
+{
+  "title": "O Thou Who Wouldst Not Have",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "O Thou Who Wouldst Not Have in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 338.",
+    "The book printed the words without tunes, marked Short Metre Double (6.6.8.6.6.6.8.6), to be sung to any tune of that metre. This page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "O Thou who wouldst not have One wret-ched sin-ner die, Who diedst Thy-self my soul to_ save From end-less mis-e-ry, Teach me my course to run, While yet I so-journ here, That when Thou com-est on Thy throne I may with joy ap-pear.",
+  "verses": [
+    {
+      "lines": [
+        "O Thou who wouldst not have",
+        "One wretched sinner die,",
+        "Who diedst Thyself my soul to save",
+        "From endless misery,",
+        "Teach me my course to run,",
+        "While yet I sojourn here,",
+        "That when Thou comest on Thy throne",
+        "I may with joy appear."
+      ]
+    },
+    {
+      "lines": [
+        "Thou art Thyself the Way,",
+        "Thyself in me reveal;",
+        "So shall I pass my life’s short day",
+        "Obedient to Thy will;",
+        "So shall I love my God",
+        "Because He first loved me,",
+        "And praise Thee in Thy bright abode",
+        "Through all eternity."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:338"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "How Happy, Gracious Lord! Are We",
+  "tune": "meribah",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "How Happy, Gracious Lord! Are We in Tonic Solfa to MERIBAH, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 222.",
+    "The book printed the words without tunes. They are in Common Particular Metre (8.8.6.8.8.6), and this page sets them to MERIBAH; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "How hap-py, gra-cious Lord! are we Di-vine-ly drawn to fol-low thee, Whose hours di-vid-ed are Be-twixt the mount and mul-ti-tude; Our day is spent in do-ing good, Our night in praise and prayer.",
+  "verses": [
+    {
+      "lines": [
+        "How happy, gracious Lord! are we",
+        "Divinely drawn to follow thee,",
+        "Whose hours divided are",
+        "Betwixt the mount and multitude;",
+        "Our day is spent in doing good,",
+        "Our night in praise and prayer."
+      ]
+    },
+    {
+      "lines": [
+        "With us no melancholy void,",
+        "No period lingers unemployed,",
+        "Or unimproved, below;",
+        "Our weariness of life is gone,",
+        "Who live to serve our God alone,",
+        "And only thee to know."
+      ]
+    },
+    {
+      "lines": [
+        "The winter's night and summer's day",
+        "Glide imperceptibly away,",
+        "Too short to sing thy praise;",
+        "Too few we find the happy hours,",
+        "And haste to join those heavenly powers,",
+        "In everlasting lays."
+      ]
+    },
+    {
+      "lines": [
+        "With all who chant thy name on high?",
+        "And, \"Holy, Holy, Holy,\" cry,",
+        "A bright harmonious throng,",
+        "We long thy praises to repeat,",
+        "And, restless, sing around thy seat",
+        "The new, eternal song."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MERIBAH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:222"
+}

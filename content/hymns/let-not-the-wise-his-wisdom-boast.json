@@ -1,0 +1,55 @@
+{
+  "title": "Let Not the Wise His Wisdom Boast",
+  "tune": "saved-by-grace",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Let Not the Wise His Wisdom Boast in Tonic Solfa to SAVED BY GRACE, doh is F: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 422.",
+    "The book printed the words without tunes. They are in Long Metre Double (8.8.8.8.8.8.8.8), and this page sets them to SAVED BY GRACE; any other Long Metre Double tune fits them as well."
+  ],
+  "underlay": "Let not the wise his wis-dom boast, The might-y glo-ry in his might, The rich in flat-tering rich-es trust, Which take their ev-er-last-ing flight. The rush of nu-merous years bears down The most gi-gan-tic strength of man; And where is all his wis-dom gone, When dust he turns to dust a-gain?",
+  "verses": [
+    {
+      "lines": [
+        "Let not the wise his wisdom boast,",
+        "The mighty glory in his might,",
+        "The rich in flattering riches trust,",
+        "Which take their everlasting flight.",
+        "The rush of numerous years bears down",
+        "The most gigantic strength of man;",
+        "And where is all his wisdom gone,",
+        "When dust he turns to dust again?"
+      ]
+    },
+    {
+      "lines": [
+        "One only gift can justify",
+        "The boasting soul that knows his God;",
+        "When Jesus doth his blood apply,",
+        "I glory in his sprinkled blood.",
+        "The Lord my Righteousness I praise;",
+        "I triumph in the love divine,",
+        "The wisdom, wealth, and strength of grace,",
+        "In Christ to endless ages mine."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SAVED BY GRACE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:422"
+}

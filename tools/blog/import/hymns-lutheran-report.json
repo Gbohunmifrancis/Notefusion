@@ -115,6 +115,13 @@
       "author": "Thomas Scott"
     },
     {
+      "ref": "57",
+      "slug": "delay-not-delay-not-o-sinner-draw-near",
+      "metre": "11 11 11 11",
+      "tune": "gordon",
+      "author": "Thomas Hastings"
+    },
+    {
       "ref": "66",
       "slug": "thee-we-adore-eternal-lord",
       "metre": "8 8 8 8",
@@ -183,6 +190,13 @@
       "metre": "8 6 8 6",
       "tune": "st-flavian",
       "author": "Anne Steele"
+    },
+    {
+      "ref": "105",
+      "slug": "i-was-a-wandering-sheep",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
+      "author": "Horatius Bonar"
     },
     {
       "ref": "113",
@@ -276,6 +290,13 @@
       "author": "John Cawood"
     },
     {
+      "ref": "164",
+      "slug": "across-the-sky-the-shades-of-night",
+      "metre": "8 7 8 7 8 8 7",
+      "tune": "es-ist-das-heil-uns-kommen-her",
+      "author": "James Hamilton"
+    },
+    {
       "ref": "165",
       "slug": "thou-who-rollst-the-year-around",
       "metre": "7 7 7 7",
@@ -295,6 +316,13 @@
       "metre": "8 8 8 8",
       "tune": "uxbridge",
       "author": "Cyriacus Schneegass and Emanuel Cronenwett"
+    },
+    {
+      "ref": "170",
+      "slug": "o-lord-our-father-thanks-to-thee",
+      "metre": "8 7 8 7 8 8 7",
+      "tune": "es-ist-das-heil-uns-kommen-her",
+      "author": "Cyriacus Schneegass and August Crull"
     },
     {
       "ref": "171",
@@ -330,6 +358,13 @@
       "metre": "7 7 7 7",
       "tune": "vienna",
       "author": "William Walsham How"
+    },
+    {
+      "ref": "189",
+      "slug": "thank-god-my-jesus-cleanseth-me",
+      "metre": "8 7 8 7 8 8 7",
+      "tune": "es-ist-das-heil-uns-kommen-her",
+      "author": "Johann Olearius and August Crull"
     },
     {
       "ref": "190",
@@ -472,6 +507,13 @@
       "author": "Charles Wesley"
     },
     {
+      "ref": "272",
+      "slug": "the-lord-my-god-be-praised",
+      "metre": "6 7 6 7 6 6 6 6",
+      "tune": "was-frag-ich-nach-der-welt",
+      "author": "Johann Olearius and August Crull"
+    },
+    {
       "ref": "275",
       "slug": "thine-honor-rescue-christ-our-lord",
       "metre": "8 8 8 8",
@@ -598,11 +640,46 @@
       "author": "Henry Francis Lyte"
     },
     {
+      "ref": "337",
+      "slug": "savior-i-follow-on",
+      "metre": "6 4 6 4 6 6 6 4",
+      "tune": "st-edmund-sullivan",
+      "author": "Charles Seymour Robinson"
+    },
+    {
+      "ref": "338",
+      "slug": "o-thou-who-wouldst-not-have",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "339",
+      "slug": "may-we-thy-precepts-lord-fulfil",
+      "metre": "8 8 6 8 8 6",
+      "tune": "meribah",
+      "author": "Edward Osler"
+    },
+    {
+      "ref": "347",
+      "slug": "o-god-forsake-me-not",
+      "metre": "6 7 6 7 6 6 6 6",
+      "tune": "was-frag-ich-nach-der-welt",
+      "author": "Salomo Franck and August Crull"
+    },
+    {
       "ref": "348",
       "slug": "o-love-who-formedst-me-to-wear",
       "metre": "8 8 8 8 8 8",
       "tune": "melita",
       "author": "Johann Scheffler and Catherine Winkworth"
+    },
+    {
+      "ref": "357",
+      "slug": "o-lord-of-heaven-and-earth-and-sea",
+      "metre": "8 8 8 4",
+      "tune": "hanford-sullivan",
+      "author": "Christopher Wordsworth"
     },
     {
       "ref": "360",
@@ -647,11 +724,25 @@
       "author": "John Samuel Bewley Monsell"
     },
     {
+      "ref": "372",
+      "slug": "whereer-i-go-whateer-my-task",
+      "metre": "8 8 6 8 8 6",
+      "tune": "holy-matrimony",
+      "author": "Paul Fleming and Catherine Winkworth"
+    },
+    {
       "ref": "373",
       "slug": "jesus-my-truth-my-way",
       "metre": "6 6 8 6",
       "tune": "southwell",
       "author": "Charles Wesley"
+    },
+    {
+      "ref": "386",
+      "slug": "my-god-my-father-while-i-stray",
+      "metre": "8 8 8 4",
+      "tune": "hanford-sullivan",
+      "author": "Charlotte Elliott"
     },
     {
       "ref": "390",
@@ -689,6 +780,13 @@
       "author": "Nikolaus Selnecker and Matthias Loy"
     },
     {
+      "ref": "410",
+      "slug": "arm-these-thy-soldiers-mighty-lord",
+      "metre": "8 8 8 8 8 8 8 8",
+      "tune": "sweet-hour",
+      "author": "Christopher Wordsworth"
+    },
+    {
       "ref": "411",
       "slug": "thine-forever-god-of-love",
       "metre": "7 7 7 7",
@@ -708,6 +806,13 @@
       "metre": "8 8 8 8",
       "tune": "uxbridge",
       "author": "Cornelius Elven"
+    },
+    {
+      "ref": "421",
+      "slug": "alas-my-god-my-sins-are-great",
+      "metre": "8 7 8 7",
+      "tune": "dominus-regit-me",
+      "author": "Martin Rutilius and Catherine Winkworth"
     },
     {
       "ref": "423",
@@ -787,6 +892,13 @@
       "author": "James Montgomery"
     },
     {
+      "ref": "461",
+      "slug": "lord-in-thy-kingdom-there-shall-be",
+      "metre": "8 7 8 7",
+      "tune": "dominus-regit-me",
+      "author": "Joseph Anstice"
+    },
+    {
       "ref": "465",
       "slug": "zion-stands-with-hills-surrounded",
       "metre": "8 7 8 7 4 7",
@@ -836,6 +948,20 @@
       "author": "William Walsham How"
     },
     {
+      "ref": "485",
+      "slug": "lord-of-the-church-we-humbly-pray",
+      "metre": "8 8 6 8 8 6",
+      "tune": "holy-matrimony",
+      "author": "Edward Osler"
+    },
+    {
+      "ref": "487",
+      "slug": "lord-when-at-thy-command",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
+      "author": "Charles Wesley"
+    },
+    {
       "ref": "491",
       "slug": "lord-of-the-harvest-hear",
       "metre": "6 6 8 6",
@@ -869,6 +995,20 @@
       "metre": "6 6 8 6",
       "tune": "st-bride",
       "author": "Charles Wesley"
+    },
+    {
+      "ref": "505",
+      "slug": "zion-mourns-in-fear-and-anguish",
+      "metre": "8 7 8 7 7 7 8 8",
+      "tune": "werde-munter",
+      "author": "Johann Heermann and Catherine Winkworth"
+    },
+    {
+      "ref": "506",
+      "slug": "let-not-such-a-thought-eer-pain-thee",
+      "metre": "8 7 8 7 7 7 8 8",
+      "tune": "freu-dich-sehr-o-meine-seele",
+      "author": "Paul Gerhardt and John Kelly"
     },
     {
       "ref": "515",
@@ -906,6 +1046,13 @@
       "author": "Paul Eber and Catherine Winkworth"
     },
     {
+      "ref": "528",
+      "slug": "when-my-last-hour-is-close-at-hand",
+      "metre": "8 7 8 7 8 8 7",
+      "tune": "mit-freuden-zart",
+      "author": "Nikolaus Herman and Catherine Winkworth"
+    },
+    {
       "ref": "531",
       "slug": "one-sweetly-solemn-thought",
       "metre": "6 6 8 6",
@@ -918,6 +1065,13 @@
       "metre": "8 8 8 8 8 8",
       "tune": "melita",
       "author": "Nikolaus Selnecker and Catherine Winkworth"
+    },
+    {
+      "ref": "553",
+      "slug": "great-god-what-do-i-see-and-hear",
+      "metre": "8 7 8 7 8 8 7",
+      "tune": "mit-freuden-zart",
+      "author": "William Bengo Collyer"
     },
     {
       "ref": "554",
@@ -2061,11 +2215,6 @@
       "why": "someone we cannot name in full: “Bohemian Brethren”"
     },
     {
-      "ref": "57",
-      "first": "Delay not, delay not, O sinner, draw near,",
-      "why": "no tune we hold for “11s” in 4-line verses"
-    },
-    {
       "ref": "58",
       "first": "Come, ye weary sinners, come,",
       "why": "its first verse cannot be sung as 7.7.7.7"
@@ -2134,11 +2283,6 @@
       "ref": "103",
       "first": "O Morning Star, how fair and bright",
       "why": "no tune we hold for “8,8,7,8,8,7,4,8,4,8” in 10-line verses"
-    },
-    {
-      "ref": "105",
-      "first": "I was a wandering sheep,",
-      "why": "no tune we hold for “S. M.” in 8-line verses"
     },
     {
       "ref": "106",
@@ -2231,19 +2375,9 @@
       "why": "no tune we hold for “L. M.” in 5-line verses"
     },
     {
-      "ref": "164",
-      "first": "Across the sky the shades of night",
-      "why": "no tune we hold for “8,7,8,7,8,8,7” in 7-line verses"
-    },
-    {
       "ref": "166",
       "first": "Father, let me dedicate",
       "why": "no tune we hold for “7,5” in 8-line verses"
-    },
-    {
-      "ref": "170",
-      "first": "O Lord, our Father, thanks to Thee",
-      "why": "no tune we hold for “8,7,8,7,8,8,7” in 7-line verses"
     },
     {
       "ref": "176",
@@ -2269,11 +2403,6 @@
       "ref": "188",
       "first": "O dearest Jesus, Thee I pray:",
       "why": "someone we cannot name in full: “John Mylius”"
-    },
-    {
-      "ref": "189",
-      "first": "Thank God! my Jesus cleanseth me",
-      "why": "no tune we hold for “8,7,8,7,8,8,7” in 7-line verses"
     },
     {
       "ref": "193",
@@ -2476,11 +2605,6 @@
       "why": "a translation whose translator the book does not name"
     },
     {
-      "ref": "272",
-      "first": "The Lord, my God, be praised,",
-      "why": "no tune we hold for “6,7,6,7,6,6,6,6” in 8-line verses"
-    },
-    {
       "ref": "274",
       "first": "Lord, keep us in Thy Word and work,",
       "why": "someone we cannot name in full: “Stanzas 4 and 5, J. Jonas”"
@@ -2571,21 +2695,6 @@
       "why": "no tune we hold for “8,7,8,7,8,8” in 6-line verses"
     },
     {
-      "ref": "337",
-      "first": "Savior, I follow on,",
-      "why": "no tune we hold for “6,4,6,4,6,6,6,4” in 8-line verses"
-    },
-    {
-      "ref": "338",
-      "first": "O Thou who wouldst not have",
-      "why": "no tune we hold for “S. M.” in 8-line verses"
-    },
-    {
-      "ref": "339",
-      "first": "May we Thy precepts, Lord, fulfil",
-      "why": "no tune we hold for “8,8,6,8,8,6” in 6-line verses"
-    },
-    {
       "ref": "343",
       "first": "God, from all eternity",
       "why": "someone we cannot name in full: “C. Neumann”"
@@ -2606,11 +2715,6 @@
       "why": "a translation whose translator the book does not name"
     },
     {
-      "ref": "347",
-      "first": "O God, forsake me not!",
-      "why": "no tune we hold for “6,7,6,7,6,6,6,6” in 8-line verses"
-    },
-    {
       "ref": "349",
       "first": "Thee will I love, my Strength, my Tower,",
       "why": "no tune we hold for “9,8,9,8,8,6” in 6-line verses"
@@ -2628,17 +2732,12 @@
     {
       "ref": "353",
       "first": "Savior, Thy dying love",
-      "why": "no tune we hold for “6,4,6,4,6,6,6,4” in 8-line verses"
+      "why": "its first verse cannot be sung as 6.4.6.4.6.6.6.4"
     },
     {
       "ref": "356",
       "first": "Jesus, Shepherd of the sheep,",
       "why": "someone we cannot name in full: “Henry Cook”"
-    },
-    {
-      "ref": "357",
-      "first": "O Lord of heaven and earth and sea,",
-      "why": "no tune we hold for “8,8,8,4” in 4-line verses"
     },
     {
       "ref": "358",
@@ -2666,11 +2765,6 @@
       "why": "no tune we hold for “8,5,8,3” in 4-line verses"
     },
     {
-      "ref": "372",
-      "first": "Where’er I go, whate’er my task,",
-      "why": "no tune we hold for “8,8,6,8,8,6” in 6-line verses"
-    },
-    {
       "ref": "379",
       "first": "My soul, be on thy guard;",
       "why": "someone we cannot name in full: “George Heath”"
@@ -2691,11 +2785,6 @@
       "why": "no tune we hold for “6s” in 8-line verses"
     },
     {
-      "ref": "386",
-      "first": "My God, my Father, while I stray",
-      "why": "no tune we hold for “8,8,8,4” in 4-line verses"
-    },
-    {
       "ref": "388",
       "first": "Blest be Thy love, dear Lord,",
       "why": "someone we cannot name in full: “John Austin”"
@@ -2714,11 +2803,6 @@
       "ref": "409",
       "first": "In the hour of trial,",
       "why": "no tune we hold for “6,5” in 8-line verses"
-    },
-    {
-      "ref": "410",
-      "first": "Arm these Thy soldiers, mighty Lord,",
-      "why": "no tune we hold for “L. M.” in 8-line verses"
     },
     {
       "ref": "413",
@@ -2749,11 +2833,6 @@
       "ref": "420",
       "first": "Th’ abyss of many a former sin",
       "why": "someone we cannot name in full: “Joseph of the Studium, c. 860”"
-    },
-    {
-      "ref": "421",
-      "first": "Alas, my God! my sins are great,",
-      "why": "words in iambs; the Eights and Sevens tunes we hold are in trochees"
     },
     {
       "ref": "422",
@@ -2788,7 +2867,7 @@
     {
       "ref": "432",
       "first": "Deck thyself, my soul, with gladness,",
-      "why": "no tune we hold for “L. M.” in 8-line verses"
+      "why": "stresses off the beat of the Long Metre Double tunes we hold, which are iambic"
     },
     {
       "ref": "433",
@@ -2831,11 +2910,6 @@
       "why": "someone we cannot name in full: “From the Latin of B. Walther”"
     },
     {
-      "ref": "461",
-      "first": "Lord, in Thy kingdom there shall be",
-      "why": "words in iambs; the Eights and Sevens tunes we hold are in trochees"
-    },
-    {
       "ref": "467",
       "first": "Hark! the Church proclaims her honor,",
       "why": "someone we cannot name in full: “S. Preiswerk”"
@@ -2871,19 +2945,9 @@
       "why": "someone we cannot name in full: “Mrs. M. E. Gates”"
     },
     {
-      "ref": "485",
-      "first": "Lord of the Church, we humbly pray",
-      "why": "no tune we hold for “8,8,6,8,8,6” in 6-line verses"
-    },
-    {
       "ref": "486",
       "first": "God of the prophets, bless the prophets’ sons;",
       "why": "someone we cannot name in full: “D. Wortman”"
-    },
-    {
-      "ref": "487",
-      "first": "Lord, when at Thy command",
-      "why": "no tune we hold for “S. M.” in 8-line verses"
     },
     {
       "ref": "488",
@@ -2931,16 +2995,6 @@
       "why": "someone we cannot name in full: “Conrad Hojer”"
     },
     {
-      "ref": "505",
-      "first": "Zion mourns in fear and anguish,",
-      "why": "no tune we hold for “8,7,8,7,7,7,8,8” in 8-line verses"
-    },
-    {
-      "ref": "506",
-      "first": "Let not such a thought e’er pain thee",
-      "why": "no tune we hold for “8,7,8,7,7,7,8,8” in 8-line verses"
-    },
-    {
       "ref": "507",
       "first": "Whatever God ordains is good!",
       "why": "a translation whose translator the book does not name"
@@ -2976,11 +3030,6 @@
       "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
     },
     {
-      "ref": "528",
-      "first": "When my last hour is close at hand",
-      "why": "no tune we hold for “8,7,8,7,8,8,7” in 7-line verses"
-    },
-    {
       "ref": "529",
       "first": "For me to live is Jesus,",
       "why": "someone we cannot name in full: “Anon”"
@@ -3003,7 +3052,7 @@
     {
       "ref": "535",
       "first": "I would not live alway; I ask not to stay",
-      "why": "no tune we hold for “11s” in 4-line verses"
+      "why": "only 14 of 20 lines sing as 11.11.11.11"
     },
     {
       "ref": "537",
@@ -3059,11 +3108,6 @@
       "ref": "551",
       "first": "That day of wrath, that dreadful day,",
       "why": "someone we cannot name in full: “Thomas of Celano, 13th cent”"
-    },
-    {
-      "ref": "553",
-      "first": "Great God, what do I see and hear?",
-      "why": "no tune we hold for “8,7,8,7,8,8,7” in 7-line verses"
     },
     {
       "ref": "555",
@@ -3234,9 +3278,9 @@
   ],
   "counts": {
     "hymns": 594,
-    "written": 132,
+    "written": 154,
     "alreadyOurs": 211,
-    "skipped": 251,
-    "removed": 0
+    "skipped": 229,
+    "removed": 1
   }
 }

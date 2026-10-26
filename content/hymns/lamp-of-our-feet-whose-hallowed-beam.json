@@ -1,0 +1,66 @@
+{
+  "title": "Lamp of Our Feet! Whose Hallowed Beam",
+  "tune": "sweet-hour",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Lamp of Our Feet! Whose Hallowed Beam in Tonic Solfa to SWEET HOUR, doh is Db: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 194 of its twenty-second edition (1853), “The Scriptures”.",
+    "The book printed the words without tunes, marked Long Metre Double (8.8.8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SWEET HOUR; any other Long Metre Double tune fits them as well."
+  ],
+  "underlay": "Lamp of our feet! whose hal-lowed beam Deep in our hearts_ its dwell-ing hath, How wel-come is the cheer-ing gleam Thou shed-dest o'er_ our low-ly path! Light of our way! whose ways are flung In mer-cy o'er our pil-grim road, How bless-ed, its dark shades a-mong, The star that guides_ us to our God.",
+  "verses": [
+    {
+      "lines": [
+        "Lamp of our feet! whose hallowed beam",
+        "Deep in our hearts its dwelling hath,",
+        "How welcome is the cheering gleam",
+        "Thou sheddest o'er our lowly path!",
+        "Light of our way! whose ways are flung",
+        "In mercy o'er our pilgrim road,",
+        "How blessed, its dark shades among,",
+        "The star that guides us to our God."
+      ]
+    },
+    {
+      "lines": [
+        "In the sweet morning's hour of prime,",
+        "Thy blessed words our lips engage,",
+        "And round our hearths at evening time",
+        "Our children spell the holy page;",
+        "The waymark through long distant years,",
+        "To guide their wandering footsteps on,",
+        "Till thy last loveliest beam appears,",
+        "Inscribed upon the churchyard stone."
+      ]
+    },
+    {
+      "lines": [
+        "Lamp of our feet! which day by day",
+        "Are passing to the quiet tomb,",
+        "If on it fall thy peaceful ray,",
+        "Our last low dwelling hath no gloom.",
+        "How beautiful their calm repose",
+        "To whom thy blessed hope is given",
+        "Whose pilgrimage on earth is closed",
+        "By the unfolding gates of heaven!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to SWEET HOUR by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:194"
+}

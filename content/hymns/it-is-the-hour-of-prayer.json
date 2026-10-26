@@ -1,0 +1,66 @@
+{
+  "title": "It Is the Hour of Prayer",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "It Is the Hour of Prayer in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 506, “The Hour of Prayer”.",
+    "The book printed the words without tunes, marked Short Metre Double (6.6.8.6.6.6.8.6), to be sung to any tune of that metre. This page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "It is the hour of prayer: Draw near and bend the knee, And fill the calm and ho-ly_ air With voice of mel-o-dy! O'er-wea-ried with the heat And bur-den of the day, Now let us rest our wan-dering feet, And ga-ther here to pray.",
+  "verses": [
+    {
+      "lines": [
+        "It is the hour of prayer:",
+        "Draw near and bend the knee,",
+        "And fill the calm and holy air",
+        "With voice of melody!",
+        "O'erwearied with the heat",
+        "And burden of the day,",
+        "Now let us rest our wandering feet,",
+        "And gather here to pray."
+      ]
+    },
+    {
+      "lines": [
+        "The dark and deadly blight",
+        "That walks at noontide hour,",
+        "The midnight arrow's secret flight,",
+        "O'er us have had no power:",
+        "But smiles from loving eyes",
+        "Have been around our way,",
+        "And lips on which a blessing lies",
+        "Have bidden us to pray."
+      ]
+    },
+    {
+      "lines": [
+        "O, blessed is the hour",
+        "That lifts our hearts on high!",
+        "Like sunlight when the tempests lower,",
+        "Prayer to the soul is nigh;",
+        "Though dark may be our lot,",
+        "Our eyes be dim with care,",
+        "These saddening thoughts shall trouble not",
+        "This holy hour of prayer."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:506"
+}

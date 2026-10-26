@@ -1,0 +1,55 @@
+{
+  "title": "O Holy Father! 'Mid the Calm",
+  "tune": "sweet-hour",
+  "text": [
+    {
+      "name": "William Henry Burleigh",
+      "born": 1812,
+      "died": 1871,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O Holy Father! 'Mid the Calm in Tonic Solfa to SWEET HOUR, doh is Db: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "William Henry Burleigh wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 26, “Evening Worship”.",
+    "The book printed the words without tunes, marked Long Metre Double (8.8.8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SWEET HOUR; any other Long Metre Double tune fits them as well."
+  ],
+  "underlay": "O Ho-ly Fa-ther! 'mid the calm And still-ness of_ this eve-ning hour, We would lift up our sol-emn psalm To praise Thy good_-ness, and Thy power For o-ver us, and o-ver all, Thy ten-der mer-cies still ex-tend, Nor vain-ly shall Thy child-ren call On Thee, our Fa_-ther and our Friend!",
+  "verses": [
+    {
+      "lines": [
+        "O Holy Father! 'mid the calm",
+        "And stillness of this evening hour,",
+        "We would lift up our solemn psalm",
+        "To praise Thy goodness, and Thy power",
+        "For over us, and over all,",
+        "Thy tender mercies still extend,",
+        "Nor vainly shall Thy children call",
+        "On Thee, our Father and our Friend!"
+      ]
+    },
+    {
+      "lines": [
+        "Kept by Thy goodness though the day,",
+        "Thanksgiving to Thy name we pour;",
+        "Night o'er us, with its stars, — we pray",
+        "Thy love, to guard us evermore!",
+        "In grief, console; in gladness, bless;",
+        "In darkness, guide; in sickness, cheer;",
+        "Till, in the Saviour's righteousness,",
+        "Before Thy throne our souls appear!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Henry Burleigh died in 1871.",
+  "credits": "Words by William Henry Burleigh (1812–1871), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to SWEET HOUR by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:26"
+}

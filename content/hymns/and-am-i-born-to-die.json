@@ -1,0 +1,103 @@
+{
+  "title": "And Am I Born to Die",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "And Am I Born to Die in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 43.",
+    "The book printed the words without tunes. They are in Short Metre Double (6.6.8.6.6.6.8.6), and this page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "And am I born to die? To lay this bo-dy down? And must my trem-bling spir-it_ fly In-to a world un-known A land of deep-est shade, Un-pierced by hu-man thought, The drea-ry re-gions of the dead, Where all things are for-got?",
+  "verses": [
+    {
+      "lines": [
+        "And am I born to die?",
+        "To lay this body down?",
+        "And must my trembling spirit fly",
+        "Into a world unknown -",
+        "A land of deepest shade,",
+        "Unpierced by human thought,",
+        "The dreary regions of the dead,",
+        "Where all things are forgot?"
+      ]
+    },
+    {
+      "lines": [
+        "Soon as from earth I go,",
+        "What will become of me?",
+        "Eternal happiness or woe",
+        "Must then my portion be;",
+        "Waked by the trumpet's sound,",
+        "I from my grave shall rise,",
+        "And see the Judge with glory crowned,",
+        "And see the flaming skies."
+      ]
+    },
+    {
+      "lines": [
+        "How shall I leave my tomb?",
+        "With triumph or regret?",
+        "A fearful or a joyful doom,",
+        "A curse or blessing meet?",
+        "Will angel-bands convey",
+        "Their brother to the bar?",
+        "Or devils drag my soul away,",
+        "To meet its sentence there?"
+      ]
+    },
+    {
+      "lines": [
+        "Who can resolve the doubt",
+        "That tears my anxious breast?",
+        "Shall I be with the damned cast out,",
+        "Or numbered with the blest?",
+        "I must from God be driven,",
+        "Or with my Saviour dwell;",
+        "Must come at his command to heaven,",
+        "Or else - depart to hell."
+      ]
+    },
+    {
+      "lines": [
+        "O thou that wouldst not have",
+        "One wretched sinner die,",
+        "Who died'st thyself; my soul to save",
+        "From endless misery!",
+        "Show me the way to shun",
+        "Thy dreadful wrath severe,",
+        "That when thou comest on thy throne",
+        "I may with joy appear."
+      ]
+    },
+    {
+      "lines": [
+        "Thou art thyself the Way;",
+        "Thyself in me reveal;",
+        "So shall I spend my life's short day",
+        "Obedient to thy will;",
+        "So shall I love my God,",
+        "Because he first loved me,",
+        "And praise thee in thy bright abode,",
+        "To all eternity."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:43"
+}

@@ -1,0 +1,91 @@
+{
+  "title": "Gracious Redeemer, Shake",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Gracious Redeemer, Shake in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 305.",
+    "The book printed the words without tunes. They are in Short Metre Double (6.6.8.6.6.6.8.6), and this page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "Gra-cious Re-deem-er, shake This slum-ber from my soul! Say to me now, \"A-wake, a_-wake! And Christ shall make thee whole.\" Lay to thy might-y hand! A-larm me in this hour, And make me ful-ly un-der-stand The thun-der of thy power.",
+  "verses": [
+    {
+      "lines": [
+        "Gracious Redeemer, shake",
+        "This slumber from my soul!",
+        "Say to me now, \"Awake, awake!",
+        "And Christ shall make thee whole.\"",
+        "Lay to thy mighty hand!",
+        "Alarm me in this hour,",
+        "And make me fully understand",
+        "The thunder of thy power."
+      ]
+    },
+    {
+      "lines": [
+        "Give me on thee to call,",
+        "Always to watch and pray,",
+        "Lest I into temptation fall,",
+        "And cast my shield away;",
+        "For each assault prepared",
+        "And ready may I be,",
+        "For ever standing on my guard,",
+        "And looking up to thee."
+      ]
+    },
+    {
+      "lines": [
+        "O do thou always warn",
+        "My soul of evil near!",
+        "When to the right or left I turn,",
+        "Thy voice still let me hear;",
+        "\"Come back! this is the way,",
+        "Come back, and walk herein!\"",
+        "O may I hearken and obey,",
+        "And shun the paths of sin!"
+      ]
+    },
+    {
+      "lines": [
+        "Thou seest my feebleness;",
+        "Jesus, be thou my power,",
+        "My help and refuge in distress,",
+        "My fortress and my tower;",
+        "Give me to trust in thee.",
+        "Be thou my sure abode,",
+        "My horn, and rock, and buckler be,",
+        "My Saviour, and my God."
+      ]
+    },
+    {
+      "lines": [
+        "Myself I cannot save,",
+        "Myself I cannot keep,",
+        "But strength in thee I surely have,",
+        "Whose eyelids never sleep;",
+        "My soul to thee alone",
+        "Now therefore I commend;",
+        "Thou, Jesus, love me as thy own,",
+        "And love me to the end."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:305"
+}

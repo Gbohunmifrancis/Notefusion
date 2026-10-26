@@ -1,0 +1,54 @@
+{
+  "title": "How Dear Is the Thought, That the Angels of God",
+  "tune": "gordon",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "How Dear Is the Thought, That the Angels of God in Tonic Solfa to GORDON, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 355, “Are They Not All Ministering Spirits?”.",
+    "The book printed the words without tunes, marked Elevens (11.11.11.11), to be sung to any tune of that metre. This page sets them to GORDON; any other Elevens tune fits them as well."
+  ],
+  "underlay": "How dear is the thought_, that the an-gels of God May bow their bright wings_ to the world they once trod; Will leave the sweet songs of_ the man_-sions a-bove_, To breathe o'er our bo_-soms some mes_-sage of love!",
+  "verses": [
+    {
+      "lines": [
+        "How dear is the thought, that the angels of God",
+        "May bow their bright wings to the world they once trod;",
+        "Will leave the sweet songs of the mansions above,",
+        "To breathe o'er our bosoms some message of love!"
+      ]
+    },
+    {
+      "lines": [
+        "They come, on the wings of the morning they come,",
+        "Impatient to lead some poor wanderer home;",
+        "Some sinner to save from his darkened abode,",
+        "And lay him to rest in the arms of his God."
+      ]
+    },
+    {
+      "lines": [
+        "They come when we wander, they come when we pray,",
+        "In mercy to guard us wherever we stray;",
+        "A glorious cloud, their bright witness is given;",
+        "Encircling us here are these angels of heaven."
+      ]
+    }
+  ],
+  "metre": "11 11 11 11",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to GORDON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:355"
+}

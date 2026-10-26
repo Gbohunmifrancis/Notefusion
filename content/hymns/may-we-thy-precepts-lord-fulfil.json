@@ -1,0 +1,61 @@
+{
+  "title": "May We Thy Precepts, Lord, Fulfil",
+  "tune": "meribah",
+  "text": [
+    {
+      "name": "Edward Osler",
+      "born": 1798,
+      "died": 1863,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "May We Thy Precepts, Lord, Fulfil in Tonic Solfa to MERIBAH, doh is Eb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Edward Osler wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 339.",
+    "The book printed the words without tunes, marked Common Particular Metre (8.8.6.8.8.6), to be sung to any tune of that metre. This page sets them to MERIBAH; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "May we Thy pre-cepts, Lord, ful-fil And do on earth our Fa-ther’s will As an-gels do a-bove; Still walk in Christ, the liv-ing Way, With all Thy child-ren and o-bey The law of Chris-tian love.",
+  "verses": [
+    {
+      "lines": [
+        "May we Thy precepts, Lord, fulfil",
+        "And do on earth our Father’s will",
+        "As angels do above;",
+        "Still walk in Christ, the living Way,",
+        "With all Thy children and obey",
+        "The law of Christian love."
+      ]
+    },
+    {
+      "lines": [
+        "So may we join Thy name to bless,",
+        "Thy grace adore, Thy power confess,",
+        "From sin and strife to flee.",
+        "One is our calling, one our name,",
+        "The end of all our hopes the same,",
+        "A crown of life with Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Spirit of Life, of Love and Peace,",
+        "Unite our hearts, our joy increase,",
+        "Thy gracious help supply.",
+        "To each of us the blessing give",
+        "In Christian fellowship to live,",
+        "In joyful hope to die."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Edward Osler died in 1863.",
+  "credits": "Words by Edward Osler (1798–1863), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to MERIBAH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:339"
+}

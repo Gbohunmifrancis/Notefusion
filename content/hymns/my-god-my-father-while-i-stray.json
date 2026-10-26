@@ -1,0 +1,95 @@
+{
+  "title": "My God, My Father, While I Stray",
+  "tune": "hanford-sullivan",
+  "text": [
+    {
+      "name": "Charlotte Elliott",
+      "born": 1789,
+      "died": 1871,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "My God, My Father, While I Stray in Tonic Solfa to HANFORD (SULLIVAN), doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Charlotte Elliott wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 386.",
+    "The book printed the words without tunes, marked 8.8.8.4, to be sung to any tune of that metre. This page sets them to HANFORD (SULLIVAN); any other 8.8.8.4 tune fits them as well."
+  ],
+  "underlay": "My God, my Fa-ther, while I stray Far from my home, on life’s rough way, O teach me from my heart to say, “Thy will be done!”",
+  "verses": [
+    {
+      "lines": [
+        "My God, my Father, while I stray",
+        "Far from my home, on life’s rough way,",
+        "O teach me from my heart to say,",
+        "“Thy will be done!”"
+      ]
+    },
+    {
+      "lines": [
+        "Though dark my path and sad my lot,",
+        "Let me be still and murmur not.",
+        "Or breathe the prayer divinely taught,",
+        "“Thy will be done!”"
+      ]
+    },
+    {
+      "lines": [
+        "What though in lonely grief I sigh",
+        "For friends beloved, no longer nigh,",
+        "Submissive still would I reply,",
+        "“Thy will be done!”"
+      ]
+    },
+    {
+      "lines": [
+        "Though Thou hast called me to resign",
+        "What most I prized, it ne’er was mine;",
+        "I have but yielded what was Thine:",
+        "“Thy will be done!”"
+      ]
+    },
+    {
+      "lines": [
+        "Should grief or sickness waste away",
+        "My life in premature decay,",
+        "My Father, still I strive to say,",
+        "“Thy will be done!”"
+      ]
+    },
+    {
+      "lines": [
+        "Let but my fainting heart be blest",
+        "With Thy sweet Spirit for its Guest;",
+        "My God, to Thee I leave the rest:",
+        "“Thy will be done!”"
+      ]
+    },
+    {
+      "lines": [
+        "Renew my will from day to day;",
+        "Blend it with Thine and take away",
+        "All that now makes it hard to say,",
+        "“Thy will be done!”"
+      ]
+    },
+    {
+      "lines": [
+        "Then, when on earth I breathe no more,",
+        "The prayer, oft mixed with tears before,",
+        "I’ll sing upon a happier shore,",
+        "“Thy will be done!”"
+      ]
+    }
+  ],
+  "metre": "8 8 8 4",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Charlotte Elliott died in 1871.",
+  "credits": "Words by Charlotte Elliott (1789–1871), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to HANFORD (SULLIVAN) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:386"
+}

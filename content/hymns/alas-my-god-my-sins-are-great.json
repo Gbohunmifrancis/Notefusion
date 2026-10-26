@@ -1,0 +1,85 @@
+{
+  "title": "Alas, My God! My Sins Are Great",
+  "tune": "dominus-regit-me",
+  "text": [
+    {
+      "name": "Martin Rutilius",
+      "born": 1550,
+      "died": 1618,
+      "role": "Words"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Alas, My God! My Sins Are Great in Tonic Solfa to DOMINUS REGIT ME, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Martin Rutilius wrote these words in German. Catherine Winkworth's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 421.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to DOMINUS REGIT ME; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "A-las, my God! my sins are great, My con-science doth up-braid me; And now I_ find that in my_ strait No man hath power to aid_ me.",
+  "verses": [
+    {
+      "lines": [
+        "Alas, my God! my sins are great,",
+        "My conscience doth upbraid me;",
+        "And now I find that in my strait",
+        "No man hath power to aid me."
+      ]
+    },
+    {
+      "lines": [
+        "And fled I hence in my despair",
+        "In some lone spot to hide me,",
+        "My griefs would still be with me there",
+        "And peace still be denied me."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, Thee I seek. I merit naught,",
+        "Yet pity and restore me;",
+        "Be not Thy wrath, just God, my lot;",
+        "Thy Son hath suffered for me."
+      ]
+    },
+    {
+      "lines": [
+        "If pain and woe must follow sin,",
+        "Then be my path still rougher.",
+        "Here spare me not; if heaven I win,",
+        "On earth I gladly suffer."
+      ]
+    },
+    {
+      "lines": [
+        "But curb my heart, forgive my guilt,",
+        "Make Thou my patience firmer;",
+        "For they must miss the good Thou wilt",
+        "Who at Thy chastenings murmur."
+      ]
+    },
+    {
+      "lines": [
+        "Then deal with me as seems Thee best,",
+        "Thy grace will help me bear it,",
+        "If but at last I see Thy rest",
+        "And with my Savior share it."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Martin Rutilius died in 1618; Catherine Winkworth died in 1878.",
+  "credits": "Words by Martin Rutilius (1550–1618), translated by Catherine Winkworth (1827–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to DOMINUS REGIT ME by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:421"
+}

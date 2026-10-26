@@ -206,6 +206,13 @@
       "author": "Traditional Greek and John Brownlie"
     },
     {
+      "ref": "46",
+      "slug": "o-god-of-life-in-whom-we-live",
+      "metre": "8 8 6 8 8 6",
+      "tune": "meribah",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
       "ref": "47",
       "slug": "by-thine-own-hand-the-gift-was-given",
       "metre": "8 8 8 8",
@@ -304,11 +311,6 @@
       "why": "only 16 of 24 lines sing as 6.6.6.6.8.8"
     },
     {
-      "ref": "46",
-      "first": "O God of life, in whom we live,",
-      "why": "only 19 of 30 lines sing as 8.8.8.8.8.8"
-    },
-    {
       "ref": "48",
       "first": "Lord, Thou art good and kind,",
       "why": "its first verse cannot be sung as 6.6.6.6"
@@ -326,9 +328,9 @@
   ],
   "counts": {
     "hymns": 51,
-    "written": 31,
+    "written": 32,
     "alreadyOurs": 1,
-    "skipped": 19,
+    "skipped": 18,
     "removed": 0
   }
 }

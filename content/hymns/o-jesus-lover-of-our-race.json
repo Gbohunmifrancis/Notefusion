@@ -1,0 +1,56 @@
+{
+  "title": "O Jesus, Lover of Our Race",
+  "tune": "holy-matrimony",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "O Jesus, Lover of Our Race in Tonic Solfa to HOLY MATRIMONY, doh is G: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900), where he gives them as “By St. Cosmas, died 760 A.D”.",
+    "The book printed the words without tunes. They are in Common Particular Metre (8.8.6.8.8.6), and this page sets them to HOLY MATRIMONY; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "O Je-sus, Lov-er of our race, How rich the pro-mise of Thy grace To Thy dis-ci-ples made, A ho-ly Par-a-clete to send, To suc-cour, com-fort, and be-friend With His in-spir-ing aid.",
+  "verses": [
+    {
+      "lines": [
+        "O Jesus, Lover of our race,",
+        "How rich the promise of Thy grace",
+        "To Thy disciples made, —",
+        "A holy Paraclete to send,",
+        "To succour, comfort, and befriend",
+        "With His inspiring aid."
+      ]
+    },
+    {
+      "lines": [
+        "On earth the light is shining clear,",
+        "The Holy Comforter is here,",
+        "To all the faithful given;",
+        "And now, what prophets long foretold,",
+        "In all His fulness we behold",
+        "The Spirit sent from heaven."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to HOLY MATRIMONY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:21"
+}

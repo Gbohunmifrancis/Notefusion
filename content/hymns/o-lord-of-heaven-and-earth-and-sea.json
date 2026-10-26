@@ -1,0 +1,79 @@
+{
+  "title": "O Lord of Heaven and Earth and Sea",
+  "tune": "hanford-sullivan",
+  "text": [
+    {
+      "name": "Christopher Wordsworth",
+      "born": 1807,
+      "died": 1885,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "O Lord of Heaven and Earth and Sea in Tonic Solfa to HANFORD (SULLIVAN), doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Christopher Wordsworth wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 357.",
+    "The book printed the words without tunes, marked 8.8.8.4, to be sung to any tune of that metre. This page sets them to HANFORD (SULLIVAN); any other 8.8.8.4 tune fits them as well."
+  ],
+  "underlay": "O Lord of heaven and earth and sea, To Thee all praise and glo-ry be; How shall we show our love to Thee, Who giv-est all?",
+  "verses": [
+    {
+      "lines": [
+        "O Lord of heaven and earth and sea,",
+        "To Thee all praise and glory be;",
+        "How shall we show our love to Thee,",
+        "Who givest all?"
+      ]
+    },
+    {
+      "lines": [
+        "Thou didst not spare Thine only Son,",
+        "But gav’st Him for a world undone,",
+        "And freely with that Blessed One",
+        "Thou givest all."
+      ]
+    },
+    {
+      "lines": [
+        "Thou giv’st the Spirit’s holy dower,",
+        "Spirit of Life and Love and Power,",
+        "And dost His sevenfold graces shower",
+        "Upon us all."
+      ]
+    },
+    {
+      "lines": [
+        "For souls redeemed, for sins forgiven,",
+        "For means of grace and hopes of heaven,",
+        "What can to Thee, O Lord, be given,",
+        "Who givest all?"
+      ]
+    },
+    {
+      "lines": [
+        "We lose what on ourselves we spend;",
+        "We have, as treasure without end,",
+        "Whatever, Lord, to Thee we lend,",
+        "Who givest all."
+      ]
+    },
+    {
+      "lines": [
+        "Whatever, Lord, we lend to Thee",
+        "Repaid a thousandfold will be;",
+        "Then gladly will we give to Thee,",
+        "Who givest all."
+      ]
+    }
+  ],
+  "metre": "8 8 8 4",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Christopher Wordsworth died in 1885.",
+  "credits": "Words by Christopher Wordsworth (1807–1885), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to HANFORD (SULLIVAN) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:357"
+}

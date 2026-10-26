@@ -1,0 +1,109 @@
+{
+  "title": "Zion Mourns in Fear and Anguish",
+  "tune": "werde-munter",
+  "text": [
+    {
+      "name": "Johann Heermann",
+      "born": 1585,
+      "died": 1647,
+      "role": "Words"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Zion Mourns in Fear and Anguish in Tonic Solfa to WERDE MUNTER, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Johann Heermann wrote these words in German. Catherine Winkworth's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 505.",
+    "The book printed the words without tunes, marked 8.7.8.7.7.7.8.8, to be sung to any tune of that metre. This page sets them to WERDE MUNTER; any other 8.7.8.7.7.7.8.8 tune fits them as well."
+  ],
+  "underlay": "Zi-on mourns in fear and an-guish, Zi-on, cit-y of our God. “Ah!” she saith, “how sore I lan-guish, Bowed be-neath so hard a load! God hath now for-sook me quite And for-got my e-vil plight.” Nay, the Lord, who chose thee, spares thee, For with-in His heart He bears thee.",
+  "verses": [
+    {
+      "lines": [
+        "Zion mourns in fear and anguish,",
+        "Zion, city of our God.",
+        "“Ah!” she saith, “how sore I languish,",
+        "Bowed beneath so hard a load!",
+        "God hath now forsook me quite",
+        "And forgot my evil plight.”",
+        "Nay, the Lord, who chose thee, spares thee,",
+        "For within His heart He bears thee."
+      ]
+    },
+    {
+      "lines": [
+        "“Once,” she mourns, “He promised plainly",
+        "That His help should aye be near,",
+        "Yet I now must seek Him vainly",
+        "In my days of woe and fear.",
+        "Will He, then, forevermore",
+        "Keep His anger and no more",
+        "Help His chosen generation",
+        "In its present tribulation?”"
+      ]
+    },
+    {
+      "lines": [
+        "“Zion, surely I have loved thee!”",
+        "Thus to her the Highest saith.",
+        "“Although many woes have proved thee",
+        "And thy soul is sad to death,",
+        "Yet now cast thy griefs behind;",
+        "Where wilt thou a mother find",
+        "For her own child not providing",
+        "Or in hatred with it chiding?"
+      ]
+    },
+    {
+      "lines": [
+        "“And if thou couldst find a mother",
+        "Who forgot her infant’s claim",
+        "Or whose wrath her love could smother,",
+        "Yet would I be still the same;",
+        "For My truth is pledged to thee,",
+        "Zion, thou art dear to Me;",
+        "I within My heart have set thee,",
+        "And I never can forget thee."
+      ]
+    },
+    {
+      "lines": [
+        "“Let not Satan make thee craven;",
+        "He can fight, but cannot harm.",
+        "On My hands thy name is graven,",
+        "And thy shield is still My arm.",
+        "How, then, could it ever be",
+        "That I failed to think of thee,",
+        "Build the wall of My own city",
+        "And look down on thee with pity?"
+      ]
+    },
+    {
+      "lines": [
+        "“Thou before My eyes art ever,",
+        "In My bosom thou art laid",
+        "As a nursing child, and never",
+        "Shalt thou lack My timely aid.",
+        "Me and thee no time nor stress,",
+        "War, nor danger, nor distress,",
+        "No, nor Satan’s self shall sever,—",
+        "Only be thou faithful ever.”"
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 7 7 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Johann Heermann died in 1647; Catherine Winkworth died in 1878.",
+  "credits": "Words by Johann Heermann (1585–1647), translated by Catherine Winkworth (1827–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to WERDE MUNTER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:505"
+}

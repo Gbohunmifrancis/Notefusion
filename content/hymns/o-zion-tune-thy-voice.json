@@ -1,0 +1,67 @@
+{
+  "title": "O Zion, Tune Thy Voice",
+  "tune": "belsize",
+  "text": [
+    {
+      "name": "Philip Doddridge",
+      "born": 1702,
+      "died": 1751,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O Zion, Tune Thy Voice in Tonic Solfa to BELSIZE, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Philip Doddridge wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 319 of its twenty-second edition (1853), “The Glory of the Church in the Latter Day. Is. 60:1”.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.4.4.4.4), to be sung to any tune of that metre. This page sets them to BELSIZE; any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "O Zi-on, tune thy voice, And raise thy hands on high; Tell all the earth thy joys, And boast sal-va-tion nigh. Cheer-ful in God, A-rise and shine, While rays di-vine Stream all a-broad.",
+  "verses": [
+    {
+      "lines": [
+        "O Zion, tune thy voice,",
+        "And raise thy hands on high;",
+        "Tell all the earth thy joys,",
+        "And boast salvation nigh.",
+        "Cheerful in God,",
+        "Arise and shine,",
+        "While rays divine",
+        "Stream all abroad."
+      ]
+    },
+    {
+      "lines": [
+        "He gilds thy mourning face",
+        "With beams that cannot fade;",
+        "His all-resplendent grace",
+        "He pours around thy head.",
+        "The nations round",
+        "Thy form shall view,",
+        "With lustre new",
+        "Divinely crowned."
+      ]
+    },
+    {
+      "lines": [
+        "In honor to his name,",
+        "Reflect that sacred light,",
+        "And loud that grace proclaim,",
+        "Which makes thy darkness bright;",
+        "Pursue his praise,",
+        "Till sovereign love",
+        "In worlds above",
+        "The glory raise."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 4 4 4 4",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Philip Doddridge died in 1751.",
+  "credits": "Words by Philip Doddridge (1702–1751), public domain, as printed in Hymns for Christian Devotion (1853); set to BELSIZE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:319"
+}

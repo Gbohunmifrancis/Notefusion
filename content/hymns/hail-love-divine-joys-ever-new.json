@@ -1,0 +1,61 @@
+{
+  "title": "Hail, Love Divine! Joys Ever New",
+  "tune": "holy-matrimony",
+  "text": [
+    {
+      "name": "Thomas Blacklock",
+      "born": 1721,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Hail, Love Divine! Joys Ever New in Tonic Solfa to HOLY MATRIMONY, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Thomas Blacklock wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 774 of its twenty-second edition (1853), “Christian Beneficence”.",
+    "The book printed the words without tunes, marked Common Particular Metre (8.8.6.8.8.6), to be sung to any tune of that metre. This page sets them to HOLY MATRIMONY; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "Hail, love di-vine! joys ev-er new, While thy kind dic-tates we pur-sue, Our souls de-light-ed share, Too high for sor-did minds to know, Who on them-selves a-lone be-stow Their wish-es and their care.",
+  "verses": [
+    {
+      "lines": [
+        "Hail, love divine! joys ever new,",
+        "While thy kind dictates we pursue,",
+        "Our souls delighted share,",
+        "Too high for sordid minds to know,",
+        "Who on themselves alone bestow",
+        "Their wishes and their care."
+      ]
+    },
+    {
+      "lines": [
+        "By thee inspired, the generous breast,",
+        "In blessing others only blest,",
+        "With kindness large and free,",
+        "Delights the widow's tears to stay,",
+        "To teach the blind their smoothest way,",
+        "And aid the feeble knee."
+      ]
+    },
+    {
+      "lines": [
+        "O God, with sympathetic care,",
+        "In others' joys and griefs to share,",
+        "Do thou our hearts incline;",
+        "Each low, each selfish wish control,",
+        "Warm with benevolence the soul,",
+        "And make us wholly thine."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Thomas Blacklock died in 1791.",
+  "credits": "Words by Thomas Blacklock (1721–1791), public domain, as printed in Hymns for Christian Devotion (1853); set to HOLY MATRIMONY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:774"
+}

@@ -1,0 +1,177 @@
+{
+  "title": "Where’er I Go, Whate’er My Task",
+  "tune": "holy-matrimony",
+  "text": [
+    {
+      "name": "Paul Fleming",
+      "born": 1609,
+      "died": 1640,
+      "role": "Words"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Where’er I Go, Whate’er My Task in Tonic Solfa to HOLY MATRIMONY, doh is G: the solfa with the words, staff notation, 14 verses and a piano.",
+  "about": [
+    "Paul Fleming wrote these words in German. Catherine Winkworth's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 372.",
+    "The book printed the words without tunes, marked Common Particular Metre (8.8.6.8.8.6), to be sung to any tune of that metre. This page sets them to HOLY MATRIMONY; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "Wher-e’er I go, what-e’er my task, The coun-sel of my God I ask, Who ru-leth all things right; Un-less He give both thought and deed, The ut-most pains can ne’er suc-ceed, And vain must be man’s might.",
+  "verses": [
+    {
+      "lines": [
+        "Where’er I go, whate’er my task,",
+        "The counsel of my God I ask,",
+        "Who ruleth all things right;",
+        "Unless He give both thought and deed,",
+        "The utmost pains can ne’er succeed,",
+        "And vain must be man’s might."
+      ]
+    },
+    {
+      "lines": [
+        "For what can all my toil avail?",
+        "My care, my watching,—all must fail",
+        "Unless my God is there.",
+        "Then let Him order all for me",
+        "As in His will He shall decree;",
+        "On Him I cast my care."
+      ]
+    },
+    {
+      "lines": [
+        "For naught can come, as naught has been,",
+        "But what my Father has foreseen",
+        "And what shall work my good.",
+        "Whate’er He gives me I will take,",
+        "Whate’er He chooses I will make",
+        "My choice with thankful mood."
+      ]
+    },
+    {
+      "lines": [
+        "I lean upon His mighty arm,",
+        "Which shieldeth me from every harm",
+        "And all calamity.",
+        "If in His precepts I shall live,",
+        "Whate’er is useful He will give;",
+        "And naught can injure me."
+      ]
+    },
+    {
+      "lines": [
+        "But only may He of His grace",
+        "The record of my guilt efface",
+        "And wipe out all my debt;",
+        "Though I have sinned, He will not straight",
+        "Pronounce His judgment, He will wait,",
+        "Have patience with me yet."
+      ]
+    },
+    {
+      "lines": [
+        "I travel to a distant land",
+        "To serve the post wherein I stand,",
+        "Which He hath bid me fill;",
+        "And He will bless me with His light",
+        "That I may serve His world aright",
+        "And make me know His will."
+      ]
+    },
+    {
+      "lines": [
+        "And though through desert wilds I fare,",
+        "Yet Jesus Christ is with me there,",
+        "The Lord Himself is near;",
+        "In all my dangers He will come,",
+        "And He who kept me safe at home",
+        "Can keep me safely here."
+      ]
+    },
+    {
+      "lines": [
+        "Yes, He will speed me on my way",
+        "And point me where to go and stay",
+        "And help me still and lead;",
+        "Let me in health and safety live",
+        "And time and wind and weather give",
+        "And whatsoe’er I need."
+      ]
+    },
+    {
+      "lines": [
+        "His holy angel being near,",
+        "My enemies I need not fear,",
+        "For He protects me well;",
+        "I owe it to my faithful Guide,",
+        "Who never yet hath left my side,",
+        "That I in peace may dwell."
+      ]
+    },
+    {
+      "lines": [
+        "When late at night my sleep I take,",
+        "When early in the morn I wake,",
+        "At rest, or on my way,",
+        "In hours of weakness or in bonds,",
+        "When, vexed with fears, my heart desponds,",
+        "God’s Word is e’er my stay."
+      ]
+    },
+    {
+      "lines": [
+        "Since, then, my course is traced by Him,",
+        "I will not fear that future dim,",
+        "But go, whate’er befall,",
+        "Well knowing naught awaits me there",
+        "Too hard for me through Him to bear;",
+        "With Him I’ll conquer all."
+      ]
+    },
+    {
+      "lines": [
+        "To Him myself I wholly give,",
+        "At His command I die or live,",
+        "I trust His love and power;",
+        "And if to-morrow or to-day",
+        "His summons come, I will obey,",
+        "He knows the proper hour."
+      ]
+    },
+    {
+      "lines": [
+        "But if it please that Love most kind,",
+        "And if this voice within my mind",
+        "Be whispering not in vain,",
+        "I yet shall praise my God ere long",
+        "In many a sweet and joyful song",
+        "When in my home again."
+      ]
+    },
+    {
+      "lines": [
+        "To those I love will He be near,",
+        "With His consoling light appear,",
+        "Who is my Shield and theirs;",
+        "And He will grant beyond our thought",
+        "What they and I alike have sought",
+        "With tears and fervent prayers."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Paul Fleming died in 1640; Catherine Winkworth died in 1878.",
+  "credits": "Words by Paul Fleming (1609–1640), translated by Catherine Winkworth (1827–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to HOLY MATRIMONY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:372"
+}

@@ -1,0 +1,81 @@
+{
+  "title": "O Thou Who Hast Our Sorrows Borne",
+  "tune": "holy-matrimony",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "O Thou Who Hast Our Sorrows Borne in Tonic Solfa to HOLY MATRIMONY, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 122.",
+    "The book printed the words without tunes. They are in Common Particular Metre (8.8.6.8.8.6), and this page sets them to HOLY MATRIMONY; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "O thou who hast our sor-rows borne, Help us to look on thee and mourn, On thee whom we have slain, Have pierced a thou-sand thou-sand times, And by re-it-er-at-ed crimes Re-newed thy mor-tal pain.",
+  "verses": [
+    {
+      "lines": [
+        "O thou who hast our sorrows borne,",
+        "Help us to look on thee and mourn,",
+        "On thee whom we have slain,",
+        "Have pierced a thousand thousand times,",
+        "And by reiterated crimes",
+        "Renewed thy mortal pain."
+      ]
+    },
+    {
+      "lines": [
+        "Vouchsafe us eyes of faith to see",
+        "The man transfixed on Calvary,",
+        "To know thee, who thou art,",
+        "The one eternal God and true;",
+        "And let the sight affect, subdue,",
+        "And break my stubborn heart."
+      ]
+    },
+    {
+      "lines": [
+        "Lover of souls, to rescue mine,",
+        "Reveal the charity divine,",
+        "That suffered in my stead;",
+        "That made thy soul a sacrifice,",
+        "And quenched in death those flaming eyes,",
+        "And bowed that sacred head."
+      ]
+    },
+    {
+      "lines": [
+        "The veil of unbelief remove,",
+        "And by thy manifested love,",
+        "And by thy sprinkled blood,",
+        "Destroy the love of sin in me,",
+        "And get thyself the victory,",
+        "And bring me back to God."
+      ]
+    },
+    {
+      "lines": [
+        "Now let thy dying love constrain",
+        "My soul to love its God again,",
+        "Its God to glorify;",
+        "And lo! I come thy cross to share,",
+        "Echo thy sacrificial prayer,",
+        "And with my Saviour die."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to HOLY MATRIMONY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:122"
+}

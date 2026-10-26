@@ -1,0 +1,86 @@
+{
+  "title": "Light of My Life, O Lord, Thou Art",
+  "tune": "meribah",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Light of My Life, O Lord, Thou Art in Tonic Solfa to MERIBAH, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911), headed “Psalm XXVII”.",
+    "The book printed the words without tunes. They are in Common Particular Metre (8.8.6.8.8.6), and this page sets them to MERIBAH; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "Light of my life, O Lord, Thou art, No fear af-flicts my trust-ing heart When, all se-cure in Thee As in a for-tress I re-pose, And e-vil men, my di-rest foes, Are baulked that trou-ble me,",
+  "verses": [
+    {
+      "lines": [
+        "Light of my life, O Lord, Thou art,",
+        "No fear afflicts my trusting heart",
+        "When, all secure in Thee",
+        "As in a fortress I repose,",
+        "And evil men, my direst foes,",
+        "Are baulked that trouble me,"
+      ]
+    },
+    {
+      "lines": [
+        "Hosts may encamp on every side,",
+        "And pallid fear the trust deride",
+        "That saves me from affright;",
+        "But in the Lord my hope shall last,",
+        "Till noise of war and strife are past,",
+        "And flee the powers of night."
+      ]
+    },
+    {
+      "lines": [
+        "To God I make this chief request,",
+        "That I in His abode may rest",
+        "Through all my earthly days,",
+        "To mark its comeliness and grace,",
+        "And see the beauty of His face,",
+        "Whose love inspires my praise."
+      ]
+    },
+    {
+      "lines": [
+        "There shall I dwell unseen by all,",
+        "Secure when days of trouble call,",
+        "And evil doers mock;",
+        "And He shall hide me in His tent,",
+        "Till all the wrath of man is spent",
+        "As tempests on a rock."
+      ]
+    },
+    {
+      "lines": [
+        "Therefore to Thee my praise I'll give,",
+        "And joyful offerings while I live",
+        "My grateful soul shall bring;",
+        "For Thou my foes hast beaten down,",
+        "With victory Thou my head dost crown,",
+        "And tun'st my heart to sing."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to MERIBAH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:41"
+}

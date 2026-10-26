@@ -3,8 +3,11 @@
 // two books print given to the first, and the committed pages one syllable to a note of their tune.
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { parseLutheran, lutheranLabel, creditLutheran } from "../import/lutheran-1927.mjs";
-import { parseBook, parseOlney, parseNumbered, inferPattern, iambsOnTrochees, patternFor, authorOf, fitHymn, pickTune, METRES, BOOKS } from "../import/words-books.mjs";
+import { parseBook, parseOlney, parseNumbered, inferPattern, iambsOnTrochees, patternFor, authorOf, fitHymn, pickTune, tuneShape, offBeat, OFF_BEAT, METRES, BOOKS } from "../import/words-books.mjs";
 import { fromLaterBook } from "../import/watts.mjs";
 import { loadAll } from "../lib/content.mjs";
 import { loadEngine } from "../lib/solfa.mjs";
@@ -129,7 +132,31 @@ test("a metre label and a verse's length give its syllables per line, or nothing
   assert.deepEqual(patternFor("6s. & 4s. M.", 7), [6, 6, 4, 6, 6, 6, 4]);
   assert.deepEqual(patternFor("8s. 7s. & 4s.", 6), [8, 7, 8, 7, 4, 7]);
   assert.equal(patternFor("8s. & 7s. M. (Peculiar.)", 4), null);
-  assert.equal(patternFor("C. P. M.", 6), null);
+  // The particular metres, and Hallelujah Metre's 8s halved when the book prints it in eight lines.
+  assert.deepEqual(patternFor("C. P. M.", 6), [8, 8, 6, 8, 8, 6]);
+  assert.deepEqual(patternFor("L. P. M.", 6), [8, 8, 8, 8, 8, 8]);
+  assert.deepEqual(patternFor("H. M.", 6), [6, 6, 6, 6, 8, 8]);
+  assert.deepEqual(patternFor("H. M.", 8), [6, 6, 6, 6, 4, 4, 4, 4]);
+  assert.deepEqual(patternFor("L. M.", 8), [8, 8, 8, 8, 8, 8, 8, 8]);
+  assert.deepEqual(patternFor("S. M.", 8), [6, 6, 8, 6, 6, 6, 8, 6]);
+  assert.equal(patternFor("C. H. M.", 6), null);
+});
+
+test("a tune with a slur holds the words' syllable over it where its own words do; one with a note a syllable holds none", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "shape-"));
+  const tune = { key: "C major", time: "4/4", melody: "C4:1 D4:1 E4:1 F4:.5 E4:.5 | D4:2 C4:2" };   // seven notes
+  const page = (f, h) => fs.writeFileSync(path.join(dir, f), JSON.stringify({ tune: "t", ...h }));
+  page("a.json", { setByMetre: true, underlay: "one two_ three four five six", verses: [{ lines: ["one two three", "four five six"] }] });
+  page("b.json", { underlay: "Wake, my soul_, and sing out", verses: [{ lines: ["Wake, my soul,", "and sing out"] }] });
+  page("c.json", { underlay: "Lord, we come to_ thee now", verses: [{ lines: ["Lord, we come to", "thee now"] }] });
+  // Read off the tune's own words (never a page set by metre), whose lines must be the pattern's.
+  assert.deepEqual(tuneShape("t", tune, [3, 3], dir), { holds: [[2, 1]] });
+  assert.deepEqual(tuneShape("t", tune, [4, 2], dir), { holds: [[3, 1]] });
+  assert.equal(tuneShape("t", tune, [5, 1], dir), null);
+  assert.deepEqual(tuneShape("t", tune, [4, 3], dir), { holds: [] });
+  // The new words are held at the same syllable, before their punctuation.
+  assert.equal(fitHymn([["Come, my God,", "be near"]], [3, 2], {}, [[2, 1]]).underlay, "Come, my God_, be near");
+  assert.equal(fitHymn([["Morning breaks", "and night"]], [3, 2], {}, [[0, 2]]).underlay, "Morn__-ing breaks and night");
 });
 
 test("a header spaced oddly is still a header, so its verses never run into the hymn before", () => {
@@ -185,9 +212,11 @@ test("the committed pages: set by metre, in print by the book's year, each under
     assert.equal(h.textPublishedBy, true, h.slug);
     assert.ok([1848, 1866, 1853, 1779].includes(h.textPublished), h.slug);
     assert.doesNotMatch(h.about[1], /\) \(/, h.slug);   // never "Sevens (7.7.7.7) (7.7.7.7)"
-    assert.ok(Object.values(METRES).some((m) => m.tunes.includes(h.tune)), h.slug);
+    assert.ok(Object.values(METRES).some((m) => [...m.tunes, ...(m.iambs || [])].includes(h.tune)), h.slug);
     assert.equal(N.syllabify(h.underlay).length, h.tuneData.parsed.notes.length, h.slug);
-    assert.doesNotMatch(h.underlay, /_/, h.slug);
+    // A syllable is held over a second note only where the tune has more notes than the metre has syllables.
+    const syllables = h.metre.split(" ").map(Number).reduce((a, b) => a + b, 0);
+    if (h.tuneData.parsed.notes.length === syllables) assert.doesNotMatch(h.underlay, /_/, h.slug);
     for (const p of h.text) assert.ok(p.traditional || p.died < 1955, `${h.slug}: ${p.name}`);
   }
 });
@@ -291,6 +320,19 @@ test("iambic words are never set to the trochaic 8.7 tunes", () => {
   assert.equal(iambsOnTrochees(iambic, [8, 7, 8, 7]), true);
   assert.equal(iambsOnTrochees(trochaic, [8, 7, 8, 7]), false);
   assert.equal(iambsOnTrochees(iambic, [8, 6, 8, 6]), false);   // Common Metre's tunes are iambic
+  // Eights and Sevens has iambic tunes of its own: such words go to them, never to the trochaic list.
+  for (const slug of ["alas-my-god-my-sins-are-great", "o-god-whose-presence"]) assert.ok(METRES["8 7 8 7"].iambs.includes(pickTune(slug, "8 7 8 7", METRES["8 7 8 7"].iambs)));
+});
+
+test("anapaests and trochees are kept off the iambic tunes of the metres added later", () => {
+  const lmd = [8, 8, 8, 8, 8, 8, 8, 8];
+  const anapaests = [["Away with our sorrow and fear!", "We soon shall recover our home,", "The city of saints shall appear,", "The day of eternity come:", "From earth we shall quickly remove,", "And mount to our native abode,", "The house of our Father above,", "The palace of angels and God."]];
+  const trochees = [["Deck thyself, my soul, with gladness,", "Leave the gloomy haunts of sadness,", "Come into the daylight's splendor,", "There with joy thy praises render", "Unto Him whose grace unbounded", "Hath this wondrous banquet founded;", "High o'er all the heavens He reigneth,", "Yet to dwell with thee He deigneth."]];
+  const iambs = [["Let not the wise his wisdom boast,", "The mighty glory in his might,", "The rich in flattering riches trust,", "Which take their everlasting flight.", "The rush of numerous years bears down", "The most gigantic strength of man;", "And where is all his wisdom gone,", "When dust he turns to dust again?"]];
+  assert.ok(offBeat(anapaests, lmd, {}) > OFF_BEAT);
+  assert.ok(offBeat(trochees, lmd, {}) > OFF_BEAT);
+  assert.ok(offBeat(iambs, lmd, {}) <= OFF_BEAT);
+  for (const [key, m] of Object.entries(METRES)) if (m.iambic) assert.ok(!/^(7|11)/.test(key), key);
 });
 
 test("the committed Lutheran pages: everyone named in full and dated, a translator for every translation", () => {
@@ -308,7 +350,6 @@ test("the committed Lutheran pages: everyone named in full and dated, a translat
 
 test("Wesley's Collection: a hymn page read, and its writer only where the index's scans say so plainly", async () => {
   const { parseWesley, wesleyWriters, creditWesley, aboutWesley } = await import("../import/wesley-1780.mjs");
-  const fs = await import("node:fs"), os = await import("node:os"), path = await import("node:path");
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "wesley-"));
   const page = (n, first) => `<TITLE>Hymn ${n}, "A Collection of Hymns..."</TITLE><BODY><H3>L.M.</H3>
 <P>
@@ -320,8 +361,14 @@ And gave his Isaac back to God.
   fs.writeFileSync(path.join(dir, "jwg0286.html"), page(286, "ABRAHAM, when severely tried,"));
   fs.writeFileSync(path.join(dir, "jwg0331.html"), page(331, "AFFLICTED by a gracious God,"));
   fs.writeFileSync(path.join(dir, "jwg0112.html"), page(112, "A CHARGE to keep I have,"));
+  fs.writeFileSync(path.join(dir, "jwg0224.html"), page(224, "I'LL praise my Maker, JEHOVAH, the great I AM,"));
+  fs.writeFileSync(path.join(dir, "jwg0041.html"), page(41, "O GOD! our help, our ALL,"));
   const hymns = parseWesley(dir);
-  assert.deepEqual(hymns.map((h) => [h.number, h.label, h.verses[0][0]]), [[112, "L.M.", "A CHARGE to keep I have,"], [286, "L.M.", "Abraham, when severely tried,"], [331, "L.M.", "Afflicted by a gracious God,"]]);
+  assert.deepEqual(hymns.map((h) => [h.number, h.label, h.verses[0][0]]), [
+    [41, "L.M.", "O God! our help, our all,"], [112, "L.M.", "A charge to keep I have,"],
+    [224, "L.M.", "I'll praise my Maker, Jehovah, the great I AM,"], [286, "L.M.", "Abraham, when severely tried,"],
+    [331, "L.M.", "Afflicted by a gracious God,"],
+  ]);
   const scanA = "I.— INDEX TO THE HYMNS.\nAbraham, when severely tried . IT. 286\nAfflicted by a gracious God . . . . 331\nA charge to keep I have 112\n";
   const scanB = "FIRST LINE, AUTHOR, HYMN\nAbraham, when severely tried . . W. 286\nAMlicted by a gracious God , . . . . 331\n";
   const writers = wesleyWriters(hymns, [scanA, scanB]);

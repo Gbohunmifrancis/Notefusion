@@ -1,0 +1,47 @@
+{
+  "title": "Our Father in Heaven, We Hallow Thy Name",
+  "tune": "foundation-funk",
+  "text": [
+    {
+      "name": "Sarah Josepha Hale",
+      "born": 1788,
+      "died": 1879,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Our Father in Heaven, We Hallow Thy Name in Tonic Solfa to FOUNDATION (FUNK), doh is Ab: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Sarah Josepha Hale wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 437 of its twenty-second edition (1853), “The Lord's Prayer”.",
+    "The book printed the words without tunes, marked Elevens (11.11.11.11), to be sung to any tune of that metre. This page sets them to FOUNDATION (FUNK); any other Elevens tune fits them as well."
+  ],
+  "underlay": "Our_ Fa-ther in hea-ven, we hal-low thy name! May thy king-dom ho-ly on earth be the same! O give to us dail-y our por-tion of bread; It is from thy boun-ty that all must be fed.",
+  "verses": [
+    {
+      "lines": [
+        "Our Father in heaven, we hallow thy name!",
+        "May thy kingdom holy on earth be the same!",
+        "O give to us daily our portion of bread;",
+        "It is from thy bounty that all must be fed."
+      ]
+    },
+    {
+      "lines": [
+        "Forgive our transgressions, and teach us to know",
+        "That humble compassion which pardons each foe:",
+        "Keep us from temptation, from weakness and sin,",
+        "And thine be the glory forever — Amen."
+      ]
+    }
+  ],
+  "metre": "11 11 11 11",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Sarah Josepha Hale died in 1879.",
+  "credits": "Words by Sarah Josepha Hale (1788–1879), public domain, as printed in Hymns for Christian Devotion (1853); set to FOUNDATION (FUNK) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:437"
+}

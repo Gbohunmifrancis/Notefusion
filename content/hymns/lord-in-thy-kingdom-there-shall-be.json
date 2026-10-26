@@ -1,0 +1,71 @@
+{
+  "title": "Lord, in Thy Kingdom There Shall Be",
+  "tune": "dominus-regit-me",
+  "text": [
+    {
+      "name": "Joseph Anstice",
+      "born": 1808,
+      "died": 1836,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Lord, in Thy Kingdom There Shall Be in Tonic Solfa to DOMINUS REGIT ME, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Joseph Anstice wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 461.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to DOMINUS REGIT ME; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Lord, in Thy king-dom there shall be No a-liens from each oth-er, But e-ven_ as he loves him_-self Each saint shall love his bro_-ther.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, in Thy kingdom there shall be",
+        "No aliens from each other,",
+        "But even as he loves himself",
+        "Each saint shall love his brother."
+      ]
+    },
+    {
+      "lines": [
+        "When in Thy courts below we meet",
+        "To mourn our sinful living",
+        "And with united hearts repeat",
+        "Confession, creed, thanksgiving:"
+      ]
+    },
+    {
+      "lines": [
+        "Make us to hear in each sweet word",
+        "Thy Holy Spirit calling",
+        "To oneness with Thy Church and Thee,",
+        "That heavenly bond forestalling."
+      ]
+    },
+    {
+      "lines": [
+        "One Baptism and one faith have we,",
+        "One Spirit sent to win us,",
+        "One Lord, one Father, and one God,",
+        "Above and through and in us."
+      ]
+    },
+    {
+      "lines": [
+        "Never, by schism or by sin,",
+        "May we that union sever,",
+        "Till all, to perfect stature grown,",
+        "Are one with Thee forever!"
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Joseph Anstice died in 1836.",
+  "credits": "Words by Joseph Anstice (1808–1836), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to DOMINUS REGIT ME by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:461"
+}

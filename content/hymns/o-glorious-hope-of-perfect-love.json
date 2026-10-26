@@ -1,0 +1,88 @@
+{
+  "title": "O Glorious Hope of Perfect Love",
+  "tune": "holy-matrimony",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "O Glorious Hope of Perfect Love in Tonic Solfa to HOLY MATRIMONY, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 404. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Common Particular Metre (8.8.6.8.8.6), and this page sets them to HOLY MATRIMONY; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "O glo-rious hope of per-fect love! It lifts me up to things a-bove, It bears on ea-gles' wings; It gives my rav-ished soul a taste, And makes me for some mo-ments feast With Je-su's priests and kings.",
+  "verses": [
+    {
+      "lines": [
+        "O glorious hope of perfect love!",
+        "It lifts me up to things above,",
+        "It bears on eagles' wings;",
+        "It gives my ravished soul a taste,",
+        "And makes me for some moments feast",
+        "With Jesu's priests and kings."
+      ]
+    },
+    {
+      "lines": [
+        "Rejoicing now in earnest hope,",
+        "I stand, and from the mountain-top",
+        "See all the land below;",
+        "Rivers of milk and honey rise,",
+        "And all the fruits of Paradise",
+        "In endless plenty grow."
+      ]
+    },
+    {
+      "lines": [
+        "A land of corn, and wine, and oil,",
+        "Favoured with God's peculiar smile,",
+        "With every blessing blest;",
+        "There dwells the Lord our Righteousness,",
+        "And keeps his own in perfect peace,",
+        "And everlasting rest."
+      ]
+    },
+    {
+      "lines": [
+        "O that I might at once go up!",
+        "No more on this side Jordan stop,",
+        "But now the land possess;",
+        "This moment end my legal years,",
+        "Sorrows, and sins, and doubt, and fears,",
+        "A howling wilderness."
+      ]
+    },
+    {
+      "lines": [
+        "Now, O my Joshua, bring me in!",
+        "Cast out thy foes; the inbred sin,",
+        "The carnal mind, remove;",
+        "The purchase of thy death divide!",
+        "Give me with all the sanctified",
+        "The heritage of love!"
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to HOLY MATRIMONY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:404"
+}

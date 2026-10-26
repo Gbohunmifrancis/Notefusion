@@ -1,0 +1,67 @@
+{
+  "title": "Father of Boundless Grace",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Father of Boundless Grace in Tonic Solfa to DIADEMATA, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 460.",
+    "The book printed the words without tunes. They are in Short Metre Double (6.6.8.6.6.6.8.6), and this page sets them to DIADEMATA; any other Short Metre Double tune fits them as well."
+  ],
+  "underlay": "Fa-ther of bound-less grace, Thou hast in part ful-filled Thy pro-mise made to A-dam's_ race, In God in-car-nate sealed. A few from ev-ery land At first to Sa-lem came, And saw the won-ders of thy hand, And saw the tongues of flame.",
+  "verses": [
+    {
+      "lines": [
+        "Father of boundless grace,",
+        "Thou hast in part fulfilled",
+        "Thy promise made to Adam's race,",
+        "In God incarnate sealed.",
+        "A few from every land",
+        "At first to Salem came,",
+        "And saw the wonders of thy hand,",
+        "And saw the tongues of flame."
+      ]
+    },
+    {
+      "lines": [
+        "Yet still we wait the end,",
+        "The coming of our Lord;",
+        "The full accomplishment attend",
+        "Of thy prophetic word.",
+        "Thy promise deeper lies",
+        "In unexhausted grace,",
+        "And new-discovered worlds arise",
+        "To sing their Saviour's praise."
+      ]
+    },
+    {
+      "lines": [
+        "Beloved for Jesu's sake,",
+        "By him redeemed of old,",
+        "All nations must come in, and make",
+        "One undivided fold:",
+        "While gathered in by thee,",
+        "And perfected in one,",
+        "They all at once thy glory see",
+        "In thine eternal Son."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6 6 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to DIADEMATA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:460"
+}

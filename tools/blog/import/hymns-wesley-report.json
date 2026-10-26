@@ -17,6 +17,13 @@
       "author": "Charles Wesley and John Wesley"
     },
     {
+      "ref": "5",
+      "slug": "thy-faithfulness-lord-each-moment-we-find",
+      "metre": "10 10 11 11",
+      "tune": "lyons",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
       "ref": "7",
       "slug": "let-the-beasts-their-breath-resign",
       "metre": "7 7 7 7 7 7 7 7",
@@ -73,6 +80,13 @@
       "author": "Charles Wesley and John Wesley"
     },
     {
+      "ref": "43",
+      "slug": "and-am-i-born-to-die",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
+      "author": "Charles Wesley"
+    },
+    {
       "ref": "46",
       "slug": "the-morning-flowers-display-their-sweets",
       "metre": "8 8 8 8",
@@ -101,10 +115,24 @@
       "author": "Charles Wesley"
     },
     {
+      "ref": "59",
+      "slug": "thou-god-of-glorious-majesty",
+      "metre": "8 8 6 8 8 6",
+      "tune": "meribah",
+      "author": "Charles Wesley"
+    },
+    {
       "ref": "60",
       "slug": "righteous-god-whose-vengeful-phials",
       "metre": "8 7 8 7 8 7 8 7",
       "tune": "rustington",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "62",
+      "slug": "how-happy-are-the-little-flock",
+      "metre": "8 8 6 8 8 6",
+      "tune": "holy-matrimony",
       "author": "Charles Wesley"
     },
     {
@@ -113,6 +141,13 @@
       "metre": "8 6 8 6",
       "tune": "caithness",
       "author": "Charles Wesley"
+    },
+    {
+      "ref": "68",
+      "slug": "how-happy-is-the-pilgrims-lot",
+      "metre": "8 8 6 8 8 6",
+      "tune": "holy-matrimony",
+      "author": "Charles Wesley and John Wesley"
     },
     {
       "ref": "69",
@@ -185,6 +220,13 @@
       "author": "Charles Wesley and John Wesley"
     },
     {
+      "ref": "97",
+      "slug": "thou-great-mysterious-god-unknown",
+      "metre": "8 8 6 8 8 6",
+      "tune": "holy-matrimony",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
       "ref": "99",
       "slug": "father-of-lights-from-whom-proceeds",
       "metre": "8 8 8 8 8 8",
@@ -192,10 +234,24 @@
       "author": "Charles Wesley and John Wesley"
     },
     {
+      "ref": "100",
+      "slug": "jesu-my-advocate-above",
+      "metre": "8 8 8 8 8 8 8 8",
+      "tune": "sweet-hour",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
       "ref": "101",
       "slug": "saviour-prince-of-israels-race",
       "metre": "7 7 7 7 7 7",
       "tune": "spanish-hymn",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "102",
+      "slug": "o-that-i-could-repent",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
       "author": "Charles Wesley"
     },
     {
@@ -227,6 +283,13 @@
       "author": "Charles Wesley"
     },
     {
+      "ref": "118",
+      "slug": "author-of-faith-to-thee-i-cry",
+      "metre": "8 8 6 8 8 6",
+      "tune": "holy-matrimony",
+      "author": "Charles Wesley"
+    },
+    {
       "ref": "120",
       "slug": "comfort-ye-ministers-of-grace",
       "metre": "8 8 8 8 8 8",
@@ -238,6 +301,13 @@
       "slug": "expand-thy-wings-celestial-dove",
       "metre": "8 8 8 8 8 8",
       "tune": "melita",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "122",
+      "slug": "o-thou-who-hast-our-sorrows-borne",
+      "metre": "8 8 6 8 8 6",
+      "tune": "holy-matrimony",
       "author": "Charles Wesley"
     },
     {
@@ -290,10 +360,38 @@
       "author": "Charles Wesley and John Wesley"
     },
     {
+      "ref": "144",
+      "slug": "thee-jesu-thee-the-sinners-friend",
+      "metre": "8 8 6 8 8 6",
+      "tune": "holy-matrimony",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "146",
+      "slug": "still-lord-i-languish-for-thy-grace",
+      "metre": "8 8 6 8 8 6",
+      "tune": "holy-matrimony",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "147",
+      "slug": "o-love-divine-how-sweet-thou-art",
+      "metre": "8 8 6 8 8 6",
+      "tune": "meribah",
+      "author": "Charles Wesley"
+    },
+    {
       "ref": "148",
       "slug": "father-of-jesus-christ-the-just",
       "metre": "8 8 8 8 8 8",
       "tune": "melita",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "152",
+      "slug": "ah-whither-should-i-go",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
       "author": "Charles Wesley and John Wesley"
     },
     {
@@ -360,6 +458,13 @@
       "author": "Charles Wesley and John Wesley"
     },
     {
+      "ref": "172",
+      "slug": "o-unexhausted-grace",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
+      "author": "Charles Wesley"
+    },
+    {
       "ref": "173",
       "slug": "jesus-i-believe-thee-near",
       "metre": "7 7 7 7 7 7",
@@ -416,6 +521,20 @@
       "author": "Charles Wesley and John Wesley"
     },
     {
+      "ref": "199",
+      "slug": "o-heavenly-king-look-down-from-above",
+      "metre": "10 10 11 11",
+      "tune": "lyons",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "200",
+      "slug": "my-father-my-god-i-long-for-thy-love",
+      "metre": "10 10 11 11",
+      "tune": "lyons",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
       "ref": "206",
       "slug": "what-am-i-o-thou-glorious-god",
       "metre": "8 8 8 8 8 8",
@@ -451,6 +570,13 @@
       "author": "Charles Wesley and John Wesley"
     },
     {
+      "ref": "222",
+      "slug": "how-happy-gracious-lord-are-we",
+      "metre": "8 8 6 8 8 6",
+      "tune": "meribah",
+      "author": "Charles Wesley"
+    },
+    {
       "ref": "224",
       "slug": "ill-praise-my-maker-while-ive-breath",
       "metre": "8 8 8 8 8 8",
@@ -484,6 +610,13 @@
       "metre": "8 8 8 8",
       "tune": "uxbridge",
       "author": "Charles Wesley"
+    },
+    {
+      "ref": "237",
+      "slug": "eternal-spotless-lamb-of-god",
+      "metre": "8 8 8 8 8 8 8 8",
+      "tune": "sweet-hour",
+      "author": "John Wesley"
     },
     {
       "ref": "238",
@@ -549,10 +682,31 @@
       "author": "Isaac Watts"
     },
     {
+      "ref": "268",
+      "slug": "in-fellowship-alone",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "270",
+      "slug": "equip-me-for-the-war",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
       "ref": "272",
       "slug": "peace-doubting-heart-my-gods-i-am",
       "metre": "8 8 8 8 8 8",
       "tune": "melita",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "273",
+      "slug": "omnipotent-lord-my-saviour-and-king",
+      "metre": "10 10 11 11",
+      "tune": "lyons",
       "author": "Charles Wesley and John Wesley"
     },
     {
@@ -589,6 +743,27 @@
       "metre": "8 8 8 8",
       "tune": "old-hundredth",
       "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "301",
+      "slug": "jesus-my-strength-my-hope",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "303",
+      "slug": "ah-when-shall-i-awake",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
+      "ref": "305",
+      "slug": "gracious-redeemer-shake",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
+      "author": "Charles Wesley"
     },
     {
       "ref": "307",
@@ -672,6 +847,13 @@
       "slug": "master-i-own-thy-lawful-claim",
       "metre": "8 8 8 8 8 8",
       "tune": "melita",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "340",
+      "slug": "the-thing-my-god-doth-hate",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
       "author": "Charles Wesley"
     },
     {
@@ -808,6 +990,13 @@
       "author": "Charles Wesley"
     },
     {
+      "ref": "404",
+      "slug": "o-glorious-hope-of-perfect-love",
+      "metre": "8 8 6 8 8 6",
+      "tune": "holy-matrimony",
+      "author": "Charles Wesley and John Wesley"
+    },
+    {
       "ref": "405",
       "slug": "o-joyful-sound-of-gospel-grace",
       "metre": "8 6 8 6",
@@ -854,6 +1043,13 @@
       "slug": "quickened-with-our-immortal-head",
       "metre": "8 8 8 8",
       "tune": "melcombe",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "422",
+      "slug": "let-not-the-wise-his-wisdom-boast",
+      "metre": "8 8 8 8 8 8 8 8",
+      "tune": "saved-by-grace",
       "author": "Charles Wesley"
     },
     {
@@ -955,6 +1151,13 @@
       "author": "Charles Wesley"
     },
     {
+      "ref": "460",
+      "slug": "father-of-boundless-grace",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
+      "author": "Charles Wesley"
+    },
+    {
       "ref": "461",
       "slug": "saviour-to-thee-we-humbly-cry",
       "metre": "8 8 8 8 8 8",
@@ -987,6 +1190,27 @@
       "slug": "captain-of-our-salvation-take",
       "metre": "8 8 8 8 8 8",
       "tune": "selena",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "481",
+      "slug": "all-thanks-to-the-lamb-who-gives-us-to-meet",
+      "metre": "10 10 11 11",
+      "tune": "lyons",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "484",
+      "slug": "appointed-by-thee-we-meet-in-thy-name",
+      "metre": "10 10 11 11",
+      "tune": "lyons",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "485",
+      "slug": "jesu-we-look-to-thee",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
       "author": "Charles Wesley"
     },
     {
@@ -1102,6 +1326,27 @@
       "author": "Charles Wesley and John Wesley"
     },
     {
+      "ref": "526",
+      "slug": "except-the-lord-conduct-the-plan",
+      "metre": "8 8 6 8 8 6",
+      "tune": "meribah",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "527",
+      "slug": "come-wisdom-power-and-grace-divine",
+      "metre": "8 8 6 8 8 6",
+      "tune": "holy-matrimony",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "528",
+      "slug": "o-saviour-cast-a-gracious-smile",
+      "metre": "8 8 6 8 8 6",
+      "tune": "holy-matrimony",
+      "author": "Charles Wesley"
+    },
+    {
       "ref": "530",
       "slug": "come-thou-all-inspiring-spirit",
       "metre": "8 7 8 7 8 7 8 7",
@@ -1126,7 +1371,7 @@
   "alreadyOurs": [
     {
       "ref": "1",
-      "first": "O FOR a thousand tongues to sing",
+      "first": "O for a thousand tongues to sing",
       "page": "o-for-a-thousand-tongues"
     },
     {
@@ -1146,7 +1391,7 @@
     },
     {
       "ref": "41",
-      "first": "O GOD! our help in ages past,",
+      "first": "O God! our help in ages past,",
       "page": "o-god-our-help-in-ages-past"
     },
     {
@@ -1256,13 +1501,18 @@
     },
     {
       "ref": "308",
-      "first": "I WANT a principle within",
+      "first": "I want a principle within",
       "page": "i-want-a-principle-within"
     },
     {
       "ref": "318",
-      "first": "A CHARGE to keep I have,",
+      "first": "A charge to keep I have,",
       "page": "a-charge-to-keep-i-have"
+    },
+    {
+      "ref": "320",
+      "first": "Be it my only wisdom here",
+      "page": "be-it-my-only-wisdom-here"
     },
     {
       "ref": "328",
@@ -1271,7 +1521,7 @@
     },
     {
       "ref": "343",
-      "first": "O FOR a heart to praise my God,",
+      "first": "O for a heart to praise my God,",
       "page": "o-for-a-heart-to-praise-my-god"
     },
     {
@@ -1281,17 +1531,17 @@
     },
     {
       "ref": "367",
-      "first": "O COME, and dwell in me,",
+      "first": "O come, and dwell in me,",
       "page": "o-come-and-dwell-in-me"
     },
     {
       "ref": "376",
-      "first": "I WANT the Spirit of power within,",
+      "first": "I want the Spirit of power within,",
       "page": "i-want-the-spirit-of-power-within"
     },
     {
       "ref": "384",
-      "first": "I KNOW that my Redeemer lives,",
+      "first": "I know that my Redeemer lives,",
       "page": "i-know-that-my-redeemer-lives"
     },
     {
@@ -1345,11 +1595,6 @@
       "ref": "3",
       "first": "All that pass by, To Jesus draw near,",
       "why": "the index's scans do not say plainly who wrote it"
-    },
-    {
-      "ref": "5",
-      "first": "Thy faithfulness, Lord, Each moment we find,",
-      "why": "only 11 of 20 lines sing as 10.10.10.10"
     },
     {
       "ref": "8",
@@ -1413,7 +1658,7 @@
     },
     {
       "ref": "26",
-      "first": "I THIRST, thou wounded Lamb of God,",
+      "first": "I thirst, thou wounded Lamb of God,",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
@@ -1472,11 +1717,6 @@
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
-      "ref": "43",
-      "first": "And am I born to die?",
-      "why": "only 36 of 48 lines sing as 8.6.8.6.8.6.8.6"
-    },
-    {
       "ref": "44",
       "first": "And am I only born to die?",
       "why": "the index's scans do not say plainly who wrote it"
@@ -1522,19 +1762,9 @@
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
-      "ref": "59",
-      "first": "Thou God of glorious majesty,",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
-    },
-    {
       "ref": "61",
       "first": "Stand the omnipotent decree!",
       "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
-    },
-    {
-      "ref": "62",
-      "first": "How happy are the little flock,",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
     },
     {
       "ref": "63",
@@ -1552,14 +1782,9 @@
       "why": "only 29 of 42 lines sing as 7.7.7.7.7.7"
     },
     {
-      "ref": "68",
-      "first": "How happy is the pilgrim's lot!",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
-    },
-    {
       "ref": "70",
-      "first": "I LONG to behold Him arrayed",
-      "why": "words in iambs; the Eights and Sevens Double tunes we hold are in trochees"
+      "first": "I long to behold Him arrayed",
+      "why": "stresses off the beat of the Long Metre Double tunes we hold, which are iambic"
     },
     {
       "ref": "71",
@@ -1574,12 +1799,12 @@
     {
       "ref": "73",
       "first": "Away with our sorrow and fear!",
-      "why": "only 21 of 40 lines sing as 8.7.8.7.8.7.8.7"
+      "why": "stresses off the beat of the Long Metre Double tunes we hold, which are iambic"
     },
     {
       "ref": "74",
       "first": "We know, by faith we know,",
-      "why": "only 28 of 40 lines sing as 8.6.8.6.8.6.8.6"
+      "why": "its first verse cannot be sung as 6.6.8.6.6.6.8.6"
     },
     {
       "ref": "75",
@@ -1594,7 +1819,7 @@
     {
       "ref": "77",
       "first": "The Church in her militant state",
-      "why": "words in iambs; the Eights and Sevens Double tunes we hold are in trochees"
+      "why": "stresses off the beat of the Long Metre Double tunes we hold, which are iambic"
     },
     {
       "ref": "78",
@@ -1614,7 +1839,7 @@
     {
       "ref": "85",
       "first": "Spirit of faith, come down,",
-      "why": "only 21 of 32 lines sing as 8.6.8.6.8.6.8.6"
+      "why": "its first verse cannot be sung as 6.6.8.6.6.6.8.6"
     },
     {
       "ref": "86",
@@ -1647,39 +1872,24 @@
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
-      "ref": "97",
-      "first": "Thou great mysterious God unknown,",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
-    },
-    {
       "ref": "98",
       "first": "Upright, both in heart and will,",
       "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
     },
     {
-      "ref": "100",
-      "first": "Jesu, my Advocate above,",
-      "why": "only 15 of 32 lines sing as 8.6.8.6.8.6.8.6"
-    },
-    {
-      "ref": "102",
-      "first": "O THAT I could repent!",
-      "why": "only 12 of 16 lines sing as 8.6.8.6.8.6.8.6"
-    },
-    {
       "ref": "103",
-      "first": "O THAT I could revere",
+      "first": "O that I could revere",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
       "ref": "104",
-      "first": "O FOR that tenderness of heart",
+      "first": "O for that tenderness of heart",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
       "ref": "105",
-      "first": "O THAT I could repent!",
-      "why": "only 22 of 32 lines sing as 8.6.8.6.8.6.8.6"
+      "first": "O that I could repent!",
+      "why": "the page o-that-i-could-repent is taken"
     },
     {
       "ref": "106",
@@ -1722,19 +1932,9 @@
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
-      "ref": "118",
-      "first": "Author of faith, to thee I cry,",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
-    },
-    {
       "ref": "119",
       "first": "Father of Jesus Christ, my Lord,",
       "why": "the index's scans do not say plainly who wrote it"
-    },
-    {
-      "ref": "122",
-      "first": "O THOU who hast our sorrows borne,",
-      "why": "only 20 of 30 lines sing as 8.8.8.8.8.8"
     },
     {
       "ref": "123",
@@ -1743,7 +1943,7 @@
     },
     {
       "ref": "124",
-      "first": "O THAT I, first of love possessed,",
+      "first": "O that I, first of love possessed,",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
@@ -1802,24 +2002,9 @@
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
-      "ref": "144",
-      "first": "Thee, Jesu, thee, the sinner's friend,",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
-    },
-    {
       "ref": "145",
       "first": "Jesus, let me bless thy name!",
       "why": "the index's scans do not say plainly who wrote it"
-    },
-    {
-      "ref": "146",
-      "first": "Still Lord, I languish for thy grace;",
-      "why": "only 16 of 24 lines sing as 8.8.8.8.8.8"
-    },
-    {
-      "ref": "147",
-      "first": "O LOVE divine, how sweet thou art!",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
     },
     {
       "ref": "149",
@@ -1832,13 +2017,8 @@
       "why": "its first verse cannot be sung as 8.6.8.6.8.6.8.6"
     },
     {
-      "ref": "152",
-      "first": "Ah whither should I go,",
-      "why": "only 24 of 32 lines sing as 8.6.8.6.8.6.8.6"
-    },
-    {
       "ref": "153",
-      "first": "I SEEM desirous to repent,",
+      "first": "I seem desirous to repent,",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
@@ -1858,7 +2038,7 @@
     },
     {
       "ref": "160",
-      "first": "O JESUS my Hope,",
+      "first": "O Jesus my Hope,",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
@@ -1874,7 +2054,7 @@
     {
       "ref": "165",
       "first": "Come holy celestial Dove,",
-      "why": "only 19 of 40 lines sing as 8.6.8.6.8.6.8.6"
+      "why": "stresses off the beat of the Long Metre Double tunes we hold, which are iambic"
     },
     {
       "ref": "166",
@@ -1887,14 +2067,9 @@
       "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
     },
     {
-      "ref": "172",
-      "first": "O UNEXHAUSTED grace!",
-      "why": "only 24 of 32 lines sing as 8.6.8.6.8.6.8.6"
-    },
-    {
       "ref": "174",
       "first": "How shall a lost sinner in pain",
-      "why": "only 17 of 32 lines sing as 8.7.8.7.8.7.8.7"
+      "why": "stresses off the beat of the Long Metre Double tunes we hold, which are iambic"
     },
     {
       "ref": "175",
@@ -1923,7 +2098,7 @@
     },
     {
       "ref": "182",
-      "first": "I WILL hearken what the Lord",
+      "first": "I will hearken what the Lord",
       "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
     },
     {
@@ -1958,7 +2133,7 @@
     },
     {
       "ref": "193",
-      "first": "O FILIAL Deity,",
+      "first": "O filial Deity,",
       "why": "only 32 of 48 lines sing as 7.7.7.7.7.7"
     },
     {
@@ -1974,17 +2149,7 @@
     {
       "ref": "198",
       "first": "What shall I do My Saviour to praise,",
-      "why": "only 14 of 24 lines sing as 11.10.11.10"
-    },
-    {
-      "ref": "199",
-      "first": "O HEAVENLY King, Look down from above!",
-      "why": "only 13 of 20 lines sing as 10.10.10.10"
-    },
-    {
-      "ref": "200",
-      "first": "My Father, my God, I long for thy love,",
-      "why": "only 16 of 28 lines sing as 11.10.11.10"
+      "why": "its first verse cannot be sung as 10.10.11.11"
     },
     {
       "ref": "203",
@@ -2019,7 +2184,7 @@
     {
       "ref": "212",
       "first": "My brethren beloved, Your calling ye see;",
-      "why": "only 11 of 20 lines sing as 10.10.10.10"
+      "why": "its first verse cannot be sung as 10.10.11.11"
     },
     {
       "ref": "215",
@@ -2034,17 +2199,12 @@
     {
       "ref": "220",
       "first": "All glory to God in the sky,",
-      "why": "words in iambs; the Eights and Sevens Double tunes we hold are in trochees"
+      "why": "stresses off the beat of the Long Metre Double tunes we hold, which are iambic"
     },
     {
       "ref": "221",
       "first": "Meet and right it is to sing,",
       "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
-    },
-    {
-      "ref": "222",
-      "first": "How happy, gracious Lord! are we",
-      "why": "only 15 of 24 lines sing as 8.8.8.8.8.8"
     },
     {
       "ref": "223",
@@ -2054,7 +2214,7 @@
     {
       "ref": "228",
       "first": "Thou Shepherd of Israel, and mine,",
-      "why": "words in iambs; the Eights and Sevens Double tunes we hold are in trochees"
+      "why": "stresses off the beat of the Long Metre Double tunes we hold, which are iambic"
     },
     {
       "ref": "230",
@@ -2069,7 +2229,7 @@
     {
       "ref": "235",
       "first": "Father of all! whose powerful voice",
-      "why": "only 10 of 24 lines sing as 8.6.8.6.8.6.8.6"
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8.8.8"
     },
     {
       "ref": "236",
@@ -2077,13 +2237,8 @@
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
-      "ref": "237",
-      "first": "Eternal, spotless Lamb of God,",
-      "why": "only 12 of 24 lines sing as 8.6.8.6.8.6.8.6"
-    },
-    {
       "ref": "240",
-      "first": "O GOD, thou bottomless abyss!",
+      "first": "O God, thou bottomless abyss!",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
@@ -2124,7 +2279,7 @@
     {
       "ref": "254",
       "first": "The day of Christ, the day of God,",
-      "why": "only 13 of 24 lines sing as 8.7.8.7.8.7.8.7"
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8.8.8"
     },
     {
       "ref": "257",
@@ -2143,23 +2298,18 @@
     },
     {
       "ref": "264",
-      "first": "O ALL-CREATING God!",
+      "first": "O all-creating God!",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
       "ref": "265",
-      "first": "O MAY thy powerful word",
+      "first": "O may thy powerful word",
       "why": "its first verse cannot be sung as 6.6.8.6"
     },
     {
       "ref": "267",
       "first": "But, above all, lay hold",
-      "why": "only 24 of 32 lines sing as 8.6.8.6.8.6.8.6"
-    },
-    {
-      "ref": "268",
-      "first": "In fellowship, alone,",
-      "why": "only 22 of 32 lines sing as 8.6.8.6.8.6.8.6"
+      "why": "stresses off the beat of the Short Metre Double tunes we hold, which are iambic"
     },
     {
       "ref": "269",
@@ -2167,23 +2317,13 @@
       "why": "its first verse cannot be sung as 8.8.8.8.8.8"
     },
     {
-      "ref": "270",
-      "first": "Equip me for the war,",
-      "why": "only 24 of 32 lines sing as 8.6.8.6.8.6.8.6"
-    },
-    {
       "ref": "271",
-      "first": "O ALMIGHTY God of love,",
+      "first": "O almighty God of love,",
       "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
     },
     {
-      "ref": "273",
-      "first": "Omnipotent Lord, My Saviour and King,",
-      "why": "only 16 of 32 lines sing as 10.10.10.10"
-    },
-    {
       "ref": "274",
-      "first": "O MY old, my bosom foe,",
+      "first": "O my old, my bosom foe,",
       "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
     },
     {
@@ -2194,7 +2334,7 @@
     {
       "ref": "277",
       "first": "Jesus, the conqueror, reigns,",
-      "why": "only 31 of 48 lines sing as 8.6.8.6.8.6.8.6"
+      "why": "its first verse cannot be sung as 6.6.8.6.6.6.8.6"
     },
     {
       "ref": "278",
@@ -2218,7 +2358,7 @@
     },
     {
       "ref": "283",
-      "first": "O GOD, my hope, my heavenly rest,",
+      "first": "O God, my hope, my heavenly rest,",
       "why": "its first verse cannot be sung as 8.8.8.8.8.8"
     },
     {
@@ -2233,7 +2373,7 @@
     },
     {
       "ref": "288",
-      "first": "O GOD, thy faithfulness I plead!",
+      "first": "O God, thy faithfulness I plead!",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
@@ -2287,24 +2427,9 @@
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
-      "ref": "301",
-      "first": "Jesus, my strength, my hope,",
-      "why": "only 35 of 48 lines sing as 8.6.8.6.8.6.8.6"
-    },
-    {
-      "ref": "303",
-      "first": "Ah, when shall I awake",
-      "why": "only 35 of 48 lines sing as 8.6.8.6.8.6.8.6"
-    },
-    {
       "ref": "304",
       "first": "Saviour, on me the want bestow,",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
-    },
-    {
-      "ref": "305",
-      "first": "Gracious Redeemer, shake",
-      "why": "only 30 of 40 lines sing as 8.6.8.6.8.6.8.6"
+      "why": "its first verse cannot be sung as 8.8.6.8.8.6"
     },
     {
       "ref": "306",
@@ -2335,11 +2460,6 @@
       "ref": "316",
       "first": "Eternal Power, whose high abode",
       "why": "the index's scans do not say plainly who wrote it"
-    },
-    {
-      "ref": "320",
-      "first": "Be it my only wisdom here",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
     },
     {
       "ref": "322",
@@ -2397,13 +2517,8 @@
     },
     {
       "ref": "339",
-      "first": "O THOU to whose all-searching sight",
+      "first": "O thou to whose all-searching sight",
       "why": "the index's scans do not say plainly who wrote it"
-    },
-    {
-      "ref": "340",
-      "first": "The thing my God doth hate",
-      "why": "only 18 of 24 lines sing as 8.6.8.6.8.6.8.6"
     },
     {
       "ref": "342",
@@ -2442,7 +2557,7 @@
     },
     {
       "ref": "353",
-      "first": "O JESU, source of calm repose,",
+      "first": "O Jesu, source of calm repose,",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
@@ -2487,7 +2602,7 @@
     },
     {
       "ref": "366",
-      "first": "I SOON shall hear thy quickening voice,",
+      "first": "I soon shall hear thy quickening voice,",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
@@ -2497,7 +2612,7 @@
     },
     {
       "ref": "369",
-      "first": "O GOD most merciful and true!",
+      "first": "O God most merciful and true!",
       "why": "its first verse cannot be sung as 8.8.8.8"
     },
     {
@@ -2536,7 +2651,7 @@
     },
     {
       "ref": "382",
-      "first": "O GREAT mountain, who art thou,",
+      "first": "O great mountain, who art thou,",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
@@ -2556,7 +2671,7 @@
     },
     {
       "ref": "389",
-      "first": "O JESUS, at thy feet we wait,",
+      "first": "O Jesus, at thy feet we wait,",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
@@ -2566,23 +2681,18 @@
     },
     {
       "ref": "394",
-      "first": "O GOD of our forefathers, hear,",
+      "first": "O God of our forefathers, hear,",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
       "ref": "396",
-      "first": "O THOU, whom once they flocked to hear,",
+      "first": "O thou, whom once they flocked to hear,",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
       "ref": "402",
-      "first": "O MIGHT I this moment cease",
+      "first": "O might I this moment cease",
       "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
-    },
-    {
-      "ref": "404",
-      "first": "O GLORIOUS hope of perfect love!",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
     },
     {
       "ref": "407",
@@ -2616,7 +2726,7 @@
     },
     {
       "ref": "416",
-      "first": "I ASK the gift of righteousness,",
+      "first": "I ask the gift of righteousness,",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
@@ -2631,13 +2741,8 @@
     },
     {
       "ref": "421",
-      "first": "\"I THE good fight have fought,\"",
-      "why": "only 11 of 16 lines sing as 8.6.8.6.8.6.8.6"
-    },
-    {
-      "ref": "422",
-      "first": "Let not the wise his wisdom boast,",
-      "why": "words in iambs; the Eights and Sevens Double tunes we hold are in trochees"
+      "first": "\"I the good fight have fought,\"",
+      "why": "its first verse cannot be sung as 6.6.8.6.6.6.8.6"
     },
     {
       "ref": "423",
@@ -2666,7 +2771,7 @@
     },
     {
       "ref": "431",
-      "first": "O GOD, what offering shall I give",
+      "first": "O God, what offering shall I give",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
@@ -2686,7 +2791,7 @@
     },
     {
       "ref": "437",
-      "first": "O GOD, my God, my all thou art!",
+      "first": "O God, my God, my all thou art!",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
@@ -2755,13 +2860,8 @@
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
-      "ref": "460",
-      "first": "Father of boundless grace,",
-      "why": "only 18 of 24 lines sing as 8.6.8.6.8.6.8.6"
-    },
-    {
       "ref": "462",
-      "first": "O LET the prisoners' mournful cries",
+      "first": "O let the prisoners' mournful cries",
       "why": "its first verse cannot be sung as 8.8.8.8"
     },
     {
@@ -2776,8 +2876,8 @@
     },
     {
       "ref": "466",
-      "first": "A NATION God delights to bless,",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+      "first": "A nation God delights to bless,",
+      "why": "its first verse cannot be sung as 8.8.6.8.8.6"
     },
     {
       "ref": "467",
@@ -2792,11 +2892,11 @@
     {
       "ref": "471",
       "first": "How shall I walk my God to please,",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+      "why": "its first verse cannot be sung as 8.8.6.8.8.6"
     },
     {
       "ref": "472",
-      "first": "I AND my house will serve the Lord:",
+      "first": "I and my house will serve the Lord:",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
@@ -2835,11 +2935,6 @@
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
-      "ref": "481",
-      "first": "All thanks to the Lamb, Who gives us to meet!",
-      "why": "only 13 of 24 lines sing as 11.10.11.10"
-    },
-    {
       "ref": "482",
       "first": "Saviour of sinful men,",
       "why": "the index's scans do not say plainly who wrote it"
@@ -2848,16 +2943,6 @@
       "ref": "483",
       "first": "Jesu, to thee our hearts we lift,",
       "why": "its first verse cannot be sung as 8.8.8.8.8.8"
-    },
-    {
-      "ref": "484",
-      "first": "Appointed by thee, We meet in thy name,",
-      "why": "only 9 of 12 lines sing as 10.10.10.10"
-    },
-    {
-      "ref": "485",
-      "first": "Jesu, we look to thee,",
-      "why": "only 18 of 24 lines sing as 8.6.8.6.8.6.8.6"
     },
     {
       "ref": "486",
@@ -2941,7 +3026,7 @@
     },
     {
       "ref": "523",
-      "first": "O THOU, our Husband, Brother, Friend,",
+      "first": "O thou, our Husband, Brother, Friend,",
       "why": "the index's scans do not say plainly who wrote it"
     },
     {
@@ -2953,21 +3038,6 @@
       "ref": "525",
       "first": "Jesu, thou great redeeming Lord,",
       "why": "the index's scans do not say plainly who wrote it"
-    },
-    {
-      "ref": "526",
-      "first": "Except the Lord conduct the plan,",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
-    },
-    {
-      "ref": "527",
-      "first": "Come, wisdom, power, and grace divine,",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
-    },
-    {
-      "ref": "528",
-      "first": "O SAVIOUR, cast a gracious smile!",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
     },
     {
       "ref": "529",
@@ -3007,9 +3077,9 @@
   ],
   "counts": {
     "hymns": 536,
-    "written": 160,
-    "alreadyOurs": 43,
-    "skipped": 333,
-    "removed": 0
+    "written": 195,
+    "alreadyOurs": 44,
+    "skipped": 297,
+    "removed": 6
   }
 }

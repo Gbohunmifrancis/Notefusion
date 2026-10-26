@@ -1,0 +1,61 @@
+{
+  "title": "Lord of the Church, We Humbly Pray",
+  "tune": "holy-matrimony",
+  "text": [
+    {
+      "name": "Edward Osler",
+      "born": 1798,
+      "died": 1863,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Lord of the Church, We Humbly Pray in Tonic Solfa to HOLY MATRIMONY, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Edward Osler wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 485.",
+    "The book printed the words without tunes, marked Common Particular Metre (8.8.6.8.8.6), to be sung to any tune of that metre. This page sets them to HOLY MATRIMONY; any other Common Particular Metre tune fits them as well."
+  ],
+  "underlay": "Lord of the Church, we hum-bly pray For those who guide us in Thy way And speak Thy ho-ly Word; With love di-vine their hearts in-spire And touch their lips with hal-lowed fire And need-ful strength af-ford.",
+  "verses": [
+    {
+      "lines": [
+        "Lord of the Church, we humbly pray",
+        "For those who guide us in Thy way",
+        "And speak Thy holy Word;",
+        "With love divine their hearts inspire",
+        "And touch their lips with hallowed fire",
+        "And needful strength afford."
+      ]
+    },
+    {
+      "lines": [
+        "Help them to preach the Truth of God,",
+        "Redemption through the Savior’s blood,",
+        "Nor let the Spirit cease",
+        "On all the Church His gifts to shower,—",
+        "To them a messenger of power;",
+        "To us, of life and peace."
+      ]
+    },
+    {
+      "lines": [
+        "So may they live to Thee alone;",
+        "Then hear the welcome word, “Well done!”",
+        "And take their crown above;",
+        "Enter into their Master’s joy",
+        "And all eternity employ",
+        "In praise and bliss and love."
+      ]
+    }
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Edward Osler died in 1863.",
+  "credits": "Words by Edward Osler (1798–1863), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to HOLY MATRIMONY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:485"
+}
