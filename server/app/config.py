@@ -712,6 +712,11 @@ class Settings:
         Pitch under-detects the phrase's final long note by ~0.35 s, and the coarse
         grid was rounding that shortfall back up.
 
+        So the grid is chosen per line instead (``sixteenths``): eighths unless a fifth of
+        the onsets sit between them, as an Afrobeats line's do.  No clip of the sung,
+        instrument or hymn corpora's 4/4 tunes crosses that, and on the Afrobeats set it is
+        notes.f1 +0.06 and rhythm.ioi_exact +0.30.
+
         Unparseable entries are dropped rather than raising, so a typo in a deploy
         cannot fail every transcription.
         """

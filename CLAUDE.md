@@ -106,7 +106,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   is measured at its best nearby tempo and phase before the grid filter (`_level_residual`), and
   a tracked beat anchors beat 0 only within a quarter of a beat of the first note
   (`_beat_origin`); of readings that fit alike the one nearest 100 BPM wins, unless it writes the
-  commonest note dotted and one a dotted ratio away writes it plain (`_PLAIN_NOTE_BEATS`). Bars
+  commonest note dotted and one a dotted ratio away writes it plain (`_PLAIN_NOTE_BEATS`). The grid is eighths, but a line with a fifth of its onsets between them (Afrobeats' "e" and "a") is written on sixteenths, tempo and phase refined on that grid (`_sixteenths`, `NF_SIXTEENTHS=0` off); a sheet with sixteenths gets four cells a beat in every solfa grid and quarters in Curwen (`d,r . m,f`, `d . ,r`; `solfa_render.divisions_for` ↔ mobile `divisionsFor` ↔ `choir.js`, same tests), and one on eighths reads as it always has. Bars
   (melody mode, `_meter_and_pickup`): a time signature given always wins (the API passes None for
   "auto"); otherwise 3/4 only when a three-beat bar puts clearly more of the held length on its
   downbeats than four does (`TRIPLE_LIFT`), else 4/4 — never 2, 6 or compound — and the first bar
