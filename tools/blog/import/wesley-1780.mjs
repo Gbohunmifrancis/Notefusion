@@ -14,6 +14,8 @@ import path from "node:path";
 
 export const CORE = 539;
 
+const NAMES = /^(GOD|LORD|JESUS|JESU|CHRIST|SAVIOUR|SPIRIT|FATHER|JEHOVAH|JAH|ELOHIM|HOLY|ONE|ETERNAL|SHEPHERD|LAMB|KING|ISRAEL|ZION)$/;
+
 /** The hymn pages in `dir`: [{number, label, verses: [[lines]]}], the first word's capitals as a word. */
 export function parseWesley(dir) {
   const hymns = [];
@@ -28,8 +30,16 @@ export function parseWesley(dir) {
         .map((l) => l.replace(/<[^>]*>/g, "").replace(/&quot;/g, '"').replace(/&amp;/g, "&").replace(/^\s*\d+\s+/, "").trim())
         .filter(Boolean))
       .filter((v) => v.length);
-    // "THY faithfulness, Lord" → "Thy faithfulness, Lord" (the book sets each hymn's first word in capitals).
-    if (verses.length) verses[0][0] = verses[0][0].replace(/^(\p{Lu})(\p{Lu}+)\b/u, (_, a, b) => a + b.toLowerCase());
+    // "THY faithfulness, Lord" → "Thy faithfulness, Lord", "O COME" → "O come": the book sets each hymn's opening words,
+    // the divine names ("JEHOVAH") and a word it stresses in capitals; written as words here, a name with its
+    // capital, any other word in lower case unless it starts the line ("I'LL" → "I'll").
+    for (const v of verses) v.forEach((l, i) => {
+      v[i] = l.replace(/\b(\p{Lu})(\p{Lu}+)\b/gu, (w, a, b, at) => {
+        if (w === "AM") return w;   // "the great I AM", as hymn books still print it
+        if (/['’]/.test(l[at - 1] || "")) return w.toLowerCase();
+        return NAMES.test(w) || at === 0 ? a + b.toLowerCase() : w.toLowerCase();
+      });
+    });
     hymns.push({ number, label, heading: [], verses });
   }
   return hymns.sort((a, b) => a.number - b.number);

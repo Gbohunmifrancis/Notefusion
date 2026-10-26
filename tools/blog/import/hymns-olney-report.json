@@ -626,6 +626,13 @@
       "author": "John Newton"
     },
     {
+      "ref": "1:121",
+      "slug": "lord-thou-hast-won-at-length-i-yield",
+      "metre": "8 8 6 8 8 6",
+      "tune": "meribah",
+      "author": "John Newton"
+    },
+    {
       "ref": "1:123",
       "slug": "a-believer-free-from-care",
       "metre": "7 7 7 7 7 7 7 7",
@@ -1368,6 +1375,13 @@
       "author": "John Newton"
     },
     {
+      "ref": "2:100",
+      "slug": "blinded-in-youth-by-satans-arts",
+      "metre": "8 8 6 8 8 6",
+      "tune": "meribah",
+      "author": "John Newton"
+    },
+    {
       "ref": "3:3",
       "slug": "shall-men-pretend-to-pleasure",
       "metre": "7 6 7 6 7 6 7 6",
@@ -1498,6 +1512,13 @@
       "slug": "return-to-bless-my-waiting-eyes",
       "metre": "8 8 8 8",
       "tune": "old-hundredth",
+      "author": "John Newton"
+    },
+    {
+      "ref": "3:32",
+      "slug": "though-sore-beset-with-guilt-and-fear",
+      "metre": "8 8 8 8 8 8 8 8",
+      "tune": "sweet-hour",
       "author": "John Newton"
     },
     {
@@ -1830,6 +1851,13 @@
       "author": "John Newton"
     },
     {
+      "ref": "3:95",
+      "slug": "but-we-from-such-assaults-are-freed",
+      "metre": "8 8 6 8 8 6",
+      "tune": "meribah",
+      "author": "John Newton"
+    },
+    {
       "ref": "3:99",
       "slug": "the-saints-emmanuels-portion-are",
       "metre": "8 8 8 8",
@@ -2036,11 +2064,6 @@
       "why": "no tune we hold for “8,8,8,8a” in 8-line verses"
     },
     {
-      "ref": "1:121",
-      "first": "Lord, thou hast won, at length I yield,",
-      "why": "no tune we hold for “8,8,6,8,8,6” in 6-line verses"
-    },
-    {
       "ref": "1:122",
       "first": "Fervent persevering prayers",
       "why": "no tune we hold for “7,6,7,6,7,7,7,6” in 8-line verses"
@@ -2106,11 +2129,6 @@
       "why": "its first verse cannot be sung as 8.8.8.8"
     },
     {
-      "ref": "2:100",
-      "first": "Blinded in youth by Satan's arts,",
-      "why": "no tune we hold for “8,8,6,8,8,6” in 6-line verses"
-    },
-    {
       "ref": "3:1",
       "first": "Yet sinners will choose",
       "why": "no tune we hold for “10,10,11,11” in 8-line verses"
@@ -2164,11 +2182,6 @@
       "ref": "3:30",
       "first": "When my Savior, my Shepherd is near,",
       "why": "no tune we hold for “8,8,8,8a” in 8-line verses"
-    },
-    {
-      "ref": "3:32",
-      "first": "Though sore beset with guilt and fear,",
-      "why": "no tune we hold for “8,8,8,8” in 8-line verses"
     },
     {
       "ref": "3:37",
@@ -2242,12 +2255,7 @@
     {
       "ref": "3:94",
       "first": "Not to hear the fiery Law,",
-      "why": "words in iambs; the Eights and Sevens tunes we hold are in trochees"
-    },
-    {
-      "ref": "3:95",
-      "first": "But we from such assaults are freed,",
-      "why": "no tune we hold for “8,8,6,8,8,6” in 6-line verses"
+      "why": "only 4 of 8 lines sing as 8.7.8.7"
     },
     {
       "ref": "3:96",
@@ -2257,7 +2265,7 @@
     {
       "ref": "3:97",
       "first": "Jesus is mine! I'm now prepared",
-      "why": "no tune we hold for “8,8,8,8” in 8-line verses"
+      "why": "stresses off the beat of the Long Metre Double tunes we hold, which are iambic"
     },
     {
       "ref": "3:98",
@@ -2279,9 +2287,9 @@
   ],
   "counts": {
     "hymns": 348,
-    "written": 267,
+    "written": 271,
     "alreadyOurs": 6,
-    "skipped": 75,
-    "removed": 0
+    "skipped": 71,
+    "removed": 1
   }
 }

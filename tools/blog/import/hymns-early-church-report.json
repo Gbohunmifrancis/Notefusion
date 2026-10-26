@@ -108,6 +108,13 @@
       "author": "Traditional Latin and John Brownlie"
     },
     {
+      "ref": "19",
+      "slug": "to-thee-o-christ-our-prayers-shall-rise",
+      "metre": "8 7 8 7",
+      "tune": "dominus-regit-me",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
       "ref": "20",
       "slug": "when-evening-shades-around-us-close",
       "metre": "8 8 8 8",
@@ -258,11 +265,6 @@
       "why": "its first verse cannot be sung as 8.8.8.8"
     },
     {
-      "ref": "19",
-      "first": "To Thee, O Christ, our prayers shall rise,",
-      "why": "words in iambs; the Eights and Sevens tunes we hold are in trochees"
-    },
-    {
       "ref": "21",
       "first": "Emmanuel, come! we call for Thee;",
       "why": "verses of different lengths"
@@ -364,9 +366,9 @@
   ],
   "counts": {
     "hymns": 58,
-    "written": 33,
+    "written": 34,
     "alreadyOurs": 1,
-    "skipped": 24,
-    "removed": 1
+    "skipped": 23,
+    "removed": 0
   }
 }

@@ -206,6 +206,13 @@
       "author": "Anna Laetitia Barbauld"
     },
     {
+      "ref": "62",
+      "slug": "the-joyful-morn-my-god-is-come",
+      "metre": "8 8 6 8 8 6",
+      "tune": "meribah",
+      "author": "James Merrick"
+    },
+    {
       "ref": "64",
       "slug": "hosanna-lord-thine-angels-cry",
       "metre": "8 8 8 8",
@@ -542,6 +549,13 @@
       "author": "Hosea Ballou II"
     },
     {
+      "ref": "160",
+      "slug": "ye-boundless-realms-of-joy",
+      "metre": "6 6 6 6 4 4 4 4",
+      "tune": "belsize",
+      "author": "Nahum Tate and Nicholas Brady"
+    },
+    {
       "ref": "163",
       "slug": "wide-as-his-vast-dominion-lies",
       "metre": "8 8 8 8",
@@ -575,6 +589,13 @@
       "metre": "8 8 8 8 8 8",
       "tune": "melita",
       "author": "Anonymous"
+    },
+    {
+      "ref": "175",
+      "slug": "the-spacious-firmament-on-high",
+      "metre": "8 8 8 8 8 8 8 8",
+      "tune": "sweet-hour",
+      "author": "Joseph Addison"
     },
     {
       "ref": "178",
@@ -647,10 +668,31 @@
       "author": "Benjamin Beddome"
     },
     {
+      "ref": "194",
+      "slug": "lamp-of-our-feet-whose-hallowed-beam",
+      "metre": "8 8 8 8 8 8 8 8",
+      "tune": "sweet-hour",
+      "author": "Anonymous"
+    },
+    {
       "ref": "198",
       "slug": "behold-my-servant-see-him-rise",
       "metre": "8 6 8 6",
       "tune": "st-flavian",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "203",
+      "slug": "hark-hark-with-harps-of-gold",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
+      "author": "Edwin Hubbell Chapin"
+    },
+    {
+      "ref": "207",
+      "slug": "hark-what-celestial-notes",
+      "metre": "6 6 6 6 4 4 4 4",
+      "tune": "darwall",
       "author": "Anonymous"
     },
     {
@@ -743,6 +785,20 @@
       "metre": "8 6 8 6",
       "tune": "st-flavian",
       "author": "William Enfield"
+    },
+    {
+      "ref": "240",
+      "slug": "o-could-we-speak-the-matchless-worth",
+      "metre": "8 8 6 8 8 6",
+      "tune": "meribah",
+      "author": "Samuel Medley"
+    },
+    {
+      "ref": "243",
+      "slug": "thou-art-the-way-and-he-who-sighs",
+      "metre": "8 8 8 8 8 8 8 8",
+      "tune": "saved-by-grace",
+      "author": "Anonymous"
     },
     {
       "ref": "244",
@@ -927,13 +983,6 @@
       "author": "Anonymous"
     },
     {
-      "ref": "293",
-      "slug": "mark-the-soft-falling-snow",
-      "metre": "6 6 6 6 8 8",
-      "tune": "st-john-parish-choir",
-      "author": "Philip Doddridge"
-    },
-    {
       "ref": "294",
       "slug": "in-gods-eternity",
       "metre": "6 6 8 6",
@@ -1004,6 +1053,13 @@
       "author": "Anonymous"
     },
     {
+      "ref": "312",
+      "slug": "amazing-beauteous-change",
+      "metre": "6 6 6 6 4 4 4 4",
+      "tune": "darwall",
+      "author": "Philip Doddridge"
+    },
+    {
       "ref": "316",
       "slug": "o-who-shall-see-the-glorious-day",
       "metre": "8 6 8 6 8 6 8 6",
@@ -1011,11 +1067,25 @@
       "author": "Thomas Moore"
     },
     {
+      "ref": "319",
+      "slug": "o-zion-tune-thy-voice",
+      "metre": "6 6 6 6 4 4 4 4",
+      "tune": "belsize",
+      "author": "Philip Doddridge"
+    },
+    {
       "ref": "320",
       "slug": "o-thou-sun-of-glorious-splendor",
       "metre": "8 7 8 7",
       "tune": "omni-die",
       "author": "Anonymous"
+    },
+    {
+      "ref": "322",
+      "slug": "to-christ-the-son-the-father-spake",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Hosea Ballou"
     },
     {
       "ref": "324",
@@ -1065,6 +1135,13 @@
       "metre": "6 6 4 6 6 6 4",
       "tune": "malvern-gwyllt",
       "author": "Ray Palmer"
+    },
+    {
+      "ref": "336",
+      "slug": "soft-are-the-fruitful-showers-that-bring",
+      "metre": "8 8 6 8 8 6",
+      "tune": "holy-matrimony",
+      "author": "Henry Moore"
     },
     {
       "ref": "340",
@@ -1291,6 +1368,13 @@
       "author": "John Keble"
     },
     {
+      "ref": "416",
+      "slug": "i-want-a-sober-mind",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
+      "author": "Anonymous"
+    },
+    {
       "ref": "417",
       "slug": "come-ye-that-love-the-lord",
       "metre": "6 6 8 6",
@@ -1345,6 +1429,20 @@
       "metre": "8 8 8 8",
       "tune": "uxbridge",
       "author": "Nathaniel Cotton"
+    },
+    {
+      "ref": "435",
+      "slug": "come-o-thou-universal-good",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "437",
+      "slug": "our-father-in-heaven-we-hallow-thy-name",
+      "metre": "11 11 11 11",
+      "tune": "foundation-funk",
+      "author": "Sarah Josepha Hale"
     },
     {
       "ref": "438",
@@ -1415,6 +1513,13 @@
       "metre": "8 8 8 8",
       "tune": "uxbridge",
       "author": "Philip Doddridge"
+    },
+    {
+      "ref": "457",
+      "slug": "be-it-my-only-wisdom-here",
+      "metre": "8 8 6 8 8 6",
+      "tune": "meribah",
+      "author": "Anonymous"
     },
     {
       "ref": "458",
@@ -1816,6 +1921,13 @@
       "author": "Anna Laetitia Barbauld"
     },
     {
+      "ref": "570",
+      "slug": "we-mourn-for-those-who-toil",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
+      "author": "Lydia Sigourney"
+    },
+    {
       "ref": "573",
       "slug": "when-floating-on-lifes-troubled-sea",
       "metre": "8 6 8 6",
@@ -1963,6 +2075,13 @@
       "author": "Ottiwell Heginbotham"
     },
     {
+      "ref": "615",
+      "slug": "when-called-o-lord-to-mourn-the-doom",
+      "metre": "8 8 8 8 8 8 8 8",
+      "tune": "saved-by-grace",
+      "author": "Anonymous"
+    },
+    {
       "ref": "616",
       "slug": "to-thee-my-god-my-days-are-known",
       "metre": "8 6 8 6",
@@ -2003,6 +2122,13 @@
       "metre": "8 8 8 8",
       "tune": "winchester-new",
       "author": "Nahum Tate and Nicholas Brady"
+    },
+    {
+      "ref": "625",
+      "slug": "if-solid-happiness-we-prize",
+      "metre": "8 8 6 8 8 6",
+      "tune": "meribah",
+      "author": "Nathaniel Cotton"
     },
     {
       "ref": "627",
@@ -2404,6 +2530,13 @@
       "author": "Henry Kirke White"
     },
     {
+      "ref": "736",
+      "slug": "when-lord-to-this-our-western-land",
+      "metre": "8 8 6 8 8 6",
+      "tune": "meribah",
+      "author": "Anonymous"
+    },
+    {
       "ref": "737",
       "slug": "ye-christian-heralds-go-proclaim",
       "metre": "8 8 8 8",
@@ -2437,6 +2570,13 @@
       "metre": "8 6 8 6",
       "tune": "st-flavian",
       "author": "Thomas Gibbons"
+    },
+    {
+      "ref": "745",
+      "slug": "sweet-is-the-time-of-spring",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
+      "author": "Anonymous"
     },
     {
       "ref": "746",
@@ -2516,11 +2656,11 @@
       "author": "Lydia Sigourney"
     },
     {
-      "ref": "772",
-      "slug": "sow-in-the-morn-thy-seed",
-      "metre": "6 6 8 6",
-      "tune": "southwell",
-      "author": "James Montgomery"
+      "ref": "774",
+      "slug": "hail-love-divine-joys-ever-new",
+      "metre": "8 8 6 8 8 6",
+      "tune": "holy-matrimony",
+      "author": "Thomas Blacklock"
     },
     {
       "ref": "780",
@@ -2747,6 +2887,13 @@
       "author": "John Greenleaf Adams"
     },
     {
+      "ref": "848",
+      "slug": "with-grateful-hearts-with-joyful-tongues",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Andrew Kippis"
+    },
+    {
       "ref": "851",
       "slug": "great-god-let-all-our-tuneful-powers",
       "metre": "8 8 8 8",
@@ -2857,6 +3004,13 @@
       "metre": "8 8 8 8",
       "tune": "winchester-new",
       "author": "Anonymous"
+    },
+    {
+      "ref": "885",
+      "slug": "how-rich-thy-gifts-almighty-king",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Andrew Kippis"
     },
     {
       "ref": "886",
@@ -3237,6 +3391,13 @@
       "author": "Anonymous"
     },
     {
+      "ref": "983",
+      "slug": "when-dread-misfortunes-tempests-rise",
+      "metre": "8 8 8 8 8 8 8 8",
+      "tune": "sweet-hour",
+      "author": "Hosea Ballou II"
+    },
+    {
       "ref": "984",
       "slug": "all-natures-works-his-praise-declare",
       "metre": "8 6 8 6 8 6 8 6",
@@ -3328,6 +3489,13 @@
       "author": "Anonymous"
     },
     {
+      "ref": "1001",
+      "slug": "great-source-of-life-and-light",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
+      "author": "Anonymous"
+    },
+    {
       "ref": "1002",
       "slug": "theories-which-thousands-cherish",
       "metre": "8 7 8 7",
@@ -3401,6 +3569,11 @@
       "ref": "36",
       "first": "Safely through another week",
       "page": "safely-through-another-week"
+    },
+    {
+      "ref": "37",
+      "first": "How shall we praise thee, Lord of light!",
+      "page": "how-shall-we-praise-thee-lord-of-light"
     },
     {
       "ref": "38",
@@ -3558,6 +3731,11 @@
       "page": "o-god-we-praise-thee-and-confess"
     },
     {
+      "ref": "166",
+      "first": "All, from the sun's uprise,",
+      "page": "all-from-the-suns-uprise"
+    },
+    {
       "ref": "174",
       "first": "Thou art, O God, the life and light",
       "page": "thou-art-o-god-the-life-and-light"
@@ -3586,6 +3764,11 @@
       "ref": "195",
       "first": "Lord, I have made thy word my choice,",
       "page": "lord-i-have-made-thy-word-my-choice"
+    },
+    {
+      "ref": "199",
+      "first": "A voice from the desert comes awful and shrill;",
+      "page": "a-voice-from-the-desert-comes-awful-and-shrill"
     },
     {
       "ref": "206",
@@ -3691,6 +3874,11 @@
       "ref": "284",
       "first": "Jesus shall reign where'er the sun",
       "page": "jesus-shall-reign"
+    },
+    {
+      "ref": "293",
+      "first": "Mark the soft-falling snow,",
+      "page": "mark-the-soft-falling-snow"
     },
     {
       "ref": "297",
@@ -4163,6 +4351,11 @@
       "page": "where-shall-we-go-to-seek-and-find"
     },
     {
+      "ref": "706",
+      "first": "Our Father God! not face to face",
+      "page": "our-father-god-not-face-to-face"
+    },
+    {
       "ref": "723",
       "first": "O Spirit of the living God,",
       "page": "o-spirit-of-the-living-god"
@@ -4193,9 +4386,19 @@
       "page": "had-i-the-tongues-of-greeks-and-jews"
     },
     {
+      "ref": "772",
+      "first": "Sow in the morn thy seed;",
+      "page": "sow-in-the-morn-thy-seed"
+    },
+    {
       "ref": "776",
       "first": "Let Pharisees of high esteem",
       "page": "let-pharisees-of-high-esteem"
+    },
+    {
+      "ref": "777",
+      "first": "When long the soul had slept in chains,",
+      "page": "when-long-the-soul-had-slept-in-chains"
     },
     {
       "ref": "778",
@@ -4387,7 +4590,7 @@
     {
       "ref": "25",
       "first": "There's a refuge of peace from the tempests that beat,",
-      "why": "no tune we hold for “11s. M.” in 4-line verses"
+      "why": "only 7 of 12 lines sing as 11.11.11.11"
     },
     {
       "ref": "26",
@@ -4403,11 +4606,6 @@
       "ref": "29",
       "first": "Holy and reverend is the name",
       "why": "its first verse cannot be sung as 8.6.8.6"
-    },
-    {
-      "ref": "37",
-      "first": "How shall we praise thee, Lord of light!",
-      "why": "no tune we hold for “L. M.” in 8-line verses"
     },
     {
       "ref": "40",
@@ -4438,11 +4636,6 @@
       "ref": "58",
       "first": "Another six days' work is done,",
       "why": "an author we cannot name in full: “Stennett”"
-    },
-    {
-      "ref": "62",
-      "first": "The joyful morn, my God, is come,",
-      "why": "no tune we hold for “C. P. M.” in 6-line verses"
     },
     {
       "ref": "67",
@@ -4579,11 +4772,6 @@
       "why": "no tune we hold for “6s. 6s. & 4s. M.” in 7-line verses"
     },
     {
-      "ref": "160",
-      "first": "Ye boundless realms of joy,",
-      "why": "no tune we hold for “H. M.” in 8-line verses"
-    },
-    {
       "ref": "161",
       "first": "Begin, my soul, th' exalted lay;",
       "why": "an author we cannot name in full: “Ogilvie”"
@@ -4592,11 +4780,6 @@
       "ref": "162",
       "first": "O praise ye the Lord — prepare a new song,",
       "why": "no tune we hold for “10s. & 11s. M.” in 4-line verses"
-    },
-    {
-      "ref": "166",
-      "first": "All, from the sun's uprise,",
-      "why": "no tune we hold for “H. M.” in 8-line verses"
     },
     {
       "ref": "167",
@@ -4611,17 +4794,12 @@
     {
       "ref": "170",
       "first": "Blessed be thy name forever,",
-      "why": "no tune we hold for “8s. M.” in 8-line verses"
+      "why": "stresses off the beat of the Long Metre Double tunes we hold, which are iambic"
     },
     {
       "ref": "172",
       "first": "Hail, great Creator — wise and good!",
       "why": "a translation (from Lutheran Coll) whose translator the book does not name"
-    },
-    {
-      "ref": "175",
-      "first": "The spacious firmament on high,",
-      "why": "no tune we hold for “L. M.” in 8-line verses"
     },
     {
       "ref": "176",
@@ -4641,12 +4819,7 @@
     {
       "ref": "183",
       "first": "The turf shall be my fragrant shrine;",
-      "why": "no tune we hold for “L. M.” in 8-line verses"
-    },
-    {
-      "ref": "194",
-      "first": "Lamp of our feet! whose hallowed beam",
-      "why": "no tune we hold for “L. M.” in 8-line verses"
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8.8.8"
     },
     {
       "ref": "196",
@@ -4656,12 +4829,7 @@
     {
       "ref": "197",
       "first": "It is the one true light,",
-      "why": "no tune we hold for “S. M.” in 8-line verses"
-    },
-    {
-      "ref": "199",
-      "first": "A voice from the desert comes awful and shrill;",
-      "why": "no tune we hold for “11s. M.” in 4-line verses"
+      "why": "its first verse cannot be sung as 6.6.8.6.6.6.8.6"
     },
     {
       "ref": "200",
@@ -4679,11 +4847,6 @@
       "why": "its first verse cannot be sung as 8.6.8.6"
     },
     {
-      "ref": "203",
-      "first": "Hark! hark! with harps of gold,",
-      "why": "no tune we hold for “S. M.” in 8-line verses"
-    },
-    {
       "ref": "204",
       "first": "No loud avenging voice",
       "why": "no tune we hold for “S. H. M.” in 6-line verses"
@@ -4692,11 +4855,6 @@
       "ref": "205",
       "first": "When Jordan hushed his waters still,",
       "why": "an author we cannot name in full: “Campbell”"
-    },
-    {
-      "ref": "207",
-      "first": "Hark! what celestial notes,",
-      "why": "no tune we hold for “H. M.” in 8-line verses"
     },
     {
       "ref": "210",
@@ -4754,19 +4912,9 @@
       "why": "its first verse cannot be sung as 8.6.8.6"
     },
     {
-      "ref": "240",
-      "first": "O, could we speak the matchless worth,",
-      "why": "no tune we hold for “C. P. M.” in 6-line verses"
-    },
-    {
       "ref": "242",
       "first": "\"See how he loved!\" exclaimed the Jews,",
       "why": "an author we cannot name in full: “Bache”"
-    },
-    {
-      "ref": "243",
-      "first": "Thou art the Way — and he who sighs",
-      "why": "no tune we hold for “L. M.” in 8-line verses"
     },
     {
       "ref": "249",
@@ -4854,11 +5002,6 @@
       "why": "an author we cannot name in full: “M. Rayner”"
     },
     {
-      "ref": "312",
-      "first": "Amazing, beauteous change!",
-      "why": "no tune we hold for “H. M.” in 8-line verses"
-    },
-    {
       "ref": "313",
       "first": "Still in shades of midnight darkness",
       "why": "an author we cannot name in full: “J. Taylor”"
@@ -4879,19 +5022,9 @@
       "why": "no tune we hold for “7s. & 5s.” in 8-line verses"
     },
     {
-      "ref": "319",
-      "first": "O Zion, tune thy voice,",
-      "why": "no tune we hold for “H. M.” in 8-line verses"
-    },
-    {
       "ref": "321",
       "first": "Isles of the south, awake!",
       "why": "an author we cannot name in full: “Brown”"
-    },
-    {
-      "ref": "322",
-      "first": "To Christ, the Son, the Father spake:",
-      "why": "no tune we hold for “L. P. M.” in 6-line verses"
     },
     {
       "ref": "327",
@@ -4917,11 +5050,6 @@
       "ref": "333",
       "first": "There was joy in heaven!",
       "why": "no tune we hold for “P. M.” in 7-line verses"
-    },
-    {
-      "ref": "336",
-      "first": "Soft are the fruitful showers that bring",
-      "why": "no tune we hold for “C. P. M.” in 6-line verses"
     },
     {
       "ref": "338",
@@ -5026,7 +5154,7 @@
     {
       "ref": "407",
       "first": "Lord, from whom all blessings flow,",
-      "why": "no tune we hold for “8s. M.” in 8-line verses"
+      "why": "only 0 of 16 lines sing as 8.8.8.8.8.8.8.8"
     },
     {
       "ref": "411",
@@ -5042,11 +5170,6 @@
       "ref": "415",
       "first": "Sometimes a light surprises",
       "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
-    },
-    {
-      "ref": "416",
-      "first": "I want a sober mind,",
-      "why": "no tune we hold for “S. M.” in 8-line verses"
     },
     {
       "ref": "418",
@@ -5069,16 +5192,6 @@
       "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
     },
     {
-      "ref": "435",
-      "first": "Come, O thou universal good!",
-      "why": "no tune we hold for “L. P. M.” in 6-line verses"
-    },
-    {
-      "ref": "437",
-      "first": "Our Father in heaven, we hallow thy name!",
-      "why": "no tune we hold for “11s. M.” in 4-line verses"
-    },
-    {
       "ref": "441",
       "first": "O Thou, whose power o'er moving worlds presides,",
       "why": "an author we cannot name in full: “Dr. Johnson”"
@@ -5092,11 +5205,6 @@
       "ref": "454",
       "first": "'T  is a point I long to know, —",
       "why": "its first verse cannot be sung as 7.7.7.7"
-    },
-    {
-      "ref": "457",
-      "first": "Be it my only wisdom here,",
-      "why": "no tune we hold for “C. P. M.” in 6-line verses"
     },
     {
       "ref": "462",
@@ -5234,11 +5342,6 @@
       "why": "no tune we hold for “12s. & 11s. M.” in 4-line verses"
     },
     {
-      "ref": "570",
-      "first": "We mourn for those who toil,",
-      "why": "no tune we hold for “S. M.” in 8-line verses"
-    },
-    {
       "ref": "571",
       "first": "Why weep for those, frail child of woe,",
       "why": "an author we cannot name in full: “W. J. Loring”"
@@ -5276,7 +5379,7 @@
     {
       "ref": "593",
       "first": "Servant of God, well done!",
-      "why": "no tune we hold for “S. M.” in 8-line verses"
+      "why": "its first verse cannot be sung as 6.6.8.6.6.6.8.6"
     },
     {
       "ref": "596",
@@ -5329,19 +5432,9 @@
       "why": "an author we cannot name in full: “Miss Dodd”"
     },
     {
-      "ref": "615",
-      "first": "When called, O Lord, to mourn the doom",
-      "why": "no tune we hold for “L. M.” in 8-line verses"
-    },
-    {
       "ref": "623",
       "first": "When gloomy thoughts and boding fears",
       "why": "the book names no author"
-    },
-    {
-      "ref": "625",
-      "first": "If solid happiness we prize,",
-      "why": "no tune we hold for “C. P. M.” in 6-line verses"
     },
     {
       "ref": "626",
@@ -5361,7 +5454,7 @@
     {
       "ref": "639",
       "first": "The promises I sing,",
-      "why": "no tune we hold for “H. M.” in 8-line verses"
+      "why": "its first verse cannot be sung as 6.6.6.6.4.4.4.4"
     },
     {
       "ref": "640",
@@ -5444,11 +5537,6 @@
       "why": "an author we cannot name in full: “Francis”"
     },
     {
-      "ref": "706",
-      "first": "Our Father God! not face to face",
-      "why": "no tune we hold for “L. M.” in 8-line verses"
-    },
-    {
       "ref": "708",
       "first": "Blest is the hour when cares depart,",
       "why": "no tune we hold for “8s. & 6s. M.” in 5-line verses"
@@ -5514,19 +5602,9 @@
       "why": "an author we cannot name in full: “S. W. Livermore”"
     },
     {
-      "ref": "736",
-      "first": "When, Lord, to this our western land,",
-      "why": "no tune we hold for “C. P. M.” in 6-line verses"
-    },
-    {
       "ref": "739",
       "first": "By cool Siloam's shady rill",
       "why": "its first verse cannot be sung as 8.6.8.6"
-    },
-    {
-      "ref": "745",
-      "first": "Sweet is the time of spring,",
-      "why": "no tune we hold for “S. M.” in 8-line verses"
     },
     {
       "ref": "747",
@@ -5594,19 +5672,9 @@
       "why": "its first verse cannot be sung as 8.8.8.8"
     },
     {
-      "ref": "774",
-      "first": "Hail, love divine! joys ever new,",
-      "why": "no tune we hold for “C. P. M.” in 6-line verses"
-    },
-    {
       "ref": "775",
       "first": "Happy is he that fears the Lord,",
       "why": "its first verse cannot be sung as 8.6.8.6"
-    },
-    {
-      "ref": "777",
-      "first": "When long the soul had slept in chains,",
-      "why": "no tune we hold for “L. M.” in 8-line verses"
     },
     {
       "ref": "779",
@@ -5739,11 +5807,6 @@
       "why": "its first verse cannot be sung as 8.7.8.7"
     },
     {
-      "ref": "848",
-      "first": "With grateful hearts with joyful tongues,",
-      "why": "no tune we hold for “L. P. M.” in 6-line verses"
-    },
-    {
       "ref": "850",
       "why": "no verses"
     },
@@ -5813,11 +5876,6 @@
       "why": "an author we cannot name in full: “Crosse”"
     },
     {
-      "ref": "885",
-      "first": "How rich thy gifts, Almighty King!",
-      "why": "no tune we hold for “L. P. M.” in 6-line verses"
-    },
-    {
       "ref": "893",
       "first": "As o'er the past my memory strays,",
       "why": "an author we cannot name in full: “Bp. Middleton”"
@@ -5880,7 +5938,7 @@
     {
       "ref": "934",
       "first": "Father, we bless the gentle care",
-      "why": "no tune we hold for “L. M.” in 8-line verses"
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8.8.8"
     },
     {
       "ref": "948",
@@ -5957,11 +6015,6 @@
       "why": "no tune we hold for “7s. & 6s. M. (Peculiar.)” in 8-line verses"
     },
     {
-      "ref": "983",
-      "first": "When dread misfortune's tempests rise,",
-      "why": "no tune we hold for “L. M. 8l.” in 8-line verses"
-    },
-    {
       "ref": "986",
       "first": "When on her Maker's bosom",
       "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
@@ -5980,18 +6033,13 @@
       "ref": "1000",
       "first": "Know, my soul, thy full salvation;",
       "why": "its first verse cannot be sung as 8.7.8.7.8.7.8.7"
-    },
-    {
-      "ref": "1001",
-      "first": "Great Source of life and light,",
-      "why": "no tune we hold for “S. M.” in 8-line verses"
     }
   ],
   "counts": {
     "hymns": 1005,
-    "written": 479,
-    "alreadyOurs": 201,
-    "skipped": 325,
-    "removed": 0
+    "written": 503,
+    "alreadyOurs": 208,
+    "skipped": 294,
+    "removed": 1
   }
 }

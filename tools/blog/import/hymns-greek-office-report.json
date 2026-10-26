@@ -87,6 +87,13 @@
       "author": "Traditional Greek and John Brownlie"
     },
     {
+      "ref": "20",
+      "slug": "at-early-dawn-with-pious-thought",
+      "metre": "8 8 6 8 8 6",
+      "tune": "meribah",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
       "ref": "21",
       "slug": "i-brought-my-darkest-sin-to-mind",
       "metre": "8 8 8 8 8 8",
@@ -178,10 +185,24 @@
       "author": "Traditional Greek and John Brownlie"
     },
     {
+      "ref": "39",
+      "slug": "o-son-of-god-on-thee-we-call",
+      "metre": "8 8 6 8 8 6",
+      "tune": "holy-matrimony",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
       "ref": "40",
       "slug": "the-christ-of-god-to-sorrowing-hearts",
       "metre": "8 6 8 6",
       "tune": "st-agnes",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "41",
+      "slug": "my-sin-was-very-great",
+      "metre": "6 6 8 6 6 6 8 6",
+      "tune": "diademata",
       "author": "Traditional Greek and John Brownlie"
     },
     {
@@ -192,10 +213,24 @@
       "author": "Traditional Greek and John Brownlie"
     },
     {
+      "ref": "45",
+      "slug": "he-came-to-earth-who-came-from-god",
+      "metre": "8 8 6 8 8 6",
+      "tune": "holy-matrimony",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
       "ref": "46",
       "slug": "the-joy-of-earth-is-fleeting",
       "metre": "7 6 7 6 7 6 7 6",
       "tune": "ewing",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "47",
+      "slug": "safe-in-the-comfort-of-thy-grace",
+      "metre": "8 8 6 8 8 6",
+      "tune": "holy-matrimony",
       "author": "Traditional Greek and John Brownlie"
     }
   ],
@@ -237,11 +272,6 @@
       "why": "only 8 of 12 lines sing as 6.6.6.6.8.8"
     },
     {
-      "ref": "20",
-      "first": "At early dawn, with pious thought,",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
-    },
-    {
       "ref": "25",
       "first": "Lo! He gave Himself to die,",
       "why": "only 10 of 16 lines sing as 7.7.7.7"
@@ -264,17 +294,7 @@
     {
       "ref": "33",
       "first": "Come, let us sing with joyful mirth",
-      "why": "only 15 of 24 lines sing as 8.8.8.8.8.8"
-    },
-    {
-      "ref": "39",
-      "first": "O Son of God, on Thee we call,",
-      "why": "only 20 of 30 lines sing as 8.8.8.8.8.8"
-    },
-    {
-      "ref": "41",
-      "first": "My sin was very great,",
-      "why": "only 24 of 32 lines sing as 8.6.8.6.8.6.8.6"
+      "why": "its first verse cannot be sung as 8.8.6.8.8.6"
     },
     {
       "ref": "42",
@@ -285,23 +305,13 @@
       "ref": "44",
       "first": "When sorrow's clouds are circling near,",
       "why": "its first verse cannot be sung as 8.8.8.8.8.8"
-    },
-    {
-      "ref": "45",
-      "first": "He came to earth who came from God,",
-      "why": "only 11 of 18 lines sing as 8.8.8.8.8.8"
-    },
-    {
-      "ref": "47",
-      "first": "Safe in the comfort of Thy grace,",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
     }
   ],
   "counts": {
     "hymns": 47,
-    "written": 28,
+    "written": 33,
     "alreadyOurs": 0,
-    "skipped": 19,
+    "skipped": 14,
     "removed": 0
   }
 }

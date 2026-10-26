@@ -3,6 +3,13 @@
   "date": "2026-10-26",
   "written": [
     {
+      "ref": "3",
+      "slug": "to-thy-blest-cross-o-christ-we-come",
+      "metre": "8 7 8 7",
+      "tune": "dominus-regit-me",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
       "ref": "5",
       "slug": "christ-is-born-go-forth-to-meet-him",
       "metre": "8 7 8 7 7 7",
@@ -70,6 +77,13 @@
       "slug": "we-have-heard-the-wondrous-story",
       "metre": "8 7 8 7",
       "tune": "omni-die",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "21",
+      "slug": "o-jesus-lover-of-our-race",
+      "metre": "8 8 6 8 8 6",
+      "tune": "holy-matrimony",
       "author": "Traditional Greek and John Brownlie"
     },
     {
@@ -170,11 +184,6 @@
       "why": "only 11 of 16 lines sing as 6.6.8.6"
     },
     {
-      "ref": "3",
-      "first": "To Thy blest Cross, O Christ, we come,",
-      "why": "words in iambs; the Eights and Sevens tunes we hold are in trochees"
-    },
-    {
       "ref": "4",
       "first": "O come let us adore",
       "why": "its first verse cannot be sung as 6.6.8.6"
@@ -210,11 +219,6 @@
       "why": "only 14 of 24 lines sing as 8.7.8.7.8.7"
     },
     {
-      "ref": "21",
-      "first": "O Jesus, Lover of our race,",
-      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
-    },
-    {
       "ref": "26",
       "first": "Lord, to our humble prayers attend,",
       "why": "no tune we hold for “unmarked” in 3-line verses"
@@ -227,7 +231,7 @@
     {
       "ref": "28",
       "first": "Behold the Bridegroom! Hark the cry,",
-      "why": "only 14 of 32 lines sing as 8.6.8.6.8.6.8.6"
+      "why": "only 17 of 32 lines sing as 8.8.8.8.8.8.8.8"
     },
     {
       "ref": "37",
@@ -237,9 +241,9 @@
   ],
   "counts": {
     "hymns": 37,
-    "written": 22,
+    "written": 24,
     "alreadyOurs": 0,
-    "skipped": 15,
-    "removed": 1
+    "skipped": 13,
+    "removed": 0
   }
 }

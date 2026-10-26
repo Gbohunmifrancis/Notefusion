@@ -171,11 +171,26 @@ export const METRES = {
   "6 5 6 5": { name: "Sixes and Fives", tunes: ["bemerton"] },
   "6 5 6 5 6 6 6 5": { name: "6.5.6.5.6.6.6.5", tunes: ["moab", "st-dunstans-douglas"] },
   "8 4 7 8 4 7": { name: "8.4.7.8.4.7", tunes: ["carman"] },
+  // Added later, each tune's shape read off its own words where it holds a syllable over two notes (tuneShape). The
+  // iambic ones take only words whose stresses fall on the beat (offBeat).
+  "8 8 8 8 8 8 8 8": { name: "Long Metre Double", tunes: ["sweet-hour", "higher-ground", "saved-by-grace"], iambic: true },
+  "6 6 8 6 6 6 8 6": { name: "Short Metre Double", tunes: ["diademata"], iambic: true },
+  "6 6 6 6 4 4 4 4": { name: "Hallelujah Metre", tunes: ["darwall", "st-john-parish-choir", "belsize"], iambic: true },
+  "8 8 6 8 8 6": { name: "Common Particular Metre", tunes: ["meribah", "holy-matrimony"], iambic: true },
+  "11 11 11 11": { name: "Elevens", tunes: ["st-denio", "foundation-funk", "gordon"] },
+  "10 10 11 11": { name: "10.10.11.11", tunes: ["lyons"] },
+  "8 7 8 7 8 8 7": { name: "8.7.8.7.8.8.7", tunes: ["nun-freut-euch", "es-ist-das-heil-uns-kommen-her", "mit-freuden-zart"], iambic: true },
+  "8 7 8 7 7 7 8 8": { name: "8.7.8.7.7.7.8.8", tunes: ["freu-dich-sehr-o-meine-seele", "werde-munter"] },
+  "6 7 6 7 6 6 6 6": { name: "6.7.6.7.6.6.6.6", tunes: ["was-frag-ich-nach-der-welt"], iambic: true },
+  "6 4 6 4 6 6 6 4": { name: "6.4.6.4.6.6.6.4", tunes: ["st-edmund-sullivan"] },
+  "8 8 8 4": { name: "8.8.8.4", tunes: ["hanford-sullivan"], iambic: true },
 };
+/** Iambic words in a metre whose own tunes are trochaic (iambsOnTrochees) go to these instead. */
+METRES["8 7 8 7"].iambs = ["dominus-regit-me"];
 
 /**
  * The syllables per line the book's metre label gives a verse of `lines` lines, or null: "P. M." (particular metre), a
- * "(Peculiar.)" one, and the rarer lettered metres ("C. P. M.", "H. M." in eight lines) give none. The line count a label
+ * "(Peculiar.)" one, and the rarer lettered metres ("C. H. M.") give none. The line count a label
  * may carry ("L. M. 6l.") is the verse's own.
  */
 export function patternFor(label, lines) {
@@ -187,7 +202,11 @@ export function patternFor(label, lines) {
   if (core === "C") return repeat([8, 6, 8, 6]);
   if (core === "L") return lines === 6 ? Array(6).fill(8) : repeat([8, 8, 8, 8]);   // "L. M. 6l.": 8.8.8.8.8.8
   if (core === "S") return repeat([6, 6, 8, 6]);
-  if (core === "H") return exact([6, 6, 6, 6, 8, 8]);
+  if (core === "H") return lines === 8 ? [6, 6, 6, 6, 4, 4, 4, 4] : exact([6, 6, 6, 6, 8, 8]);   // its 8s halved in eight lines
+  // The particular metres: Common (8.8.6.8.8.6), Long (six 8s) and Short (6.6.8.6.6.8).
+  if (core === "C. P") return exact([8, 8, 6, 8, 8, 6]);
+  if (core === "L. P") return exact([8, 8, 8, 8, 8, 8]);
+  if (core === "S. P") return exact([6, 6, 8, 6, 6, 8]);
   // Every line's syllables ("8,6,8,6", Olney's), the whole verse or a half of it; "8,8,8,8a" (anapaests) is not sung to these tunes.
   if (/^\d+(,\d+)+$/.test(core)) {
     const base = core.split(",").map(Number);
@@ -547,8 +566,12 @@ export function authorOf(h) {
   return { people, altered };
 }
 
-/** The first verse under the pattern, one syllable to a note, if every verse is the pattern's length and nearly every line fits it. */
-export function fitHymn(verses, pattern, dict) {
+/**
+ * The first verse under the pattern, one syllable to a note, if every verse is the pattern's length and nearly every line
+ * fits it. `holds` ([syllable, extra notes], counted through the verse) are the tune's slurs: that syllable is held over
+ * the extra notes ("re-turn_,"), as the tune's own words hold theirs (tuneShape).
+ */
+export function fitHymn(verses, pattern, dict, holds = []) {
   if (!verses.length || verses.some((v) => v.length !== pattern.length)) return { why: "verses of different lengths" };
   let fits = 0;
   for (const v of verses) v.forEach((l, i) => { if (fitLine(l, pattern[i], dict)) fits++; });
@@ -556,7 +579,44 @@ export function fitHymn(verses, pattern, dict) {
   if (fits / total < 0.8) return { why: `only ${fits} of ${total} lines sing as ${pattern.join(".")}` };
   const first = verses[0].map((l, i) => fitLine(l, pattern[i], dict));
   if (!first.every(Boolean)) return { why: `its first verse cannot be sung as ${pattern.join(".")}` };
-  return { underlay: underlayOf(first) };
+  const extra = new Map(holds);
+  let k = 0;
+  const held = first.map((line) => line.map((pieces) => pieces.map((p) => {
+    const x = extra.get(k++);
+    return x ? p.replace(/^(.*?)([^\p{L}\d’']*)$/u, (_, w, punct) => w + "_".repeat(x) + punct) : p;
+  })));
+  return { underlay: underlayOf(held) };
+}
+
+/**
+ * How `slug` carries `pattern` ({holds}, see fitHymn), or null: a tune with a note for every syllable holds none; one with
+ * more notes is read off its own words on our site, a published page (not set by metre) whose first verse has the
+ * pattern's lines and whose underlay holds a syllable over each extra note.
+ */
+export function tuneShape(slug, tune, pattern, hymnsDir) {
+  const notes = parseMelody(tune.melody, { time: tune.time, pickup: tune.pickup || 0 }).notes.length;
+  if (notes === pattern.reduce((a, b) => a + b, 0)) return { holds: [] };
+  for (const f of fs.readdirSync(hymnsDir).filter((f) => f.endsWith(".json")).sort()) {
+    const h = readJson(path.join(hymnsDir, f));
+    if (h.tune !== slug || h.draft || h.setByMetre || !h.underlay || !h.verses?.[0]) continue;
+    const words = h.underlay.split(/\s+/).filter(Boolean);
+    const perLine = h.verses[0].lines.map((l) => l.split(/\s+/).filter((w) => /[\p{L}\d]/u.test(w)).length);
+    if (perLine.reduce((a, b) => a + b, 0) !== words.length) continue;
+    const lines = [], holds = [];
+    let w = 0, k = 0;
+    for (const n of perLine) {
+      let syllables = 0;
+      for (const word of words.slice(w, w + n)) for (const piece of word.split("-").filter(Boolean)) {
+        const x = piece.split("_").length - 1;
+        if (x) holds.push([k, x]);
+        syllables++, k++;
+      }
+      lines.push(syllables);
+      w += n;
+    }
+    if (lines.join(" ") === pattern.join(" ") && k + holds.reduce((a, [, x]) => a + x, 0) === notes) return { holds };
+  }
+  return null;
 }
 
 /**
@@ -565,7 +625,7 @@ export function fitHymn(verses, pattern, dict) {
  * all loves ex-CEL-ling"); words whose 8-syllable lines mostly end on a stressed one ("my sins are GREAT") are iambs.
  * A last word that is one syllable counts as stressed, unless it is a pronoun sung light ("Thou hast taught me").
  */
-const TROCHAIC_EIGHTS = new Set(["8 7 8 7", "8 7 8 7 8 7 8 7", "8 7 8 7 8 7", "8 7 8 7 4 7", "8 7 8 7 7 7", "8 8 7 8 8 7"]);
+const TROCHAIC_EIGHTS = new Set(["8 7 8 7", "8 7 8 7 8 7 8 7", "8 7 8 7 8 7", "8 7 8 7 4 7", "8 7 8 7 7 7", "8 8 7 8 8 7", "8 7 8 7 7 7 8 8"]);
 export function iambsOnTrochees(verses, pattern) {
   if (!TROCHAIC_EIGHTS.has(pattern.join(" "))) return false;
   const eights = verses.flatMap((v) => v.filter((_, i) => pattern[i] === 8));
@@ -576,9 +636,33 @@ export function iambsOnTrochees(verses, pattern) {
   return eights.length > 0 && stressed.length / eights.length >= 0.6;
 }
 
-/** A tune for the page, the same every run: picked from the metre's list by the slug. */
-export function pickTune(slug, pattern) {
-  const list = METRES[pattern].tunes;
+/**
+ * The share of lines that put a trochee's stress off the beat of an iambic tune: a two-syllable word stressed on its first
+ * syllable ("SOR-row", "GLAD-ness", as its ending tells; never one that starts as "a-", "be-", "re-" do) starting on the
+ * 3rd, 5th or 7th syllable. Iambic lines almost never do (the first syllable may: "JE-su, my Advocate"); anapaests ("Away
+ * with our SOR-row and fear") and trochees ("Deck thyself, my soul, with GLAD-ness") often do. Over OFF_BEAT of the lines
+ * and the words are not set to an iambic tune (calibrated on our pages: 1 in 13 iambic hymns reaches 0.1, none of the
+ * anapaestic and trochaic ones tried stays under 0.13).
+ */
+export const OFF_BEAT = 0.12;
+export function offBeat(verses, pattern, dict) {
+  const trochee = (word) => {
+    const w = word.toLowerCase().replace(/[^a-z]/g, "");
+    return vowelSyllables(w) === 2 && /(ow|er|y|ing|ness|less|ful|ly|en|est|ed|ous|ure|le|on|ish|ance)$/.test(w) && !/^(a|be|re|de|un|con|com|ex|for|im)[^aeiou]/.test(w);
+  };
+  let lines = 0, off = 0;
+  for (const v of verses) v.forEach((l, i) => {
+    const fit = fitLine(l, pattern[i], dict);
+    if (!fit) return;
+    lines++;
+    let at = 0;
+    if (fit.some((pieces) => { const odd = at > 0 && at % 2 === 0 && pieces.length === 2 && trochee(pieces.join("")); at += pieces.length; return odd; })) off++;
+  });
+  return lines ? off / lines : 0;
+}
+
+/** A tune for the page, the same every run: picked from the metre's list (or its iambic tunes) by the slug. */
+export function pickTune(slug, pattern, list = METRES[pattern].tunes) {
   const n = crypto.createHash("sha256").update(slug).digest().readUInt32BE(0);
   return list[n % list.length];
 }
@@ -593,14 +677,14 @@ export function runImport({ src, today, book, publish = false, dryRun = false, h
   const hymns = B.load ? B.load(src) : (B.parse || parseBook)(fs.readFileSync(src, "utf8"));
   const dict = underlayDictionary(hymnsDir);
 
-  // The tunes, checked: published, a doh we can name, one note per syllable of the metre.
-  const tunes = {};
-  for (const [pattern, m] of Object.entries(METRES)) for (const slug of m.tunes) {
+  // The tunes, checked: published, a doh we can name, a note per syllable of the metre or the slurs of its own words.
+  const tunes = {}, shapes = {};
+  for (const [pattern, m] of Object.entries(METRES)) for (const slug of [...m.tunes, ...(m.iambs || [])]) {
     const t = readJson(path.join(tunesDir, `${slug}.json`));
-    const notes = parseMelody(t.melody, { time: t.time, pickup: t.pickup || 0 }).notes.length;
-    const want = pattern.split(" ").map(Number).reduce((a, b) => a + b, 0);
-    if (t.draft || !dohOf(t.key) || notes !== want) throw new Error(`${slug} cannot carry ${m.name} one syllable to a note`);
+    const shape = !t.draft && dohOf(t.key) && tuneShape(slug, t, pattern.split(" ").map(Number), hymnsDir);
+    if (!shape) throw new Error(`${slug} cannot carry ${m.name}: not one syllable to a note, nor held as its own words hold it`);
     tunes[slug] = t;
+    shapes[`${pattern}|${slug}`] = shape;
   }
 
   // What we have: every hymn's first line, title and other titles; the files this importer wrote.
@@ -628,14 +712,16 @@ export function runImport({ src, today, book, publish = false, dryRun = false, h
     const names = people.map((p) => p.name).join(" and ");
     const pattern = (B.metreUnmarked ? inferPattern(h.verses, dict) : patternFor(h.label, h.verses[0].length))?.join(" ");
     if (!pattern || !METRES[pattern]) { report.skipped.push({ ref, first, why: `no tune we hold for “${h.label || "unmarked"}” in ${h.verses[0].length}-line verses` }); continue; }
-    if (iambsOnTrochees(h.verses, pattern.split(" ").map(Number))) { report.skipped.push({ ref, first, why: `words in iambs; the ${METRES[pattern].name} tunes we hold are in trochees` }); continue; }
-    const { underlay, why } = fitHymn(h.verses, pattern.split(" ").map(Number), dict);
-    if (!underlay) { report.skipped.push({ ref, first, why }); continue; }
-
+    const iambs = iambsOnTrochees(h.verses, pattern.split(" ").map(Number));
+    if (iambs && !METRES[pattern].iambs) { report.skipped.push({ ref, first, why: `words in iambs; the ${METRES[pattern].name} tunes we hold are in trochees` }); continue; }
+    if (METRES[pattern].iambic && offBeat(h.verses, pattern.split(" ").map(Number), dict) > OFF_BEAT) { report.skipped.push({ ref, first, why: `stresses off the beat of the ${METRES[pattern].name} tunes we hold, which are iambic` }); continue; }
     const title = titleCase(first.replace(/[\s,;:.!?—-]+$/u, ""));
     const slug = slugify(title);
+    const tune = pickTune(slug, pattern, iambs ? METRES[pattern].iambs : undefined), t = tunes[tune];
+    const { underlay, why } = fitHymn(h.verses, pattern.split(" ").map(Number), dict, shapes[`${pattern}|${tune}`].holds);
+    if (!underlay) { report.skipped.push({ ref, first, why }); continue; }
+
     if (keep.has(slug) || (fs.existsSync(path.join(hymnsDir, `${slug}.json`)) && !mine.has(slug) && !later.has(slug))) { report.skipped.push({ ref, first, why: `the page ${slug} is taken` }); continue; }
-    const tune = pickTune(slug, pattern), t = tunes[tune];
     const doh = dohOf(t.key);
     const m = METRES[pattern];
     let description = `${title} in Tonic Solfa to ${t.name}, doh is ${doh}: the solfa with the words, staff notation, ${h.verses.length} verses and a piano.`;

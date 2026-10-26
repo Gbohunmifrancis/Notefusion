@@ -207,11 +207,13 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   Words set by metre (`"setByMetre": true`; `tools/blog/import/watts.mjs`, Watts' *Hymns and Spiritual Songs* and `--book psalms` his *Psalms of David
   Imitated*, and `words-books.mjs`,
   Longfellow & Johnson's *Book of Hymns* (1848), Adams & Chapin's *Hymns for Christian Devotion* (1846) the *Olney Hymns* (1779) John Brownlie's five books of translations (metre read off the lines) and the 1927 *Evangelical Lutheran Hymn-Book*
-  (a translation only with its translator named; iambs never on the trochaic 8.7 tunes, `iambsOnTrochees`) and Wesley's 1780
+  (a translation only with its translator named; iambs never on the trochaic 8.7 tunes, `iambsOnTrochees`, but on a metre's
+  `iambs` tunes where it has some) and Wesley's 1780
   *Collection* (`wesley-1780.mjs`: writers from the 1877 index's OCR where its scans agree; "W." credits "Charles or John Wesley",
   `"textOneOf"`) (authors named in full or
   left out; `"textPublishedBy"`: the words "in print by" the book's year; a hymn two books print is the first's, `SET_BY_METRE_ORDER`),
-  each from a plain text, its first verse fitted one syllable to a note by `import/syllables.mjs`; docs/BLOG.md) are pages
+  each from a plain text, its first verse fitted one syllable to a note by `import/syllables.mjs`, held over a tune's slurs
+  where the tune's own words page holds them (`tuneShape`); `METRES` lists only ever grow by new metres; docs/BLOG.md) are pages
   only: never in the index or the app's pack.
   The console's Hymns recognised page (`/hymns`, `GET /api/admin/analytics/hymns`, `GetRecognisedHymnsQuery`) reads each finished
   job's `hymnMatch`: per hymn (times, accounts, kept as the hymnbook version) and the latest takes; the team's accounts behind a switch.
