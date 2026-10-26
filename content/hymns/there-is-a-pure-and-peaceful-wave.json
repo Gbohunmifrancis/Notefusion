@@ -1,0 +1,62 @@
+{
+  "title": "There Is a Pure and Peaceful Wave",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "There Is a Pure and Peaceful Wave in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 991 of its twenty-second edition (1853), “The River of Life”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "There is a pure and peace-ful wave, That is-sues from the throne of love, Whose wa-ters glad-den as they lave The bright and heav-enly courts a-bove.",
+  "verses": [
+    {
+      "lines": [
+        "There is a pure and peaceful wave,",
+        "That issues from the throne of love,",
+        "Whose waters gladden as they lave",
+        "The bright and heavenly courts above."
+      ]
+    },
+    {
+      "lines": [
+        "In living streams behold that tide",
+        "Through Christ the rock profusely burst;",
+        "And in his word, behold supplied",
+        "The fount for which our spirits thirst."
+      ]
+    },
+    {
+      "lines": [
+        "The pilgrim faint, who seems to sink",
+        "Beneath the sultry sky of time,",
+        "May here repose, and freely drink",
+        "The waters of that better clime."
+      ]
+    },
+    {
+      "lines": [
+        "And every soul may here partake",
+        "The blessings of the fount above;",
+        "And none who drink will e'er forsake",
+        "The crystal stream of boundless love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:991"
+}

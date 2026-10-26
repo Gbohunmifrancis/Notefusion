@@ -1,0 +1,71 @@
+{
+  "title": "Mysterious Are the Ways of God",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "John Bowring",
+      "born": 1792,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Mysterious Are the Ways of God in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Bowring wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 631 of its twenty-second edition (1853), “God Merciful in Affliction”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Mys-te-rious are the ways of God, And fear and blind-ness oft re-pine; We mur-mur 'neath his chas-tening rod, Be-cause we read not his de-sign.",
+  "verses": [
+    {
+      "lines": [
+        "Mysterious are the ways of God,",
+        "And fear and blindness oft repine;",
+        "We murmur 'neath his chastening rod,",
+        "Because we read not his design."
+      ]
+    },
+    {
+      "lines": [
+        "Impending clouds his love has spread",
+        "O'er this low vale where mortals dwell;",
+        "And oft we mourn his spirit fled,",
+        "When adverse tempests round us swell."
+      ]
+    },
+    {
+      "lines": [
+        "But in those storms that sometimes roll,",
+        "Our mortal dwellings dark above,",
+        "Whose threatening shades dismay the soul,",
+        "Dwells the bright presence of his love."
+      ]
+    },
+    {
+      "lines": [
+        "We cannot see him — not a ray",
+        "Of all his glory there appears,",
+        "And oft we thread our darkened way,",
+        "Trembling with anxious doubts and fears."
+      ]
+    },
+    {
+      "lines": [
+        "Yet faith still looks beyond the gloom,",
+        "While hope's bright star illumes our night;",
+        "Pilgrims of earth! though dark the tomb,",
+        "It leads to scenes of bliss and light."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Bowring died in 1872.",
+  "credits": "Words by John Bowring (1792–1872), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:631"
+}

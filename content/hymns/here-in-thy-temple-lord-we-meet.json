@@ -1,0 +1,63 @@
+{
+  "title": "Here in Thy Temple, Lord, We Meet",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Sebastian Streeter",
+      "born": 1783,
+      "died": 1867,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Here in Thy Temple, Lord, We Meet in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Sebastian Streeter wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 869 of its twenty-second edition (1853), “Humiliation and Prayer”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Here in thy tem-ple, Lord, we meet, And bow be-fore thy throne; A-based and guilt-y, at thy feet We seek thy grace a-lone.",
+  "verses": [
+    {
+      "lines": [
+        "Here in thy temple, Lord, we meet,",
+        "And bow before thy throne;",
+        "Abased and guilty, at thy feet",
+        "We seek thy grace alone."
+      ]
+    },
+    {
+      "lines": [
+        "Our sins rise up in dread array,",
+        "And fill our hearts with fear;",
+        "Our trembling spirits melt away,",
+        "But find no helper near."
+      ]
+    },
+    {
+      "lines": [
+        "O, send thy pity from on high",
+        "With pardon all-divine;",
+        "Bring now thy gracious spirit nigh,",
+        "And make us wholly thine."
+      ]
+    },
+    {
+      "lines": [
+        "We humbly mourn our follies past,",
+        "Each guilty path deplore;",
+        "Resolved, while feeble life shall last,",
+        "To tread those paths no more."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Sebastian Streeter died in 1867.",
+  "credits": "Words by Sebastian Streeter (1783–1867), public domain, as printed in Hymns for Christian Devotion (1853); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:869"
+}

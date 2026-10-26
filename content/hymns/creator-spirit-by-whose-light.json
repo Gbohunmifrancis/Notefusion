@@ -1,0 +1,51 @@
+{
+  "title": "Creator Spirit, by Whose Light",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "John Dryden",
+      "born": 1631,
+      "died": 1700,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Creator Spirit, by Whose Light in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "John Dryden wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 76 of its twenty-second edition (1853), “The Divine Spirit implored”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Cre-a-tor Spir-it, by whose light The sleep-ing worlds were called from night! Come, vis-it ev-ery pi-ous mind, Come, pour thy joys on hu-man kind; From sin and sor-row set us free, And make us tem-ples wor-thy thee.",
+  "verses": [
+    {
+      "lines": [
+        "Creator Spirit, by whose light",
+        "The sleeping worlds were called from night!",
+        "Come, visit every pious mind,",
+        "Come, pour thy joys on human kind;",
+        "From sin and sorrow set us free,",
+        "And make us temples worthy thee."
+      ]
+    },
+    {
+      "lines": [
+        "Plenteous in grace descend from high,",
+        "Rich in thy sevenfold energy;",
+        "Our frailty help, our vice control,",
+        "Thou ruler of our secret soul!",
+        "And, lest our feet should haply stray",
+        "Protect and guide us in the way."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Dryden died in 1700.",
+  "credits": "Words by John Dryden (1631–1700), public domain, as printed in Hymns for Christian Devotion (1853); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:76"
+}

@@ -1,0 +1,62 @@
+{
+  "title": "Lord, We Adore Thy Wondrous Grace",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Lord, We Adore Thy Wondrous Grace in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 661 of its twenty-second edition (1853), “On Receiving Members”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Lord, we a-dore thy won-drous grace, Who crown'st the gos-pel with suc-cess; Sub-ject-ing sin-ners to thy yoke, And bring-ing to the fold thy flock.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, we adore thy wondrous grace,",
+        "Who crown'st the gospel with success;",
+        "Subjecting sinners to thy yoke,",
+        "And bringing to the fold thy flock."
+      ]
+    },
+    {
+      "lines": [
+        "May those who have thy truth confessed",
+        "As their own faith, and hope, and rest,",
+        "From day to day still more increase",
+        "In faith, in love, and holiness."
+      ]
+    },
+    {
+      "lines": [
+        "As living members, may they share",
+        "The joys and griefs which others bear,",
+        "And active in their stations prove",
+        "In all the offices of love."
+      ]
+    },
+    {
+      "lines": [
+        "From all temptations now defend,",
+        "And keep them steadfast to the end,",
+        "While in thy house they still improve,",
+        "Until they join the church above."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:661"
+}

@@ -1,0 +1,63 @@
+{
+  "title": "How Sweet, upon This Sacred Day",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Eliza Lee Cabot Follen",
+      "born": 1787,
+      "died": 1860,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "How Sweet, upon This Sacred Day in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Eliza Lee Cabot Follen wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 9 of its twenty-second edition (1853), “Love of Sabbath Service”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How sweet, up-on this sa-cred day, The best of all the seven, To cast our earth-ly thoughts a-way, And think of God and heaven!",
+  "verses": [
+    {
+      "lines": [
+        "How sweet, upon this sacred day,",
+        "The best of all the seven,",
+        "To cast our earthly thoughts away,",
+        "And think of God and heaven!"
+      ]
+    },
+    {
+      "lines": [
+        "How sweet to be allowed to pray",
+        "Our sins may be forgiven!",
+        "With filial confidence to say,",
+        "\"Father, who art in heaven!\""
+      ]
+    },
+    {
+      "lines": [
+        "How sweet the words of peace to hear",
+        "From him to whom 'tis given",
+        "To wake the penitential tear,",
+        "And lead the way to heaven!"
+      ]
+    },
+    {
+      "lines": [
+        "And if, to make our sins depart,",
+        "In vain the will has striven,",
+        "He who regards the inmost heart",
+        "Will send his grace from heaven."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Eliza Lee Cabot Follen died in 1860.",
+  "credits": "Words by Eliza Lee Cabot Follen (1787–1860), public domain, as printed in Hymns for Christian Devotion (1853); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:9"
+}

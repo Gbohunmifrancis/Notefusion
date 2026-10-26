@@ -1,0 +1,63 @@
+{
+  "title": "Glad Was My Heart to Hear",
+  "tune": "franconia",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Glad Was My Heart to Hear in Tonic Solfa to FRANCONIA, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 19 of its twenty-second edition (1853), “The Delight of Worship”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to FRANCONIA; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Glad was my heart to hear My old com-pan-ions say Come, in the house of God ap-pear, For 'tis a ho-ly day.",
+  "verses": [
+    {
+      "lines": [
+        "Glad was my heart to hear",
+        "My old companions say",
+        "Come, in the house of God appear,",
+        "For 'tis a holy day."
+      ]
+    },
+    {
+      "lines": [
+        "Our willing feet shall stand",
+        "Within thy temple-door;",
+        "While young and old in many a band",
+        "Shall throng the sacred floor."
+      ]
+    },
+    {
+      "lines": [
+        "Within these walls be peace",
+        "And harmony be found:",
+        "Zion, in all thy palaces,",
+        "Prosperity abound!"
+      ]
+    },
+    {
+      "lines": [
+        "For friends and brethren dear,",
+        "Our prayer shall never cease",
+        "Oft as they meet for worship here,",
+        "God send his people peace!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to FRANCONIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:19"
+}

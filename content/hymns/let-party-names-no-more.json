@@ -1,0 +1,63 @@
+{
+  "title": "Let Party Names No More",
+  "tune": "st-bride",
+  "text": [
+    {
+      "name": "Benjamin Beddome",
+      "born": 1717,
+      "died": 1795,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Let Party Names No More in Tonic Solfa to ST. BRIDE, doh is Bb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Benjamin Beddome wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 396 of its twenty-second edition (1853), “Christian Unity”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to ST. BRIDE; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Let par-ty names no more The Chris-tian world o'er-spread; Gen-tile and Jew, and bond and free, Are one in Christ their head.",
+  "verses": [
+    {
+      "lines": [
+        "Let party names no more",
+        "The Christian world o'erspread;",
+        "Gentile and Jew, and bond and free,",
+        "Are one in Christ their head."
+      ]
+    },
+    {
+      "lines": [
+        "Among the saints on earth",
+        "Let mutual love be found;",
+        "Heirs of the same inheritance,",
+        "With mutual blessings crowned."
+      ]
+    },
+    {
+      "lines": [
+        "Let envy and ill-will",
+        "Be banished far away;",
+        "Those should in holy friendship dwell,",
+        "Who the same Lord obey."
+      ]
+    },
+    {
+      "lines": [
+        "Thus will the church below",
+        "Resemble that above;",
+        "Where streams of pleasure always flow,",
+        "And every heart is love."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Benjamin Beddome died in 1795.",
+  "credits": "Words by Benjamin Beddome (1717–1795), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. BRIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:396"
+}

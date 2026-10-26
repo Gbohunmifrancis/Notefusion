@@ -1,0 +1,62 @@
+{
+  "title": "Hark! a Voice Divides the Sky",
+  "tune": "st-bees",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Hark! a Voice Divides the Sky in Tonic Solfa to ST. BEES, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 548 of its twenty-second edition (1853), “\"Blessed are the dead, that die in the Lord.\"”, where the book credits them to Wesley's Collection.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to ST. BEES; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Hark! a voice di-vides the sky! Hap-py are the faith-ful dead, In the Lord who sweet-ly die! They from all their toils are freed.",
+  "verses": [
+    {
+      "lines": [
+        "Hark! a voice divides the sky!",
+        "Happy are the faithful dead,",
+        "In the Lord who sweetly die!",
+        "They from all their toils are freed."
+      ]
+    },
+    {
+      "lines": [
+        "Ready for their glorious crown, —",
+        "Sorrows past and sins forgiven, —",
+        "Here they lay their burthen down,",
+        "Hallowed and made meet for heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Yes! the Christian's course is run;",
+        "Ended is the glorious strife;",
+        "Fought the fight, the work is done;",
+        "Death is swallowed up in life."
+      ]
+    },
+    {
+      "lines": [
+        "When from flesh the spirit freed",
+        "Hastens homeward to return,",
+        "Mortals cry, \"A man is dead!\"",
+        "Angels sing, \"A child is born!\""
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST. BEES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:548"
+}

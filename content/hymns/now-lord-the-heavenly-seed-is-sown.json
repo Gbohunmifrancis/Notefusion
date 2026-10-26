@@ -1,0 +1,54 @@
+{
+  "title": "Now, Lord, the Heavenly Seed Is Sown",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Now, Lord, the Heavenly Seed Is Sown in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 87 of its twenty-second edition (1853), “\"God giveth the Increase.\"”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Now, Lord, the heav-enly seed is sown, Be it thy ser-vants' care Thy heav-enly bless-ing to bring down By hum-ble, fer-vent prayer.",
+  "verses": [
+    {
+      "lines": [
+        "Now, Lord, the heavenly seed is sown,",
+        "Be it thy servants' care",
+        "Thy heavenly blessing to bring down",
+        "By humble, fervent prayer."
+      ]
+    },
+    {
+      "lines": [
+        "In vain we plant without thine aid,",
+        "And water, too, in vain:",
+        "Lord of the harvest, God of grace,",
+        "Send down thy heavenly rain."
+      ]
+    },
+    {
+      "lines": [
+        "Then shall our cheerful hearts and tongues",
+        "Begin this song divine —",
+        "\"Thou, Lord, hast given the rich increase,",
+        "And be the glory thine.\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:87"
+}

@@ -1,0 +1,63 @@
+{
+  "title": "O God, My Strength, My Hope",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O God, My Strength, My Hope in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 425 of its twenty-second edition (1853), “Prayer for Self-Consecration”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "O God, my strength, my hope, On thee I cast my care, With hum-ble con-fi-dence look up, And know thou hear-est prayer.",
+  "verses": [
+    {
+      "lines": [
+        "O God, my strength, my hope,",
+        "On thee I cast my care,",
+        "With humble confidence look up,",
+        "And know thou hearest prayer."
+      ]
+    },
+    {
+      "lines": [
+        "O, for a godly fear,",
+        "A quick-discerning eye,",
+        "That looks to thee when sin is near,",
+        "And sees the tempter fly! —"
+      ]
+    },
+    {
+      "lines": [
+        "A spirit still prepared,",
+        "And armed with jealous care,",
+        "Forever standing on its guard,",
+        "And watching unto prayer!"
+      ]
+    },
+    {
+      "lines": [
+        "Lord, let me still abide,",
+        "Nor from my hope remove,",
+        "Till thou my patient spirit guide",
+        "To better worlds above."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in Hymns for Christian Devotion (1853); set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:425"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "Theories, Which Thousands Cherish",
+  "tune": "all-for-jesus",
+  "text": [
+    {
+      "name": "Robert Cassie Waterston",
+      "born": 1812,
+      "died": 1893,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Theories, Which Thousands Cherish in Tonic Solfa to ALL FOR JESUS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Robert Cassie Waterston wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 1002 of its twenty-second edition (1853), “\"As for the truth, it endureth and is always strong.\"”.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to ALL FOR JESUS; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "The-o-ries, which thou-sands cher-ish, Pass like clouds that sweep the sky; Creeds and dog-mas all may per-ish; Truth her-self can nev-er die.",
+  "verses": [
+    {
+      "lines": [
+        "Theories, which thousands cherish,",
+        "Pass like clouds that sweep the sky;",
+        "Creeds and dogmas all may perish;",
+        "Truth herself can never die."
+      ]
+    },
+    {
+      "lines": [
+        "From the glorious heavens above her,",
+        "She has shed her beams abroad,",
+        "That the souls who truly love her,",
+        "May become the sons of God."
+      ]
+    },
+    {
+      "lines": [
+        "Worldlings blindly may refuse her,",
+        "Close their eyes and call it night;",
+        "Learned scoffers may abuse her,",
+        "But they cannot quench her light!"
+      ]
+    },
+    {
+      "lines": [
+        "Thrones may totter, empires crumble,",
+        "All their glories cease to be;",
+        "While she, Christ-like, crowns the humble,",
+        "And from bondage sets them free."
+      ]
+    },
+    {
+      "lines": [
+        "God himself will e'er defend her",
+        "From the fury of her foe,",
+        "Till she, in her native splendor,",
+        "Sits enthroned o'er all below."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Robert Cassie Waterston died in 1893.",
+  "credits": "Words by Robert Cassie Waterston (1812–1893), public domain, as printed in Hymns for Christian Devotion (1853); set to ALL FOR JESUS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:1002"
+}

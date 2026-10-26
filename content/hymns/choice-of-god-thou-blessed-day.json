@@ -1,0 +1,63 @@
+{
+  "title": "Choice of God, Thou Blessed Day",
+  "tune": "pleyels-hymn",
+  "text": [
+    {
+      "name": "Hannah Flagg Gould",
+      "born": 1789,
+      "died": 1865,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Choice of God, Thou Blessed Day in Tonic Solfa to PLEYEL'S HYMN, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Hannah Flagg Gould wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 59 of its twenty-second edition (1853), “The Sabbath”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to PLEYEL'S HYMN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Choice of God, thou bless-ed day, At thy dawn the grave gave way To the power of him with-in, Who had, sin-less, bled for sin.",
+  "verses": [
+    {
+      "lines": [
+        "Choice of God, thou blessed day,",
+        "At thy dawn the grave gave way",
+        "To the power of him within,",
+        "Who had, sinless, bled for sin."
+      ]
+    },
+    {
+      "lines": [
+        "Thine the radiance to illume",
+        "First, for man, the dismal tomb,",
+        "When its bars their weakness owned,",
+        "There revealing death dethroned."
+      ]
+    },
+    {
+      "lines": [
+        "Then the Sun of righteousness",
+        "Rose, a darkened world to bless,",
+        "Bringing up from mortal night",
+        "Immortality and light."
+      ]
+    },
+    {
+      "lines": [
+        "Day of glory, day of power,",
+        "Sacred be thine every hour,",
+        "Emblem, earnest of the rest",
+        "That remaineth for the blest!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Hannah Flagg Gould died in 1865.",
+  "credits": "Words by Hannah Flagg Gould (1789–1865), public domain, as printed in Hymns for Christian Devotion (1853); set to PLEYEL'S HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:59"
+}

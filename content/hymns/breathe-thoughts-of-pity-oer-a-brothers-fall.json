@@ -1,0 +1,62 @@
+{
+  "title": "Breathe Thoughts of Pity O'er a Brother's Fall",
+  "tune": "song-twenty-two",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Breathe Thoughts of Pity O'er a Brother's Fall in Tonic Solfa to SONG TWENTY-TWO, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 814 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Tens (10.10.10.10), to be sung to any tune of that metre. This page sets them to SONG TWENTY-TWO; any other Tens tune fits them as well."
+  ],
+  "underlay": "Breathe thoughts of pi-ty o'er a broth-er's fall, But dwell not with stern an-ger on his fault; The grace of God a-lone holds thee, holds all; Were that with-drawn, thou, too, wouldst swerve and halt.",
+  "verses": [
+    {
+      "lines": [
+        "Breathe thoughts of pity o'er a brother's fall,",
+        "But dwell not with stern anger on his fault;",
+        "The grace of God alone holds thee, holds all;",
+        "Were that withdrawn, thou, too, wouldst swerve and halt."
+      ]
+    },
+    {
+      "lines": [
+        "Send back the wand'rer to the Saviour's fold;",
+        "That were an action worthy of a saint;",
+        "But not in malice let the crime be told,",
+        "Nor publish to the world the evil taint."
+      ]
+    },
+    {
+      "lines": [
+        "The Saviour suffers when his children slide;",
+        "Then is his holy name by men blasphemed",
+        "And he afresh is mocked and crucified,",
+        "Even by those his bitter death redeemed."
+      ]
+    },
+    {
+      "lines": [
+        "Rebuke the sin, and yet in love rebuke;",
+        "Feel as one member in another's pain;",
+        "Win back the soul that his fair path forsook,",
+        "And mighty and rejoicing is thy gain!"
+      ]
+    }
+  ],
+  "metre": "10 10 10 10",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to SONG TWENTY-TWO by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:814"
+}

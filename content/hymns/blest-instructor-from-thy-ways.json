@@ -1,0 +1,63 @@
+{
+  "title": "Blest Instructor! from Thy Ways",
+  "tune": "pleyels-hymn",
+  "text": [
+    {
+      "name": "James Merrick",
+      "born": 1720,
+      "died": 1769,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Blest Instructor! from Thy Ways in Tonic Solfa to PLEYEL'S HYMN, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Merrick wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 334 of its twenty-second edition (1853), “Freedom from Error, Guilt and Folly”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to PLEYEL'S HYMN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Blest In-struc-tor! from thy ways Who can tell how oft he strays? Save from er-ror's growth our mind, Leave not, Lord, one root be-hind.",
+  "verses": [
+    {
+      "lines": [
+        "Blest Instructor! from thy ways",
+        "Who can tell how oft he strays?",
+        "Save from error's growth our mind,",
+        "Leave not, Lord, one root behind."
+      ]
+    },
+    {
+      "lines": [
+        "Purge us from the guilt that lies",
+        "Wrapt within our heart's disguise;",
+        "Let us thence, by thee renewed,",
+        "Each presumptuous sin exclude."
+      ]
+    },
+    {
+      "lines": [
+        "Let our tongues, from error free,",
+        "Speak the words approved by thee:",
+        "To thine all-observing eyes,",
+        "Let our thoughts accepted rise."
+      ]
+    },
+    {
+      "lines": [
+        "While we thus thy name adore,",
+        "And thy healing grace implore,",
+        "Blest Instructor! bow thine ear:",
+        "God our strength! propitious hear."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Merrick died in 1769.",
+  "credits": "Words by James Merrick (1720–1769), public domain, as printed in Hymns for Christian Devotion (1853); set to PLEYEL'S HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:334"
+}

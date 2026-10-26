@@ -1,0 +1,54 @@
+{
+  "title": "Softly Now the Light of Day",
+  "tune": "pleyels-hymn",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Softly Now the Light of Day in Tonic Solfa to PLEYEL'S HYMN, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 955 of its twenty-second edition (1853), “Evening Hymn. Ps. 141:2”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to PLEYEL'S HYMN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Soft-ly now the light of day Fades up-on my sight a-way; Free from care, from la-bor free, Lord, I will com-mune with thee.",
+  "verses": [
+    {
+      "lines": [
+        "Softly now the light of day",
+        "Fades upon my sight away;",
+        "Free from care, from labor free,",
+        "Lord, I will commune with thee."
+      ]
+    },
+    {
+      "lines": [
+        "Thou, whose all-pervading eye",
+        "Nought escapes, without, within:",
+        "Pardon each infirmity,",
+        "Open fault and secret sin."
+      ]
+    },
+    {
+      "lines": [
+        "Soon, for me, the light of day",
+        "Shall forever pass away;",
+        "Then from sin and sorrow free,",
+        "Take me, Lord, to dwell with thee."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to PLEYEL'S HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:955"
+}

@@ -1,0 +1,47 @@
+{
+  "title": "Israel's Shepherd, Guide Us, Feed Us",
+  "tune": "all-for-jesus",
+  "text": [
+    {
+      "name": "Edward Bickersteth",
+      "born": 1786,
+      "died": 1850,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Israel's Shepherd, Guide Us, Feed Us in Tonic Solfa to ALL FOR JESUS, doh is D: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Edward Bickersteth wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 58, “Closing Hymn”.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to ALL FOR JESUS; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Is-rael's Shep-herd, guide us, feed us, Through our pil-grim-age be-low, And be-side the wa-ters lead us, Where Thy flock re-joic-ing go.",
+  "verses": [
+    {
+      "lines": [
+        "Israel's Shepherd, guide us, feed us,",
+        "Through our pilgrimage below,",
+        "And beside the waters lead us,",
+        "Where Thy flock rejoicing go."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, Thy guardian, presence ever,",
+        "Meekly kneeling, we implore;",
+        "We have found Thee, and would never,",
+        "Never wander from Thee more."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Edward Bickersteth died in 1850.",
+  "credits": "Words by Edward Bickersteth (1786–1850), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ALL FOR JESUS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:58"
+}

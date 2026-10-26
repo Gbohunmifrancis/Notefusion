@@ -36,6 +36,17 @@ export const BOOKS = {
   psalms: { id: "watts-1719", year: 1719, title: "The Psalms of David Imitated in the Language of the New Testament", printing: "an 1818 London printing", report: path.join(HERE, "watts-psalms-report.json") },
 };
 export const REPORT_PATH = BOOKS.hymns.report;
+
+/**
+ * The books set by metre, first to last (this importer's and import/words-books.mjs's). A hymn several books print is
+ * the first book's page: a book leaves alone what is hand-set or in a book before it, and takes no notice of the pages
+ * of the books after it, so the result does not depend on which ran last.
+ */
+export const SET_BY_METRE_ORDER = ["watts-1707", "watts-1719", "hymns-1848", "hymns-1846"];
+export function fromLaterBook(h, id) {
+  const at = (x) => SET_BY_METRE_ORDER.indexOf(String(x || "").split(":")[0]);
+  return Boolean(h.setByMetre) && at(h.importedFrom) > at(id);
+}
 export const IMPORTED_FROM = BOOKS.hymns.id;
 
 export const METRES = {
@@ -148,11 +159,12 @@ export function runImport({ src, today, book = "hymns", publish = false, dryRun 
   }
 
   // What we have: every hymn's first line, title and other titles; the files this importer wrote.
-  const ours = new Map(), mine = new Set();
+  const ours = new Map(), mine = new Set(), later = new Set();
   for (const f of fs.readdirSync(hymnsDir).filter((f) => f.endsWith(".json"))) {
     const h = readJson(path.join(hymnsDir, f));
     const slug = f.replace(/\.json$/, "");
     if (h.importedFrom?.startsWith(`${B.id}:`)) { mine.add(slug); continue; }
+    if (fromLaterBook(h, B.id)) { later.add(slug); continue; }
     for (const t of [h.title, ...(h.alsoKnownAs || []), h.verses?.[0]?.lines?.[0]].filter(Boolean)) ours.set(firstWords(t), slug);
   }
 
@@ -171,8 +183,9 @@ export function runImport({ src, today, book = "hymns", publish = false, dryRun 
 
     const title = titleCase(first.replace(/[\s,;:.!?—-]+$/u, ""));
     let slug = slugify(title);
-    if (fs.existsSync(path.join(hymnsDir, `${slug}.json`)) && !mine.has(slug)) slug = `${slug}-watts${h.psalm ? "-psalm" : ""}`;
-    if (keep.has(slug) || (fs.existsSync(path.join(hymnsDir, `${slug}.json`)) && !mine.has(slug))) { report.skipped.push({ ref, first, why: `the page ${slug} is taken` }); continue; }
+    const taken = (x) => keep.has(x) || (fs.existsSync(path.join(hymnsDir, `${x}.json`)) && !mine.has(x) && !later.has(x));
+    if (taken(slug)) slug = `${slug}-watts${h.psalm ? "-psalm" : ""}`;
+    if (taken(slug)) { report.skipped.push({ ref, first, why: `the page ${slug} is taken` }); continue; }
     const tune = pickTune(slug, metre), t = tunes[tune];
     const doh = dohOf(t.key);
     const m = METRES[metre];

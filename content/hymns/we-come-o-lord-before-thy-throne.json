@@ -1,0 +1,54 @@
+{
+  "title": "We Come, O Lord, Before Thy Throne",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "We Come, O Lord, Before Thy Throne in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 835 of its twenty-second edition (1853), “Prayer for Seamen”, where the book credits them to the Select Hymns.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "We come, O Lord, be-fore thy throne, And, with u-ni-ted pleas, We meet and pray for those who roam Far off up-on the seas.",
+  "verses": [
+    {
+      "lines": [
+        "We come, O Lord, before thy throne,",
+        "And, with united pleas,",
+        "We meet and pray for those who roam",
+        "Far off upon the seas."
+      ]
+    },
+    {
+      "lines": [
+        "O, may the Holy Spirit bow",
+        "The sailor's heart to thee,",
+        "Till tears of deep repentance flow",
+        "Like rain-drops in the sea."
+      ]
+    },
+    {
+      "lines": [
+        "Then may a Saviour's dying love",
+        "Pour peace into his breast,",
+        "And waft him to the port above",
+        "Of everlasting rest."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:835"
+}

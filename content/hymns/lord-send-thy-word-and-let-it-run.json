@@ -1,0 +1,71 @@
+{
+  "title": "Lord, Send Thy Word, and Let It Run",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Thomas Gibbons",
+      "born": 1720,
+      "died": 1785,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Lord, Send Thy Word, and Let It Run in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Thomas Gibbons wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 808 of its twenty-second edition (1853), “Prayer for Universal Peace”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Lord, send thy word, and let it run, Armed with thy Spirit's po-wer; Ten thou-sand shall con-fess its sway, And bless the sa-ving hour.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, send thy word, and let it run,",
+        "Armed with thy Spirit's power;",
+        "Ten thousand shall confess its sway,",
+        "And bless the saving hour."
+      ]
+    },
+    {
+      "lines": [
+        "Beneath the influence of thy grace",
+        "The barren wastes shall rise,",
+        "With sudden greens and fruits arrayed,",
+        "A blooming paradise."
+      ]
+    },
+    {
+      "lines": [
+        "True holiness shall strike its root",
+        "In each regenerate heart,",
+        "Shall in a growth divine arise,",
+        "And heavenly fruits impart."
+      ]
+    },
+    {
+      "lines": [
+        "Peace, with her olives crowned, shall stretch",
+        "Her wings from shore to shore;",
+        "No trump shall rouse the rage of war,",
+        "Nor murderous cannon roar."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, for those days we wait; — those days",
+        "Are in thy word foretold;",
+        "Fly swifter, sun and stars, and bring",
+        "This promised age of gold!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Thomas Gibbons died in 1785.",
+  "credits": "Words by Thomas Gibbons (1720–1785), public domain, as printed in Hymns for Christian Devotion (1853); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:808"
+}

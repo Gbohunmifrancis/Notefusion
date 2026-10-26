@@ -1,0 +1,71 @@
+{
+  "title": "Lord of My Life! O May Thy Praise",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Anne Steele",
+      "born": 1717,
+      "died": 1778,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Lord of My Life! O May Thy Praise in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Anne Steele wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 940 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Lord of my life! O may thy praise Em-ploy my no-blest powers, Whose good-ness length-ens out my days. And fills the cir-cling hours!",
+  "verses": [
+    {
+      "lines": [
+        "Lord of my life! O may thy praise",
+        "Employ my noblest powers,",
+        "Whose goodness lengthens out my days.",
+        "And fills the circling hours!"
+      ]
+    },
+    {
+      "lines": [
+        "Preserved by thy almighty arm,",
+        "I passed the shades of night,",
+        "Serene and safe from every harm,",
+        "And see returning light."
+      ]
+    },
+    {
+      "lines": [
+        "While many spend the night in sighs",
+        "And restless pains and woes,",
+        "In gentle sleep I close my eyes",
+        "And undisturbed repose."
+      ]
+    },
+    {
+      "lines": [
+        "When sleep death's semblance o'er me spread,",
+        "And I unconscious lay,",
+        "Thy watchful care was round my bed,",
+        "To guard my feeble clay."
+      ]
+    },
+    {
+      "lines": [
+        "O let the same almighty care",
+        "My waking hours attend;",
+        "From every danger, every snare,",
+        "My heedless steps defend."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Anne Steele died in 1778.",
+  "credits": "Words by Anne Steele (1717–1778), public domain, as printed in Hymns for Christian Devotion (1853); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:940"
+}

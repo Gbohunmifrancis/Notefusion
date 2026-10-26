@@ -1,0 +1,55 @@
+{
+  "title": "Our Father, Who in Heaven Art",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Thomas Whittemore",
+      "born": 1800,
+      "died": 1861,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Our Father, Who in Heaven Art in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Thomas Whittemore wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 438 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Our Fa-ther, who in hea-ven art, All hal-lowed be thy name: Thy king-dom come, thy will be done, On earth, in heaven the same.",
+  "verses": [
+    {
+      "lines": [
+        "Our Father, who in heaven art,",
+        "All hallowed be thy name:",
+        "Thy kingdom come, thy will be done,",
+        "On earth, in heaven the same."
+      ]
+    },
+    {
+      "lines": [
+        "Give us this day our daily bread,",
+        "Our debts, O Lord, forgive,",
+        "As we forgive our enemies",
+        "And thus obedient live."
+      ]
+    },
+    {
+      "lines": [
+        "Into temptation lead us not,",
+        "From evil keep us clean;",
+        "Thine is the kingdom, glory, power",
+        "Forevermore, Amen."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Thomas Whittemore died in 1861.",
+  "credits": "Words by Thomas Whittemore (1800–1861), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:438"
+}

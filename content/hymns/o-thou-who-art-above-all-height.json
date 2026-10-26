@@ -1,0 +1,71 @@
+{
+  "title": "O Thou, Who Art Above All Height",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "John Pierpont",
+      "born": 1785,
+      "died": 1866,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O Thou, Who Art Above All Height in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Pierpont wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 707 of its twenty-second edition (1853), “Ordination Hymn”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Thou, who art a-bove all height! Our God, our Fa-ther, and our Friend! Be-neath thy throne of love and light, Let thine a-dor-ing child-ren bend.",
+  "verses": [
+    {
+      "lines": [
+        "O Thou, who art above all height!",
+        "Our God, our Father, and our Friend!",
+        "Beneath thy throne of love and light,",
+        "Let thine adoring children bend."
+      ]
+    },
+    {
+      "lines": [
+        "We kneel in praise, that here is set",
+        "A vine that by thy culture grew;",
+        "We kneel in prayer, that thou wouldst wet",
+        "Its opening leaves with heavenly dew."
+      ]
+    },
+    {
+      "lines": [
+        "Since thy young servant now hath given",
+        "Himself, his powers, his hopes, his youth",
+        "To the great cause of truth and heaven,",
+        "Be thou his guide, O God of truth!"
+      ]
+    },
+    {
+      "lines": [
+        "Here may his doctrines drop like rain,",
+        "His speech like Hermon's dew distil,",
+        "Till green fields smile, and golden grain,",
+        "Ripe for the harvest, waits thy will."
+      ]
+    },
+    {
+      "lines": [
+        "And when he sinks in death, — by care,",
+        "Or pain, or toil, or years oppressed, —",
+        "O God! remember then our prayer,",
+        "And take his spirit to thy rest."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Pierpont died in 1866.",
+  "credits": "Words by John Pierpont (1785–1866), public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:707"
+}

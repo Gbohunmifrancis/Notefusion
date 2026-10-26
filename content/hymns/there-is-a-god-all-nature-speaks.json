@@ -1,0 +1,63 @@
+{
+  "title": "There Is a God — All Nature Speaks",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Anne Steele",
+      "born": 1717,
+      "died": 1778,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "There Is a God — All Nature Speaks in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Anne Steele wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 101 of its twenty-second edition (1853), “Being of God”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "There is a God all na-ture speaks, Through earth, and air, and sea, and skies: See, from the clouds his glo-ry breaks, When first the beams of morn-ing rise.",
+  "verses": [
+    {
+      "lines": [
+        "There is a God — all nature speaks,",
+        "Through earth, and air, and sea, and skies:",
+        "See, from the clouds his glory breaks,",
+        "When first the beams of morning rise."
+      ]
+    },
+    {
+      "lines": [
+        "The rising sun, serenely bright,",
+        "O'er the wide world's extended frame",
+        "Inscribes, in characters of light,",
+        "His mighty Maker's glorious name."
+      ]
+    },
+    {
+      "lines": [
+        "The flowery tribes, all blooming, rise",
+        "Above the weak attempts of art;",
+        "Their bright, inimitable dyes",
+        "Speak sweet conviction to the heart."
+      ]
+    },
+    {
+      "lines": [
+        "Ye curious minds, who roam abroad,",
+        "And trace creation's wonders o'er,",
+        "Confess the footsteps of a God;",
+        "Come, bow before him, and adore."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Anne Steele died in 1778.",
+  "credits": "Words by Anne Steele (1717–1778), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:101"
+}

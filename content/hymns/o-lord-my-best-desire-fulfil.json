@@ -1,0 +1,63 @@
+{
+  "title": "O Lord, My Best Desire Fulfil",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O Lord, My Best Desire Fulfil in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 619 of its twenty-second edition (1853), “Resignation and Trust”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O Lord, my best de-sire ful-fil, And help me to re-sign Life, health and com-fort to thy will, And make thy plea-sure mine.",
+  "verses": [
+    {
+      "lines": [
+        "O Lord, my best desire fulfil,",
+        "And help me to resign",
+        "Life, health and comfort to thy will,",
+        "And make thy pleasure mine."
+      ]
+    },
+    {
+      "lines": [
+        "Why should I shrink at thy command,",
+        "Whose love forbids my fears?",
+        "Or tremble at thy gracious hand",
+        "That wipes away my tears?"
+      ]
+    },
+    {
+      "lines": [
+        "No! let me rather freely yield",
+        "What most I prize, to thee;",
+        "Who never hast a good withheld,",
+        "Or wilt withhold from me."
+      ]
+    },
+    {
+      "lines": [
+        "But ah! my inmost spirit cries,",
+        "Still bind me to thy sway;",
+        "Else the next cloud that veils the skies,",
+        "Drives all these thoughts away."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:619"
+}

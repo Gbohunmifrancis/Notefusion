@@ -1,0 +1,63 @@
+{
+  "title": "Lift Aloud the Voice of Praise",
+  "tune": "pleyels-hymn",
+  "text": [
+    {
+      "name": "Ephraim Peabody",
+      "born": 1807,
+      "died": 1856,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Lift Aloud the Voice of Praise in Tonic Solfa to PLEYEL'S HYMN, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Ephraim Peabody wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 713 of its twenty-second edition (1853), “Ordination or Installation”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to PLEYEL'S HYMN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Lift a-loud the voice of praise! God, our Fa-ther and our Friend, Hear the prayer and song we raise, Weak, yet trust-ing, we would bend.",
+  "verses": [
+    {
+      "lines": [
+        "Lift aloud the voice of praise!",
+        "God, our Father and our Friend,",
+        "Hear the prayer and song we raise,",
+        "Weak, yet trusting, we would bend."
+      ]
+    },
+    {
+      "lines": [
+        "Lo! another servant brought",
+        "To the heritage of God; —",
+        "May he teach as Christ hath taught,",
+        "Tread the path his Saviour trod."
+      ]
+    },
+    {
+      "lines": [
+        "To the vineyard may he come",
+        "Girded with celestial might;",
+        "Skilled to draw thy children home,",
+        "Taught to give the darkened light."
+      ]
+    },
+    {
+      "lines": [
+        "Unto thee, a people bend, —",
+        "Bind us heart to heart in love;",
+        "Flock and pastor, we would tend",
+        "Ever toward our home above."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Ephraim Peabody died in 1856.",
+  "credits": "Words by Ephraim Peabody (1807–1856), public domain, as printed in Hymns for Christian Devotion (1853); set to PLEYEL'S HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:713"
+}

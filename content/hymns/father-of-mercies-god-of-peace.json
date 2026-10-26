@@ -1,0 +1,70 @@
+{
+  "title": "Father of Mercies! God of Peace",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Father of Mercies! God of Peace in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 567, “Thanksgiving Hymn”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Fa-ther of mer-cies! God of peace! Be-ing whose boun-ties nev-er cease! While to the heavens, in grate-ful tones, As-cend our min-gled o-ri-sons, Lis-ten to these, the notes of praise, Which we, a hap-py peo-ple, raise!",
+  "verses": [
+    {
+      "lines": [
+        "Father of mercies! God of peace!",
+        "Being whose bounties never cease!",
+        "While to the heavens, in grateful tones,",
+        "Ascend our mingled orisons,",
+        "Listen to these, the notes of praise,",
+        "Which we, a happy people, raise!"
+      ]
+    },
+    {
+      "lines": [
+        "Our hamlets, sheltered by Thy care,",
+        "Abodes of peace and plenty are;",
+        "Our tillage by Thy blessing yields",
+        "An hundred fold from ripened fields:",
+        "And flowing grain, and burthened vine,",
+        "Are tokens of Thy Love divine."
+      ]
+    },
+    {
+      "lines": [
+        "The cradled head of infancy",
+        "Doth owe its tranquil rest to Thee;",
+        "Youth's doubting step, man's firmer tread,",
+        "In years mature, by Thee are led;",
+        "Secure may trembling age, oh Lord!",
+        "Lean on its staff, Thy holy Word."
+      ]
+    },
+    {
+      "lines": [
+        "Teach us these blessings to improve,",
+        "Teach us to serve Thee, teach to love;",
+        "Exalt our hearts, that we may see",
+        "The Giver of all good in Thee;",
+        "And be Thy word our daily food,",
+        "Thy service, Lord, our greatest good."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:567"
+}

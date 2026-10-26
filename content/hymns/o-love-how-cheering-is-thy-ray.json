@@ -1,0 +1,70 @@
+{
+  "title": "O Love, How Cheering Is Thy Ray",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O Love, How Cheering Is Thy Ray in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 233, “Desire for Union with God”, where the book credits them to a Wesleyan source.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "O Love, how cheer-ing is Thy ray! All pain be-fore Thy pre-sence flies; Care, an-guish, sor-row, melt a-way, Wher-e'er Thy heal-ing beams a-rise: O Fa-ther! noth-ing may I see, And nought de-sire or seek, but Thee.",
+  "verses": [
+    {
+      "lines": [
+        "O Love, how cheering is Thy ray!",
+        "All pain before Thy presence flies;",
+        "Care, anguish, sorrow, melt away,",
+        "Where'er Thy healing beams arise:",
+        "O Father! nothing may I see,",
+        "And nought desire or seek, but Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Unwearied may I this pursue,",
+        "Dauntless to this high prize aspire;",
+        "Each hour within my soul renew",
+        "This holy flame, this heavenly fire;",
+        "And day and night be all my care",
+        "To guard the sacred treasure there."
+      ]
+    },
+    {
+      "lines": [
+        "O, that I as a little child",
+        "May follow Thee, and never rest,",
+        "Till sweetly Thou hast breathed a mild",
+        "And lowly mind into my breast!",
+        "Nor ever may we parted be,",
+        "Till I become as one with Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Still let Thy love point out my way;",
+        "How wondrous things that love hath wrought!",
+        "Still lead me, lest I go astray;",
+        "Direct my word, inspire my thought;",
+        "And if I fall, soon may I hear",
+        "Thy voice, and know Thy love is near."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:233"
+}

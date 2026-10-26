@@ -1,0 +1,67 @@
+{
+  "title": "Father, Lo! We Consecrate",
+  "tune": "watchman",
+  "text": [
+    {
+      "name": "Edwin Hubbell Chapin",
+      "born": 1814,
+      "died": 1880,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Father, Lo! We Consecrate in Tonic Solfa to WATCHMAN, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Edwin Hubbell Chapin wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 699 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to WATCHMAN; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Fa-ther, lo! we con-se-crate Un-to thee this house and shrine, Oh! may Je-sus vis-it here, As he did in Pa-les-tine. Here may blind eyes see his light, Deaf ears hear his ac-cents sweet, And we, like those groups of old, Sit and lin-ger at his feet.",
+  "verses": [
+    {
+      "lines": [
+        "Father, lo! we consecrate",
+        "Unto thee this house and shrine,",
+        "Oh! may Jesus visit here,",
+        "As he did in Palestine.",
+        "Here may blind eyes see his light,",
+        "Deaf ears hear his accents sweet,",
+        "And we, like those groups of old,",
+        "Sit and linger at his feet."
+      ]
+    },
+    {
+      "lines": [
+        "And to learn of faith and love,",
+        "Strong in sorrow, pain and loss,",
+        "May we come and find them here,",
+        "In the garden, on the cross.",
+        "Like the spices that enfold",
+        "Him we love in rich perfume,",
+        "May our thoughts embalm him here,",
+        "While he slumbers in the tomb."
+      ]
+    },
+    {
+      "lines": [
+        "When we watch by shrouded hopes,",
+        "Weeping at death's marble door,",
+        "May the angels meet us here —",
+        "Lo! your Christ has gone before!",
+        "And while we stand \"looking up,\"",
+        "In our faith and wonder lost,",
+        "Here send down thy Spirit's power,",
+        "Like the tongues of Pentecost."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Edwin Hubbell Chapin died in 1880.",
+  "credits": "Words by Edwin Hubbell Chapin (1814–1880), public domain, as printed in Hymns for Christian Devotion (1853); set to WATCHMAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:699"
+}

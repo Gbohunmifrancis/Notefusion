@@ -1,0 +1,71 @@
+{
+  "title": "The Lord My Pasture Shall Prepare",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Joseph Addison",
+      "born": 1672,
+      "died": 1719,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "The Lord My Pasture Shall Prepare in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Joseph Addison wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 495 of its twenty-second edition (1853), “God our Shepherd”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "The Lord my pas-ture shall pre-pare, And feed me with a shep-herd's care; His pre-sence shall my wants sup-ply, And guard me with a watch-ful eye; My noon-day walks he shall at-tend, And all my mid-night hours de-fend.",
+  "verses": [
+    {
+      "lines": [
+        "The Lord my pasture shall prepare,",
+        "And feed me with a shepherd's care;",
+        "His presence shall my wants supply,",
+        "And guard me with a watchful eye;",
+        "My noonday walks he shall attend,",
+        "And all my midnight hours defend."
+      ]
+    },
+    {
+      "lines": [
+        "When in the sultry glebe I faint,",
+        "Or on the thirsty mountains pant,",
+        "To fertile vales and dewy meads",
+        "My weary, wandering steps he leads,",
+        "Where peaceful rivers, soft and slow,",
+        "Amid the verdant landscape flow."
+      ]
+    },
+    {
+      "lines": [
+        "Though in the paths of death I tread,",
+        "With gloomy horrors overspread,",
+        "My steadfast heart shall fear no ill,",
+        "For thou, O Lord, art with me still.",
+        "Thy friendly staff shall give me aid,",
+        "And guide me through the dreadful shade."
+      ]
+    },
+    {
+      "lines": [
+        "Though, in a bare and rugged way,",
+        "Through devious, lonely wilds I stray,",
+        "Thy bounty shall my pains beguile, —",
+        "The barren wilderness shall smile,",
+        "With sudden greens and herbage crowned",
+        "And streams shall murmur all around."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Joseph Addison died in 1719.",
+  "credits": "Words by Joseph Addison (1672–1719), public domain, as printed in Hymns for Christian Devotion (1853); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:495"
+}

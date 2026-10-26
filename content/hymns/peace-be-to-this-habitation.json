@@ -1,0 +1,55 @@
+{
+  "title": "Peace Be to This Habitation",
+  "tune": "lux-eoi",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Peace Be to This Habitation in Tonic Solfa to LUX EOI, doh is D: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 924 of its twenty-second edition (1853), “Domestic Worship”.",
+    "The book printed the words without tunes, marked Eights and Sevens Double (8.7.8.7.8.7.8.7), to be sung to any tune of that metre. This page sets them to LUX EOI; any other Eights and Sevens Double tune fits them as well."
+  ],
+  "underlay": "Peace be to this ha-bi-ta-tion; Peace to all that dwell there-in; Peace, the ear-nest of sal-va-tion; Peace, the fruit of par-doned sin; Peace, that speaks the heav-enly Giv-er; Peace, to world-ly minds un-known; Peace di-vine, that lasts for-ev-er; Peace, that comes from God a-lone.",
+  "verses": [
+    {
+      "lines": [
+        "Peace be to this habitation;",
+        "Peace to all that dwell therein;",
+        "Peace, the earnest of salvation;",
+        "Peace, the fruit of pardoned sin;",
+        "Peace, that speaks the heavenly Giver;",
+        "Peace, to worldly minds unknown;",
+        "Peace divine, that lasts forever;",
+        "Peace, that comes from God alone."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, Prince of Peace, be near us;",
+        "Fix in all our hearts thy home;",
+        "With thy gracious presence cheer us;",
+        "Let thy sacred kingdom come;",
+        "Raise to heaven our expectation,",
+        "Give our favored souls to prove",
+        "Glorious and complete salvation,",
+        "In the realms of bliss above."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in Hymns for Christian Devotion (1853); set to LUX EOI by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:924"
+}

@@ -1,0 +1,60 @@
+{
+  "title": "O Father, — Draw Us After Thee",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O Father, — Draw Us After Thee in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 612 of its twenty-second edition (1853), “Invocation of our Father's Presence”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "O Fa-ther, draw us af-ter thee! So shall we run and nev-er tire; Thy pre-sence still our com-fort be, Our hope, our joy, our sole de-sire; Thy Spir-it grant; for nei-ther fear Nor sin can come, while that is here.",
+  "verses": [
+    {
+      "lines": [
+        "O Father, — draw us after thee!",
+        "So shall we run and never tire;",
+        "Thy presence still our comfort be,",
+        "Our hope, our joy, our sole desire;",
+        "Thy Spirit grant; — for neither fear",
+        "Nor sin can come, while that is here."
+      ]
+    },
+    {
+      "lines": [
+        "From all eternity, with love",
+        "Unchangeable, thou hast us viewed;",
+        "Before these beating hearts did move,",
+        "Thy tender mercies us pursued:",
+        "Ever with us may they abide,",
+        "And close us in on every side."
+      ]
+    },
+    {
+      "lines": [
+        "In suffering be thy love our peace;",
+        "In weakness be thy love our power;",
+        "And when the storms of life shall cease,",
+        "O God! in that important hour,",
+        "In death as life be thou our guide,",
+        "And bear us through death's whelming tide."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:612"
+}

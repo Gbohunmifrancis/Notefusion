@@ -1,0 +1,71 @@
+{
+  "title": "When Darkness Long Has Veiled My Mind",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "When Darkness Long Has Veiled My Mind in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 337 of its twenty-second edition (1853), “Peace after a Storm”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When dark-ness long has veiled my mind, And smil-ing day once more ap-pears, Then, my Cre-a-tor! then I find The fol-ly of my doubts and fears.",
+  "verses": [
+    {
+      "lines": [
+        "When darkness long has veiled my mind,",
+        "And smiling day once more appears,",
+        "Then, my Creator! then I find",
+        "The folly of my doubts and fears."
+      ]
+    },
+    {
+      "lines": [
+        "Straight I upbraid my wandering heart,",
+        "And blush that I should ever be",
+        "Thus prone to act so base a part,",
+        "Or harbor one hard thought of thee."
+      ]
+    },
+    {
+      "lines": [
+        "O! let me then at length be taught,",
+        "What I am still so slow to learn, —",
+        "That God is love, and changes not,",
+        "Nor knows the shadow of a turn."
+      ]
+    },
+    {
+      "lines": [
+        "Sweet truth, and easy to repeat!",
+        "But when my faith is sharply tried,",
+        "I find myself a learner yet,",
+        "Unskilful, weak, and apt to slide."
+      ]
+    },
+    {
+      "lines": [
+        "But, O my God! one look from thee",
+        "Subdues the disobedient will,",
+        "Drives doubt and discontent away,",
+        "And thy rebellious child is still."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:337"
+}

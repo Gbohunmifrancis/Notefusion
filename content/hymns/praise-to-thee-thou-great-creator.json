@@ -1,0 +1,63 @@
+{
+  "title": "Praise to Thee, Thou Great Creator",
+  "tune": "omni-die",
+  "text": [
+    {
+      "name": "John Fawcett",
+      "born": 1740,
+      "died": 1817,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Praise to Thee, Thou Great Creator in Tonic Solfa to OMNI DIE, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Fawcett wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 165 of its twenty-second edition (1853), “God of our Salvation”.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to OMNI DIE; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Praise to thee, thou great Cre-a-tor; Praise be thine from ev-ery tongue; Join, my soul, with ev-ery crea-ture, Join the u-ni-ver-sal song.",
+  "verses": [
+    {
+      "lines": [
+        "Praise to thee, thou great Creator;",
+        "Praise be thine from every tongue;",
+        "Join, my soul, with every creature,",
+        "Join the universal song."
+      ]
+    },
+    {
+      "lines": [
+        "Father, source of all compassion,",
+        "Free, unbounded grace is thine:",
+        "Hail the God of our salvation;",
+        "Praise him for his love divine."
+      ]
+    },
+    {
+      "lines": [
+        "For ten thousand blessings given,",
+        "For the hope of future joy,",
+        "Sound his praise through earth and heaven,",
+        "Sound Jehovah's praise on high."
+      ]
+    },
+    {
+      "lines": [
+        "Joyfully on earth adore him,",
+        "'Till in heaven our song we raise;",
+        "There, enraptured, fall before him,",
+        "Lost in wonder, love, and praise."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Fawcett died in 1817.",
+  "credits": "Words by John Fawcett (1740–1817), public domain, as printed in Hymns for Christian Devotion (1853); set to OMNI DIE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:165"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "When, Like a Stranger on Our Sphere",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "When, Like a Stranger on Our Sphere in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 787 of its twenty-second edition (1853), “For a Public Hospital or Asylum”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When, like a stran-ger on our sphere, The low-ly Je-sus wan-dered here, Wher-e'er he went, a-fflic-tion fled. And sick-ness reared her faint-ing head.",
+  "verses": [
+    {
+      "lines": [
+        "When, like a stranger on our sphere,",
+        "The lowly Jesus wandered here,",
+        "Where'er he went, affliction fled.",
+        "And sickness reared her fainting head."
+      ]
+    },
+    {
+      "lines": [
+        "Demoniac madness, dark and wild,",
+        "In his inspiring presence smiled;",
+        "The storm of horror ceased to roll,",
+        "And reason lightened through the soul."
+      ]
+    },
+    {
+      "lines": [
+        "Through paths of loving-kindness led,",
+        "Where Jesus triumphed, we would tread;",
+        "To all, with willing hands, dispense",
+        "The crumbs of our benevolence."
+      ]
+    },
+    {
+      "lines": [
+        "Here the whole family of woe",
+        "Shall friends, and home, and comfort know;",
+        "The blasted form and shipwrecked mind",
+        "Shall here a tranquil haven find."
+      ]
+    },
+    {
+      "lines": [
+        "And Thou, dread Power, whose sovereign breath",
+        "Is health or sickness, life or death,",
+        "This favored mansion deign to bless;",
+        "The cause is thine — send thou success!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:787"
+}

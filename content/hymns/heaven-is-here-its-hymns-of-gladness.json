@@ -1,0 +1,63 @@
+{
+  "title": "Heaven Is Here; Its Hymns of Gladness",
+  "tune": "st-oswald",
+  "text": [
+    {
+      "name": "John Greenleaf Adams",
+      "born": 1810,
+      "died": 1887,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Heaven Is Here; Its Hymns of Gladness in Tonic Solfa to ST. OSWALD, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Greenleaf Adams wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 419 of its twenty-second edition (1853), “Heaven Here”.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to ST. OSWALD; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Heaven is here; its hymns of glad-ness Cheer the true be-liev-er's way, In this world where sin and sad-ness Of-ten change to night our day.",
+  "verses": [
+    {
+      "lines": [
+        "Heaven is here; its hymns of gladness",
+        "Cheer the true believer's way,",
+        "In this world where sin and sadness",
+        "Often change to night our day."
+      ]
+    },
+    {
+      "lines": [
+        "Heaven is here; where misery lightened",
+        "Of its heavy load is seen,",
+        "Where the face of sorrow brightened",
+        "By the deed of love hath been:"
+      ]
+    },
+    {
+      "lines": [
+        "Where the bound, the poor, despairing",
+        "Are set free, supplied and blest;",
+        "Where, in others' anguish sharing,",
+        "We can find our surest rest."
+      ]
+    },
+    {
+      "lines": [
+        "Where we heed the voice of duty",
+        "Rather than man's praise, or rod;",
+        "This is heaven, — its peace, its beauty,",
+        "Radiant with the smile of God."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Greenleaf Adams died in 1887.",
+  "credits": "Words by John Greenleaf Adams (1810–1887), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. OSWALD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:419"
+}

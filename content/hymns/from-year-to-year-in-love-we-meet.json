@@ -1,0 +1,63 @@
+{
+  "title": "From Year to Year in Love We Meet",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "From Year to Year in Love We Meet in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 751 of its twenty-second edition (1853), “Sabbath School Anniversary”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "From year to year in love we meet; From year to year in peace we part; The tongues of child-ren ut-tering sweet The thrill-ing joy of ev-ery heart.",
+  "verses": [
+    {
+      "lines": [
+        "From year to year in love we meet;",
+        "From year to year in peace we part;",
+        "The tongues of children uttering sweet",
+        "The thrilling joy of every heart."
+      ]
+    },
+    {
+      "lines": [
+        "But time rolls on; and, year by year,",
+        "We change, grow up, or pass away;",
+        "Not twice the same assembly here",
+        "Have hailed the children's festal day."
+      ]
+    },
+    {
+      "lines": [
+        "Death, ere another year, may strike",
+        "Some in our number marked to fall:",
+        "Be young and old prepared alike;",
+        "The warning is to each, to all."
+      ]
+    },
+    {
+      "lines": [
+        "Oft broke, our failing ranks renew;",
+        "Send teachers, children, in our place,",
+        "More humble, docile, faithful, true,",
+        "More like thy Son, from race to race."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:751"
+}

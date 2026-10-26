@@ -1,0 +1,62 @@
+{
+  "title": "O Lord! Whose Forming Hand One Blood",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O Lord! Whose Forming Hand One Blood in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 800 of its twenty-second edition (1853), “Prayer for Zeal and Love”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Lord! whose form-ing hand one blood To all the tribes and na-tions gave, And giv'st to all their dail-y food, Look down in pi-ty on the slave!",
+  "verses": [
+    {
+      "lines": [
+        "O Lord! whose forming hand one blood",
+        "To all the tribes and nations gave,",
+        "And giv'st to all their daily food,",
+        "Look down in pity on the slave!"
+      ]
+    },
+    {
+      "lines": [
+        "Fetters and chains and stripes remove,",
+        "Deliv'rance to the captives give;",
+        "And pour the tide of light and love",
+        "Upon their souls, and bid them live."
+      ]
+    },
+    {
+      "lines": [
+        "Oh! kindle in our hearts a flame",
+        "Of zeal, thy holy will to do;",
+        "And bid each one, who loves thy name,",
+        "Love all his bleeding brethren too."
+      ]
+    },
+    {
+      "lines": [
+        "Through all thy temples, let the stain",
+        "Of prejudice each bosom flee;",
+        "And, hand in hand, let Afric's train,",
+        "With Europe's children, worship thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:800"
+}

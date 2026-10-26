@@ -1,0 +1,70 @@
+{
+  "title": "On Zion, His Most Holy Mount",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "On Zion, His Most Holy Mount in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 290 of its twenty-second edition (1853), “The Gospel Feast”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "On Zi-on, his most ho-ly mount, God will a feast pre-pare; And Is-rael's sons, and Gen-tile lands, Shall in the ban-quet share.",
+  "verses": [
+    {
+      "lines": [
+        "On Zion, his most holy mount,",
+        "God will a feast prepare;",
+        "And Israel's sons, and Gentile lands,",
+        "Shall in the banquet share."
+      ]
+    },
+    {
+      "lines": [
+        "See to the vilest of the vile",
+        "A free acceptance given!",
+        "See rebels, by adopting grace,",
+        "Sit with the heirs of heaven!"
+      ]
+    },
+    {
+      "lines": [
+        "The pained, the sick, the dying, now",
+        "To ease and health restored,",
+        "With eager appetites partake",
+        "The plenties of the board."
+      ]
+    },
+    {
+      "lines": [
+        "But, O, what draughts of bliss unknown,",
+        "What dainties shall be given,",
+        "When, with the myriads round the throne,",
+        "We join the feast of heaven!"
+      ]
+    },
+    {
+      "lines": [
+        "There joys immeasurably high",
+        "Shall overflow the soul,",
+        "And springs of life, that never dry,",
+        "In thousand channels roll."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:290"
+}

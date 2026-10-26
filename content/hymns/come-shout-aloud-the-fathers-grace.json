@@ -1,0 +1,63 @@
+{
+  "title": "Come, Shout Aloud the Father's Grace",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Ottiwell Heginbotham",
+      "born": 1744,
+      "died": 1768,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Come, Shout Aloud the Father's Grace in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Ottiwell Heginbotham wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 644 of its twenty-second edition (1853), “Rejoicing in God, our Father”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Come, shout a-loud the Fa-ther's grace, And sing the Sav-iour's love; Soon shall you join the glo-rious theme, In lofti-er strains a-bove.",
+  "verses": [
+    {
+      "lines": [
+        "Come, shout aloud the Father's grace,",
+        "And sing the Saviour's love;",
+        "Soon shall you join the glorious theme,",
+        "In loftier strains above."
+      ]
+    },
+    {
+      "lines": [
+        "God, the eternal, mighty God,",
+        "To dearer names descends;",
+        "Calls us his treasure and his joy,",
+        "His children and his friends."
+      ]
+    },
+    {
+      "lines": [
+        "My Father, God! and may these lips",
+        "Pronounce a name so dear?",
+        "Not thus could heaven's sweet harmony",
+        "Delight my listening ear."
+      ]
+    },
+    {
+      "lines": [
+        "Thanks to my God for every gift",
+        "His bounteous hands bestow;",
+        "And thanks eternal for that love",
+        "Whence all these comforts flow."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Ottiwell Heginbotham died in 1768.",
+  "credits": "Words by Ottiwell Heginbotham (1744–1768), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:644"
+}

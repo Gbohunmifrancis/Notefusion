@@ -1,0 +1,71 @@
+{
+  "title": "O Happy Is the Man, Who Hears",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "John Logan",
+      "born": 1748,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O Happy Is the Man, Who Hears in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Logan wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 404 of its twenty-second edition (1853), “Wisdom”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O hap-py is the man, who hears In-struc-tion's warn-ing voice; And who ce-les-tial wis-dom makes His ear-ly, on-ly choice.",
+  "verses": [
+    {
+      "lines": [
+        "O happy is the man, who hears",
+        "Instruction's warning voice;",
+        "And who celestial wisdom makes",
+        "His early, only choice."
+      ]
+    },
+    {
+      "lines": [
+        "Her treasures are of more esteem",
+        "Than east or west unfold;",
+        "And her rewards more precious are",
+        "Than all their mines of gold."
+      ]
+    },
+    {
+      "lines": [
+        "In her right hand she holds to view",
+        "A length of happy days;",
+        "Riches with splendid honors joined,",
+        "Her left hand full displays."
+      ]
+    },
+    {
+      "lines": [
+        "She guides the young with innocence",
+        "In pleasure's path to tread;",
+        "A crown of glory she bestows",
+        "Upon the hoary head."
+      ]
+    },
+    {
+      "lines": [
+        "According as her labors rise,",
+        "So her rewards increase;",
+        "Her ways are ways of pleasantness,",
+        "And all her paths are peace."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Logan died in 1788.",
+  "credits": "Words by John Logan (1748–1788), public domain, as printed in Hymns for Christian Devotion (1853); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:404"
+}

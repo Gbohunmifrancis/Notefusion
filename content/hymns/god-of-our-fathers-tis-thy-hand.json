@@ -1,0 +1,62 @@
+{
+  "title": "God of Our Fathers, 'Tis Thy Hand",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "God of Our Fathers, 'Tis Thy Hand in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 791 of its twenty-second edition (1853), “Temperance Hymn”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "God of our fa-thers, 'tis thy hand Hath turned the tide of death a-way, That rolled in mad-ness o'er the land, And filled thy peo-ple with dis-may.",
+  "verses": [
+    {
+      "lines": [
+        "God of our fathers, 'tis thy hand",
+        "Hath turned the tide of death away,",
+        "That rolled in madness o'er the land,",
+        "And filled thy people with dismay."
+      ]
+    },
+    {
+      "lines": [
+        "Thy voice awaked us from our dream:",
+        "Thy spirit taught our hearts to feel;",
+        "'Twas thy own light, whose radiant beam",
+        "Came down our duty to reveal."
+      ]
+    },
+    {
+      "lines": [
+        "Almighty Parent, still in thee",
+        "Our spirits trust for strength divine;",
+        "Gird us with heaven's own energy,",
+        "And o'er our paths let wisdom shine."
+      ]
+    },
+    {
+      "lines": [
+        "The work of man's destruction stay;",
+        "The tide of fire still backward press;",
+        "Drive each delusive mist away,",
+        "And every humble effort bless."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:791"
+}

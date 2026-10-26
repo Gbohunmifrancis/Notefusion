@@ -1,0 +1,63 @@
+{
+  "title": "Morning Breaks upon the Tomb",
+  "tune": "pleyels-hymn",
+  "text": [
+    {
+      "name": "William Bengo Collyer",
+      "born": 1782,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Morning Breaks upon the Tomb in Tonic Solfa to PLEYEL'S HYMN, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Bengo Collyer wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 236 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to PLEYEL'S HYMN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Morn-ing breaks up-on the tomb! Je-sus dis-si-pates its gloom! Day of tri-umph through the skies, See the glo-rious Sa-viour rise!",
+  "verses": [
+    {
+      "lines": [
+        "Morning breaks upon the tomb!",
+        "Jesus dissipates its gloom!",
+        "Day of triumph through the skies,",
+        "See the glorious Saviour rise!"
+      ]
+    },
+    {
+      "lines": [
+        "Christians, dry your flowing tears;",
+        "Chase those unbelieving fears;",
+        "Look on his deserted grave;",
+        "Doubt no more his power to save."
+      ]
+    },
+    {
+      "lines": [
+        "Ye who are of death afraid,",
+        "Triumph in the scattered shade;",
+        "Drive your anxious fears away;",
+        "See the place where Jesus lay."
+      ]
+    },
+    {
+      "lines": [
+        "So the rising sun appears,",
+        "Shedding radiance o'er the spheres;",
+        "So returning beams of light",
+        "Chase the terrors of the night."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: William Bengo Collyer died in 1854.",
+  "credits": "Words by William Bengo Collyer (1782–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to PLEYEL'S HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:236"
+}

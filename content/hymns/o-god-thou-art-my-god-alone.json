@@ -1,0 +1,63 @@
+{
+  "title": "O God! Thou Art My God Alone",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O God! Thou Art My God Alone in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 493 of its twenty-second edition (1853), “\"O God, my soul thirsteth for thee.\"”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O God! thou art my God a-lone; Ear-ly to thee my soul shall cry, A pil-grim in a land un-known, A thirst-y land, whose springs are dry.",
+  "verses": [
+    {
+      "lines": [
+        "O God! thou art my God alone;",
+        "Early to thee my soul shall cry,",
+        "A pilgrim in a land unknown,",
+        "A thirsty land, whose springs are dry."
+      ]
+    },
+    {
+      "lines": [
+        "Yet through this rough and thorny maze,",
+        "I follow hard on thee, my God;",
+        "Thine hand unseen upholds my ways;",
+        "I lean upon thy staff and rod."
+      ]
+    },
+    {
+      "lines": [
+        "Thee, in the watches of the night,",
+        "When I remember on my bed,",
+        "Thy presence makes the darkness light;",
+        "Thy guardian wings are round my head."
+      ]
+    },
+    {
+      "lines": [
+        "Better than life itself thy love,",
+        "Dearer than all beside to me;",
+        "For whom have I in heaven above,",
+        "Or what on earth, compared with thee?"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:493"
+}

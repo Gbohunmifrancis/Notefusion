@@ -1,0 +1,54 @@
+{
+  "title": "Called by the Sabbath Bells Away",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Called by the Sabbath Bells Away in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 69 of its twenty-second edition (1853), “Sabbath Hymn”, where the book credits them to the Sun. School H. B.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Called by the Sab-bath bells a-way, Un-to thy ho-ly tem-ple, Lord, I'll go, with will-ing mind to pray, To praise thy name and hear thy word.",
+  "verses": [
+    {
+      "lines": [
+        "Called by the Sabbath bells away,",
+        "Unto thy holy temple, Lord,",
+        "I'll go, with willing mind to pray,",
+        "To praise thy name and hear thy word."
+      ]
+    },
+    {
+      "lines": [
+        "O sacred day of peace and joy,",
+        "Thy hours are ever dear to me;",
+        "Ne'er may a sinful thought destroy",
+        "The holy calm I find in thee."
+      ]
+    },
+    {
+      "lines": [
+        "Dear are thy peaceful hours to me,",
+        "For God has given them in his love,",
+        "To tell how calm, how blest shall be",
+        "The endless day of heaven above."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:69"
+}

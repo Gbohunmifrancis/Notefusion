@@ -1,0 +1,71 @@
+{
+  "title": "Along My Earthly Way",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "James Edmeston",
+      "born": 1791,
+      "died": 1867,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Along My Earthly Way in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "James Edmeston wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 521 of its twenty-second edition (1853), “\"Why sayest thou — my way is hid from the Lord?\"”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "A-long my earth-ly way, How man-y clouds are spread! Dark-ness, with scarce one cheer-ful ray, Seems gath-ering o'er my head.",
+  "verses": [
+    {
+      "lines": [
+        "Along my earthly way,",
+        "How many clouds are spread!",
+        "Darkness, with scarce one cheerful ray,",
+        "Seems gathering o'er my head."
+      ]
+    },
+    {
+      "lines": [
+        "Yet, Father, thou art love:",
+        "O hide not from my view!",
+        "But when I look, in prayer, above,",
+        "Appear in mercy through!"
+      ]
+    },
+    {
+      "lines": [
+        "My pathway is not hid;",
+        "Thou knowest all my need;",
+        "And I would do as Israel did, —",
+        "Follow where thou wilt lead."
+      ]
+    },
+    {
+      "lines": [
+        "Lead me, and then my feet",
+        "Shall never, never stray;",
+        "But safely I shall reach the seat",
+        "Of happiness and day."
+      ]
+    },
+    {
+      "lines": [
+        "And O from that bright throne,",
+        "I shall look back, and see, —",
+        "The path I went, and that alone,",
+        "Was the right path for me."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Edmeston died in 1867.",
+  "credits": "Words by James Edmeston (1791–1867), public domain, as printed in Hymns for Christian Devotion (1853); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:521"
+}

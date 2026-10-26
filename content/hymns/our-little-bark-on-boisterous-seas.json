@@ -1,0 +1,62 @@
+{
+  "title": "Our Little Bark, on Boisterous Seas",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Our Little Bark, on Boisterous Seas in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 830 of its twenty-second edition (1853), “Thanksgiving for Deliverance in a Storm”, where the book credits them to Madan's Collection.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Our lit-tle bark, on bois-terous seas, By cru-el tem-pests tossed, With-out one cheer-ful beam of hope, Ex-pect-ing to be lost,",
+  "verses": [
+    {
+      "lines": [
+        "Our little bark, on boisterous seas,",
+        "By cruel tempests tossed,",
+        "Without one cheerful beam of hope,",
+        "Expecting to be lost, —"
+      ]
+    },
+    {
+      "lines": [
+        "We to the Lord, in humble prayer,",
+        "Breathed out our sad distress;",
+        "Though feeble, yet with contrite hearts,",
+        "We begged return of peace."
+      ]
+    },
+    {
+      "lines": [
+        "Then ceased the stormy winds to blow;",
+        "The surges ceased to roll;",
+        "And soon again a placid sea",
+        "Spoke comfort to the soul."
+      ]
+    },
+    {
+      "lines": [
+        "O, may our grateful, trembling hearts",
+        "Their hallelujahs sing",
+        "To him who hath our lives preserved, —",
+        "Our Father and our King."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:830"
+}

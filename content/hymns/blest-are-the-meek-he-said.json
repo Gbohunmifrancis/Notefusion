@@ -1,0 +1,62 @@
+{
+  "title": "\"Blest Are the Meek,\" He Said",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "\"Blest Are the Meek,\" He Said in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 348 of its twenty-second edition (1853), “\"Blessed are the Meek.\"”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "\"Blest are the meek,\" he said, Whose doc-trine is di-vine; The hum-ble mind-ed earth pos-sess, And bright in heaven will shine.",
+  "verses": [
+    {
+      "lines": [
+        "\"Blest are the meek,\" he said,",
+        "Whose doctrine is divine;",
+        "The humble-minded earth possess,",
+        "And bright in heaven will shine."
+      ]
+    },
+    {
+      "lines": [
+        "While here on earth they stay,",
+        "Calm peace with them shall dwell,",
+        "And cheerful hope and heavenly joy",
+        "Beyond what tongue can tell."
+      ]
+    },
+    {
+      "lines": [
+        "The God of peace is theirs;",
+        "They own his gracious sway;",
+        "And yielding all their wills to him,",
+        "His sovereign laws obey."
+      ]
+    },
+    {
+      "lines": [
+        "O gracious Father, grant,",
+        "That we this influence feel,",
+        "That all we hope, or wish, may be",
+        "Subjected to thy will."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:348"
+}

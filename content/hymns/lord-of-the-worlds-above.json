@@ -1,0 +1,61 @@
+{
+  "title": "Lord of the Worlds Above",
+  "tune": "darwall",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Lord of the Worlds Above in Tonic Solfa to DARWALL, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 21 of its twenty-second edition (1853), “Delight in Public Worship”.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.8.8), to be sung to any tune of that metre. This page sets them to DARWALL; any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "Lord of the worlds a-bove, How plea-sant and how fair The dwel-lings of thy love, Thine earth-ly tem-ples, are! To thine a-bode my heart as-pires, With warm de-sires to see my God.",
+  "verses": [
+    {
+      "lines": [
+        "Lord of the worlds above,",
+        "How pleasant and how fair",
+        "The dwellings of thy love,",
+        "Thine earthly temples, are!",
+        "To thine abode my heart aspires,",
+        "With warm desires to see my God."
+      ]
+    },
+    {
+      "lines": [
+        "O happy souls that pray",
+        "Where God appoints to hear!",
+        "O happy men that pay",
+        "Their constant service there!",
+        "They praise thee still; and happy they",
+        "Who love the way to Zion's hill."
+      ]
+    },
+    {
+      "lines": [
+        "They go from strength to strength,",
+        "Throughout these mortal years,",
+        "Till each arrives at length,",
+        "Till each in heaven appears:",
+        "O glorious seat, when God, our King,",
+        "Shall thither bring our willing feet!"
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to DARWALL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:21"
+}

@@ -1,0 +1,75 @@
+{
+  "title": "My Country 'Tis of Thee",
+  "tune": "dort",
+  "text": [
+    {
+      "name": "Samuel Francis Smith",
+      "born": 1808,
+      "died": 1895,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "My Country 'Tis of Thee in Tonic Solfa to DORT, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Samuel Francis Smith wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 836 of its twenty-second edition (1853), “National Hymn”.",
+    "The book printed the words without tunes, marked Sixes and Fours (6.6.4.6.6.6.4), to be sung to any tune of that metre. This page sets them to DORT; any other Sixes and Fours tune fits them as well."
+  ],
+  "underlay": "My coun-try 'tis of thee, Sweet land of lib-er-ty, Of thee I sing; Land where my fa-thers died, Land of the pil-grim's pride, From ev-ery moun-tain side Let free-dom ring.",
+  "verses": [
+    {
+      "lines": [
+        "My country 'tis of thee,",
+        "Sweet land of liberty,",
+        "Of thee I sing;",
+        "Land where my fathers died,",
+        "Land of the pilgrim's pride,",
+        "From every mountain side",
+        "Let freedom ring."
+      ]
+    },
+    {
+      "lines": [
+        "My native country, thee —",
+        "Land of the noble, free —",
+        "Thy name — I love;",
+        "I love thy rocks and rills,",
+        "Thy woods and templed hills;",
+        "My heart with rapture thrills",
+        "Like that above."
+      ]
+    },
+    {
+      "lines": [
+        "Let music swell the breeze,",
+        "And ring from all the trees",
+        "Sweet freedom's song:",
+        "Let mortal tongues awake;",
+        "Let all that breathe, partake;",
+        "Let rocks their silence break, —",
+        "The sound prolong."
+      ]
+    },
+    {
+      "lines": [
+        "Our fathers' God, to thee,",
+        "Author of liberty,",
+        "To thee we sing:",
+        "Long may our land be bright",
+        "With freedom's holy light;",
+        "Protect us by thy might,",
+        "Great God, our King."
+      ]
+    }
+  ],
+  "metre": "6 6 4 6 6 6 4",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Samuel Francis Smith died in 1895.",
+  "credits": "Words by Samuel Francis Smith (1808–1895), public domain, as printed in Hymns for Christian Devotion (1853); set to DORT by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:836"
+}

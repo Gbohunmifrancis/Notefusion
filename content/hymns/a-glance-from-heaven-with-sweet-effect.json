@@ -1,0 +1,63 @@
+{
+  "title": "A Glance from Heaven, with Sweet Effect",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "A Glance from Heaven, with Sweet Effect in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 526 of its twenty-second edition (1853), “Lightning in the Night”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "A glance from heaven, with sweet ef-fect, So-me-times my pen-sive spirit cheers: But ere I can my thoughts col-lect, As sud-den-ly it dis-ap-pears.",
+  "verses": [
+    {
+      "lines": [
+        "A glance from heaven, with sweet effect,",
+        "Sometimes my pensive spirit cheers:",
+        "But ere I can my thoughts collect,",
+        "As suddenly it disappears."
+      ]
+    },
+    {
+      "lines": [
+        "So lightning in the gloom of night",
+        "Affords a momentary day;",
+        "Disclosing objects full in sight,",
+        "Which, soon as seen, are snatched away."
+      ]
+    },
+    {
+      "lines": [
+        "The lightning's flash did not create",
+        "The opening prospect it revealed;",
+        "But only showed the real state",
+        "Of what the darkness had concealed."
+      ]
+    },
+    {
+      "lines": [
+        "Just so, we by a glimpse discern",
+        "The glorious things within the veil;",
+        "That, when in darkness, we may learn",
+        "To live by faith, till light prevail."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:526"
+}

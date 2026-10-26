@@ -1,0 +1,55 @@
+{
+  "title": "God in His Temple Let Us Meet",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "God in His Temple Let Us Meet in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 75 of its twenty-second edition (1853), “Public Worship”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "God in his tem-ple let us meet, In spir-it, low be-fore him bend: Here he hath fixed his mer-cy seat, Here on his Sab-bath we at-tend.",
+  "verses": [
+    {
+      "lines": [
+        "God in his temple let us meet,",
+        "In spirit, low before him bend:",
+        "Here he hath fixed his mercy-seat,",
+        "Here on his Sabbath we attend."
+      ]
+    },
+    {
+      "lines": [
+        "Arise into thy resting-place,",
+        "Thou, and thine ark of strength, O Lord!",
+        "Shine through the veil, we seek thy face:",
+        "Speak, for we hearken to thy word."
+      ]
+    },
+    {
+      "lines": [
+        "With righteousness thy priests array:",
+        "Joyful thy favored people be:",
+        "Let those who teach, and those who pray,",
+        "Let all — be holiness to thee!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:75"
+}

@@ -1,0 +1,54 @@
+{
+  "title": "Eternal Source of Life and Light",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Eternal Source of Life and Light in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 81 of its twenty-second edition (1853), “Prayer for Divine Direction”, where the book credits them to Cappe's Selection.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "E-ter-nal Source of life and light, Su-preme-ly good and wise, To thee we bring our grate-ful vows, To thee lift up our eyes.",
+  "verses": [
+    {
+      "lines": [
+        "Eternal Source of life and light,",
+        "Supremely good and wise,",
+        "To thee we bring our grateful vows,",
+        "To thee lift up our eyes."
+      ]
+    },
+    {
+      "lines": [
+        "Our dark and erring minds illume",
+        "With truth's celestial rays;",
+        "Inspire our hearts with sacred love,",
+        "And tune our lips to praise."
+      ]
+    },
+    {
+      "lines": [
+        "Safely conduct us, by thy grace,",
+        "Through life's perplexing road;",
+        "And place us, when that journey's o'er",
+        "At thy right hand, O God."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:81"
+}

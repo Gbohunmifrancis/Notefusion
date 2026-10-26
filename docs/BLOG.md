@@ -437,25 +437,35 @@ and a line that cannot be fitted honestly refuses the hymn (listed in `watts-rep
 already have (first line, title or other title) is left alone. The pages carry `"setByMetre": true`, which keeps them out
 of hymn recognition (a hummed ST ANNE is offered "O God, Our Help", not every text sung to it) and out of the app's pack.
 
-### Words set by metre: Longfellow and Johnson's Book of Hymns (1848)
+### Words set by metre: books that print the metre and the author
 
-`tools/blog/import/hymns-1848.mjs` does the same for *A Book of Hymns for Public and Private Devotion* (Samuel Longfellow and
-Samuel Johnson, Boston 1848; Project Gutenberg eBook #33180, the fifteenth edition of 1866 with its supplement):
+`tools/blog/import/words-books.mjs` does the same for words-only books that print each hymn's metre and author:
+`--book 1848`, *A Book of Hymns for Public and Private Devotion* (Samuel Longfellow and Samuel Johnson, Boston 1848; Project
+Gutenberg eBook #33180, the fifteenth edition of 1866 with its supplement), and `--book 1846`, *Hymns for Christian
+Devotion* (John G. Adams and Edwin H. Chapin, Boston 1846; eBook #20476, the twenty-second edition of 1853):
 
 ```bash
 mkdir -p /tmp/hymns-1848 && curl -L -o /tmp/hymns-1848/book.txt https://www.gutenberg.org/cache/epub/33180/pg33180.txt
-node tools/blog/import/hymns-1848.mjs --src /tmp/hymns-1848/book.txt --date 2026-10-26 [--publish] [--dry-run]
+mkdir -p /tmp/hymns-1846 && curl -L -o /tmp/hymns-1846/book.txt https://www.gutenberg.org/cache/epub/20476/pg20476.txt
+node tools/blog/import/words-books.mjs --book 1848 --src /tmp/hymns-1848/book.txt --date 2026-10-26 [--publish] [--dry-run]
+node tools/blog/import/words-books.mjs --book 1846 --src /tmp/hymns-1846/book.txt --date 2026-10-26 [--publish] [--dry-run]
 ```
 
-This book prints each hymn's metre and author. The metre is its label read with the verse's length ("8 & 7s" in eight
-lines is 8.7.8.7 D; "P. M.", a particular metre, gives none), set to a tune of that metre from `METRES` in the importer
+The metre is the book's label read with the verse's length ("8 & 7s" or "8s. & 7s." in eight lines is 8.7.8.7 D; "L. M.
+6l." is 8.8.8.8.8.8; "P. M." and "(Peculiar.)" give none), set to a tune of that metre from `METRES` in the importer
 (Common, Long and Short Metre share Watts' tunes; 7s, 8.7s, 7.6 D, 10s, 11.10s, 6.6.4.6.6.6.4, H.M. and the doubles have
-their own). The book names most authors by surname: `AUTHORS` names those we can place, in full with their dates, matching
-the people already on our pages; a surname that could be more than one writer, and a hymn translated by someone the book
-does not name (Breviary, German, Luther, Neale…), is left out. "Anonymous" and the collections the book cites stand as
-`Anonymous`, and the page says which collection. The book gives only the year of its printing, so the pages carry
-`"textPublishedBy": true`: their public-domain answer says the words were "in print by" 1848 (hymns 1–479) or 1866 (the
-supplement), never a made-up first publication. Skipped hymns and why are in `hymns-1848-report.json`.
+their own). The books name most authors by surname: `AUTHORS` names those we can place, in full with their dates,
+matching the people already on our pages ("Tate & Brady" is both; ", alt." marks words the compilers changed); a surname
+that could be more than one writer, and a hymn translated by someone the book does not name (Breviary, German, Luther,
+Neale…), is left out. "Anonymous" and the collections the books cite stand as `Anonymous`, and the page says which
+collection. The books give only the year of their printing, so the pages carry `"textPublishedBy": true`: their
+public-domain answer says the words were "in print by" 1848 (1866 for that book's supplement, hymns 480–600) or 1853,
+never a made-up first publication. A header the transcription spaced oddly is still read as a header, so no hymn's verses
+run into the one before. Skipped hymns and why are in `hymns-<book>-report.json`.
+
+A hymn several books print is the first book's page, in `SET_BY_METRE_ORDER` (watts.mjs): Watts' hymns, his psalms, the
+1848 book, the 1846 book. Each importer leaves alone what is hand-set or in a book before it and takes no notice of the
+books after it, so the pages do not depend on which ran last; run them in that order.
 
 *The Christian Hymn Book* (Campbell, 1865) prints no authors and the *St. Gregory Hymnal* (1920) gives each hymn its own
 tune, so neither is imported this way.

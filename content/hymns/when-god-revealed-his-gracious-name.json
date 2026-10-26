@@ -1,0 +1,63 @@
+{
+  "title": "When God Revealed His Gracious Name",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "When God Revealed His Gracious Name in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 642 of its twenty-second edition (1853), “Experience of God's Grace”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When God re-vealed his gra-cious name, And changed my mourn-ful state, My rap-ture seemed a pleas-ing dream, The grace ap-peared so great.",
+  "verses": [
+    {
+      "lines": [
+        "When God revealed his gracious name,",
+        "And changed my mournful state,",
+        "My rapture seemed a pleasing dream,",
+        "The grace appeared so great."
+      ]
+    },
+    {
+      "lines": [
+        "The world beheld the glorious change,",
+        "And did thy hand confess;",
+        "My tongue broke out in unknown strains,",
+        "And sung surprising grace."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord can clear the darkest skies,",
+        "Can give us day for night;",
+        "Make drops of sacred sorrow rise",
+        "To rivers of delight."
+      ]
+    },
+    {
+      "lines": [
+        "Let those, who sow in sadness, wait",
+        "Till the fair harvest come;",
+        "They shall confess their sheaves are great,",
+        "And shout the blessings home."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:642"
+}

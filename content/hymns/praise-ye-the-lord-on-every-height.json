@@ -1,0 +1,71 @@
+{
+  "title": "Praise Ye the Lord; on Every Height",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Felicia Hemans",
+      "born": 1793,
+      "died": 1835,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Praise Ye the Lord; on Every Height in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Felicia Hemans wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 152 of its twenty-second edition (1853), “Invitation to offer Praise”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Praise ye the Lord; on ev-ery height Songs to his glo-ry raise; Ye an-gel hosts, ye stars of night, Join in im-mor-tal praise.",
+  "verses": [
+    {
+      "lines": [
+        "Praise ye the Lord; on every height",
+        "Songs to his glory raise;",
+        "Ye angel hosts, ye stars of night,",
+        "Join in immortal praise."
+      ]
+    },
+    {
+      "lines": [
+        "O fire and vapor, hail and snow,",
+        "Ye servants of his will;",
+        "O stormy winds, that only blow",
+        "His mandates to fulfil; —"
+      ]
+    },
+    {
+      "lines": [
+        "Mountains and rocks, to heaven that rise",
+        "Fair cedars of the wood;",
+        "Creatures of life that wing the skies,",
+        "Or track the plains for food; —"
+      ]
+    },
+    {
+      "lines": [
+        "Judges of nations; kings, whose hand",
+        "Waves the proud sceptre high;",
+        "O youths and virgins of the land;",
+        "O age and infancy; —"
+      ]
+    },
+    {
+      "lines": [
+        "Praise ye his name, to whom alone",
+        "All homage should be given,",
+        "Whose glory, from th' eternal throne,",
+        "Spreads wide o'er earth and heaven."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Felicia Hemans died in 1835.",
+  "credits": "Words by Felicia Hemans (1793–1835), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:152"
+}

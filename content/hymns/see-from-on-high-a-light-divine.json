@@ -1,0 +1,62 @@
+{
+  "title": "See, from on High, a Light Divine",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "See, from on High, a Light Divine in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 215 of its twenty-second edition (1853), “The Baptism of Jesus”, where the book credits them to the Exeter Collection.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "See, from on high, a light di-vine On Je-sus' head de-scend! And hear the sacred voice from hea-ven That bids us all at-tend.",
+  "verses": [
+    {
+      "lines": [
+        "See, from on high, a light divine",
+        "On Jesus' head descend!",
+        "And hear the sacred voice from heaven",
+        "That bids us all attend."
+      ]
+    },
+    {
+      "lines": [
+        "\"This is my well-beloved Son,\"",
+        "Proclaimed the voice divine;",
+        "\"Hear him,\" his heavenly Father said,",
+        "\"For all his words are mine.\""
+      ]
+    },
+    {
+      "lines": [
+        "His mission thus confirmed from heaven,",
+        "The great Messiah came,",
+        "And heavenly wisdom showed to man",
+        "In God his Father's name."
+      ]
+    },
+    {
+      "lines": [
+        "The path of heavenly peace he showed",
+        "That leads to bliss on high;",
+        "Where all his faithful followers here",
+        "Shall live, no more to die."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:215"
+}

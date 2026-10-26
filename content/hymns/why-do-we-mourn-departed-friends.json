@@ -1,0 +1,55 @@
+{
+  "title": "Why Do We Mourn Departed Friends",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Why Do We Mourn Departed Friends in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 574 of its twenty-second edition (1853), “Comfort under Bereavements”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Why do we mourn de-part-ed friends, Or shake at death's a-larms? 'Tis but the voice that Je-sus sends To call them to his arms.",
+  "verses": [
+    {
+      "lines": [
+        "Why do we mourn departed friends,",
+        "Or shake at death's alarms?",
+        "'Tis but the voice that Jesus sends",
+        "To call them to his arms."
+      ]
+    },
+    {
+      "lines": [
+        "Why should we tremble to convey",
+        "Their bodies to the tomb?",
+        "There the dear flesh of Jesus lay,",
+        "And left a long perfume."
+      ]
+    },
+    {
+      "lines": [
+        "The graves of all his saints he blest,",
+        "And softened every bed:",
+        "Where should the dying members rest,",
+        "But with their dying Head?"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:574"
+}

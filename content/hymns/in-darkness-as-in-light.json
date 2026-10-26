@@ -1,0 +1,55 @@
+{
+  "title": "In Darkness as in Light",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "In Darkness as in Light in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 129 of its twenty-second edition (1853), “\"The darkness and the light are both alike to thee.\"”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "In dark-ness as in light, Hid-den a-like from view, I sleep, I wake with-in His sight, Who looks ex-is-tence through.",
+  "verses": [
+    {
+      "lines": [
+        "In darkness as in light,",
+        "Hidden alike from view,",
+        "I sleep, I wake within His sight,",
+        "Who looks existence through."
+      ]
+    },
+    {
+      "lines": [
+        "From the dim hour of birth,",
+        "Through every changing state",
+        "Of mortal pilgrimage on earth,",
+        "Till its appointed date;"
+      ]
+    },
+    {
+      "lines": [
+        "All that I am, — have been, —",
+        "All that I yet may be,",
+        "He sees at once, as he hath seen,",
+        "And shall forever see."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:129"
+}

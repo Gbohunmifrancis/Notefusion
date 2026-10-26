@@ -1,0 +1,55 @@
+{
+  "title": "So Fades the Lovely, Blooming Flower",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Anne Steele",
+      "born": 1717,
+      "died": 1778,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "So Fades the Lovely, Blooming Flower in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Anne Steele wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 583 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "So fades the love-ly, bloom-ing flower, Frail, smil-ing so-lace of an hour; So soon our tran-sient com-forts fly, And plea-sure on-ly blooms to die.",
+  "verses": [
+    {
+      "lines": [
+        "So fades the lovely, blooming flower,",
+        "Frail, smiling solace of an hour;",
+        "So soon our transient comforts fly,",
+        "And pleasure only blooms to die."
+      ]
+    },
+    {
+      "lines": [
+        "Is there no kind, no healing art,",
+        "To soothe the anguish of the heart?",
+        "Spirit of grace, be ever nigh:",
+        "Thy comforts are not made to die."
+      ]
+    },
+    {
+      "lines": [
+        "Let gentle patience smile on pain,",
+        "Till dying hope revives again;",
+        "Hope wipes the tear from sorrow's eye,",
+        "And faith points upward to the sky."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Anne Steele died in 1778.",
+  "credits": "Words by Anne Steele (1717–1778), public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:583"
+}

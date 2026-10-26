@@ -1,0 +1,54 @@
+{
+  "title": "Ye Christian Heralds, — Go, Proclaim",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Ye Christian Heralds, — Go, Proclaim in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 737 of its twenty-second edition (1853), “Missionaries Encouraged”, where the book credits them to Winchell's Selection.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Ye Chris-tian her-alds, go, pro-claim Sal-va-tion in Im-man-uel's name: To dis-tant climes the ti-dings bear, And plant the rose of Sha-ron there.",
+  "verses": [
+    {
+      "lines": [
+        "Ye Christian heralds, — go, proclaim",
+        "Salvation in Immanuel's name:",
+        "To distant climes the tidings bear,",
+        "And plant the rose of Sharon there."
+      ]
+    },
+    {
+      "lines": [
+        "He'll shield you with a wall of fire,",
+        "With holy zeal your hearts inspire,",
+        "Bid raging winds their fury cease,",
+        "And calm the savage breast to peace."
+      ]
+    },
+    {
+      "lines": [
+        "And when our labors all are o'er,",
+        "Then shall we meet to part no more, —",
+        "Meet, with the ransomed throng to fail,",
+        "And crown the Saviour Lord of all."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:737"
+}

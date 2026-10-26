@@ -1,0 +1,63 @@
+{
+  "title": "Children of the Heavenly King",
+  "tune": "st-bees",
+  "text": [
+    {
+      "name": "John Cennick",
+      "born": 1718,
+      "died": 1755,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Children of the Heavenly King in Tonic Solfa to ST. BEES, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Cennick wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 379 of its twenty-second edition (1853), “The Christian rejoicing in Hope”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to ST. BEES; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Child-ren of the Heav-enly King, As ye jour-ney, sweet-ly sing; Sing your Sav-iour's wor-thy praise, Glo-rious in his works and ways.",
+  "verses": [
+    {
+      "lines": [
+        "Children of the Heavenly King,",
+        "As ye journey, sweetly sing;",
+        "Sing your Saviour's worthy praise,",
+        "Glorious in his works and ways."
+      ]
+    },
+    {
+      "lines": [
+        "Ye are travelling home to God,",
+        "In the way the fathers trod;",
+        "They are happy now, and ye",
+        "Soon their happiness shall see."
+      ]
+    },
+    {
+      "lines": [
+        "Shout, ye little flock, and blest;",
+        "You on Jesus' throne shall rest;",
+        "There your seat is now prepared,",
+        "There your kingdom and reward."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, submissive make us go,",
+        "Ready, leaving all below;",
+        "Only thou our Leader be,",
+        "And we still will follow thee."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Cennick died in 1755.",
+  "credits": "Words by John Cennick (1718–1755), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. BEES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:379"
+}

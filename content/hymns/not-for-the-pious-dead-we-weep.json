@@ -1,0 +1,63 @@
+{
+  "title": "Not for the Pious Dead We Weep",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Anna Laetitia Barbauld",
+      "born": 1743,
+      "died": 1825,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Not for the Pious Dead We Weep in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Anna Laetitia Barbauld wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 568 of its twenty-second edition (1853), “The Mourner's Thoughts of Heaven”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Not for the pi-ous dead we weep; Their sor-rows now are o'er; The sea is calm, the tem-pest past, On that e-ter-nal shore.",
+  "verses": [
+    {
+      "lines": [
+        "Not for the pious dead we weep;",
+        "Their sorrows now are o'er;",
+        "The sea is calm, the tempest past,",
+        "On that eternal shore."
+      ]
+    },
+    {
+      "lines": [
+        "O, might some dream of visioned bliss,",
+        "Some trance of rapture, show",
+        "Where, on the bosom of their God,",
+        "They rest from human woe!"
+      ]
+    },
+    {
+      "lines": [
+        "Thence may their pure devotion's flame",
+        "On us, on us descend;",
+        "To us their strong aspiring hopes,",
+        "Their faith, their fervors lend."
+      ]
+    },
+    {
+      "lines": [
+        "Let these our shadowy path illume,",
+        "And teach the chastened mind",
+        "To welcome all that's left of good,",
+        "To all that's lost resigned."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Anna Laetitia Barbauld died in 1825.",
+  "credits": "Words by Anna Laetitia Barbauld (1743–1825), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:568"
+}

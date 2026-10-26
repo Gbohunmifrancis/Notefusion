@@ -1,0 +1,63 @@
+{
+  "title": "Dear as Thou Wert, and Justly Dear",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Thomas Dale",
+      "born": 1797,
+      "died": 1870,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Dear as Thou Wert, and Justly Dear in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Thomas Dale wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 594 of its twenty-second edition (1853), “Death of a Christian”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Dear as thou wert, and just-ly dear, We will not weep for thee: One thought shall check the start-ing tear It is, that thou art free.",
+  "verses": [
+    {
+      "lines": [
+        "Dear as thou wert, and justly dear,",
+        "We will not weep for thee:",
+        "One thought shall check the starting tear",
+        "It is, that thou art free."
+      ]
+    },
+    {
+      "lines": [
+        "And thus shall faith's consoling power",
+        "The tears of love restrain:",
+        "O, who that saw thy parting hour",
+        "Could wish thee here again!"
+      ]
+    },
+    {
+      "lines": [
+        "Triumphant in thy closing eye",
+        "The hope of glory shone;",
+        "Joy breathed in thy expiring sigh,",
+        "To think the race was run."
+      ]
+    },
+    {
+      "lines": [
+        "The passing spirit gently fled,",
+        "Sustained by grace divine;",
+        "O, may such grace on us be shed,",
+        "And make our end like thine."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Thomas Dale died in 1870.",
+  "credits": "Words by Thomas Dale (1797–1870), public domain, as printed in Hymns for Christian Devotion (1853); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:594"
+}

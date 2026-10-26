@@ -1,0 +1,63 @@
+{
+  "title": "We Bid Thee Welcome in the Name",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "We Bid Thee Welcome in the Name in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 711 of its twenty-second edition (1853), “A Pastor Welcomed”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "We bid thee wel-come in the name Of Je-sus, our ex-alt-ed Head: Come as a ser-vant; so he came; And we re-ceive thee in his stead.",
+  "verses": [
+    {
+      "lines": [
+        "We bid thee welcome in the name",
+        "Of Jesus, our exalted Head:",
+        "Come as a servant; so he came;",
+        "And we receive thee in his stead."
+      ]
+    },
+    {
+      "lines": [
+        "Come as an angel, hence to guide",
+        "A band of pilgrims on their way;",
+        "That, safely walking at thy side,",
+        "We never fail, nor faint, nor stray."
+      ]
+    },
+    {
+      "lines": [
+        "Come as a teacher sent from God,",
+        "Charged his whole counsel to declare;",
+        "Lift o'er our ranks the prophet's rod,",
+        "While we uphold thy hands with prayer."
+      ]
+    },
+    {
+      "lines": [
+        "Come as a messenger of peace,",
+        "Filled with the Spirit, fired with love;",
+        "Live to behold our large increase,",
+        "And die to meet us all above."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:711"
+}

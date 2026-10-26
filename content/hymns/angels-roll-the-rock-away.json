@@ -1,0 +1,71 @@
+{
+  "title": "Angels, Roll the Rock Away",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "Thomas Gibbons",
+      "born": 1720,
+      "died": 1785,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Angels, Roll the Rock Away in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Thomas Gibbons wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 235 of its twenty-second edition (1853), “Christ's Resurrection”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "An-gels, roll the rock a-way; Death, yield up thy might-y prey; See! he ris-es from the tomb, Glow-ing with im-mor-tal bloom.",
+  "verses": [
+    {
+      "lines": [
+        "Angels, roll the rock away;",
+        "Death, yield up thy mighty prey;",
+        "See! he rises from the tomb,",
+        "Glowing with immortal bloom."
+      ]
+    },
+    {
+      "lines": [
+        "'T is the Saviour! Angels, raise",
+        "Fame's eternal trump of praise;",
+        "Let the earth's remotest bound",
+        "Hear the joy-inspiring sound."
+      ]
+    },
+    {
+      "lines": [
+        "Now, ye saints, lift up your eyes;",
+        "Now to glory see him rise",
+        "In long triumph up the sky —",
+        "Up to waiting worlds on high."
+      ]
+    },
+    {
+      "lines": [
+        "Praise him, all ye heavenly choirs,",
+        "Praise, and sweep your golden lyres;",
+        "Shout, O earth, in rapturous song;",
+        "Let the strains be sweet and strong."
+      ]
+    },
+    {
+      "lines": [
+        "Every note with wonder swell, —",
+        "And the Saviour's triumph tell;",
+        "Where, O death, is now thy sting?",
+        "Where thy terrors, vanquished king?"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Thomas Gibbons died in 1785.",
+  "credits": "Words by Thomas Gibbons (1720–1785), public domain, as printed in Hymns for Christian Devotion (1853); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:235"
+}

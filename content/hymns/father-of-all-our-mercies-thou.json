@@ -1,0 +1,71 @@
+{
+  "title": "Father of All Our Mercies, Thou",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Father of All Our Mercies, Thou in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 470 of its twenty-second edition (1853), “Prayer for Grace in Trial”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther of all our mer-cies, thou In whom we move and live, Hear us in heaven, thy dwell-ing, now, And an-swer, and for-give.",
+  "verses": [
+    {
+      "lines": [
+        "Father of all our mercies, thou",
+        "In whom we move and live,",
+        "Hear us in heaven, thy dwelling, now,",
+        "And answer, and forgive."
+      ]
+    },
+    {
+      "lines": [
+        "When, harassed by ten thousand foes,",
+        "Our helplessness we feel,",
+        "O, give the weary soul repose,",
+        "The wounded spirit heal."
+      ]
+    },
+    {
+      "lines": [
+        "When dire temptations gather round",
+        "And threaten or allure,",
+        "By storm or calm, in thee be found",
+        "A refuge strong and sure."
+      ]
+    },
+    {
+      "lines": [
+        "When age advances, may we grow",
+        "In faith, in hope, and love,",
+        "And walk in holiness below",
+        "To holiness above."
+      ]
+    },
+    {
+      "lines": [
+        "When earthly joys and cares depart,",
+        "Desire and envy cease,",
+        "Be thou the portion of our heart, —",
+        "In thee may we have peace."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:470"
+}

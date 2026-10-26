@@ -1,0 +1,71 @@
+{
+  "title": "Behold, Where, in a Mortal Form",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "William Enfield",
+      "born": 1741,
+      "died": 1797,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Behold, Where, in a Mortal Form in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Enfield wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 239 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Be-hold, where, in a mor-tal form, Ap-pears each grace di-vine; The vir-tues, all in Je-sus met, With mil-dest ra-diance shine.",
+  "verses": [
+    {
+      "lines": [
+        "Behold, where, in a mortal form,",
+        "Appears each grace divine;",
+        "The virtues, all in Jesus met,",
+        "With mildest radiance shine."
+      ]
+    },
+    {
+      "lines": [
+        "To spread the rays of heavenly light,",
+        "To give the mourner joy,",
+        "To preach glad tidings to the poor,",
+        "Was his divine employ."
+      ]
+    },
+    {
+      "lines": [
+        "'Midst keen reproach and cruel scorn,",
+        "Patient and meek he stood;",
+        "His foes, ungrateful, sought his life;",
+        "He labored for their good."
+      ]
+    },
+    {
+      "lines": [
+        "In the last hour of deep distress,",
+        "Before his Father's throne,",
+        "With soul resigned, he bowed, and said,",
+        "\"Thy will, not mine, be done!\""
+      ]
+    },
+    {
+      "lines": [
+        "Be Christ our pattern and our guide!",
+        "His image may we bear!",
+        "O, may we tread his holy steps,",
+        "His joy and glory share!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: William Enfield died in 1797.",
+  "credits": "Words by William Enfield (1741–1797), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:239"
+}

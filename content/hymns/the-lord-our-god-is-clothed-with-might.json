@@ -1,0 +1,71 @@
+{
+  "title": "The Lord Our God Is Clothed with Might",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Henry Kirke White",
+      "born": 1785,
+      "died": 1806,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "The Lord Our God Is Clothed with Might in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Henry Kirke White wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 105 of its twenty-second edition (1853), “Almighty Power and Majesty of God”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The Lord our God is clothed with might; The winds o-bey his will; He speaks, and in the heav-enly height The roll-ing sun stands still.",
+  "verses": [
+    {
+      "lines": [
+        "The Lord our God is clothed with might;",
+        "The winds obey his will;",
+        "He speaks, and in the heavenly height",
+        "The rolling sun stands still."
+      ]
+    },
+    {
+      "lines": [
+        "Rebel, ye waves, and o'er the land",
+        "With threatening aspect roar;",
+        "The Lord uplifts his awful hand,",
+        "And chains you to the shore."
+      ]
+    },
+    {
+      "lines": [
+        "Ye winds of night, your force combine",
+        "Without his high behest,",
+        "Ye shall not, in the mountain pine,",
+        "Disturb the sparrow's nest."
+      ]
+    },
+    {
+      "lines": [
+        "His voice sublime is heard afar;",
+        "In distant peals it dies;",
+        "He binds the whirlwinds to his car,",
+        "And sweeps the howling skies."
+      ]
+    },
+    {
+      "lines": [
+        "Ye nations, bend; in reverence bend;",
+        "Ye monarchs, wait his nod,",
+        "And bid the choral song ascend",
+        "To celebrate our God."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Henry Kirke White died in 1806.",
+  "credits": "Words by Henry Kirke White (1785–1806), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:105"
+}

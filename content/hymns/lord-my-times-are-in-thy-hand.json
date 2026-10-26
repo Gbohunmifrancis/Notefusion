@@ -1,0 +1,62 @@
+{
+  "title": "Lord, My Times Are in Thy Hand",
+  "tune": "innocents",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Lord, My Times Are in Thy Hand in Tonic Solfa to INNOCENTS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 611 of its twenty-second edition (1853), “Holy Contentment”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to INNOCENTS; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Lord, my times are in thy hand: All my fond-est hopes have planned To thy wis-dom I re-sign, And would make thy pur-pose mine.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, my times are in thy hand:",
+        "All my fondest hopes have planned",
+        "To thy wisdom I resign,",
+        "And would make thy purpose mine."
+      ]
+    },
+    {
+      "lines": [
+        "Thou my daily task shalt give;",
+        "Day by day to thee I live:",
+        "So shall added years fulfil",
+        "Not my own, my Father's will."
+      ]
+    },
+    {
+      "lines": [
+        "Fond ambition, whisper not;",
+        "Happy is my humble lot:",
+        "Anxious, busy cares, away;",
+        "I'm provided for to-day."
+      ]
+    },
+    {
+      "lines": [
+        "O, to live exempt from care,",
+        "By the energy of prayer,",
+        "Strong in faith, with mind subdued,",
+        "Yet elate with gratitude!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to INNOCENTS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:611"
+}

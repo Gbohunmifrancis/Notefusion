@@ -1,0 +1,71 @@
+{
+  "title": "Come, Ye That Love the Lord",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Come, Ye That Love the Lord in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 417 of its twenty-second edition (1853), “Heavenly Joy on Earth”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Come, ye that love the Lord, And let your joys be known; Join in a song with sweet ac-cord, And thus sur-round the throne.",
+  "verses": [
+    {
+      "lines": [
+        "Come, ye that love the Lord,",
+        "And let your joys be known;",
+        "Join in a song with sweet accord,",
+        "And thus surround the throne."
+      ]
+    },
+    {
+      "lines": [
+        "The sorrows of the mind",
+        "Be banished from the place!",
+        "Religion never was designed",
+        "To make our pleasures less."
+      ]
+    },
+    {
+      "lines": [
+        "The men of grace have found",
+        "Glory begun below;",
+        "Celestial fruits on earthly ground",
+        "From faith and hope may grow."
+      ]
+    },
+    {
+      "lines": [
+        "The hill of Sion yields",
+        "A thousand sacred sweets,",
+        "Before we reach the heavenly fields,",
+        "Or walk the golden streets."
+      ]
+    },
+    {
+      "lines": [
+        "Then let our songs abound,",
+        "And every tear be dry;",
+        "We're marching through Immanuel's ground,",
+        "To fairer worlds on high."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:417"
+}

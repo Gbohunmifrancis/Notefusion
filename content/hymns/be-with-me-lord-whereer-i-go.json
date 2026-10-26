@@ -1,0 +1,62 @@
+{
+  "title": "Be with Me, Lord, Where'er I Go",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Be with Me, Lord, Where'er I Go in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 488 of its twenty-second edition (1853), “Prayer for Divine Help”, where the book credits them to the Christian Psalmist.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Be with me, Lord, wher-e'er I go; Teach me what thou wouldst have me do; Show me my weak-ness, let me see I have my power, my all from thee.",
+  "verses": [
+    {
+      "lines": [
+        "Be with me, Lord, where'er I go;",
+        "Teach me what thou wouldst have me do;",
+        "Show me my weakness, — let me see",
+        "I have my power, my all from thee."
+      ]
+    },
+    {
+      "lines": [
+        "Enrich me always with thy love;",
+        "My kind protection ever prove;",
+        "Thy signet put upon my breast,",
+        "And let thy spirit on me rest."
+      ]
+    },
+    {
+      "lines": [
+        "Assist and teach me how to pray;",
+        "Incline my nature to obey;",
+        "What thou abhorr'st that let me flee,",
+        "And only love what pleases thee."
+      ]
+    },
+    {
+      "lines": [
+        "O may I never do my will,",
+        "But thine, and only thine, fulfil;",
+        "Let all my time and all my ways",
+        "Be spent and ended to thy praise."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:488"
+}

@@ -1,0 +1,51 @@
+{
+  "title": "Leader of Israel's Host, and Guide",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Leader of Israel's Host, and Guide in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 270, “God Leads Us Right”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Lea-der of Is-rael's host, and Guide Of all who seek the land a-bove, Be-neath Thy sha-dow we a-bide, The cloud of Thy pro-tect-ing love; Our strength Thy grace, our rule Thy word, Our end the glo-ry of the Lord.",
+  "verses": [
+    {
+      "lines": [
+        "Leader of Israel's host, and Guide",
+        "Of all who seek the land above,",
+        "Beneath Thy shadow we abide,",
+        "The cloud of Thy protecting love;",
+        "Our strength Thy grace, our rule Thy word,",
+        "Our end the glory of the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "By Thine unerring Spirit led,",
+        "We shall not in the desert stray,",
+        "We shall not full direction need,",
+        "Nor miss our providential way;",
+        "As far from danger as from fear,",
+        "While love, almighty love, is near."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:270"
+}

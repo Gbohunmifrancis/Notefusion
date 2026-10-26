@@ -1,0 +1,63 @@
+{
+  "title": "Jesus Invites His Friends",
+  "tune": "franconia",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Jesus Invites His Friends in Tonic Solfa to FRANCONIA, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 692 of its twenty-second edition (1853), “\"Whosoever will, let him come!\"”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to FRANCONIA; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus in-vites his friends To meet a-round his board, And join in blest com-mu-nion here With him their gra-cious Lord.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus invites his friends",
+        "To meet around his board,",
+        "And join in blest communion here",
+        "With him their gracious Lord."
+      ]
+    },
+    {
+      "lines": [
+        "For us he gave his life;",
+        "For us he gave his blood;",
+        "To save from sin our thankless race,",
+        "And bring them back to God."
+      ]
+    },
+    {
+      "lines": [
+        "Our heavenly Father calls",
+        "Christ and his members one;",
+        "We the young children of his grace,",
+        "And he the elder Son."
+      ]
+    },
+    {
+      "lines": [
+        "Let all our souls unite",
+        "A grateful song to raise;",
+        "Pleasure and love fill every mind,",
+        "And every voice be praise."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to FRANCONIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:692"
+}

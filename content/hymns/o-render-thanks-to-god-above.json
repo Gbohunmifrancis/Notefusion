@@ -1,0 +1,69 @@
+{
+  "title": "O Render Thanks to God Above",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Nahum Tate",
+      "born": 1652,
+      "died": 1715,
+      "role": "Words"
+    },
+    {
+      "name": "Nicholas Brady",
+      "born": 1659,
+      "died": 1726,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O Render Thanks to God Above in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Nahum Tate and Nicholas Brady wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 154 of its twenty-second edition (1853), “Praise and Holiness”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O ren-der thanks to God a-bove, The foun-tain of e-ter-nal love; Whose mer-cy firm through a-ges past Has stood and shall for-ev-er last.",
+  "verses": [
+    {
+      "lines": [
+        "O render thanks to God above,",
+        "The fountain of eternal love;",
+        "Whose mercy firm through ages past",
+        "Has stood and shall forever last."
+      ]
+    },
+    {
+      "lines": [
+        "Who can his mighty deeds express? —",
+        "Not only vast, but numberless!",
+        "What mortal eloquence can raise",
+        "His tribute of immortal praise?"
+      ]
+    },
+    {
+      "lines": [
+        "Happy are they, and only they,",
+        "Who from thy judgments never stray;",
+        "Who know what's right, nor only so,",
+        "But always practise what they know."
+      ]
+    },
+    {
+      "lines": [
+        "Extend to me that favor, Lord,",
+        "Thou to thy chosen dost afford:",
+        "When thou return'st to set them free,",
+        "Let thy salvation visit me."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Nahum Tate died in 1715; Nicholas Brady died in 1726.",
+  "credits": "Words by Nahum Tate (1652–1715) and Nicholas Brady (1659–1726), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:154"
+}

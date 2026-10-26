@@ -1,0 +1,60 @@
+{
+  "title": "Lord of the Sea! — Thy Potent Sway",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Lord of the Sea! — Thy Potent Sway in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 828 of its twenty-second edition (1853), “The Mariner's Hymn”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Lord of the sea! thy po-tent sway Old o-cean's wil-dest waves o-bey; The gale that whis-tles through the shrouds, The storm that drives the fright-ed clouds, If but thy whis-per or-der peace, How soon their rude com-mo-tions cease!",
+  "verses": [
+    {
+      "lines": [
+        "Lord of the sea! — thy potent sway",
+        "Old ocean's wildest waves obey;",
+        "The gale that whistles through the shrouds,",
+        "The storm that drives the frighted clouds, —",
+        "If but thy whisper order peace,",
+        "How soon their rude commotions cease!"
+      ]
+    },
+    {
+      "lines": [
+        "Lord of the sea! — the seaman keep",
+        "From all dangers of the deep!",
+        "When high the white-capped billows rise,",
+        "When tempests roar along the skies,",
+        "When foes or shoals awaken fear, —",
+        "O, in thy mercy be thou near."
+      ]
+    },
+    {
+      "lines": [
+        "Lord of the sea! — a sea is life",
+        "Of care and sorrow, woe and strife!",
+        "With watchful pains we steer along,",
+        "To keep the right path, shun the wrong:",
+        "God grant, that, when we cease to roam,",
+        "We gain an everlasting home!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:828"
+}

@@ -1,0 +1,61 @@
+{
+  "title": "Great God! the Heavens' Well Ordered Frame",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Great God! the Heavens' Well Ordered Frame in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 168 of its twenty-second edition (1853), “God revealed in his Works”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Great God! the heavens' well or-dered frame De-clares the glo-ry of thy name, There thy rich works of won-der shine: A thou-sand star-ry beau-ties there, A thou-sand ra-diant marks ap-pear, Of bound-less skill and power di-vine.",
+  "verses": [
+    {
+      "lines": [
+        "Great God! the heavens' well ordered frame",
+        "Declares the glory of thy name,",
+        "There thy rich works of wonder shine:",
+        "A thousand starry beauties there,",
+        "A thousand radiant marks appear,",
+        "Of boundless skill and power divine."
+      ]
+    },
+    {
+      "lines": [
+        "From night to day, from day to night,",
+        "The dawning and the dying light",
+        "Lectures of heavenly wisdom read;",
+        "With silent eloquence they raise",
+        "Our thoughts to our Creator's praise,",
+        "And neither sound nor language need."
+      ]
+    },
+    {
+      "lines": [
+        "Yet thy divine instructions run",
+        "Far as the journeys of the sun:",
+        "Thy light and truth are known abroad;",
+        "We see thy smile in Nature's face,",
+        "And in the pages of thy grace",
+        "We read the glories of our God."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:168"
+}

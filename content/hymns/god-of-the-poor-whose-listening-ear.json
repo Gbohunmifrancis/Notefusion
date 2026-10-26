@@ -1,0 +1,71 @@
+{
+  "title": "God of the Poor! Whose Listening Ear",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "John Greenleaf Adams",
+      "born": 1810,
+      "died": 1887,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "God of the Poor! Whose Listening Ear in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Greenleaf Adams wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 781 of its twenty-second edition (1853), “For a Charitable Meeting”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "God of the poor! whose lis-tening ear Is sought by want's im-plor-ing cry, Whose boun-ty and whose grace are near, Thy nee-dy child-ren to sup-ply:",
+  "verses": [
+    {
+      "lines": [
+        "God of the poor! whose listening ear",
+        "Is sought by want's imploring cry, —",
+        "Whose bounty and whose grace are near,",
+        "Thy needy children to supply: —"
+      ]
+    },
+    {
+      "lines": [
+        "To whom with more acceptance rise",
+        "The words of mercy's voice divine,",
+        "Than pompous rites, or sacrifice",
+        "Of flocks and herds, of oil and wine."
+      ]
+    },
+    {
+      "lines": [
+        "Where'er the poor our aid demand,",
+        "Teach us with ready steps to move,",
+        "Give us the zealous heart and hand",
+        "To do the work of Christian love; —"
+      ]
+    },
+    {
+      "lines": [
+        "The downcast spirit to revive,",
+        "The fainting heart with joy to bless;",
+        "To bid the solitary live —",
+        "The widow and the fatherless."
+      ]
+    },
+    {
+      "lines": [
+        "Thus will we thank thee that thy grace",
+        "Inclined our feet in paths to go",
+        "Where shines that brightness of thy face,",
+        "Which the obedient only know."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Greenleaf Adams died in 1887.",
+  "credits": "Words by John Greenleaf Adams (1810–1887), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:781"
+}

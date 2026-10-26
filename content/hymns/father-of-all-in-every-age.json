@@ -1,0 +1,71 @@
+{
+  "title": "Father of All! in Every Age",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Alexander Pope",
+      "born": 1688,
+      "died": 1744,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Father of All! in Every Age in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Alexander Pope wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 482 of its twenty-second edition (1853), “Universal Prayer”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther of all! in ev-ery age, In ev-ery clime, a-dored, By saint, by sav-age, and by sage, Je-ho-vah, Jove, or Lord!",
+  "verses": [
+    {
+      "lines": [
+        "Father of all! in every age,",
+        "In every clime, adored,",
+        "By saint, by savage, and by sage,",
+        "Jehovah, Jove, or Lord! —"
+      ]
+    },
+    {
+      "lines": [
+        "Save me alike from foolish pride,",
+        "Or impious discontent",
+        "At aught thy wisdom has denied,",
+        "Or aught thy goodness lent."
+      ]
+    },
+    {
+      "lines": [
+        "This day be bread and peace my lot:",
+        "All else beneath the sun",
+        "Thou knowest if best bestowed or not",
+        "And let thy will be done."
+      ]
+    },
+    {
+      "lines": [
+        "Yet not to earth's contracted span",
+        "Thy goodness let me bound,",
+        "Or think thee Lord alone of man,",
+        "When thousand worlds are round."
+      ]
+    },
+    {
+      "lines": [
+        "To thee whose temple is all space,",
+        "Whose altar, earth, sea, skies,",
+        "One chorus let all beings raise,",
+        "All nature's incense rise."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Alexander Pope died in 1744.",
+  "credits": "Words by Alexander Pope (1688–1744), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:482"
+}

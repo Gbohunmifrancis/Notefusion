@@ -1,0 +1,71 @@
+{
+  "title": "I Hear the Voice of Woe",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "William Enfield",
+      "born": 1741,
+      "died": 1797,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "I Hear the Voice of Woe in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Enfield wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 823 of its twenty-second edition (1853), “Forgiveness”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "I hear the voice of woe! I hear a broth-er's sigh! Then let my heart with pi-ty flow, With tears of love, my eye.",
+  "verses": [
+    {
+      "lines": [
+        "I hear the voice of woe!",
+        "I hear a brother's sigh!",
+        "Then let my heart with pity flow,",
+        "With tears of love, my eye."
+      ]
+    },
+    {
+      "lines": [
+        "I hear the thirsty cry!",
+        "The hungry beg for bread!",
+        "Then let my spring its stream supply,",
+        "My hand its bounty shed."
+      ]
+    },
+    {
+      "lines": [
+        "The debtor humbly sues,",
+        "Who would, but cannot pay;",
+        "And shall I lenity refuse,",
+        "Who need it every day?"
+      ]
+    },
+    {
+      "lines": [
+        "And shall not wrath relent,",
+        "Touched by that humble strain,",
+        "My brother crying, \"I repent,",
+        "Nor will offend again?\""
+      ]
+    },
+    {
+      "lines": [
+        "How else, on soaring wing,",
+        "Can hope bear high my prayer,",
+        "Up to thy throne, my God, my King,",
+        "To plead for pardon there?"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: William Enfield died in 1797.",
+  "credits": "Words by William Enfield (1741–1797), public domain, as printed in Hymns for Christian Devotion (1853); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:823"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "God of Our Mercy and Our Praise",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "God of Our Mercy and Our Praise in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 386 of its twenty-second edition (1853), “Christ's Love to Enemies our Example”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "God of our mer-cy and our praise, Thy glo-ry is our song; We'll speak the hon-ors of thy grace With a re-joic-ing tongue.",
+  "verses": [
+    {
+      "lines": [
+        "God of our mercy and our praise,",
+        "Thy glory is our song;",
+        "We'll speak the honors of thy grace",
+        "With a rejoicing tongue."
+      ]
+    },
+    {
+      "lines": [
+        "When Christ among the sons of men",
+        "In humble form was found,",
+        "With cruel slanders, false and vain,",
+        "They compassed him around."
+      ]
+    },
+    {
+      "lines": [
+        "Their miseries his compassion moved,",
+        "Their peace he still pursued;",
+        "They rendered hatred for his love,",
+        "And evil for his good."
+      ]
+    },
+    {
+      "lines": [
+        "Their malice raged without a cause;",
+        "Yet, with his dying breath,",
+        "He prayed for murderers on his cross,",
+        "And blest his foes in death."
+      ]
+    },
+    {
+      "lines": [
+        "O, may his conduct, all divine,",
+        "To us a model prove:",
+        "Like his, O God, our hearts incline",
+        "Our enemies to love."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:386"
+}

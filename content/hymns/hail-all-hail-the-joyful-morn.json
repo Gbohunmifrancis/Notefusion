@@ -1,0 +1,54 @@
+{
+  "title": "Hail, All Hail the Joyful Morn",
+  "tune": "innocents",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Hail, All Hail the Joyful Morn in Tonic Solfa to INNOCENTS, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 208 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to INNOCENTS; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Hail, all hail the joy-ful morn: Tell it forth from earth to heaven, That to us a child is born, That to us a Son is given.",
+  "verses": [
+    {
+      "lines": [
+        "Hail, all hail the joyful morn:",
+        "Tell it forth from earth to heaven,",
+        "That to us a child is born,",
+        "That to us a Son is given."
+      ]
+    },
+    {
+      "lines": [
+        "Angels, bending from the sky,",
+        "Chanted, at the wondrous birth,",
+        "\"Glory be to God on high,",
+        "Peace — good-will to man on earth.\""
+      ]
+    },
+    {
+      "lines": [
+        "Join we then our feeble lays",
+        "To the chorus of the sky;",
+        "And, in songs of grateful praise,",
+        "Glory give to God on high."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to INNOCENTS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:208"
+}

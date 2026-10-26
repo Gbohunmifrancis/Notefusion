@@ -1,0 +1,62 @@
+{
+  "title": "Swell the Anthem, Raise the Song",
+  "tune": "pleyels-hymn",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Swell the Anthem, Raise the Song in Tonic Solfa to PLEYEL'S HYMN, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 881 of its twenty-second edition (1853), “Thanksgiving”, where the book credits them to the Sacred Lyrics.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to PLEYEL'S HYMN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Swell the an-them, raise the song; Prais-es to our God be-long; Saints and an-gels, join to sing Prais-es to the Heav-enly King.",
+  "verses": [
+    {
+      "lines": [
+        "Swell the anthem, raise the song;",
+        "Praises to our God belong;",
+        "Saints and angels, join to sing",
+        "Praises to the Heavenly King."
+      ]
+    },
+    {
+      "lines": [
+        "Blessings from his liberal hand",
+        "Flow around this happy land:",
+        "Kept by him, no foes annoy;",
+        "Peace and freedom we enjoy."
+      ]
+    },
+    {
+      "lines": [
+        "Here, beneath a virtuous sway,",
+        "May we cheerfully obey, —",
+        "Never feel oppression's rod, —",
+        "Ever own and worship God."
+      ]
+    },
+    {
+      "lines": [
+        "Hark! the voice of nature sings",
+        "Praises to the King of kings;",
+        "Let us join the choral song,",
+        "And the grateful notes prolong."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to PLEYEL'S HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:881"
+}

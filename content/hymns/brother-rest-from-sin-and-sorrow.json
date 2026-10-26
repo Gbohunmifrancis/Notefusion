@@ -1,0 +1,62 @@
+{
+  "title": "Brother, Rest from Sin and Sorrow",
+  "tune": "all-for-jesus",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Brother, Rest from Sin and Sorrow in Tonic Solfa to ALL FOR JESUS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 591 of its twenty-second edition (1853), “Burial of a Christian Brother”, where the book credits them to the Bap. Memorial.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to ALL FOR JESUS; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Bro-ther, rest from sin and sor-row; Death is o'er and life is won; On thy slum-ber dawns no mor-row: Rest; thine earth-ly race is run.",
+  "verses": [
+    {
+      "lines": [
+        "Brother, rest from sin and sorrow;",
+        "Death is o'er and life is won;",
+        "On thy slumber dawns no morrow:",
+        "Rest; thine earthly race is run."
+      ]
+    },
+    {
+      "lines": [
+        "Brother, wake; the night is waning;",
+        "Endless day is round thee poured;",
+        "Enter thou the rest remaining",
+        "For the people of the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "Brother, wake; for he who loved thee, —",
+        "He who died that thou mightst live, —",
+        "He who graciously approved thee, —",
+        "Waits thy crown of joy to give."
+      ]
+    },
+    {
+      "lines": [
+        "Fare thee well; though woe is blending",
+        "With the tones of earthly love,",
+        "Triumph high and joy unending",
+        "Wait thee in the realms above."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ALL FOR JESUS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:591"
+}

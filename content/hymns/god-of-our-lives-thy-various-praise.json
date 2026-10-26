@@ -1,0 +1,71 @@
+{
+  "title": "God of Our Lives, Thy Various Praise",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Ottiwell Heginbotham",
+      "born": 1744,
+      "died": 1768,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "God of Our Lives, Thy Various Praise in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Ottiwell Heginbotham wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 890 of its twenty-second edition (1853), “New Year. Providential Goodness”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "God of our lives, thy var-ious praise Our voi-ces shall re-sound: Thy hand di-rects our fleet-ing days, And brings the sea-sons round.",
+  "verses": [
+    {
+      "lines": [
+        "God of our lives, thy various praise",
+        "Our voices shall resound:",
+        "Thy hand directs our fleeting days,",
+        "And brings the seasons round."
+      ]
+    },
+    {
+      "lines": [
+        "To thee shall grateful songs arise,",
+        "Our Father and our Friend,",
+        "Whose constant mercies from the skies",
+        "In genial streams descend."
+      ]
+    },
+    {
+      "lines": [
+        "In every scene of life, thy care,",
+        "In every age, we see;",
+        "And constant as thy favors are,",
+        "So let our praises be."
+      ]
+    },
+    {
+      "lines": [
+        "Still may thy love, in every scene,",
+        "In every age, appear;",
+        "And let the same compassion deign",
+        "To bless the opening year."
+      ]
+    },
+    {
+      "lines": [
+        "If mercy smile, let mercy bring",
+        "Our wandering souls to God:",
+        "In our affliction we shall sing,",
+        "If thou wilt bless the rod."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Ottiwell Heginbotham died in 1768.",
+  "credits": "Words by Ottiwell Heginbotham (1744–1768), public domain, as printed in Hymns for Christian Devotion (1853); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:890"
+}

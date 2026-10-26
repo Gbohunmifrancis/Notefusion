@@ -1,0 +1,62 @@
+{
+  "title": "Father, I Know Thy Ways Are Just",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Father, I Know Thy Ways Are Just in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 485 of its twenty-second edition (1853), “\"Thy Will be done.\"”, where the book credits them to the Percy Chapel Collection.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther, I know thy ways are just, Al-though to me un-known; O, grant me grace thy love to trust, And cry, \"Thy will be done.\"",
+  "verses": [
+    {
+      "lines": [
+        "Father, I know thy ways are just,",
+        "Although to me unknown;",
+        "O, grant me grace thy love to trust,",
+        "And cry, \"Thy will be done.\""
+      ]
+    },
+    {
+      "lines": [
+        "If thou shouldst hedge with thorns my path;",
+        "Should wealth and friends be gone;",
+        "Still with a firm and lively faith,",
+        "I'll cry, \"Thy will be done.\""
+      ]
+    },
+    {
+      "lines": [
+        "Although thy steps I cannot trace,",
+        "Thy sovereign right I'll own;",
+        "And, as instructed by thy grace;",
+        "I'll cry, \"Thy will be done.\""
+      ]
+    },
+    {
+      "lines": [
+        "'Tis sweet thus passively to lie",
+        "Before thy gracious throne,",
+        "Concerning everything to cry,",
+        "\"My Father's will be done.\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:485"
+}

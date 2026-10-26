@@ -1,0 +1,63 @@
+{
+  "title": "Through Every Age, Eternal God",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Through Every Age, Eternal God in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 898 of its twenty-second edition (1853), “God eternal, and Man mortal. Ps. 90”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Through ev-ery age, e-ter-nal God, Thou art our rest, our safe a-bode! High was thy throne ere heaven was made, Or earth thy hum-ble foot-stool laid.",
+  "verses": [
+    {
+      "lines": [
+        "Through every age, eternal God,",
+        "Thou art our rest, our safe abode!",
+        "High was thy throne ere heaven was made,",
+        "Or earth thy humble footstool laid."
+      ]
+    },
+    {
+      "lines": [
+        "Long hadst thou reigned ere time began,",
+        "Or dust was fashioned into man;",
+        "And long thy kingdom shall endure,",
+        "When earth and time shall be no more."
+      ]
+    },
+    {
+      "lines": [
+        "A thousand of our years amount",
+        "Scarce to a day in thine account;",
+        "Like yesterday's departed light,",
+        "Or the last watch of ending night."
+      ]
+    },
+    {
+      "lines": [
+        "Death, like an overflowing stream,",
+        "Sweeps us away; our life's a dream,",
+        "An empty tale, a morning flower",
+        "Cut down and withered in an hour."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:898"
+}

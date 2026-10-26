@@ -1,0 +1,71 @@
+{
+  "title": "When God Descends with Men to Dwell",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Hosea Ballou",
+      "born": 1771,
+      "died": 1852,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "When God Descends with Men to Dwell in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Hosea Ballou wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 289 of its twenty-second edition (1853), “Blessings of Christ's Universal Reign”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When God de-scends with men to dwell, And all cre-a-tion makes a-new, What tongue can half the won-ders tell? What eye the daz-zling glo-ries view?",
+  "verses": [
+    {
+      "lines": [
+        "When God descends with men to dwell,",
+        "And all creation makes anew,",
+        "What tongue can half the wonders tell?",
+        "What eye the dazzling glories view?"
+      ]
+    },
+    {
+      "lines": [
+        "Zion, the desolate, again",
+        "Shall see her lands with roses bloom;",
+        "And Carmel's mount, and Sharon's plain,",
+        "Shall yield their spices and perfume."
+      ]
+    },
+    {
+      "lines": [
+        "Celestial streams shall gently flow;",
+        "The wilderness shall joyful be;",
+        "Lilies on parchéd ground shall grow;",
+        "And gladness spring on every tree;"
+      ]
+    },
+    {
+      "lines": [
+        "The weak be strong, the fearful bold,",
+        "The deaf shall hear, the dumb shall sing,",
+        "The lame shall walk, the blind behold;",
+        "And joy through all the earth shall ring."
+      ]
+    },
+    {
+      "lines": [
+        "Monarchs and slaves shall meet in love;",
+        "Old pride shall die, and meekness reign, —",
+        "When God descends from worlds above,",
+        "To dwell with men on earth again."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Hosea Ballou died in 1852.",
+  "credits": "Words by Hosea Ballou (1771–1852), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:289"
+}

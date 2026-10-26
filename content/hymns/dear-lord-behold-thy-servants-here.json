@@ -1,0 +1,63 @@
+{
+  "title": "Dear Lord, Behold Thy Servants, Here",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Hosea Ballou",
+      "born": 1771,
+      "died": 1852,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Dear Lord, Behold Thy Servants, Here in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Hosea Ballou wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 725 of its twenty-second edition (1853), “At an Annual Convention”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Dear Lord, be-hold thy ser-vants, here, From var-ious parts to-ge-ther meet, To tell their la-bors through the year, And lay the har-vest at thy feet.",
+  "verses": [
+    {
+      "lines": [
+        "Dear Lord, behold thy servants, here,",
+        "From various parts together meet,",
+        "To tell their labors through the year,",
+        "And lay the harvest at thy feet."
+      ]
+    },
+    {
+      "lines": [
+        "The reapers cry, \"Thy fields are white,",
+        "All ready to be gathered in,",
+        "And harvests wave in changing light,",
+        "Far as the eye can trace the scene.\""
+      ]
+    },
+    {
+      "lines": [
+        "Lord, bless us while we here remain;",
+        "With holy love our bosoms fill;",
+        "O may thy doctrine drop like rain,",
+        "And like the silent dew distil."
+      ]
+    },
+    {
+      "lines": [
+        "While we attend thy churches' care",
+        "O grant us wisdom from above;",
+        "With prudent thought and humble prayer,",
+        "May we fulfil the works of love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Hosea Ballou died in 1852.",
+  "credits": "Words by Hosea Ballou (1771–1852), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:725"
+}

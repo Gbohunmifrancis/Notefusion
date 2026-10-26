@@ -1,0 +1,62 @@
+{
+  "title": "\"Give Us Room, That We May Dwell,\"",
+  "tune": "st-bees",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "\"Give Us Room, That We May Dwell,\" in Tonic Solfa to ST. BEES, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 291 of its twenty-second edition (1853), “The Fulness of the Gentiles”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to ST. BEES; any other Sevens tune fits them as well."
+  ],
+  "underlay": "\"Give us room, that we may dwell,\" Zi-on's child-ren cry a-loud: See their num-bers how they swell! How they ga-ther like a cloud!",
+  "verses": [
+    {
+      "lines": [
+        "\"Give us room, that we may dwell,\"",
+        "Zion's children cry aloud:",
+        "See their numbers how they swell!",
+        "How they gather like a cloud!"
+      ]
+    },
+    {
+      "lines": [
+        "O, how bright the morning seems!",
+        "Brighter from so dark a night:",
+        "Zion is like one that dreams,",
+        "Filled with wonder and delight."
+      ]
+    },
+    {
+      "lines": [
+        "Lo! thy sun goes down no more:",
+        "God himself will be thy light:",
+        "All that caused thee grief before",
+        "Buried lies in endless night."
+      ]
+    },
+    {
+      "lines": [
+        "Zion, now arise and shine;",
+        "Lo! thy light from heaven is come",
+        "These that crowd from far are thine;",
+        "Give thy sons and daughters room."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST. BEES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:291"
+}

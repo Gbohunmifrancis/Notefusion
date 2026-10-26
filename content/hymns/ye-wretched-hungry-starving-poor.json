@@ -1,0 +1,71 @@
+{
+  "title": "Ye Wretched, Hungry, Starving Poor",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Anne Steele",
+      "born": 1717,
+      "died": 1778,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Ye Wretched, Hungry, Starving Poor in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Anne Steele wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 266 of its twenty-second edition (1853), “Invitation to the Gospel Feast”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Ye wret-ched, hun-gry, starv-ing poor, Be-hold a roy-al feast, Where mer-cy spreads her boun-teous store, For ev-ery hum-ble guest!",
+  "verses": [
+    {
+      "lines": [
+        "Ye wretched, hungry, starving poor,",
+        "Behold a royal feast,",
+        "Where mercy spreads her bounteous store,",
+        "For every humble guest!"
+      ]
+    },
+    {
+      "lines": [
+        "See, Jesus stands with open arms!",
+        "He calls, he bids you come; —",
+        "Guilt holds you back, and fear alarms, —",
+        "But see, there yet is room!"
+      ]
+    },
+    {
+      "lines": [
+        "Come then, and with his people taste",
+        "The blessings of his love;",
+        "While hope attends the sweet repast,",
+        "Of nobler joys above."
+      ]
+    },
+    {
+      "lines": [
+        "There, with united heart and voice,",
+        "Before the eternal throne,",
+        "Ten thousand thousand souls rejoice",
+        "In ecstasies unknown."
+      ]
+    },
+    {
+      "lines": [
+        "And yet ten thousand thousand more",
+        "Are welcome still to come:",
+        "Ye longing souls, the grace adore; —",
+        "Approach, there yet is room."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Anne Steele died in 1778.",
+  "credits": "Words by Anne Steele (1717–1778), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:266"
+}

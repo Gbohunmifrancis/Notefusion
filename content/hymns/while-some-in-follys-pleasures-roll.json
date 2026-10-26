@@ -1,0 +1,63 @@
+{
+  "title": "While Some in Folly's Pleasures Roll",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Nathaniel Cotton",
+      "born": 1705,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "While Some in Folly's Pleasures Roll in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Nathaniel Cotton wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 432 of its twenty-second edition (1853), “A Peaceful Conscience”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "While some in fol-ly's plea-sures roll, And court the joys that hurt the soul, Be mine that si-lent, calm re-past, A con-science peace-ful to the last.",
+  "verses": [
+    {
+      "lines": [
+        "While some in folly's pleasures roll,",
+        "And court the joys that hurt the soul,",
+        "Be mine that silent, calm repast,",
+        "A conscience peaceful to the last."
+      ]
+    },
+    {
+      "lines": [
+        "With this companion in the shade,",
+        "My soul no more shall be dismayed;",
+        "But fearless meet life's dreariest gloom,",
+        "And the pale monarch of the tomb."
+      ]
+    },
+    {
+      "lines": [
+        "Amidst the various scenes of ills,",
+        "Each blow some kind design fulfils;",
+        "And can I murmur at my God,",
+        "While love supreme directs the rod?"
+      ]
+    },
+    {
+      "lines": [
+        "His hand will smooth my rugged way,",
+        "And lead me to the realms of day;",
+        "To milder skies, and brighter plains,",
+        "Where everlasting pleasure reigns."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Nathaniel Cotton died in 1788.",
+  "credits": "Words by Nathaniel Cotton (1705–1788), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:432"
+}

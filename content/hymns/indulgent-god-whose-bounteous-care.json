@@ -1,0 +1,62 @@
+{
+  "title": "Indulgent God, Whose Bounteous Care",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Indulgent God, Whose Bounteous Care in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 947 of its twenty-second edition (1853), “Evening Hymn”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "In-dul-gent God, whose boun-teous care O'er all thy works is shown, O let my grate-ful praise and prayer As-cend be-fore thy throne!",
+  "verses": [
+    {
+      "lines": [
+        "Indulgent God, whose bounteous care",
+        "O'er all thy works is shown,",
+        "O let my grateful praise and prayer",
+        "Ascend before thy throne!"
+      ]
+    },
+    {
+      "lines": [
+        "What mercies has this day bestowed!",
+        "How largely hast thou blest!",
+        "My cup with plenty overflowed,",
+        "With cheerfulness my breast."
+      ]
+    },
+    {
+      "lines": [
+        "Now may sweet slumbers close my eyes,",
+        "From pain and sickness free;",
+        "And let my waking thoughts arise",
+        "To meditate on thee."
+      ]
+    },
+    {
+      "lines": [
+        "So bless each future day and night,",
+        "Till life's fond scene is o'er;",
+        "At length, to realms of endless light",
+        "Enraptured let me soar."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:947"
+}

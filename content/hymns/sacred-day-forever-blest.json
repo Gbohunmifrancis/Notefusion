@@ -1,0 +1,62 @@
+{
+  "title": "Sacred Day, Forever Blest",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Sacred Day, Forever Blest in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 71 of its twenty-second edition (1853), “Sunday Evening”, where the book credits them to the Sun. School H. B.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Sa-cred day, for-ev-er blest! Day of all our days the best! Wel-come hours of praise and prayer, Free from toil, fa-tigue, and care!",
+  "verses": [
+    {
+      "lines": [
+        "Sacred day, forever blest!",
+        "Day of all our days the best!",
+        "Welcome hours of praise and prayer,",
+        "Free from toil, fatigue, and care!"
+      ]
+    },
+    {
+      "lines": [
+        "Happy, truly happy, Lord,",
+        "Those who hear and read thy word!",
+        "Happy those who dwell with thee!",
+        "Who thy grace and glory see."
+      ]
+    },
+    {
+      "lines": [
+        "We once more have heard thy voice,",
+        "Lord, in thee our souls rejoice;",
+        "Borne by faith to worlds on high,",
+        "Called to reign above the sky."
+      ]
+    },
+    {
+      "lines": [
+        "Though this day of rest we close,",
+        "Still in thee our hearts repose;",
+        "Guide and guard us all our days:",
+        "O may all our lives be praise!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:71"
+}

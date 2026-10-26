@@ -1,0 +1,55 @@
+{
+  "title": "Hosanna! Lord, Thine Angels Cry",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Reginald Heber",
+      "born": 1783,
+      "died": 1826,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Hosanna! Lord, Thine Angels Cry in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Reginald Heber wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 64 of its twenty-second edition (1853), “The Worship of Earth and Heaven”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Ho-san-na! Lord, thine an-gels cry: Ho-san-na! Lord, we hear re-ply: A-bove, be-neath us, and a-round, The dead and liv-ing swell the sound.",
+  "verses": [
+    {
+      "lines": [
+        "Hosanna! Lord, thine angels cry:",
+        "Hosanna! Lord, we hear reply:",
+        "Above, beneath us, and around,",
+        "The dead and living swell the sound."
+      ]
+    },
+    {
+      "lines": [
+        "O Father! with protecting care",
+        "Meet us in this, thy house of prayer;",
+        "Assembled in Messiah's name,",
+        "Thy promised blessing here we claim."
+      ]
+    },
+    {
+      "lines": [
+        "But, chiefest, in our cleansed breast,",
+        "Eternal! let thy Spirit rest;",
+        "And make our secret soul to be",
+        "A temple pure, and worthy thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Reginald Heber died in 1826.",
+  "credits": "Words by Reginald Heber (1783–1826), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:64"
+}

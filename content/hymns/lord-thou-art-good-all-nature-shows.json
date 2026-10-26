@@ -1,0 +1,71 @@
+{
+  "title": "Lord! Thou Art Good: All Nature Shows",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Simon Browne",
+      "born": 1680,
+      "died": 1732,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Lord! Thou Art Good: All Nature Shows in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Simon Browne wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 130 of its twenty-second edition (1853), “Universal Goodness of God”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Lord! thou art good: all na-ture shows Its might-y Au-thor kind: Thy boun-ty through cre-a-tion flows, Full, free, and un-con-fined.",
+  "verses": [
+    {
+      "lines": [
+        "Lord! thou art good: all nature shows",
+        "Its mighty Author kind:",
+        "Thy bounty through creation flows,",
+        "Full, free, and unconfined."
+      ]
+    },
+    {
+      "lines": [
+        "The whole, and every part, proclaims",
+        "Thine infinite good-will;",
+        "It shines in stars, and flows in streams,",
+        "And blooms on every hill."
+      ]
+    },
+    {
+      "lines": [
+        "We view it o'er the spreading main,",
+        "And heavens which spread more wide;",
+        "It drops in gentle showers of rain,",
+        "And rolls in every tide."
+      ]
+    },
+    {
+      "lines": [
+        "Through the vast whole it pours supplies,",
+        "Spreads joy through every part:",
+        "O, may such love attract my eyes,",
+        "And captivate my heart!"
+      ]
+    },
+    {
+      "lines": [
+        "My highest admiration raise,",
+        "My best affections move!",
+        "Employ my tongue in songs of praise,",
+        "And fill my heart with love!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Simon Browne died in 1732.",
+  "credits": "Words by Simon Browne (1680–1732), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:130"
+}

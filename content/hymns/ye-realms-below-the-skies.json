@@ -1,0 +1,81 @@
+{
+  "title": "Ye Realms Below the Skies",
+  "tune": "darwall",
+  "text": [
+    {
+      "name": "Hosea Ballou II",
+      "born": 1796,
+      "died": 1861,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Ye Realms Below the Skies in Tonic Solfa to DARWALL, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Hosea Ballou II wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 171 of its twenty-second edition (1853), “Universal Praise”.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.8.8), to be sung to any tune of that metre. This page sets them to DARWALL; any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "Ye realms be-low the skies, Your Mak-er's prais-es sing; Let bound-less hon-ors rise To heaven's e-ter-nal King; O bless his name whose love ex-tends Sal-va-tion to the world's far ends.",
+  "verses": [
+    {
+      "lines": [
+        "Ye realms below the skies,",
+        "Your Maker's praises sing;",
+        "Let boundless honors rise",
+        "To heaven's eternal King;",
+        "O bless his name whose love extends",
+        "Salvation to the world's far ends."
+      ]
+    },
+    {
+      "lines": [
+        "Give glory to the Lord,",
+        "Ye kindreds of the earth;",
+        "His sovereign power record,",
+        "And show his wonders forth,",
+        "Till heathen tongues his grace proclaim,",
+        "And every heart adores his name."
+      ]
+    },
+    {
+      "lines": [
+        "'T is he the mountains crowns",
+        "With forests waving wide;",
+        "'T  is he old ocean bounds,",
+        "And heaves her roaring tide;",
+        "He swells the tempests on the main,",
+        "Or breathes the zephyr o'er the plain."
+      ]
+    },
+    {
+      "lines": [
+        "Still let the waters roar,",
+        "As round the earth they roll;",
+        "His praise for evermore",
+        "They sound from pole to pole.",
+        "'Tis nature's wild, unconscious song",
+        "O'er thousand waves that floats along."
+      ]
+    },
+    {
+      "lines": [
+        "His praise, ye worlds on high,",
+        "Display with all your spheres,",
+        "Amid the darksome sky,",
+        "When silent night appears.",
+        "O, let his works declare his name",
+        "Through all the universal frame."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Hosea Ballou II died in 1861.",
+  "credits": "Words by Hosea Ballou II (1796–1861), public domain, as printed in Hymns for Christian Devotion (1853); set to DARWALL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:171"
+}

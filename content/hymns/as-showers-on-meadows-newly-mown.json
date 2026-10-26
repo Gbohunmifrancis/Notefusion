@@ -1,0 +1,70 @@
+{
+  "title": "As Showers on Meadows Newly Mown",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "As Showers on Meadows Newly Mown in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 292 of its twenty-second edition (1853), “Influence of the Gospel like Rain”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "As showers on mead-ows new-ly mown, Je-sus shall shed his bless-ings down; Crowned with whose life in-fus-ing drops, Earth shall re-new her bliss-ful crops.",
+  "verses": [
+    {
+      "lines": [
+        "As showers on meadows newly mown,",
+        "Jesus shall shed his blessings down;",
+        "Crowned with whose life-infusing drops,",
+        "Earth shall renew her blissful crops."
+      ]
+    },
+    {
+      "lines": [
+        "The dews and rains, in all their store,",
+        "Drenching the pastures o'er and o'er,",
+        "Are not so copious as that grace",
+        "Which sanctifies and saves our race."
+      ]
+    },
+    {
+      "lines": [
+        "As, in soft silence, vernal showers",
+        "Descend, and cheer the fainting flowers,",
+        "So, in the secrecy of love,",
+        "Falls the sweet influence from above."
+      ]
+    },
+    {
+      "lines": [
+        "That heavenly influence let me find",
+        "In holy silence of the mind,",
+        "While every grace maintains its bloom,",
+        "Diffusing wide its rich perfume."
+      ]
+    },
+    {
+      "lines": [
+        "Nor let these blessings be confined",
+        "To me, but poured on all mankind,",
+        "Till earth's wild wastes in verdure rise,",
+        "And a young Eden bless our eyes."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:292"
+}

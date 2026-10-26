@@ -1,0 +1,55 @@
+{
+  "title": "When the Worn Spirit Wants Repose",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "James Edmeston",
+      "born": 1791,
+      "died": 1867,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "When the Worn Spirit Wants Repose in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "James Edmeston wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 7 of its twenty-second edition (1853), “The Lord's Day”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When the worn spir-it wants re-pose, And sighs her God to seek, How sweet to hail th'e-ve-ning's close That ends the wea-ry week!",
+  "verses": [
+    {
+      "lines": [
+        "When the worn spirit wants repose,",
+        "And sighs her God to seek,",
+        "How sweet to hail the evening's close",
+        "That ends the weary week!"
+      ]
+    },
+    {
+      "lines": [
+        "How sweet to hail the early dawn",
+        "That opens on the sight,",
+        "When first that soul-reviving morn",
+        "Beams its new rays of light!"
+      ]
+    },
+    {
+      "lines": [
+        "Blest day! thine hours too soon will cease",
+        "Yet, while they gently roll,",
+        "Breathe, Heavenly Spirit, source of peace,",
+        "A sabbath o'er my soul!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Edmeston died in 1867.",
+  "credits": "Words by James Edmeston (1791–1867), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:7"
+}

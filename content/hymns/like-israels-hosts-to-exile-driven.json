@@ -1,0 +1,61 @@
+{
+  "title": "Like Israel's Hosts to Exile Driven",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Henry Ware Jr.",
+      "born": 1794,
+      "died": 1843,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Like Israel's Hosts to Exile Driven in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Henry Ware Jr. wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 838 of its twenty-second edition (1853), “The God of our Fathers”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Like Is-rael's hosts to e-xile driven, A-cross the flood the pil-grims fled; Their hands bore up th'ark of Hea-ven, And Heaven their trust-ing foot-steps led, Till on these sav-age shores they trod, And won the wild-er-ness for God.",
+  "verses": [
+    {
+      "lines": [
+        "Like Israel's hosts to exile driven,",
+        "Across the flood the pilgrims fled;",
+        "Their hands bore up the ark of Heaven,",
+        "And Heaven their trusting footsteps led,",
+        "Till on these savage shores they trod,",
+        "And won the wilderness for God."
+      ]
+    },
+    {
+      "lines": [
+        "Then, where their weary ark found rest,",
+        "Another Zion proudly grew;",
+        "In more than Judah's glory dressed,",
+        "With light that Israel never knew.",
+        "From sea to sea her empire spread,",
+        "Her temple Heaven, and Christ her head."
+      ]
+    },
+    {
+      "lines": [
+        "Then let the grateful church, to-day",
+        "Its ancient rite with gladness keep;",
+        "And still our fathers' God display",
+        "His kindness, though the fathers sleep.",
+        "O, bless, as thou hast blessed the past,",
+        "While earth, and time, and heaven shall last."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Henry Ware Jr. died in 1843.",
+  "credits": "Words by Henry Ware Jr. (1794–1843), public domain, as printed in Hymns for Christian Devotion (1853); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:838"
+}

@@ -1,0 +1,55 @@
+{
+  "title": "Our Times Are in Thy Hand, and Thou",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Bowring",
+      "born": 1792,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Our Times Are in Thy Hand, and Thou in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Bowring wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 520 of its twenty-second edition (1853), “Our Times are in thy Hand”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Our times are in thy hand, and thou Wilt guide our foot-steps at thy will: Lord, to thy pur-po-ses we bow, Do thou thy pur-po-ses ful-fil!",
+  "verses": [
+    {
+      "lines": [
+        "Our times are in thy hand, and thou",
+        "Wilt guide our footsteps at thy will:",
+        "Lord, to thy purposes we bow,",
+        "Do thou thy purposes fulfil!"
+      ]
+    },
+    {
+      "lines": [
+        "Life's mighty waters roll along,",
+        "Thy spirit guides them as they roll;",
+        "And waves on waves impetuous throng",
+        "At thy command, at thy control."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, we, thy children, look to thee,",
+        "And with an humble, prostrate will,",
+        "Find in thine all-sufficiency",
+        "A claim to love and serve thee still."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Bowring died in 1872.",
+  "credits": "Words by John Bowring (1792–1872), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:520"
+}

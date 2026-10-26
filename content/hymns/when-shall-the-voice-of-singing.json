@@ -1,0 +1,54 @@
+{
+  "title": "When Shall the Voice of Singing",
+  "tune": "greenland",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "When Shall the Voice of Singing in Tonic Solfa to GREENLAND, doh is Eb: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 300 of its twenty-second edition (1853), “Universal Hallelujah”.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to GREENLAND; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "When shall the voice of sing-ing Flow joy-ful-ly a-long? When hill and val-ley, ring-ing With one tri-um-phant song, Pro-claim the con-test end-ed, And Him, who once was slain, A-gain to earth de-scend-ed, In right-eous-ness to reign?",
+  "verses": [
+    {
+      "lines": [
+        "When shall the voice of singing",
+        "Flow joyfully along?",
+        "When hill and valley, ringing",
+        "With one triumphant song,",
+        "Proclaim the contest ended,",
+        "And Him, who once was slain,",
+        "Again to earth descended,",
+        "In righteousness to reign?"
+      ]
+    },
+    {
+      "lines": [
+        "Then from the craggy mountains",
+        "The sacred shout shall fly,",
+        "And shady vales and fountains",
+        "Shall echo the reply:",
+        "High tower and lowly dwelling",
+        "Shall send the chorus round,",
+        "The hallelujah swelling",
+        "In one eternal sound."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to GREENLAND by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:300"
+}

@@ -1,0 +1,60 @@
+{
+  "title": "Lay Her Gently in the Dust",
+  "tune": "spanish-hymn",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Lay Her Gently in the Dust in Tonic Solfa to SPANISH HYMN, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 587 of its twenty-second edition (1853), “Dirge for an Infant”.",
+    "The book printed the words without tunes, marked Sevens, six lines (7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to SPANISH HYMN; any other Sevens, six lines tune fits them as well."
+  ],
+  "underlay": "Lay her gen-tly in the dust; Griev-ous task, but oh! ye must! Hear the sen-tence, \"earth to earth, Spir-it to im-mor-tal birth;\" Youth-ful, gen-tle, un-de-filed, An-gels nur-ture now the child!",
+  "verses": [
+    {
+      "lines": [
+        "Lay her gently in the dust;",
+        "Grievous task, but oh! ye must!",
+        "Hear the sentence, \"earth to earth,",
+        "Spirit to immortal birth;\"",
+        "Youthful, gentle, undefiled,",
+        "Angels nurture now the child!"
+      ]
+    },
+    {
+      "lines": [
+        "Upward soaring, like the dove,",
+        "Bearing with her chains of love;",
+        "Not to draw her spirit back,",
+        "But to smooth her upward track:",
+        "Her, the youngest of thy fold,",
+        "Angels watch with love untold!"
+      ]
+    },
+    {
+      "lines": [
+        "With the Rock of Ages trust,",
+        "That which was enshrined in dust;",
+        "Robed in ever-spotless white,",
+        "In an atmosphere of light,",
+        "By the never-failing springs",
+        "Rests she now her weary wings."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to SPANISH HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:587"
+}

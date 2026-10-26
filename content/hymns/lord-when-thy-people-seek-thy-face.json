@@ -1,0 +1,63 @@
+{
+  "title": "Lord! When Thy People Seek Thy Face",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Lord! When Thy People Seek Thy Face in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 35 of its twenty-second edition (1853), “Invoking a Blessing”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Lord! when thy peo-ple seek thy face, And dy-ing sin-ners pray to live, Hear thou in heaven, thy dwell-ing place, And, when thou hear-est, O for-give!",
+  "verses": [
+    {
+      "lines": [
+        "Lord! when thy people seek thy face,",
+        "And dying sinners pray to live,",
+        "Hear thou in heaven, thy dwelling-place,",
+        "And, when thou hearest, O forgive!"
+      ]
+    },
+    {
+      "lines": [
+        "Here, when thy messengers proclaim",
+        "The blessed Gospel of thy Son,",
+        "Still, by the power of his great name,",
+        "Be mighty signs and wonders done."
+      ]
+    },
+    {
+      "lines": [
+        "But will indeed Jehovah deign",
+        "Here to abide, no transient guest?",
+        "Here will the world's Redeemer reign,",
+        "And here the Holy Spirit rest?"
+      ]
+    },
+    {
+      "lines": [
+        "That glory never hence depart!",
+        "Yet choose not, Lord, this house alone;",
+        "Thy kingdom come to every heart,",
+        "In every bosom fix thy throne."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:35"
+}

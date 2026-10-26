@@ -1,0 +1,70 @@
+{
+  "title": "Though Faint and Sick, and Worn Away",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Though Faint and Sick, and Worn Away in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 971 of its twenty-second edition (1853), “The Widow's Prayer”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Though faint and sick, and worn a-way With po-ver-ty and woe, My wid-owed feet are doomed to stray 'Mid thor-ny paths be-low.",
+  "verses": [
+    {
+      "lines": [
+        "Though faint and sick, and worn away",
+        "With poverty and woe,",
+        "My widowed feet are doomed to stray",
+        "'Mid thorny paths below."
+      ]
+    },
+    {
+      "lines": [
+        "Be thou, O Lord, my Father still,",
+        "My confidence and guide:",
+        "I know that perfect is thy will,",
+        "Whate'er that will decide."
+      ]
+    },
+    {
+      "lines": [
+        "I know the soul that trusts in thee",
+        "Thou never wilt forsake;",
+        "And though a bruiséd reed I be,",
+        "That reed thou wilt not break."
+      ]
+    },
+    {
+      "lines": [
+        "Then keep me, Lord, where'er I go,",
+        "Support me on my way,",
+        "Though, worn with poverty and woe,",
+        "My widowed footsteps stray."
+      ]
+    },
+    {
+      "lines": [
+        "To give my weakness strength, O God,",
+        "Thy staff shall yet avail;",
+        "And though thou chasten with thy rod,",
+        "That staff shall never fail."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:971"
+}

@@ -1,0 +1,70 @@
+{
+  "title": "When Quiet in My House I Sit",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "When Quiet in My House I Sit in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 927 of its twenty-second edition (1853), “Religion at Home”, where the book credits them to the Methodist Collection.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "When qui-et in my house I sit Thy book be my com-pan-ion still; My joy thy say-ings to re-peat, Talk o'er the re-cords of thy will, And search the or-a-cles di-vine, Till ev-ery heart felt word be mine.",
+  "verses": [
+    {
+      "lines": [
+        "When quiet in my house I sit",
+        "Thy book be my companion still;",
+        "My joy thy sayings to repeat,",
+        "Talk o'er the records of thy will,",
+        "And search the oracles divine,",
+        "Till every heart-felt word be mine."
+      ]
+    },
+    {
+      "lines": [
+        "O may the gracious words divine",
+        "Mingled with all my converse be:",
+        "So will the Lord his follower join,",
+        "And walk and talk himself with me;",
+        "So shall my heart his presence prove",
+        "And burn with everlasting love."
+      ]
+    },
+    {
+      "lines": [
+        "Oft as I lay me down to rest,",
+        "O, may the reconciling word",
+        "Sweetly compose my weary breast,",
+        "While, trusting in my gracious Lord,",
+        "I sink in peaceful dreams away,",
+        "And visions of eternal day!"
+      ]
+    },
+    {
+      "lines": [
+        "Rising to sing my Father's praise,",
+        "Thee may I publish all day long;",
+        "And let thy precious word of grace",
+        "Flow from my heart and fill my tongue;",
+        "Fill all my life with purest love,",
+        "And join me to the church above."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:927"
+}

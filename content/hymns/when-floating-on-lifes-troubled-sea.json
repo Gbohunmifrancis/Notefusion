@@ -1,0 +1,62 @@
+{
+  "title": "When Floating on Life's Troubled Sea",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "When Floating on Life's Troubled Sea in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 573 of its twenty-second edition (1853), “Hope of Reunion above”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When float-ing on life's trou-bled sea, By storms and tem-pests driven, Hope, with her ra-diant fin-ger, points To bright-er scenes in heaven.",
+  "verses": [
+    {
+      "lines": [
+        "When floating on life's troubled sea,",
+        "By storms and tempests driven,",
+        "Hope, with her radiant finger, points",
+        "To brighter scenes in heaven."
+      ]
+    },
+    {
+      "lines": [
+        "She bids the storms of life to cease,",
+        "The troubled breast be calm;",
+        "And in the wounded heart she pours",
+        "Religion's healing balm."
+      ]
+    },
+    {
+      "lines": [
+        "Her hallowed influence cheers life's hours",
+        "Of sadness and of gloom;",
+        "She guides us through this vale of tears,",
+        "To joys beyond the tomb."
+      ]
+    },
+    {
+      "lines": [
+        "She bids the anguished heart rejoice:",
+        "Though earthly ties are riven,",
+        "We still may hope to meet again",
+        "In yonder peaceful heaven."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:573"
+}

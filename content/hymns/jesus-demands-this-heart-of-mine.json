@@ -1,0 +1,55 @@
+{
+  "title": "Jesus Demands This Heart of Mine",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Anne Steele",
+      "born": 1717,
+      "died": 1778,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Jesus Demands This Heart of Mine in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Anne Steele wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 329 of its twenty-second edition (1853), “Sense of Sin”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus de-mands this heart of mine, De-mands my love, my joy, my care, But ah, how dead to things di-vine, How cold my best af-fec-tions are!",
+  "verses": [
+    {
+      "lines": [
+        "Jesus demands this heart of mine,",
+        "Demands my love, my joy, my care,",
+        "But ah, how dead to things divine,",
+        "How cold my best affections are!"
+      ]
+    },
+    {
+      "lines": [
+        "'Tis sin, alas! with dreadful power,",
+        "Divides my Saviour from my sight;",
+        "O, for one happy, shining hour",
+        "Of sacred freedom, sweet delight!"
+      ]
+    },
+    {
+      "lines": [
+        "Come, gracious Lord; thy love can raise",
+        "My captive powers from sin and death,",
+        "And fill my heart and life with praise,",
+        "And tune my last, expiring breath."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Anne Steele died in 1778.",
+  "credits": "Words by Anne Steele (1717–1778), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:329"
+}

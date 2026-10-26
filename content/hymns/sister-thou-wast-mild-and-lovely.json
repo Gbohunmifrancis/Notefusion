@@ -1,0 +1,63 @@
+{
+  "title": "Sister, Thou Wast Mild and Lovely",
+  "tune": "all-for-jesus",
+  "text": [
+    {
+      "name": "Samuel Francis Smith",
+      "born": 1808,
+      "died": 1895,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Sister, Thou Wast Mild and Lovely in Tonic Solfa to ALL FOR JESUS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Samuel Francis Smith wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 590 of its twenty-second edition (1853), “Death of a Young Girl”.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to ALL FOR JESUS; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Sis-ter, thou wast mild and love-ly, Gen-tle as the sum-mer breeze, Plea-sant as th'air of e-ve-ning, When it floats a-mong the trees.",
+  "verses": [
+    {
+      "lines": [
+        "Sister, thou wast mild and lovely,",
+        "Gentle as the summer breeze,",
+        "Pleasant as the air of evening,",
+        "When it floats among the trees."
+      ]
+    },
+    {
+      "lines": [
+        "Peaceful be thy silent slumber —",
+        "Peaceful in the grave so low:",
+        "Thou no more wilt join our number;",
+        "Thou no more our songs shalt know."
+      ]
+    },
+    {
+      "lines": [
+        "Dearest sister, thou hast left us;",
+        "Here thy loss we deeply feel;",
+        "But 'tis God that hath bereft us:",
+        "He can all our sorrows heal."
+      ]
+    },
+    {
+      "lines": [
+        "Yet again we hope to meet thee,",
+        "When the day of life is fled,",
+        "Then in heaven with joy to greet thee,",
+        "Where no farewell tear is shed."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Samuel Francis Smith died in 1895.",
+  "credits": "Words by Samuel Francis Smith (1808–1895), public domain, as printed in Hymns for Christian Devotion (1853); set to ALL FOR JESUS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:590"
+}

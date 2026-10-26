@@ -1,0 +1,63 @@
+{
+  "title": "Oh God! Thy Name They Well May Praise",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Felicia Hemans",
+      "born": 1793,
+      "died": 1835,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Oh God! Thy Name They Well May Praise in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Felicia Hemans wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 827 of its twenty-second edition (1853), “\"These see the works of the Lord, and his wonders in the deep.\"”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Oh God! thy name they well may praise, Who to the deep go down, And trace the won-ders of thy ways, Where rocks and bil-lows frown.",
+  "verses": [
+    {
+      "lines": [
+        "Oh God! thy name they well may praise,",
+        "Who to the deep go down,",
+        "And trace the wonders of thy ways,",
+        "Where rocks and billows frown."
+      ]
+    },
+    {
+      "lines": [
+        "For many a fair majestic sight",
+        "Hath met their wandering eyes,",
+        "Beneath the streaming northern light",
+        "Or blaze of Indian skies."
+      ]
+    },
+    {
+      "lines": [
+        "If glorious be that awful deep,",
+        "No human power can bind,",
+        "What then art thou, who bid'st it keep",
+        "Within its bounds confined!"
+      ]
+    },
+    {
+      "lines": [
+        "Let heaven and earth in praise unite,",
+        "Eternal praise to thee,",
+        "Whose word can rouse the tempest's might,",
+        "Or still the raging sea!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Felicia Hemans died in 1835.",
+  "credits": "Words by Felicia Hemans (1793–1835), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:827"
+}

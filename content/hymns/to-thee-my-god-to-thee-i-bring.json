@@ -1,0 +1,81 @@
+{
+  "title": "To Thee, My God! to Thee I Bring",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "John Bowring",
+      "born": 1792,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "To Thee, My God! to Thee I Bring in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Bowring wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 963 of its twenty-second edition (1853), “Evening Hymn with Nature”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "To Thee, my God! to thee I bring The e-vening's grate-ful of-fe-ring; From thee, the source of joy a-bove, Flow ev-er-last-ing streams of love; And all the rays of light that shine, And bless cre-a-tion, Lord! are thine.",
+  "verses": [
+    {
+      "lines": [
+        "To Thee, my God! to thee I bring",
+        "The evening's grateful offering;",
+        "From thee, the source of joy above,",
+        "Flow everlasting streams of love;",
+        "And all the rays of light that shine,",
+        "And bless creation, Lord! are thine."
+      ]
+    },
+    {
+      "lines": [
+        "The morn, when stepping down the hills —",
+        "The noon, which all creation fills",
+        "With glory; evening's placid fall,",
+        "The twilight and the raven pall",
+        "Of midnight; all alike proclaim",
+        "Thy great, thine all impressive name."
+      ]
+    },
+    {
+      "lines": [
+        "And from the little worm, whose light",
+        "Shines palely through the shades of night,",
+        "Up to the sparkling stars that run",
+        "Their evening rounds — or glorious sun,",
+        "Rolling his car to twilight's rest —",
+        "All, all in thee is bright and blest."
+      ]
+    },
+    {
+      "lines": [
+        "And over all — above, below,",
+        "We see thee — ever-present thou!",
+        "In every wandering rill that flows,",
+        "In every gentle breeze that blows;",
+        "In every rising, setting sun,",
+        "We trace thee — own thee — holy One!"
+      ]
+    },
+    {
+      "lines": [
+        "Yes! in the mid-day's fervid beams,",
+        "And in the midnight's shadowy dreams,",
+        "In action and repose, we see,",
+        "We recognize and worship thee;",
+        "To thee our worthiest songs would give,",
+        "And in thee die, and to thee live."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Bowring died in 1872.",
+  "credits": "Words by John Bowring (1792–1872), public domain, as printed in Hymns for Christian Devotion (1853); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:963"
+}

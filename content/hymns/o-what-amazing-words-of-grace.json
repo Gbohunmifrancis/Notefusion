@@ -1,0 +1,55 @@
+{
+  "title": "O, What Amazing Words of Grace",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Samuel Medley",
+      "born": 1738,
+      "died": 1799,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O, What Amazing Words of Grace in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Samuel Medley wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 264 of its twenty-second edition (1853), “The Fountain of Living Waters”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O, what a-ma-zing words of grace Are in the gos-pel found! Suit-ed to ev-ery sin-ner's case, Who hears the joy-ful sound.",
+  "verses": [
+    {
+      "lines": [
+        "O, what amazing words of grace",
+        "Are in the gospel found!",
+        "Suited to every sinner's case,",
+        "Who hears the joyful sound."
+      ]
+    },
+    {
+      "lines": [
+        "Come, then, with all your wants and wounds;",
+        "Your every burden bring;",
+        "Here love, unchanging love, abounds,",
+        "A deep, celestial spring."
+      ]
+    },
+    {
+      "lines": [
+        "This spring with living water flows,",
+        "And heavenly joy imparts;",
+        "Come, thirsty souls, your wants disclose,",
+        "And drink with thankful hearts."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Samuel Medley died in 1799.",
+  "credits": "Words by Samuel Medley (1738–1799), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:264"
+}

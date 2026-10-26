@@ -1,0 +1,63 @@
+{
+  "title": "Amidst a World of Hopes and Fears",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Henry Moore",
+      "born": 1732,
+      "died": 1802,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Amidst a World of Hopes and Fears in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Henry Moore wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 487 of its twenty-second edition (1853), “Prayer for Religious Principle”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "A-midst a world of hopes and fears, A wild of cares, and toils, and tears, Where foes a-larm and dan-gers threat, And plea-sures kill, and glo-ries cheat:",
+  "verses": [
+    {
+      "lines": [
+        "Amidst a world of hopes and fears,",
+        "A wild of cares, and toils, and tears,",
+        "Where foes alarm and dangers threat,",
+        "And pleasures kill, and glories cheat:"
+      ]
+    },
+    {
+      "lines": [
+        "Shed down, O Lord! a heavenly ray,",
+        "To guide me in the doubtful way;",
+        "And o'er me hold thy shield of power,",
+        "To guard me in the dangerous hour."
+      ]
+    },
+    {
+      "lines": [
+        "Teach me the flattering paths to shun,",
+        "In which the thoughtless many run,",
+        "Who for a shade the substance miss,",
+        "And grasp their ruin in their bliss."
+      ]
+    },
+    {
+      "lines": [
+        "May never pleasure, wealth or pride,",
+        "Allure my wandering soul aside;",
+        "But through this maze of mortal ill,",
+        "Safe lead me to thy heavenly hill."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Henry Moore died in 1802.",
+  "credits": "Words by Henry Moore (1732–1802), public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:487"
+}

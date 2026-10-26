@@ -1,0 +1,63 @@
+{
+  "title": "God, in the Gospel of His Son",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Benjamin Beddome",
+      "born": 1717,
+      "died": 1795,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "God, in the Gospel of His Son in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Benjamin Beddome wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 192 of its twenty-second edition (1853), “The Gospel Revelation”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "God, in the Gos-pel of his Son, Makes his e-ter-nal coun-sels known; 'Tis here his rich-est mer-cy shines, And truth is drawn in fair-est lines.",
+  "verses": [
+    {
+      "lines": [
+        "God, in the Gospel of his Son,",
+        "Makes his eternal counsels known;",
+        "'Tis here his richest mercy shines,",
+        "And truth is drawn in fairest lines."
+      ]
+    },
+    {
+      "lines": [
+        "Wisdom its dictates here imparts,",
+        "To form our minds, to cheer our hearts;",
+        "Its influence makes the sinner live;",
+        "It bids the drooping saint revive."
+      ]
+    },
+    {
+      "lines": [
+        "Our raging passions it controls,",
+        "And comfort yields to contrite souls;",
+        "It brings a better world in view,",
+        "And guides us all our journey through."
+      ]
+    },
+    {
+      "lines": [
+        "May this blest volume ever lie",
+        "Close to my heart, and near my eye,",
+        "Till life's last hour my soul engage,",
+        "And be my chosen heritage."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Benjamin Beddome died in 1795.",
+  "credits": "Words by Benjamin Beddome (1717–1795), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:192"
+}

@@ -1,0 +1,54 @@
+{
+  "title": "Restore, O Father! to Our Times Restore",
+  "tune": "ellers",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Restore, O Father! to Our Times Restore in Tonic Solfa to ELLERS, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 680 of its twenty-second edition (1853), “\"And all that believed were together.\" Acts 4:44”, where the book credits them to Beard's Collection.",
+    "The book printed the words without tunes, marked Tens (10.10.10.10), to be sung to any tune of that metre. This page sets them to ELLERS; any other Tens tune fits them as well."
+  ],
+  "underlay": "Re-store, O Fa-ther! to our times re-store The peace which filled thine in-fant church of yore; Ere lust of power had sown the seeds of strife, And quenched the new born char-i-ties of life.",
+  "verses": [
+    {
+      "lines": [
+        "Restore, O Father! to our times restore",
+        "The peace which filled thine infant church of yore;",
+        "Ere lust of power had sown the seeds of strife,",
+        "And quenched the new-born charities of life."
+      ]
+    },
+    {
+      "lines": [
+        "O never more may differing judgments part",
+        "From kindly sympathy a brother's heart;",
+        "But linked in one, believing thousands kneel,",
+        "And share with each the sacred joy they feel."
+      ]
+    },
+    {
+      "lines": [
+        "From soul to soul, quick as the sunbeam's ray,",
+        "Let concord spread one universal day;",
+        "And faith, by love lead all mankind to thee,",
+        "Parent of peace, and fount of harmony!"
+      ]
+    }
+  ],
+  "metre": "10 10 10 10",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ELLERS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:680"
+}

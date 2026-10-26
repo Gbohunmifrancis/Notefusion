@@ -1257,6 +1257,12 @@
       "tune": "york"
     },
     {
+      "ref": "Psalm 117:2",
+      "slug": "from-all-that-dwell-below-the-skies",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
       "ref": "Psalm 117:3",
       "slug": "thy-name-almighty-lord",
       "metre": "SM",
@@ -1694,11 +1700,6 @@
       "page": "joy-to-the-world"
     },
     {
-      "ref": "Psalm 117:2",
-      "first": "From all that dwell below the skies,",
-      "page": "from-all-that-dwell-below-the-skies"
-    },
-    {
       "ref": "Psalm 119:11",
       "first": "O that the Lord would guide my ways",
       "page": "o-that-the-lord-would-guide-my-ways"
@@ -1982,9 +1983,9 @@
   ],
   "counts": {
     "hymns": 339,
-    "written": 279,
-    "alreadyOurs": 5,
+    "written": 280,
+    "alreadyOurs": 4,
     "skipped": 55,
-    "removed": 2
+    "removed": 0
   }
 }

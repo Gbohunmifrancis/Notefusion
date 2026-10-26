@@ -1,0 +1,71 @@
+{
+  "title": "Jesus His Empire Shall Extend",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Hosea Ballou",
+      "born": 1771,
+      "died": 1852,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Jesus His Empire Shall Extend in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Hosea Ballou wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 286 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus his em-pire shall ex-tend; Be-neath his gen-tle sway Kings of the earth shall hum-bly bend, And his com-mands o-bey.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus his empire shall extend;",
+        "Beneath his gentle sway",
+        "Kings of the earth shall humbly bend,",
+        "And his commands obey."
+      ]
+    },
+    {
+      "lines": [
+        "From sea to sea, from shore to shore,",
+        "All nations shall be blest;",
+        "We hear the noise of war no more, —",
+        "He gives his people rest."
+      ]
+    },
+    {
+      "lines": [
+        "As clouds descend in gentle showers,",
+        "When spring renews her reign;",
+        "And call to life the fragrant flowers",
+        "O'er forest, hill and plain; —"
+      ]
+    },
+    {
+      "lines": [
+        "So Jesus, by his heavenly grace,",
+        "Descends on man below,",
+        "And o'er the millions of our race",
+        "His gentle blessings flow."
+      ]
+    },
+    {
+      "lines": [
+        "All that the reign of sin destroyed,",
+        "The Saviour shall restore;",
+        "And, from the treasures of the Lord,",
+        "Shall give us blessings more."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Hosea Ballou died in 1852.",
+  "credits": "Words by Hosea Ballou (1771–1852), public domain, as printed in Hymns for Christian Devotion (1853); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:286"
+}

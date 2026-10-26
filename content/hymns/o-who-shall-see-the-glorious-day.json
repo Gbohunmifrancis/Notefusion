@@ -1,0 +1,55 @@
+{
+  "title": "O, Who Shall See the Glorious Day",
+  "tune": "all-saints-new",
+  "text": [
+    {
+      "name": "Thomas Moore",
+      "born": 1779,
+      "died": 1852,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O, Who Shall See the Glorious Day in Tonic Solfa to ALL SAINTS, NEW, doh is Bb: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Thomas Moore wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 316 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to ALL SAINTS, NEW; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "O, who shall see the glo-rious day, When, throned on Zi-on's brow, The Lord shall rend the veil a-way That hides the na-tions now! When earth no more be-neath the fear Of his re-buke shall lie, When pain shall cease, and ev-ery tear Be wiped from ev-ery eye!",
+  "verses": [
+    {
+      "lines": [
+        "O, who shall see the glorious day,",
+        "When, throned on Zion's brow,",
+        "The Lord shall rend the veil away",
+        "That hides the nations now!",
+        "When earth no more beneath the fear",
+        "Of his rebuke shall lie,",
+        "When pain shall cease, and every tear",
+        "Be wiped from every eye!"
+      ]
+    },
+    {
+      "lines": [
+        "Then, Judah, thou no more shalt mourn",
+        "Beneath the heathen's chain;",
+        "Thy days of splendor shall return,",
+        "And all be new again.",
+        "The fount of life shall then be quaffed",
+        "In peace by all who come;",
+        "And every wind that blows, shall waft",
+        "Some long-lost wand'rer home."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Thomas Moore died in 1852.",
+  "credits": "Words by Thomas Moore (1779–1852), public domain, as printed in Hymns for Christian Devotion (1853); set to ALL SAINTS, NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:316"
+}

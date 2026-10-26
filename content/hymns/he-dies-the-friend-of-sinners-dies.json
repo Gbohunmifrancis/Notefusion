@@ -1,0 +1,63 @@
+{
+  "title": "He Dies! the Friend of Sinners Dies",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "He Dies! the Friend of Sinners Dies in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 234 of its twenty-second edition (1853), “Christ's Death and Resurrection”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "He dies! the Friend of sin-ners dies! Lo, Sa-lem's daugh-ters weep a-round! A sol-emn dark-ness veils the skies! A sud-den trem-bling shakes the ground!",
+  "verses": [
+    {
+      "lines": [
+        "He dies! the Friend of sinners dies!",
+        "Lo, Salem's daughters weep around!",
+        "A solemn darkness veils the skies!",
+        "A sudden trembling shakes the ground!"
+      ]
+    },
+    {
+      "lines": [
+        "Come, saints, and drop a tear or two",
+        "For him who groaned beneath your load!",
+        "He shed a thousand drops for you —",
+        "A thousand drops of richest blood!"
+      ]
+    },
+    {
+      "lines": [
+        "Here's love and grief beyond degree;",
+        "The Lord of glory dies for men; —",
+        "But lo, what sudden joys we see!",
+        "Jesus, the dead, revives again!"
+      ]
+    },
+    {
+      "lines": [
+        "The rising Lord forsakes the tomb —",
+        "The tomb in vain forbids his rise;",
+        "Cherubic legions guard him home,",
+        "And shout him welcome to the skies!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:234"
+}

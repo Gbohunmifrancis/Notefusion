@@ -1,0 +1,61 @@
+{
+  "title": "I Praised the Earth in Beauty Seen",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Reginald Heber",
+      "born": 1783,
+      "died": 1826,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "I Praised the Earth in Beauty Seen in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Reginald Heber wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 182 of its twenty-second edition (1853), “The Visible World a Shadow of the Invisible”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "I praised the earth in beau-ty seen, With gar-lands gay of var-ious green; I praised the sea, whose am-ple field Shone glo-rious as a sil-ver shield; And earth and o-cean seemed to say, \"Our beau-ties are but for a day.\"",
+  "verses": [
+    {
+      "lines": [
+        "I praised the earth in beauty seen,",
+        "With garlands gay of various green;",
+        "I praised the sea, whose ample field",
+        "Shone glorious as a silver shield;",
+        "And earth and ocean seemed to say,",
+        "\"Our beauties are but for a day.\""
+      ]
+    },
+    {
+      "lines": [
+        "I praised the sun, whose chariot rolled",
+        "On wheels of amber and of gold;",
+        "I praised the moon, whose softer eye",
+        "Gleamed sweetly through the summer sky;",
+        "And moon and sun in answer said,",
+        "\"Our years are told when we must fade.\""
+      ]
+    },
+    {
+      "lines": [
+        "O God, O, good beyond compare!",
+        "If thus thy meaner works are fair, —",
+        "If thus thy bounties gild the span",
+        "Of sinful earth and mortal man, —",
+        "How glorious must thy mansion be",
+        "Where thy redeemed shall dwell with thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Reginald Heber died in 1826.",
+  "credits": "Words by Reginald Heber (1783–1826), public domain, as printed in Hymns for Christian Devotion (1853); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:182"
+}

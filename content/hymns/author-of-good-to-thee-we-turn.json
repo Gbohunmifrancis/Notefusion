@@ -1,0 +1,63 @@
+{
+  "title": "Author of Good, to Thee We Turn",
+  "tune": "york",
+  "text": [
+    {
+      "name": "James Merrick",
+      "born": 1720,
+      "died": 1769,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Author of Good, to Thee We Turn in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Merrick wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 430 of its twenty-second edition (1853), “Holy Resignation”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Au-thor of good, to thee we turn: Thine ev-er wake-ful eye A-lone can all our wants dis-cern, Thy hand a-lone sup-ply.",
+  "verses": [
+    {
+      "lines": [
+        "Author of good, to thee we turn:",
+        "Thine ever wakeful eye",
+        "Alone can all our wants discern,",
+        "Thy hand alone supply."
+      ]
+    },
+    {
+      "lines": [
+        "O, let thy love within us dwell,",
+        "Thy fear our footsteps guide;",
+        "That love shall vainer loves expel,",
+        "That fear all fears beside."
+      ]
+    },
+    {
+      "lines": [
+        "And, O, by error's force subdued,",
+        "Since oft, with stubborn will,",
+        "We blindly shun the latent good,",
+        "And grasp the specious ill, —"
+      ]
+    },
+    {
+      "lines": [
+        "Not what we wish, but what we want,",
+        "Let mercy still supply:",
+        "The good we ask not; Father, grant;",
+        "The ill we ask, deny."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Merrick died in 1769.",
+  "credits": "Words by James Merrick (1720–1769), public domain, as printed in Hymns for Christian Devotion (1853); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:430"
+}

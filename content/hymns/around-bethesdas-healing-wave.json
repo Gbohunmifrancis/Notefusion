@@ -1,0 +1,61 @@
+{
+  "title": "Around Bethesda's Healing Wave",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Bernard Barton",
+      "born": 1784,
+      "died": 1849,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Around Bethesda's Healing Wave in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Bernard Barton wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 221 of its twenty-second edition (1853), “The Pool of Bethesda”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "A-round Be-thes-da's heal-ing wave Wait-ing to hear the rust-ling wing, Which spoke the an-gel nigh, who gave Its vir-tue to that ho-ly spring, With pa-tience, and with hope en-dued Were seen the ga-thered mul-ti-tude.",
+  "verses": [
+    {
+      "lines": [
+        "Around Bethesda's healing wave",
+        "Waiting to hear the rustling wing,",
+        "Which spoke the angel nigh, who gave",
+        "Its virtue to that holy spring,",
+        "With patience, and with hope endued",
+        "Were seen the gathered multitude."
+      ]
+    },
+    {
+      "lines": [
+        "Had they who watched and waited there",
+        "Been conscious who was passing by,",
+        "With what unceasing anxious care",
+        "Would they have sought his pitying eye;",
+        "And craved with fervency of soul,",
+        "His Power Divine to make them whole!"
+      ]
+    },
+    {
+      "lines": [
+        "Bethesda's pool has lost its power!",
+        "No angel, by his glad descent,",
+        "Dispenses that diviner dower",
+        "Which with its healing waters went.",
+        "But he, whose word surpassed its wave,",
+        "Is still omnipotent to save."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Bernard Barton died in 1849.",
+  "credits": "Words by Bernard Barton (1784–1849), public domain, as printed in Hymns for Christian Devotion (1853); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:221"
+}

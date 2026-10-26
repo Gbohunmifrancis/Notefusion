@@ -1,0 +1,61 @@
+{
+  "title": "Who Shall Towards Thy Chosen Seat",
+  "tune": "ratisbon-werner",
+  "text": [
+    {
+      "name": "James Merrick",
+      "born": 1720,
+      "died": 1769,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Who Shall Towards Thy Chosen Seat in Tonic Solfa to RATISBON (WERNER), doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "James Merrick wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 346 of its twenty-second edition (1853), “\"Who shall abide in thy tabernacle?\" Ps. 15”.",
+    "The book printed the words without tunes, marked Sevens, six lines (7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to RATISBON (WERNER); any other Sevens, six lines tune fits them as well."
+  ],
+  "underlay": "Who shall towards thy cho-sen seat Turn, O Lord, his fa-vored feet? Who shall at thine al-tar bend? Who shall Zi-on's hill as-cend? Who, great God, a wel-come guest, On thy ho-ly moun-tain rest?",
+  "verses": [
+    {
+      "lines": [
+        "Who shall towards thy chosen seat",
+        "Turn, O Lord, his favored feet?",
+        "Who shall at thine altar bend?",
+        "Who shall Zion's hill ascend?",
+        "Who, great God, a welcome guest,",
+        "On thy holy mountain rest?"
+      ]
+    },
+    {
+      "lines": [
+        "He whose heart thy love has warmed,",
+        "He whose will, to thine conformed,",
+        "Bids his life unsullied run;",
+        "He whose word and thought are one;",
+        "Who, from sin's contagion free,",
+        "Lifts his willing soul to thee."
+      ]
+    },
+    {
+      "lines": [
+        "He who thus, with heart unstained,",
+        "Treads the path by thee ordained,",
+        "He shall towards thy chosen seat",
+        "Turn, O Lord, his favored feet;",
+        "He thy ceaseless care shall prove,",
+        "He shall share thy constant love."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Merrick died in 1769.",
+  "credits": "Words by James Merrick (1720–1769), public domain, as printed in Hymns for Christian Devotion (1853); set to RATISBON (WERNER) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:346"
+}

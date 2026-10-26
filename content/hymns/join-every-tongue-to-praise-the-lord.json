@@ -1,0 +1,54 @@
+{
+  "title": "Join, Every Tongue, to Praise the Lord",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Join, Every Tongue, to Praise the Lord in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 883 of its twenty-second edition (1853), “Goodness of God Celebrated”, where the book credits them to the Presbyterian Collection.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Join, ev-ery tongue, to praise the Lord; All na-ture rests up-on his word; Mer-cy and truth his courts main-tain, And own his u-ni-ver-sal reign.",
+  "verses": [
+    {
+      "lines": [
+        "Join, every tongue, to praise the Lord;",
+        "All nature rests upon his word;",
+        "Mercy and truth his courts maintain,",
+        "And own his universal reign."
+      ]
+    },
+    {
+      "lines": [
+        "Seasons and times obey his voice;",
+        "The evening and the morn rejoice",
+        "To see the earth made soft with showers,",
+        "Enriched with fruit, and dressed in flowers."
+      ]
+    },
+    {
+      "lines": [
+        "Thy works pronounce thy power divine;",
+        "In all the earth thy glories shine;",
+        "Through every month thy gifts appear;",
+        "Great God, thy goodness crowns the year."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:883"
+}

@@ -1,0 +1,63 @@
+{
+  "title": "Teach Me, O Teach Me, Lord! Thy Way",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "James Merrick",
+      "born": 1720,
+      "died": 1769,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Teach Me, O Teach Me, Lord! Thy Way in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Merrick wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 477 of its twenty-second edition (1853), “Prayer for Divine Guidance”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Teach me, O teach me, Lord! thy way; So, to my life's re-mo-test day, By thy un-err-ing pre-cepts led, My will-ing feet its paths shall tread.",
+  "verses": [
+    {
+      "lines": [
+        "Teach me, O teach me, Lord! thy way;",
+        "So, to my life's remotest day,",
+        "By thy unerring precepts led,",
+        "My willing feet its paths shall tread."
+      ]
+    },
+    {
+      "lines": [
+        "Informed by thee, with sacred awe,",
+        "My heart shall meditate thy law;",
+        "And with celestial wisdom filled,",
+        "To thee its full obedience yield."
+      ]
+    },
+    {
+      "lines": [
+        "Give me to know thy will aright, —",
+        "Thy will, my glory and delight. —",
+        "That, raised above the world, my mind",
+        "In thee its highest good may find."
+      ]
+    },
+    {
+      "lines": [
+        "O turn from vanity mine eye;",
+        "To me thy quickening strength supply;",
+        "And with thy promised mercy cheer",
+        "A heart devoted to thy fear."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Merrick died in 1769.",
+  "credits": "Words by James Merrick (1720–1769), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:477"
+}

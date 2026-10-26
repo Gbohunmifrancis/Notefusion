@@ -1,0 +1,55 @@
+{
+  "title": "God Is My Strong Salvation",
+  "tune": "aurelia",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "God Is My Strong Salvation in Tonic Solfa to AURELIA, doh is D: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 636 of its twenty-second edition (1853), “Confidence in God. Ps. 27”.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to AURELIA; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "God is my strong sal-va-tion; What foe have I to fear? In dark-ness and temp-ta-tion My Light, my Help, is near. Though hosts en-camp a-round me, Firm to the fight I stand; What ter-ror can con-found me With God at my right hand?",
+  "verses": [
+    {
+      "lines": [
+        "God is my strong salvation;",
+        "What foe have I to fear?",
+        "In darkness and temptation",
+        "My Light, my Help, is near.",
+        "Though hosts encamp around me,",
+        "Firm to the fight I stand;",
+        "What terror can confound me",
+        "With God at my right hand?"
+      ]
+    },
+    {
+      "lines": [
+        "Place on the Lord reliance;",
+        "My soul, with courage wait;",
+        "His truth be thine affiance,",
+        "When faint and desolate;",
+        "His might thine heart shall strengthen;",
+        "His love thy joy increase;",
+        "Mercy thy days shall lengthen;",
+        "The Lord will give thee peace."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to AURELIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:636"
+}

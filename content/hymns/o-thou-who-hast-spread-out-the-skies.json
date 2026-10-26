@@ -1,0 +1,63 @@
+{
+  "title": "O Thou Who Hast Spread Out the Skies",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Hannah Flagg Gould",
+      "born": 1789,
+      "died": 1865,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O Thou Who Hast Spread Out the Skies in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Hannah Flagg Gould wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 831 of its twenty-second edition (1853), “Hymn at Sea”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Thou who hast spread out the skies, And mea-sured the depths of the sea, 'Twixt hea-vens and o-cean shall rise Our in-cense of prais-es to thee.",
+  "verses": [
+    {
+      "lines": [
+        "O Thou who hast spread out the skies,",
+        "And measured the depths of the sea,",
+        "'Twixt heavens and ocean shall rise",
+        "Our incense of praises to thee."
+      ]
+    },
+    {
+      "lines": [
+        "We know that thy presence is near",
+        "While heaves our bark far from the land; —",
+        "We ride o'er the deep without fear; —",
+        "The waters are held in thy hand."
+      ]
+    },
+    {
+      "lines": [
+        "Eternity comes in the sound",
+        "Of billows that never can sleep!",
+        "There's Deity circling us round, —",
+        "Omnipotence walks o'er the deep!"
+      ]
+    },
+    {
+      "lines": [
+        "O Father, our eye is to thee,",
+        "As on for the haven we roll;",
+        "And faith in our Pilot shall be",
+        "An anchor to steady the soul."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Hannah Flagg Gould died in 1865.",
+  "credits": "Words by Hannah Flagg Gould (1789–1865), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:831"
+}

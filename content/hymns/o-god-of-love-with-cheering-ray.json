@@ -1,0 +1,62 @@
+{
+  "title": "O God of Love! with Cheering Ray",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O God of Love! with Cheering Ray in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 535 of its twenty-second edition (1853), “Deliverance from the Fear of Death”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O God of love! with cheer-ing ray, Gild our ex-pir-ing hour of day; Thy love, through each re-volv-ing year, Has wiped a-way af-flic-tion's tear.",
+  "verses": [
+    {
+      "lines": [
+        "O God of love! with cheering ray,",
+        "Gild our expiring hour of day;",
+        "Thy love, through each revolving year,",
+        "Has wiped away affliction's tear."
+      ]
+    },
+    {
+      "lines": [
+        "Free us from death's terrific gloom,",
+        "And all the fear which shrouds the tomb;",
+        "Heighten our joys, support our head,",
+        "Before we sink among the dead."
+      ]
+    },
+    {
+      "lines": [
+        "May death conclude our toils and tears!",
+        "May death destroy our sins and fears!",
+        "May death, through Jesus, be our friend!",
+        "May death be life, when life shall end!"
+      ]
+    },
+    {
+      "lines": [
+        "Crown our last moment with thy power —",
+        "The latest in our latest hour;",
+        "Till to the raptured heights we soar,",
+        "Where fears and death are known no more."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:535"
+}

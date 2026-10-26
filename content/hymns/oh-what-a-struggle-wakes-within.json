@@ -1,0 +1,55 @@
+{
+  "title": "Oh, What a Struggle Wakes Within",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Bowring",
+      "born": 1792,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Oh, What a Struggle Wakes Within in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Bowring wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 974 of its twenty-second edition (1853), “Temptation”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Oh, what a strug-gle wakes with-in, When in the spi-rit's so-li-tude, The tempt-ing, treach-erous thoughts of sin, In all their lur-ing smiles in-trude!",
+  "verses": [
+    {
+      "lines": [
+        "Oh, what a struggle wakes within,",
+        "When in the spirit's solitude,",
+        "The tempting, treacherous thoughts of sin,",
+        "In all their luring smiles intrude!"
+      ]
+    },
+    {
+      "lines": [
+        "'Tis then, my Father! then I feel",
+        "My nature's weakness, and, oppressed,",
+        "Like a poor trembling child I steal",
+        "To thee, for safety, and for rest."
+      ]
+    },
+    {
+      "lines": [
+        "Beneath thy shadow let me live!",
+        "Be thou my Friend — my Father be!",
+        "I bend in trust — I pray! forgive",
+        "The erring child that flies to thee!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Bowring died in 1872.",
+  "credits": "Words by John Bowring (1792–1872), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:974"
+}

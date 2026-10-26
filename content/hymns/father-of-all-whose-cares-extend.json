@@ -1,0 +1,71 @@
+{
+  "title": "Father of All, Whose Cares Extend",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Alexander Pope",
+      "born": 1688,
+      "died": 1744,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Father of All, Whose Cares Extend in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Alexander Pope wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 483 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther of all, whose cares ex-tend To earth's re-mo-test shore, Through ev-ery age let praise as-cend, And ev-ery clime a-dore.",
+  "verses": [
+    {
+      "lines": [
+        "Father of all, whose cares extend",
+        "To earth's remotest shore,",
+        "Through every age let praise ascend,",
+        "And every clime adore."
+      ]
+    },
+    {
+      "lines": [
+        "Mean though I am, not wholly so,",
+        "Since quickened by thy breath;",
+        "Lord, lead me wheresoe'er I go,",
+        "Through this day's life or death."
+      ]
+    },
+    {
+      "lines": [
+        "Teach me to feel another's woe,",
+        "To hide the fault I see;",
+        "That mercy I to others show,",
+        "That mercy show to me."
+      ]
+    },
+    {
+      "lines": [
+        "If I am right, thy grace impart",
+        "Still in the right to stay;",
+        "If I am wrong, O teach my heart",
+        "To find that better way."
+      ]
+    },
+    {
+      "lines": [
+        "What conscience dictates to be done,",
+        "Or warns me not to do,",
+        "This teach me more than hell to shun,",
+        "That more than heaven pursue."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Alexander Pope died in 1744.",
+  "credits": "Words by Alexander Pope (1688–1744), public domain, as printed in Hymns for Christian Devotion (1853); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:483"
+}

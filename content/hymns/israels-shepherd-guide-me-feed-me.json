@@ -1,0 +1,47 @@
+{
+  "title": "Israel's Shepherd, Guide Me, Feed Me",
+  "tune": "all-for-jesus",
+  "text": [
+    {
+      "name": "Edward Bickersteth",
+      "born": 1786,
+      "died": 1850,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Israel's Shepherd, Guide Me, Feed Me in Tonic Solfa to ALL FOR JESUS, doh is D: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Edward Bickersteth wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 84 of its twenty-second edition (1853), “Closing Hymn”.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to ALL FOR JESUS; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Is-rael's Shep-herd, guide me, feed me. Through my pil-grim-age be-low, And be-side the wa-ters lead me, Where thy flock re-joic-ing go.",
+  "verses": [
+    {
+      "lines": [
+        "Israel's Shepherd, guide me, feed me.",
+        "Through my pilgrimage below,",
+        "And beside the waters lead me,",
+        "Where thy flock rejoicing go."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, thy guardian presence ever,",
+        "Meekly kneeling, I implore;",
+        "I have found thee, and would never,",
+        "Never wander from thee more."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Edward Bickersteth died in 1850.",
+  "credits": "Words by Edward Bickersteth (1786–1850), public domain, as printed in Hymns for Christian Devotion (1853); set to ALL FOR JESUS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:84"
+}

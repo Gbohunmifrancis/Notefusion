@@ -1,0 +1,71 @@
+{
+  "title": "My God, I Now from Sleep Awake",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Thomas Ken",
+      "born": 1637,
+      "died": 1711,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "My God, I Now from Sleep Awake in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Thomas Ken wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 956 of its twenty-second edition (1853), “Midnight”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "My God, I now from sleep a-wake; The sole pos-ses-sion of me take; From mid-night ter-rors me se-cure, And guard my heart from thoughts im-pure.",
+  "verses": [
+    {
+      "lines": [
+        "My God, I now from sleep awake;",
+        "The sole possession of me take;",
+        "From midnight terrors me secure,",
+        "And guard my heart from thoughts impure."
+      ]
+    },
+    {
+      "lines": [
+        "Blest angels, while we silent lie,",
+        "You hallelujahs sing on high;",
+        "You joyful hymn the Ever-blest,",
+        "Before the throne, and never rest."
+      ]
+    },
+    {
+      "lines": [
+        "I with your choir celestial join,",
+        "In offering up a hymn divine;",
+        "With you in heaven I hope to dwell,",
+        "And bid the night and world farewell."
+      ]
+    },
+    {
+      "lines": [
+        "Blest Jesus, thou, on heaven intent,",
+        "Whole nights hast in devotion spent;",
+        "But I, frail creature, soon am tired,",
+        "And all my zeal is soon expired."
+      ]
+    },
+    {
+      "lines": [
+        "Shine on me, Lord, new life impart,",
+        "Fresh ardors kindle in my heart:",
+        "One ray of thy all-quickening light",
+        "Dispels the sloth and clouds of night."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Thomas Ken died in 1711.",
+  "credits": "Words by Thomas Ken (1637–1711), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:956"
+}

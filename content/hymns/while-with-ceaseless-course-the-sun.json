@@ -1,0 +1,67 @@
+{
+  "title": "While, with Ceaseless Course, the Sun",
+  "tune": "watchman",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "While, with Ceaseless Course, the Sun in Tonic Solfa to WATCHMAN, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 888 of its twenty-second edition (1853), “New Year's Day”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to WATCHMAN; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "While, with cease-less course, the sun Hast-ed through the for-mer year, Man-y souls their race have run, Nev-er more to meet us here: Fixed in an e-ter-nal state, They have done with all be-low: We a lit-tle lon-ger wait, But how lit-tle none can know.",
+  "verses": [
+    {
+      "lines": [
+        "While, with ceaseless course, the sun",
+        "Hasted through the former year,",
+        "Many souls their race have run,",
+        "Never more to meet us here:",
+        "Fixed in an eternal state,",
+        "They have done with all below:",
+        "We a little longer wait,",
+        "But how little none can know."
+      ]
+    },
+    {
+      "lines": [
+        "As the wingéd arrow flies,",
+        "Speedily the mark to find;",
+        "As the lightning from the skies",
+        "Darts and leaves no trace behind; —",
+        "Swiftly thus our fleeting days",
+        "Bear us down life's rapid stream:",
+        "Upward, Lord, our spirits raise;",
+        "All below is but a dream."
+      ]
+    },
+    {
+      "lines": [
+        "Thanks for mercies past receive;",
+        "Pardon of our sins renew;",
+        "Teach us, henceforth, how to live,",
+        "With eternity in view;",
+        "Bless thy word to old and young;",
+        "Fill us with a Saviour's love;",
+        "When our life's short race is run,",
+        "May we dwell with thee above."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Hymns for Christian Devotion (1853); set to WATCHMAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:888"
+}

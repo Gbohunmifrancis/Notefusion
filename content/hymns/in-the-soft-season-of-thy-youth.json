@@ -1,0 +1,63 @@
+{
+  "title": "In the Soft Season of Thy Youth",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Thomas Gibbons",
+      "born": 1720,
+      "died": 1785,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "In the Soft Season of Thy Youth in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Thomas Gibbons wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 742 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "In the soft sea-son of thy youth, In Na-ture's smil-ing bloom, Ere age ar-rive, and trem-bling wait Its sum-mons to the tomb;",
+  "verses": [
+    {
+      "lines": [
+        "In the soft season of thy youth,",
+        "In Nature's smiling bloom,",
+        "Ere age arrive, and trembling wait",
+        "Its summons to the tomb;"
+      ]
+    },
+    {
+      "lines": [
+        "Remember thy Creator, God;",
+        "For him thy powers employ;",
+        "Make him thy fear, thy love, thy hope,",
+        "Thy confidence, thy joy."
+      ]
+    },
+    {
+      "lines": [
+        "He shall defend and guide thy course",
+        "Through life's uncertain sea,",
+        "Till thou art landed on the shore",
+        "Of blessed eternity."
+      ]
+    },
+    {
+      "lines": [
+        "Then seek the Lord betimes, and choose",
+        "The path of heavenly truth:",
+        "The earth affords no lovelier sight",
+        "Than a religious youth."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Thomas Gibbons died in 1785.",
+  "credits": "Words by Thomas Gibbons (1720–1785), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:742"
+}

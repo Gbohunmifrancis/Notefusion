@@ -1,0 +1,63 @@
+{
+  "title": "The Hours of Evening Close",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Josiah Conder",
+      "born": 1789,
+      "died": 1855,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "The Hours of Evening Close in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Josiah Conder wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 957 of its twenty-second edition (1853), “Saturday Evening”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "The hours of eve-ning close; Its length-ened sha-dows, drawn O'er scenes of earth, in-vite re-pose, And wait the Sab-bath dawn.",
+  "verses": [
+    {
+      "lines": [
+        "The hours of evening close;",
+        "Its lengthened shadows, drawn",
+        "O'er scenes of earth, invite repose,",
+        "And wait the Sabbath dawn."
+      ]
+    },
+    {
+      "lines": [
+        "So let its calm prevail",
+        "O'er forms of outward care;",
+        "Nor thought for \"many things\" assail",
+        "The still retreat of prayer."
+      ]
+    },
+    {
+      "lines": [
+        "Our guardian Shepherd near",
+        "His watchful eye will keep;",
+        "And, safe from violence and fear,",
+        "Will fold his flock to sleep."
+      ]
+    },
+    {
+      "lines": [
+        "So may a holier light",
+        "Than earth's our spirits rouse,",
+        "And call us, strengthened by his might,",
+        "To pay the Lord our vows."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Josiah Conder died in 1855.",
+  "credits": "Words by Josiah Conder (1789–1855), public domain, as printed in Hymns for Christian Devotion (1853); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:957"
+}

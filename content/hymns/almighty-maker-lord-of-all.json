@@ -1,0 +1,70 @@
+{
+  "title": "Almighty Maker! Lord of All",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Almighty Maker! Lord of All in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 489 of its twenty-second edition (1853), “Prayer for the Christian Temper”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Al-might-y Mak-er! Lord of all! Of life the on-ly spring! Cre-a-tor of un-num-bered worlds! Su-preme, E-ter-nal King!",
+  "verses": [
+    {
+      "lines": [
+        "Almighty Maker! Lord of all!",
+        "Of life the only spring!",
+        "Creator of unnumbered worlds!",
+        "Supreme, Eternal King!"
+      ]
+    },
+    {
+      "lines": [
+        "Drive from the confines of my heart",
+        "Impenitence and pride;",
+        "Nor let me, in forbidden paths,",
+        "With thoughtless sinners glide."
+      ]
+    },
+    {
+      "lines": [
+        "Let not despair nor fell revenge",
+        "Be to my bosom known:",
+        "Oh! give me tears for others' woes,",
+        "And patience for my own."
+      ]
+    },
+    {
+      "lines": [
+        "Feed me with necessary food;",
+        "I ask not wealth or fame;",
+        "Give me an eye to see thy will,",
+        "A heart to bless thy name."
+      ]
+    },
+    {
+      "lines": [
+        "May still my days serenely pass,",
+        "Without remorse or care;",
+        "And growing holiness my soul",
+        "For life's last hour prepare."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:489"
+}

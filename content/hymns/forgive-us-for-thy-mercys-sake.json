@@ -1,0 +1,60 @@
+{
+  "title": "Forgive Us for Thy Mercy's Sake",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Forgive Us for Thy Mercy's Sake in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 325 of its twenty-second edition (1853), “Imploring Forgiveness and Renewal of Heart”, where the book credits them to Wesley's Collection.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "For-give us for thy mer-cy's sake; Our mul-ti-tude of sins for-give; And for thy own pos-ses-sion take, And bid us to thy glo-ry live; Live in thy sight and glad-ly prove Our faith by our obe-di-ent love.",
+  "verses": [
+    {
+      "lines": [
+        "Forgive us for thy mercy's sake;",
+        "Our multitude of sins forgive;",
+        "And for thy own possession take,",
+        "And bid us to thy glory live;",
+        "Live in thy sight and gladly prove",
+        "Our faith by our obedient love."
+      ]
+    },
+    {
+      "lines": [
+        "The covenant of forgiveness seal,",
+        "And all thy mighty wonders show;",
+        "Our hidden enemies expel,",
+        "And conquering them to conquer go,",
+        "Till all of pride and wrath be slain,",
+        "And not one evil thought remain."
+      ]
+    },
+    {
+      "lines": [
+        "O, put it in our inward parts",
+        "The living law of perfect love:",
+        "Write the new precept on our hearts;",
+        "We shall not then from thee remove,",
+        "Who in thy glorious image shine,",
+        "Thy people, and forever thine."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:325"
+}

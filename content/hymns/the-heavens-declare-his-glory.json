@@ -1,0 +1,67 @@
+{
+  "title": "The Heavens Declare His Glory",
+  "tune": "greenland",
+  "text": [
+    {
+      "name": "Josiah Conder",
+      "born": 1789,
+      "died": 1855,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "The Heavens Declare His Glory in Tonic Solfa to GREENLAND, doh is Eb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Josiah Conder wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 181 of its twenty-second edition (1853), “\"Day unto day uttereth speech.\"”.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to GREENLAND; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "The heavens de-clare his glo-ry, Their Mak-er's skill the skies: Each day re-peats the sto-ry, And night to night re-plies. Their si-lent pro-cla-ma-tion Through-out the earth is heard; The re-cord of cre-a-tion, The page of na-ture's word.",
+  "verses": [
+    {
+      "lines": [
+        "The heavens declare his glory,",
+        "Their Maker's skill the skies:",
+        "Each day repeats the story,",
+        "And night to night replies.",
+        "Their silent proclamation",
+        "Throughout the earth is heard;",
+        "The record of creation,",
+        "The page of nature's word."
+      ]
+    },
+    {
+      "lines": [
+        "There, from his bright pavilion,",
+        "Like eastern bridegroom clad,",
+        "Hailed by earth's thousand million,",
+        "The sun sets forth; right glad,",
+        "His glorious race commencing,",
+        "The mighty giant seems;",
+        "Through the vast round dispensing",
+        "His all-pervading beams."
+      ]
+    },
+    {
+      "lines": [
+        "So pure, so soul-restoring",
+        "Is truth's diviner ray;",
+        "A brighter radiance pouring",
+        "Than all the pomp of day:",
+        "The wanderer surely guiding,",
+        "It makes the simple wise;",
+        "And evermore abiding,",
+        "Unfailing joy supplies."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Josiah Conder died in 1855.",
+  "credits": "Words by Josiah Conder (1789–1855), public domain, as printed in Hymns for Christian Devotion (1853); set to GREENLAND by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:181"
+}

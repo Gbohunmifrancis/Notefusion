@@ -1,0 +1,71 @@
+{
+  "title": "Time! What an Empty Vapor 'Tis",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Time! What an Empty Vapor 'Tis in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 897 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Time! what an emp-ty va-por 'tis! And days, how swift they are! Swift as an In-dian ar-row flies, Or like a shoot-ing star.",
+  "verses": [
+    {
+      "lines": [
+        "Time! what an empty vapor 'tis!",
+        "And days, how swift they are!",
+        "Swift as an Indian arrow flies,",
+        "Or like a shooting star."
+      ]
+    },
+    {
+      "lines": [
+        "The present moments just appear,",
+        "Then slide away in haste;",
+        "That we can never say, they're here;",
+        "But only say, they're past."
+      ]
+    },
+    {
+      "lines": [
+        "Our life is ever on the wing,",
+        "And death is ever nigh;",
+        "The moment when our lives begin",
+        "We all begin to die."
+      ]
+    },
+    {
+      "lines": [
+        "Yet, mighty God! our fleeting days",
+        "Thy lasting favors share;",
+        "Yet, with the bounties of thy grace,",
+        "Thou load'st the rolling year."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis sovereign mercy finds us food,",
+        "And we are clothed with love;",
+        "While grace stands pointing out the road",
+        "Which leads our souls above."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:897"
+}

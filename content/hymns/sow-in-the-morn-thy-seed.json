@@ -1,0 +1,55 @@
+{
+  "title": "Sow in the Morn Thy Seed",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Sow in the Morn Thy Seed in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 772 of its twenty-second edition (1853), “Active Effort to do Good”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Sow in the morn thy seed; At eve hold not thy hand; To doubt and fear give thou no heed; Broad-cast it o'er the land;",
+  "verses": [
+    {
+      "lines": [
+        "Sow in the morn thy seed;",
+        "At eve hold not thy hand;",
+        "To doubt and fear give thou no heed;",
+        "Broadcast it o'er the land; —"
+      ]
+    },
+    {
+      "lines": [
+        "And duly shall appear,",
+        "In verdure, beauty, strength,",
+        "The tender blade, the stalk, the ear,",
+        "And the full corn at length."
+      ]
+    },
+    {
+      "lines": [
+        "Thou canst not toil in vain;",
+        "Cold, heat, and moist, and dry,",
+        "Shall foster and mature the grain",
+        "For garners in the sky."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:772"
+}

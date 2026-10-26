@@ -1,0 +1,61 @@
+{
+  "title": "The Bird That Soars on Highest Wing",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "The Bird That Soars on Highest Wing in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 353 of its twenty-second edition (1853), “Humility”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "The bird that soars on high-est wing Builds on the ground her low-ly nest; And she that doth most sweet-ly sing Sings in the shade when all things rest: In lark and nigh-tin-gale we see What hon-or hath hu-mil-i-ty.",
+  "verses": [
+    {
+      "lines": [
+        "The bird that soars on highest wing",
+        "Builds on the ground her lowly nest;",
+        "And she that doth most sweetly sing",
+        "Sings in the shade when all things rest: —",
+        "In lark and nightingale we see",
+        "What honor hath humility."
+      ]
+    },
+    {
+      "lines": [
+        "When Mary chose the better part,",
+        "She meekly sat at Jesus' feet;",
+        "And Lydia's gently opened heart",
+        "Was made for God's own temple meet: —",
+        "Fairest and best adorned is she",
+        "Whose clothing is humility."
+      ]
+    },
+    {
+      "lines": [
+        "The saint that wears heaven's brightest crown",
+        "In deepest adoration bends;",
+        "The weight of glory bows him down",
+        "Then most when most his soul ascends: —",
+        "Nearest the throne itself must be",
+        "The footstool of humility."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:353"
+}

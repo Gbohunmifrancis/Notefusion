@@ -1,0 +1,63 @@
+{
+  "title": "When Fainting in the Sultry Waste",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Anne Steele",
+      "born": 1717,
+      "died": 1778,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "When Fainting in the Sultry Waste in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Anne Steele wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 453 of its twenty-second edition (1853), “Thirsting after God”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When faint-ing in the sul-try waste, And parched with thirst ex-treme, The wea-ry pil-grim longs to taste The cool, re-fresh-ing stream.",
+  "verses": [
+    {
+      "lines": [
+        "When fainting in the sultry waste,",
+        "And parched with thirst extreme,",
+        "The weary pilgrim longs to taste",
+        "The cool, refreshing stream."
+      ]
+    },
+    {
+      "lines": [
+        "So longs the weary, fainting mind,",
+        "Oppressed with sins and woes,",
+        "Some soul-reviving spring to find,",
+        "Whence heavenly comfort flows."
+      ]
+    },
+    {
+      "lines": [
+        "O, may I thirst for thee, my God,",
+        "With ardent, strong desire;",
+        "And still, through all this desert road,",
+        "To taste thy grace aspire."
+      ]
+    },
+    {
+      "lines": [
+        "Then shall my prayer to thee ascend,",
+        "A grateful sacrifice;",
+        "My mourning voice thou wilt attend,",
+        "And grant me full supplies."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Anne Steele died in 1778.",
+  "credits": "Words by Anne Steele (1717–1778), public domain, as printed in Hymns for Christian Devotion (1853); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:453"
+}

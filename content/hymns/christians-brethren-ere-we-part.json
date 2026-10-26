@@ -1,0 +1,55 @@
+{
+  "title": "Christians! Brethren! Ere We Part",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "Henry Kirke White",
+      "born": 1785,
+      "died": 1806,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Christians! Brethren! Ere We Part in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Henry Kirke White wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 730 of its twenty-second edition (1853), “Closing Hymn at an Association”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Christ-ians! bre-thren! ere we part, Ev-ery voice and ev-ery heart Join, and to our Fa-ther raise One last hymn of grate-ful praise.",
+  "verses": [
+    {
+      "lines": [
+        "Christians! brethren! ere we part,",
+        "Every voice and every heart",
+        "Join, and to our Father raise",
+        "One last hymn of grateful praise."
+      ]
+    },
+    {
+      "lines": [
+        "Though we here should meet no more,",
+        "Yet there is a brighter shore;",
+        "There, released from toil and pain,",
+        "There we all may meet again."
+      ]
+    },
+    {
+      "lines": [
+        "Now to him who reigns in heaven",
+        "Be eternal glory given;",
+        "Grateful for thy love divine,",
+        "O may all our hearts be thine!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Henry Kirke White died in 1806.",
+  "credits": "Words by Henry Kirke White (1785–1806), public domain, as printed in Hymns for Christian Devotion (1853); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:730"
+}

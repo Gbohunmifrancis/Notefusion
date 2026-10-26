@@ -1,0 +1,63 @@
+{
+  "title": "See Lovely Nature Raise Her Head",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "James Edward Smith",
+      "born": 1759,
+      "died": 1828,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "See Lovely Nature Raise Her Head in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Edward Smith wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 554 of its twenty-second edition (1853), “Nature Transitory — the Soul Immortal”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "See love-ly na-ture raise her head, In var-ious gra-ces dressed; Her lu-cid robe by o-cean spread, Her ver-dant, flow-ery vest.",
+  "verses": [
+    {
+      "lines": [
+        "See lovely nature raise her head,",
+        "In various graces dressed;",
+        "Her lucid robe by ocean spread,",
+        "Her verdant, flowery vest."
+      ]
+    },
+    {
+      "lines": [
+        "How glorious are those orbs of light,",
+        "In all their bright array,",
+        "That gem the ebon brow of night,",
+        "Or pour the blaze of day!"
+      ]
+    },
+    {
+      "lines": [
+        "One gem of purest ray, divine,",
+        "Alone disclaims her power;",
+        "Still brighter shall its glories shine,",
+        "When hers are seen no more."
+      ]
+    },
+    {
+      "lines": [
+        "Her pageants pass, nor leave a trace",
+        "The soul no change shall fear;",
+        "The God of nature and of grace",
+        "Has stamped his image there."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Edward Smith died in 1828.",
+  "credits": "Words by James Edward Smith (1759–1828), public domain, as printed in Hymns for Christian Devotion (1853); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:554"
+}

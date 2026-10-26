@@ -1,0 +1,62 @@
+{
+  "title": "Lord! in Thy Garden Agony",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Lord! in Thy Garden Agony in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 480 of its twenty-second edition (1853), “Angels from Heaven Strengthening Him”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Lord! in thy gar-den a-go-ny, No light seemed on thy soul to break, No form of ser-aph lin-gered nigh, Nor yet the voice of com-fort spake;",
+  "verses": [
+    {
+      "lines": [
+        "Lord! in thy garden agony,",
+        "No light seemed on thy soul to break,",
+        "No form of seraph lingered nigh,",
+        "Nor yet the voice of comfort spake;"
+      ]
+    },
+    {
+      "lines": [
+        "Till, by thine own triumphant word,",
+        "The victory over, ill was won;",
+        "Till the sweet, mournful cry was heard,",
+        "\"Thy will, O God, not mine, be done!\""
+      ]
+    },
+    {
+      "lines": [
+        "Lord, bring these precious moments back,",
+        "When, fainting, against sin we strain;",
+        "Or in thy counsels fail to track",
+        "Aught but the present grief and pain."
+      ]
+    },
+    {
+      "lines": [
+        "In weakness, help us to contend;",
+        "In darkness, yield to God our will;",
+        "And true hearts, faithful to the end,",
+        "Cheer by thine holy angels still!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:480"
+}

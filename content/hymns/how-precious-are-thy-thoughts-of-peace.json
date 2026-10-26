@@ -1,0 +1,51 @@
+{
+  "title": "How Precious Are Thy Thoughts of Peace",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "How Precious Are Thy Thoughts of Peace in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 110 of its twenty-second edition (1853), “God Good and Omniscient”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "How pre-cious are thy thoughts of peace, O God! to me, how great the sum! New ev-ery morn, they nev-er cease; They were, they are, and yet shall come, In num-ber and in com-pass more Than o-cean's sand, or o-cean's shore.",
+  "verses": [
+    {
+      "lines": [
+        "How precious are thy thoughts of peace,",
+        "O God! to me, — how great the sum!",
+        "New every morn, they never cease;",
+        "They were, they are, and yet shall come,",
+        "In number and in compass more",
+        "Than ocean's sand, or ocean's shore."
+      ]
+    },
+    {
+      "lines": [
+        "Search me, O God! and know my heart,",
+        "Try me, my secret soul survey;",
+        "And warn thy servant to depart",
+        "From every false and evil way:",
+        "So shall thy truth my guidance be,",
+        "In life and immortality."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:110"
+}

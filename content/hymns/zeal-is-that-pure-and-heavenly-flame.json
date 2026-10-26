@@ -1,0 +1,71 @@
+{
+  "title": "Zeal Is That Pure and Heavenly Flame",
+  "tune": "york",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Zeal Is That Pure and Heavenly Flame in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 401 of its twenty-second edition (1853), “True Zeal”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Zeal is that pure and heav-enly flame The fire of love sup-plies; Whilst that which of-ten bears the name, Is self but in dis-guise.",
+  "verses": [
+    {
+      "lines": [
+        "Zeal is that pure and heavenly flame",
+        "The fire of love supplies;",
+        "Whilst that which often bears the name,",
+        "Is self but in disguise."
+      ]
+    },
+    {
+      "lines": [
+        "True zeal is merciful and mild,",
+        "Can pity and forbear;",
+        "The false is headstrong, fierce and wild,",
+        "And breathes revenge and war."
+      ]
+    },
+    {
+      "lines": [
+        "While zeal for truth the Christian warms,",
+        "He knows the worth of peace;",
+        "But self contends for names and forms,",
+        "Its party to increase."
+      ]
+    },
+    {
+      "lines": [
+        "Zeal has attained its highest aim,",
+        "Its end is satisfied,",
+        "If sinners love the Saviour's name, —",
+        "Nor seeks it aught beside."
+      ]
+    },
+    {
+      "lines": [
+        "This idol self, O Lord, dethrone,",
+        "And from our hearts remove;",
+        "And let no zeal by us be shown",
+        "But that which springs from love."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Hymns for Christian Devotion (1853); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:401"
+}

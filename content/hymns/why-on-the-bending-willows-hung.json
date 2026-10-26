@@ -1,0 +1,70 @@
+{
+  "title": "Why on the Bending Willows Hung",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Why on the Bending Willows Hung in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 977 of its twenty-second edition (1853), “Remonstrance with the Jews”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Why on the bend-ing wil-lows hung, Is-rael! still sleeps thy tune-ful string? Still mute re-mains thy sul-len tongue, And Zi-on's song de-nies to sing?",
+  "verses": [
+    {
+      "lines": [
+        "Why on the bending willows hung,",
+        "Israel! still sleeps thy tuneful string? —",
+        "Still mute remains thy sullen tongue,",
+        "And Zion's song denies to sing?"
+      ]
+    },
+    {
+      "lines": [
+        "Awake! thy sweetest raptures raise;",
+        "Let harp and voice unite their strains",
+        "Thy promised King his sceptre sways;",
+        "Jesus, thine own Messiah, reigns!"
+      ]
+    },
+    {
+      "lines": [
+        "No taunting foes the song require:",
+        "No strangers mock thy captive chain:",
+        "But friends provoke the silent lyre,",
+        "And brethren ask the holy strain."
+      ]
+    },
+    {
+      "lines": [
+        "Nor fear thy Salem's hills to wrong,",
+        "If other lands thy triumph share:",
+        "A heavenly city claims thy song;",
+        "A brighter Salem rises there."
+      ]
+    },
+    {
+      "lines": [
+        "By foreign streams no longer roam;",
+        "Nor, weeping, think of Jordan's flood:",
+        "In every clime behold a home,",
+        "In every temple see thy God."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:977"
+}

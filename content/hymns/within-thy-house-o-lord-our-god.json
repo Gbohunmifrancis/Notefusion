@@ -1,0 +1,62 @@
+{
+  "title": "Within Thy House, O Lord, Our God",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Within Thy House, O Lord, Our God in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 17 of its twenty-second edition (1853), “Prayer for special Favor”, where the book credits them to the Presbyterian Collection.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "With-in thy house, O Lord, our God, In glo-ry now ap-pear; Make this a place of thine a-bode, And shed thy bless-ings here.",
+  "verses": [
+    {
+      "lines": [
+        "Within thy house, O Lord, our God,",
+        "In glory now appear;",
+        "Make this a place of thine abode,",
+        "And shed thy blessings here."
+      ]
+    },
+    {
+      "lines": [
+        "When we thy mercy-seat surround,",
+        "Thy Spirit, Lord, impart;",
+        "And let thy gospel's joyful sound",
+        "With power reach every heart."
+      ]
+    },
+    {
+      "lines": [
+        "Here let the blind their sight obtain;",
+        "Here give the mourners rest;",
+        "Let Jesus here triumphant reign,",
+        "Enthroned in every breast."
+      ]
+    },
+    {
+      "lines": [
+        "Here let the voice of sacred joy",
+        "And humble prayer arise,",
+        "Till higher strains our tongues employ",
+        "In realms beyond the skies."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:17"
+}

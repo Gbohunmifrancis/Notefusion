@@ -1,0 +1,63 @@
+{
+  "title": "One Sweet Flower Has Drooped and Faded",
+  "tune": "all-for-jesus",
+  "text": [
+    {
+      "name": "Robert Cassie Waterston",
+      "born": 1812,
+      "died": 1893,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "One Sweet Flower Has Drooped and Faded in Tonic Solfa to ALL FOR JESUS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Robert Cassie Waterston wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 761 of its twenty-second edition (1853), “On the Death of a Female Scholar”.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to ALL FOR JESUS; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "One sweet flower has drooped and fad-ed, One sweet in-fant's voice has fled, One fair brow the grave has shad-ed, One dear school mate now is dead.",
+  "verses": [
+    {
+      "lines": [
+        "One sweet flower has drooped and faded,",
+        "One sweet infant's voice has fled,",
+        "One fair brow the grave has shaded,",
+        "One dear school-mate now is dead."
+      ]
+    },
+    {
+      "lines": [
+        "But we feel no thought of sadness,",
+        "For our friend is happy now;",
+        "She has knelt in soul-felt gladness,",
+        "Where the blessed angels bow."
+      ]
+    },
+    {
+      "lines": [
+        "She has gone to heaven before us,",
+        "But she turns and waves her hand,",
+        "Pointing to the glories o'er us,",
+        "In that happy spirit-land."
+      ]
+    },
+    {
+      "lines": [
+        "God, our Father, watch above us,",
+        "Keep us all from danger free;",
+        "Do thou guard, and guide, and love us,",
+        "Till like her we go to thee."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Robert Cassie Waterston died in 1893.",
+  "credits": "Words by Robert Cassie Waterston (1812–1893), public domain, as printed in Hymns for Christian Devotion (1853); set to ALL FOR JESUS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:761"
+}

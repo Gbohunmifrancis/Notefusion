@@ -1,0 +1,62 @@
+{
+  "title": "Thou God of Hope, to Thee We Bow",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Thou God of Hope, to Thee We Bow in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 782 of its twenty-second edition (1853), “Care of Widows and Orphans”, where the book credits them to the Ch. Psalmody.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thou God of hope, to thee we bow; Thou art our re-fuge in dis-tress; The hus-band of the wid-ow thou, The fa-ther of the fa-ther-less.",
+  "verses": [
+    {
+      "lines": [
+        "Thou God of hope, to thee we bow;",
+        "Thou art our refuge in distress;",
+        "The husband of the widow thou,",
+        "The father of the fatherless."
+      ]
+    },
+    {
+      "lines": [
+        "The poor are thy peculiar care;",
+        "To them thy promises are sure:",
+        "Thy gifts the poor in spirit share;",
+        "O, may we always thus be poor."
+      ]
+    },
+    {
+      "lines": [
+        "May we thy law of love fulfil,",
+        "To bear each other's burdens here,",
+        "Endure and do thy righteous will,",
+        "And walk in all thy faith and fear."
+      ]
+    },
+    {
+      "lines": [
+        "Thou God of hope, to thee we bow;",
+        "Thou art our refuge in distress;",
+        "The husband of the widow thou,",
+        "The father of the fatherless."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:782"
+}

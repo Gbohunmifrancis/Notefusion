@@ -1,0 +1,62 @@
+{
+  "title": "Great God of Nations, Now to Thee",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Great God of Nations, Now to Thee in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 841 of its twenty-second edition (1853), “God Acknowledged in National Blessings”, where the book credits them to the Presbyterian Collection.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Great God of na-tions, now to thee Our hymn of grat-i-tude we raise; With hum-ble heart and bend-ing knee, We o-ffer thee our song of praise.",
+  "verses": [
+    {
+      "lines": [
+        "Great God of nations, now to thee",
+        "Our hymn of gratitude we raise;",
+        "With humble heart and bending knee,",
+        "We offer thee our song of praise."
+      ]
+    },
+    {
+      "lines": [
+        "Here freedom spreads her banner wide,",
+        "And casts her soft and hallowed ray;",
+        "Here thou our fathers' steps didst guide",
+        "In safety through their dangerous way."
+      ]
+    },
+    {
+      "lines": [
+        "We praise thee that the gospel's light",
+        "Through all our land its radiance sheds,",
+        "Dispels the shades of error's night,",
+        "And heavenly blessings round us spreads."
+      ]
+    },
+    {
+      "lines": [
+        "Great God, preserve us in thy fear;",
+        "In dangers still our guardian be;",
+        "O, spread thy truth's bright precepts here,",
+        "Let all the people worship thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:841"
+}

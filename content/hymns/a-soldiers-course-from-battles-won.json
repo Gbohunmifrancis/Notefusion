@@ -1,0 +1,71 @@
+{
+  "title": "A Soldier's Course, from Battles Won",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Thomas Gisborne",
+      "born": 1758,
+      "died": 1846,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "A Soldier's Course, from Battles Won in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Thomas Gisborne wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 340 of its twenty-second edition (1853), “The Christian's Life and his Hope”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "A sol-dier's course, from bat-tles won To new com-menc-ing strife; A pil-grim's, rest-less as the sun Be-hold the Christ-ian's life!",
+  "verses": [
+    {
+      "lines": [
+        "A soldier's course, from battles won",
+        "To new-commencing strife;",
+        "A pilgrim's, restless as the sun —",
+        "Behold the Christian's life!"
+      ]
+    },
+    {
+      "lines": [
+        "O! let us seek our heavenly home,",
+        "Revealed in sacred lore;",
+        "The land whence pilgrims never roam,",
+        "Where soldiers war no more;"
+      ]
+    },
+    {
+      "lines": [
+        "Where grief shall never wound, nor death,",
+        "Beneath the Saviour's reign;",
+        "Nor sin, with pestilential breath,",
+        "His holy realm profane;"
+      ]
+    },
+    {
+      "lines": [
+        "The land where, suns and moons unknown,",
+        "And night's alternate sway,",
+        "Jehovah's ever-burning throne",
+        "Upholds unbroken day;"
+      ]
+    },
+    {
+      "lines": [
+        "Where they who meet shall never part;",
+        "Where grace achieves its plan;",
+        "And God, uniting every heart,",
+        "Dwells face to face with man."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Thomas Gisborne died in 1846.",
+  "credits": "Words by Thomas Gisborne (1758–1846), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:340"
+}

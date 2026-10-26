@@ -1,0 +1,62 @@
+{
+  "title": "How Precious Is the Book Divine",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "How Precious Is the Book Divine in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 189 of its twenty-second edition (1853), “The Value of the Scriptures”, where the book credits them to Rippon's Collection.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How pre-cious is the book di-vine, By in-spi-ra-tion given! Bright as a lamp its doc-trines shine, To lead our souls to heaven.",
+  "verses": [
+    {
+      "lines": [
+        "How precious is the book divine,",
+        "By inspiration given!",
+        "Bright as a lamp its doctrines shine,",
+        "To lead our souls to heaven."
+      ]
+    },
+    {
+      "lines": [
+        "O'er all the strait and narrow way",
+        "Its radiant beams are cast;",
+        "A light whose never weary ray",
+        "Grows brightest at the last."
+      ]
+    },
+    {
+      "lines": [
+        "It sweetly cheers our fainting hearts",
+        "In this dark vale of tears;",
+        "Life, light, and comfort it imparts,",
+        "And calms our anxious fears."
+      ]
+    },
+    {
+      "lines": [
+        "This lamp through all the dreary night",
+        "Of life shall guide our way,",
+        "Till we behold the glorious light",
+        "Of never-ending day."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:189"
+}

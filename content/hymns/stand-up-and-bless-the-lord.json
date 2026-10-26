@@ -1,0 +1,71 @@
+{
+  "title": "Stand Up and Bless the Lord",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Stand Up and Bless the Lord in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 3 of its twenty-second edition (1853), “Exhortation to Praise”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Stand up and bless the Lord, Ye peo-ple of his choice; Stand up, and bless the Lord your God, With heart, and soul and voice.",
+  "verses": [
+    {
+      "lines": [
+        "Stand up and bless the Lord,",
+        "Ye people of his choice;",
+        "Stand up, and bless the Lord your God,",
+        "With heart, and soul and voice."
+      ]
+    },
+    {
+      "lines": [
+        "Though high above all praise,",
+        "Above all blessing high,",
+        "Who would not fear his holy name,",
+        "And laud and magnify?"
+      ]
+    },
+    {
+      "lines": [
+        "O for the living flame",
+        "From his own altar brought,",
+        "To touch our lips, our minds inspire,",
+        "And wing to heaven our thought!"
+      ]
+    },
+    {
+      "lines": [
+        "There, with benign regard,",
+        "Our hymns he deigns to hear;",
+        "Though unrevealed to mortal sense,",
+        "The spirit feels him near."
+      ]
+    },
+    {
+      "lines": [
+        "Stand up and bless the Lord,",
+        "The Lord your God adore;",
+        "Stand up and bless his glorious name,",
+        "Henceforth for evermore."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:3"
+}

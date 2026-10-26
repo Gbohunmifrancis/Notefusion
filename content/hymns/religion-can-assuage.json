@@ -1,0 +1,63 @@
+{
+  "title": "Religion Can Assuage",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Anne Steele",
+      "born": 1717,
+      "died": 1778,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Religion Can Assuage in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Anne Steele wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 408 of its twenty-second edition (1853), “Religion a Support in Life”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Re-li-gion can as-suage The tem-pest of the soul; And ev-ery fear shall lose its rage At her di-vine con-trol.",
+  "verses": [
+    {
+      "lines": [
+        "Religion can assuage",
+        "The tempest of the soul;",
+        "And every fear shall lose its rage",
+        "At her divine control."
+      ]
+    },
+    {
+      "lines": [
+        "Through life's bewildered way,",
+        "Her hand unerring leads;",
+        "And o'er the path her heavenly ray",
+        "A cheering lustre sheds."
+      ]
+    },
+    {
+      "lines": [
+        "When reason, tired and blind,",
+        "Sinks helpless and afraid,",
+        "Thou blest supporter of the mind,",
+        "How powerful is thine aid!"
+      ]
+    },
+    {
+      "lines": [
+        "O, let us feel thy power,",
+        "And find thy sweet relief,",
+        "To brighten every gloomy hour",
+        "And soften every grief."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Anne Steele died in 1778.",
+  "credits": "Words by Anne Steele (1717–1778), public domain, as printed in Hymns for Christian Devotion (1853); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:408"
+}

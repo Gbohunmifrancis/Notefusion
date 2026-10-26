@@ -1,0 +1,63 @@
+{
+  "title": "Great God! Attend, While Zion Sings",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Great God! Attend, While Zion Sings in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 6 of its twenty-second edition (1853), “\"How amiable are thy Tabernacles, O Lord of Hosts.\"”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Great God! at-tend, while Zi-on sings The joy that from thy pre-sence springs; To spend one day with thee, on earth, Ex-ceeds a thou-sand days of mirth.",
+  "verses": [
+    {
+      "lines": [
+        "Great God! attend, while Zion sings",
+        "The joy that from thy presence springs;",
+        "To spend one day with thee, on earth,",
+        "Exceeds a thousand days of mirth."
+      ]
+    },
+    {
+      "lines": [
+        "Might I enjoy the meanest place",
+        "Within thy house, O God of grace,",
+        "Not tents of ease, nor thrones of power,",
+        "Should tempt my feet to leave thy door."
+      ]
+    },
+    {
+      "lines": [
+        "God is our Sun — he makes our day;",
+        "God is our shield — he guards our way;",
+        "All needful grace he will bestow,",
+        "And crown that grace with glory too."
+      ]
+    },
+    {
+      "lines": [
+        "O God! our king, whose sovereign sway",
+        "The glorious hosts of heaven obey,",
+        "Thy willing servants may we be,",
+        "For blest are they who trust in thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:6"
+}

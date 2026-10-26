@@ -1,0 +1,55 @@
+{
+  "title": "The Heaven of Heavens Cannot Contain",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "William Drennan",
+      "born": 1754,
+      "died": 1820,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "The Heaven of Heavens Cannot Contain in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "William Drennan wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 118 of its twenty-second edition (1853), “\"God is a Spirit.\"”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The heaven of heavens can-not con-tain The u-ni-ver-sal Lord; Yet he in hum-ble hearts will deign To dwell and be a-dored.",
+  "verses": [
+    {
+      "lines": [
+        "The heaven of heavens cannot contain",
+        "The universal Lord;",
+        "Yet he in humble hearts will deign",
+        "To dwell and be adored."
+      ]
+    },
+    {
+      "lines": [
+        "Where'er ascends the sacrifice",
+        "Of fervent praise and prayer,",
+        "Or on the earth, or in the skies,",
+        "The God of heaven is there."
+      ]
+    },
+    {
+      "lines": [
+        "His presence is diffused abroad",
+        "Through realms, through worlds unknown;",
+        "Who seek the mercies of our God",
+        "Are ever near his throne."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: William Drennan died in 1820.",
+  "credits": "Words by William Drennan (1754–1820), public domain, as printed in Hymns for Christian Devotion (1853); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:118"
+}

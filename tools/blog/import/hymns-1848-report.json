@@ -24,6 +24,13 @@
       "author": "Anonymous"
     },
     {
+      "ref": "6",
+      "slug": "forth-from-the-dark-and-stormy-sky",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Reginald Heber"
+    },
+    {
       "ref": "7",
       "slug": "o-father-though-the-anxious-fear",
       "metre": "8 6 8 6",
@@ -157,6 +164,20 @@
       "author": "Christopher Smart"
     },
     {
+      "ref": "39",
+      "slug": "o-father-lift-our-souls-above",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "41",
+      "slug": "father-in-heaven-to-whom-our-hearts",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Henry Ware Jr."
+    },
+    {
       "ref": "42",
       "slug": "shine-on-our-souls-eternal-god",
       "metre": "8 6 8 6",
@@ -206,6 +227,20 @@
       "author": "Anonymous"
     },
     {
+      "ref": "58",
+      "slug": "israels-shepherd-guide-us-feed-us",
+      "metre": "8 7 8 7",
+      "tune": "all-for-jesus",
+      "author": "Edward Bickersteth"
+    },
+    {
+      "ref": "59",
+      "slug": "as-every-day-thy-mercy-spares",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Anonymous"
+    },
+    {
       "ref": "60",
       "slug": "part-in-peace-is-day-before-us",
       "metre": "8 7 8 7",
@@ -218,13 +253,6 @@
       "metre": "7 7 7 7 7 7 7 7",
       "tune": "watchman",
       "author": "Anonymous"
-    },
-    {
-      "ref": "63",
-      "slug": "from-all-that-dwell-below-the-skies",
-      "metre": "8 8 8 8",
-      "tune": "winchester-new",
-      "author": "Isaac Watts"
     },
     {
       "ref": "64",
@@ -302,6 +330,13 @@
       "metre": "8 8 8 8",
       "tune": "winchester-new",
       "author": "John Pierpont"
+    },
+    {
+      "ref": "84",
+      "slug": "thou-art-o-god-the-life-and-light",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Thomas Moore"
     },
     {
       "ref": "85",
@@ -801,6 +836,27 @@
       "author": "James Montgomery"
     },
     {
+      "ref": "219",
+      "slug": "thou-hidden-love-of-god-whose-height",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "222",
+      "slug": "o-draw-me-father-after-thee",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "223",
+      "slug": "i-want-the-spirit-of-power-within",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley"
+    },
+    {
       "ref": "224",
       "slug": "i-want-a-principle-within",
       "metre": "8 6 8 6",
@@ -848,6 +904,13 @@
       "metre": "8 8 8 8",
       "tune": "old-hundredth",
       "author": "James Montgomery"
+    },
+    {
+      "ref": "233",
+      "slug": "o-love-how-cheering-is-thy-ray",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Anonymous"
     },
     {
       "ref": "234",
@@ -899,6 +962,13 @@
       "author": "William Gaskell"
     },
     {
+      "ref": "252",
+      "slug": "o-let-my-trembling-soul-be-still",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "John Bowring"
+    },
+    {
       "ref": "254",
       "slug": "commit-thou-all-thy-griefs",
       "metre": "6 6 8 6",
@@ -941,6 +1011,13 @@
       "author": "Anonymous"
     },
     {
+      "ref": "264",
+      "slug": "he-sendeth-sun-he-sendeth-shower",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Sarah Flower Adams"
+    },
+    {
       "ref": "266",
       "slug": "is-there-a-lone-and-dreary-hour",
       "metre": "8 8 8 8",
@@ -953,6 +1030,13 @@
       "metre": "10 10 10 10",
       "tune": "penitentia",
       "author": "Jones Very"
+    },
+    {
+      "ref": "270",
+      "slug": "leader-of-israels-host-and-guide",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Charles Wesley"
     },
     {
       "ref": "271",
@@ -1064,6 +1148,13 @@
       "slug": "beneath-the-thick-but-struggling-clouds",
       "metre": "8 6 8 6",
       "tune": "st-agnes",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "299",
+      "slug": "o-still-trust-on-if-in-the-heart",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
       "author": "Anonymous"
     },
     {
@@ -1893,6 +1984,13 @@
       "author": "Anonymous"
     },
     {
+      "ref": "513",
+      "slug": "o-thou-in-whom-the-weary-find",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Anonymous"
+    },
+    {
       "ref": "514",
       "slug": "father-divine-this-deadening-power-control",
       "metre": "10 10 10 10",
@@ -2096,6 +2194,13 @@
       "author": "John Newton"
     },
     {
+      "ref": "567",
+      "slug": "father-of-mercies-god-of-peace",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Anonymous"
+    },
+    {
       "ref": "571",
       "slug": "when-the-parting-bosom-bleeds",
       "metre": "7 7 7 7 7 7",
@@ -2213,6 +2318,11 @@
       "page": "praise-the-lord-ye-heavens-adore-him"
     },
     {
+      "ref": "63",
+      "first": "From all that dwell below the skies",
+      "page": "from-all-that-dwell-below-the-skies"
+    },
+    {
       "ref": "70",
       "first": "Lord! dismiss us with Thy blessing,",
       "page": "lord-dismiss-us-with-thy-blessing"
@@ -2310,11 +2420,6 @@
       "why": "the book names no author"
     },
     {
-      "ref": "6",
-      "first": "Forth from the dark and stormy sky,",
-      "why": "no tune we hold for “L. M.” in 6-line verses"
-    },
-    {
       "ref": "9",
       "first": "Far from mortal cares retreating,",
       "why": "an author we cannot name in full: “J. Taylor”"
@@ -2380,19 +2485,9 @@
       "why": "an author we cannot name in full: “Mrs. Cotterill”"
     },
     {
-      "ref": "39",
-      "first": "O Father! lift our souls above,",
-      "why": "no tune we hold for “L. M.” in 6-line verses"
-    },
-    {
       "ref": "40",
       "first": "Father, who art on high!",
       "why": "no tune we hold for “6 & 10s. M.” in 6-line verses"
-    },
-    {
-      "ref": "41",
-      "first": "Father in heaven, to whom our hearts",
-      "why": "an author we cannot name in full: “H. Ware, Jr”"
     },
     {
       "ref": "44",
@@ -2427,16 +2522,6 @@
     {
       "ref": "57",
       "why": "no verses"
-    },
-    {
-      "ref": "58",
-      "first": "Israel's Shepherd, guide us, feed us,",
-      "why": "an author we cannot name in full: “Bickersteth”"
-    },
-    {
-      "ref": "59",
-      "first": "As every day Thy mercy spares",
-      "why": "no tune we hold for “L. M.” in 6-line verses"
     },
     {
       "ref": "61",
@@ -2481,11 +2566,6 @@
       "ref": "83",
       "first": "There's nothing bright, above, below,",
       "why": "its first verse cannot be sung as 8.8.8.8"
-    },
-    {
-      "ref": "84",
-      "first": "Thou art, O God, the life and light",
-      "why": "no tune we hold for “L. M.” in 6-line verses"
     },
     {
       "ref": "86",
@@ -2550,7 +2630,7 @@
     {
       "ref": "113",
       "first": "As oft, with worn and weary feet,",
-      "why": "no tune we hold for “L. M.” in 6-line verses"
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
     },
     {
       "ref": "114",
@@ -2758,24 +2838,9 @@
       "why": "its first verse cannot be sung as 11.10.11.10"
     },
     {
-      "ref": "219",
-      "first": "Thou hidden love of God, whose height,",
-      "why": "no tune we hold for “L. M.” in 6-line verses"
-    },
-    {
       "ref": "220",
       "first": "Send kindly light amid the encircling gloom,",
       "why": "no tune we hold for “P. M.” in 6-line verses"
-    },
-    {
-      "ref": "222",
-      "first": "O, Draw me, Father, after Thee!",
-      "why": "no tune we hold for “L. M.” in 6-line verses"
-    },
-    {
-      "ref": "223",
-      "first": "I Want the spirit of power within,",
-      "why": "no tune we hold for “L. M.” in 6-line verses"
     },
     {
       "ref": "225",
@@ -2786,11 +2851,6 @@
       "ref": "230",
       "first": "O Lord! how happy should we be,",
       "why": "no tune we hold for “C. P. M.” in 6-line verses"
-    },
-    {
-      "ref": "233",
-      "first": "O Love, how cheering is Thy ray!",
-      "why": "no tune we hold for “L. M.” in 6-line verses"
     },
     {
       "ref": "236",
@@ -2843,11 +2903,6 @@
       "why": "an author we cannot name in full: “Dyer”"
     },
     {
-      "ref": "252",
-      "first": "O let my trembling soul be still,",
-      "why": "no tune we hold for “L. M.” in 6-line verses"
-    },
-    {
       "ref": "253",
       "first": "See the Lord, thy keeper, stand,",
       "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
@@ -2873,11 +2928,6 @@
       "why": "no tune we hold for “P. M.” in 4-line verses"
     },
     {
-      "ref": "264",
-      "first": "He sendeth sun, He sendeth shower;",
-      "why": "no tune we hold for “L. M.” in 6-line verses"
-    },
-    {
       "ref": "265",
       "first": "Thy will be done! In devious way",
       "why": "no tune we hold for “P. M.” in 4-line verses"
@@ -2891,11 +2941,6 @@
       "ref": "269",
       "first": "Father! glorify Thy name!",
       "why": "no tune we hold for “7s. M.” in 5-line verses"
-    },
-    {
-      "ref": "270",
-      "first": "Leader of Israel's host, and Guide",
-      "why": "no tune we hold for “L. M.” in 6-line verses"
     },
     {
       "ref": "276",
@@ -2951,11 +2996,6 @@
       "ref": "298",
       "first": "Love on! love on! but not the things that own",
       "why": "an author we cannot name in full: “Mrs. Case”"
-    },
-    {
-      "ref": "299",
-      "first": "O, still trust on, if in the heart",
-      "why": "no tune we hold for “L. M.” in 6-line verses"
     },
     {
       "ref": "301",
@@ -3045,7 +3085,7 @@
     {
       "ref": "347",
       "first": "The mourners came, at break of day,",
-      "why": "no tune we hold for “L. M.” in 6-line verses"
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
     },
     {
       "ref": "348",
@@ -3209,7 +3249,7 @@
     {
       "ref": "427",
       "first": "The kings of old have shrine and tomb",
-      "why": "no tune we hold for “L. M.” in 6-line verses"
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
     },
     {
       "ref": "428",
@@ -3420,11 +3460,6 @@
       "why": "its first verse cannot be sung as 8.8.8.8"
     },
     {
-      "ref": "513",
-      "first": "O Thou, in whom the weary find",
-      "why": "no tune we hold for “L. M.” in 6-line verses"
-    },
-    {
       "ref": "519",
       "first": "Come to me, thoughts of heaven!",
       "why": "no tune we hold for “S. M.” in 8-line verses"
@@ -3535,11 +3570,6 @@
       "why": "an author we cannot name in full: “*”"
     },
     {
-      "ref": "567",
-      "first": "Father of mercies! God of peace!",
-      "why": "no tune we hold for “L. M.” in 6-line verses"
-    },
-    {
       "ref": "568",
       "first": "When in silence, o'er the deep,",
       "why": "an author we cannot name in full: “Mary W. Hale”"
@@ -3607,7 +3637,7 @@
     {
       "ref": "593",
       "first": "Prisoners of hope! be strong, be bold;",
-      "why": "no tune we hold for “L. M.” in 6-line verses"
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
     },
     {
       "ref": "594",
@@ -3632,9 +3662,9 @@
   ],
   "counts": {
     "hymns": 600,
-    "written": 314,
-    "alreadyOurs": 19,
-    "skipped": 267,
+    "written": 329,
+    "alreadyOurs": 20,
+    "skipped": 251,
     "removed": 0
   }
 }

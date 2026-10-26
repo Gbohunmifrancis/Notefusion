@@ -1,0 +1,63 @@
+{
+  "title": "Lord! We Believe a Rest Remains",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Lord! We Believe a Rest Remains in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 479 of its twenty-second edition (1853), “A Rest Remaineth”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Lord! we be-lieve a rest re-mains To all thy peo-ple known; A rest where pure en-joy-ment reigns; For thou art served a-lone:",
+  "verses": [
+    {
+      "lines": [
+        "Lord! we believe a rest remains",
+        "To all thy people known;",
+        "A rest where pure enjoyment reigns; —",
+        "For thou art served alone: —"
+      ]
+    },
+    {
+      "lines": [
+        "A rest where all our souls desire",
+        "Is fixed on things above;",
+        "Where fear, and sin, and grief expire,",
+        "Cast out by perfect love."
+      ]
+    },
+    {
+      "lines": [
+        "O that we now that rest might know,",
+        "Believe and enter in!",
+        "Thou Holiest! now the power bestow,",
+        "And let us cease from sin."
+      ]
+    },
+    {
+      "lines": [
+        "Remove this hardness from our heart,",
+        "This unbelief remove:",
+        "The rest of perfect faith impart,",
+        "The sabbath of thy love."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:479"
+}

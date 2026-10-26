@@ -1,0 +1,79 @@
+{
+  "title": "Amid Surrounding Gloom and Waste",
+  "tune": "all-saints-new",
+  "text": [
+    {
+      "name": "Edwin Hubbell Chapin",
+      "born": 1814,
+      "died": 1880,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Amid Surrounding Gloom and Waste in Tonic Solfa to ALL SAINTS, NEW, doh is Bb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Edwin Hubbell Chapin wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 994 of its twenty-second edition (1853), “During or after a Great Storm”.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to ALL SAINTS, NEW; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "A-mid sur-round-ing gloom and waste, From na-ture's face we flee; And in our fear and won-der haste O na-ture's life, to thee! Thy ways are in the might-y deep; In tem-pests as they blow; In floods that o'er our trea-sures sweep; The light-ning; and the snow.",
+  "verses": [
+    {
+      "lines": [
+        "Amid surrounding gloom and waste,",
+        "From nature's face we flee;",
+        "And in our fear and wonder haste",
+        "O nature's life, to thee!",
+        "Thy ways are in the mighty deep;",
+        "In tempests as they blow;",
+        "In floods that o'er our treasures sweep;",
+        "The lightning; and the snow."
+      ]
+    },
+    {
+      "lines": [
+        "Though earth upon its axis reels,",
+        "And heaven is veiled in wrath;",
+        "Not one of nature's million wheels",
+        "Breaks its appointed path;",
+        "Fixed in thy grasp, the sources meet",
+        "Of beauty and of awe;",
+        "In storm or calm, all pulses beat",
+        "True to the central law."
+      ]
+    },
+    {
+      "lines": [
+        "Thou art that law, whose will thus done",
+        "In seeming wreck and blight,",
+        "Sends the calm planets round the sun,",
+        "And pours the moon's soft light.",
+        "We trust thy love; thou best dost know",
+        "The universal peace;",
+        "How long the stormy force should blow,",
+        "And when the flood should cease."
+      ]
+    },
+    {
+      "lines": [
+        "And though around our path some form",
+        "Of mystery ever lies,",
+        "And life is like the calm and storm",
+        "That checker earth and skies,",
+        "Through all its mingling joy and dread,",
+        "Permit us, Holy One,",
+        "By faith to see the golden thread",
+        "Of thy great purpose run."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Edwin Hubbell Chapin died in 1880.",
+  "credits": "Words by Edwin Hubbell Chapin (1814–1880), public domain, as printed in Hymns for Christian Devotion (1853); set to ALL SAINTS, NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:994"
+}

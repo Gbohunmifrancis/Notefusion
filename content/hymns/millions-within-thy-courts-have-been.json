@@ -1,0 +1,63 @@
+{
+  "title": "Millions Within Thy Courts Have Been",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Millions Within Thy Courts Have Been in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 99 of its twenty-second edition (1853), “Sunday Evening”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Mil-lions with-in thy courts have been; Mil-lions this day have bent the knee; But thou, soul search-ing God! hast seen The hearts of all that wor-shipped thee.",
+  "verses": [
+    {
+      "lines": [
+        "Millions within thy courts have been;",
+        "Millions this day have bent the knee;",
+        "But thou, soul-searching God! hast seen",
+        "The hearts of all that worshipped thee."
+      ]
+    },
+    {
+      "lines": [
+        "From east to west the sun surveyed,",
+        "From north to south, adoring throngs;",
+        "And still, where evening stretched her shade,",
+        "The stars came forth to hear their songs."
+      ]
+    },
+    {
+      "lines": [
+        "And not a prayer, a tear, a sigh,",
+        "Hath failed this day some suit to gain;",
+        "To those in trouble thou wert nigh;",
+        "Not one hath sought thy face in vain."
+      ]
+    },
+    {
+      "lines": [
+        "Yet one prayer more; — and be it one,",
+        "In which both heaven and earth accord:",
+        "Fulfil thy promise to thy Son;",
+        "Let all that breathe call Jesus Lord!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:99"
+}

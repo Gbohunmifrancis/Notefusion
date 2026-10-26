@@ -1,0 +1,67 @@
+{
+  "title": "See How Great a Flame Aspires",
+  "tune": "hollingside",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "See How Great a Flame Aspires in Tonic Solfa to HOLLINGSIDE, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 306 of its twenty-second edition (1853), “The Progress of the Gospel”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to HOLLINGSIDE; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "See how great a flame as-pires, Kin-dled by a spark of grace! Je-sus' love the na-tions fires, Sets the king-doms on a blaze. To bring fire on earth he came: Kin-dled in some hearts it is: O that all might catch the flame, All par-take the glo-rious bliss!",
+  "verses": [
+    {
+      "lines": [
+        "See how great a flame aspires,",
+        "Kindled by a spark of grace!",
+        "Jesus' love the nations fires,",
+        "Sets the kingdoms on a blaze.",
+        "To bring fire on earth he came:",
+        "Kindled in some hearts it is:",
+        "O that all might catch the flame,",
+        "All partake the glorious bliss!"
+      ]
+    },
+    {
+      "lines": [
+        "When he first the work begun,",
+        "Small and feeble was his day:",
+        "Now the word doth swiftly run,",
+        "Now it wins its widening way:",
+        "More and more it spreads and grows,",
+        "Ever mighty to prevail;",
+        "Sin's strong-holds it now o'erthrows,",
+        "Shakes the trembling gates of hell."
+      ]
+    },
+    {
+      "lines": [
+        "Saw ye not the cloud arise,",
+        "Little as a human hand?",
+        "Now it spreads along the skies,",
+        "Hangs o'er all the thirsty land!",
+        "Lo! the promise of a shower",
+        "Drops already from above!",
+        "Haste, O Lord, and quickly pour",
+        "All the spirit of thy love."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in Hymns for Christian Devotion (1853); set to HOLLINGSIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:306"
+}

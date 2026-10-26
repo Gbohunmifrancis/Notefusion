@@ -1,0 +1,62 @@
+{
+  "title": "Peace! the Welcome Sound Proclaim",
+  "tune": "innocents",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Peace! the Welcome Sound Proclaim in Tonic Solfa to INNOCENTS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 812 of its twenty-second edition (1853), “The Blessings of Peace”, where the book credits them to the Lewins Mead Collection.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to INNOCENTS; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Peace! the wel-come sound pro-claim, Dwell with rap-ture on the theme; Loud, still loud-er, swell the strain: Peace on earth, good will to men.",
+  "verses": [
+    {
+      "lines": [
+        "Peace! the welcome sound proclaim,",
+        "Dwell with rapture on the theme;",
+        "Loud, still louder, swell the strain:",
+        "Peace on earth, good will to men."
+      ]
+    },
+    {
+      "lines": [
+        "Breezes! whispering soft and low,",
+        "Gently murmur as ye blow,",
+        "Breathe the sweet celestial strain,",
+        "Peace on earth, good will to men."
+      ]
+    },
+    {
+      "lines": [
+        "Ocean's billows! far and wide",
+        "Rolling in majestic pride:",
+        "Loud still louder, swell the strain,",
+        "Peace on earth, good will to men."
+      ]
+    },
+    {
+      "lines": [
+        "Christians! who these blessings feel,",
+        "And in adoration kneel;",
+        "Loud, still louder, swell the strain,",
+        "Praise to God, good will to men."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to INNOCENTS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:812"
+}

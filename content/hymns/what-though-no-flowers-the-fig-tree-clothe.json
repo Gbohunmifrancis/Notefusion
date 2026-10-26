@@ -1,0 +1,62 @@
+{
+  "title": "What Though No Flowers the Fig-tree Clothe",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "What Though No Flowers the Fig-tree Clothe in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 629 of its twenty-second edition (1853), “Rejoicing in Adversity”, where the book credits them to Burder's Collection.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "What though no flowers the fig tree clothe Though vines their fruit de-ny, The la-bor of the o-live fail, And fields no meat sup-ply;",
+  "verses": [
+    {
+      "lines": [
+        "What though no flowers the fig-tree clothe",
+        "Though vines their fruit deny,",
+        "The labor of the olive fail,",
+        "And fields no meat supply; —"
+      ]
+    },
+    {
+      "lines": [
+        "Though from the fold, with sad surprise,",
+        "My flock cut off I see;",
+        "Though famine reign in empty stalls,",
+        "Where herds were wont to be; —"
+      ]
+    },
+    {
+      "lines": [
+        "Yet in the Lord will I be glad,",
+        "And glory in his love;",
+        "In him I'll joy, who will the God",
+        "Of my salvation prove."
+      ]
+    },
+    {
+      "lines": [
+        "God is the treasure of my soul,",
+        "The source of lasting joy —",
+        "A joy which want shall not impair,",
+        "Nor death itself destroy."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:629"
+}

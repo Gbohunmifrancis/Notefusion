@@ -1,0 +1,71 @@
+{
+  "title": "Interval of Grateful Shade",
+  "tune": "pleyels-hymn",
+  "text": [
+    {
+      "name": "Philip Doddridge",
+      "born": 1702,
+      "died": 1751,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Interval of Grateful Shade in Tonic Solfa to PLEYEL'S HYMN, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Philip Doddridge wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 949 of its twenty-second edition (1853), “Evening Hymn”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to PLEYEL'S HYMN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "In-ter-val of grate-ful shade, Wel-come to my wea-ry head! Wel-come slum-bers to mine eyes, Tired with glar-ing van-i-ties!",
+  "verses": [
+    {
+      "lines": [
+        "Interval of grateful shade,",
+        "Welcome to my weary head!",
+        "Welcome slumbers to mine eyes,",
+        "Tired with glaring vanities!"
+      ]
+    },
+    {
+      "lines": [
+        "My great Master still allows",
+        "Needful periods of repose:",
+        "By my heavenly Father blest,",
+        "Thus I give my powers to rest."
+      ]
+    },
+    {
+      "lines": [
+        "Heavenly Father, gracious name!",
+        "Night and day his love the same!",
+        "Far be each suspicious thought,",
+        "Every anxious care forgot!"
+      ]
+    },
+    {
+      "lines": [
+        "Thou, my ever-bounteous God,",
+        "Crown'st my days with various good;",
+        "Thy kind eye which cannot sleep,",
+        "My defenceless hours shall keep."
+      ]
+    },
+    {
+      "lines": [
+        "Blest vicissitude to me!",
+        "Day and night I'm still with thee;",
+        "Guarded thus I sink to rest,",
+        "Lodged within my Father's breast"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Philip Doddridge died in 1751.",
+  "credits": "Words by Philip Doddridge (1702–1751), public domain, as printed in Hymns for Christian Devotion (1853); set to PLEYEL'S HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:949"
+}

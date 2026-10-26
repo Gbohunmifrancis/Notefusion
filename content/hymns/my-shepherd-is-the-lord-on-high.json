@@ -1,0 +1,67 @@
+{
+  "title": "My Shepherd Is the Lord on High",
+  "tune": "materna",
+  "text": [
+    {
+      "name": "John Quincy Adams",
+      "born": 1767,
+      "died": 1848,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "My Shepherd Is the Lord on High in Tonic Solfa to MATERNA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Quincy Adams wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 648 of its twenty-second edition (1853), “Psalm 23”.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to MATERNA; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "My Shep-herd is the Lord on high; His hand sup-plies me still; In pas-tures green he makes me lie, Be-side the rip-pling rill: He cheers my soul, re-lieves my woes, His glo-ry to dis-play; The paths of right-eous-ness he shows, And leads me in his way.",
+  "verses": [
+    {
+      "lines": [
+        "My Shepherd is the Lord on high;",
+        "His hand supplies me still;",
+        "In pastures green he makes me lie,",
+        "Beside the rippling rill:",
+        "He cheers my soul, relieves my woes,",
+        "His glory to display;",
+        "The paths of righteousness he shows,",
+        "And leads me in his way."
+      ]
+    },
+    {
+      "lines": [
+        "Though walking through death's dismal shade,",
+        "No evil will I fear;",
+        "Thy rod, thy staff shall lend me aid,",
+        "For thou art ever near:",
+        "For me a table thou dost spread",
+        "In presence of my foes;",
+        "With oil thou dost anoint my head;",
+        "By thee my cup o'erflows."
+      ]
+    },
+    {
+      "lines": [
+        "Thy goodness and thy mercy sure",
+        "Shall bless me all my days;",
+        "And I, with lips sincere and pure,",
+        "Will celebrate thy praise:",
+        "Yes, in the temple of the Lord",
+        "Forever I will dwell;",
+        "To after time thy name record,",
+        "And of thy glory tell."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Quincy Adams died in 1848.",
+  "credits": "Words by John Quincy Adams (1767–1848), public domain, as printed in Hymns for Christian Devotion (1853); set to MATERNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:648"
+}

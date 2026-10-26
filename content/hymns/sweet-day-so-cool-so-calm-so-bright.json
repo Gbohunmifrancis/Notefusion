@@ -1,0 +1,63 @@
+{
+  "title": "Sweet Day! So Cool, So Calm, So Bright",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "George Herbert",
+      "born": 1593,
+      "died": 1633,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Sweet Day! So Cool, So Calm, So Bright in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "George Herbert wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 962 of its twenty-second edition (1853), “The Soul's Beauty Unfading”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Sweet day! so cool, so calm, so bright, Bri-dal of earth and sky, The dew shall weep thy fall to night, For thou, a-las! must die.",
+  "verses": [
+    {
+      "lines": [
+        "Sweet day! so cool, so calm, so bright,",
+        "Bridal of earth and sky,",
+        "The dew shall weep thy fall to-night,",
+        "For thou, alas! must die."
+      ]
+    },
+    {
+      "lines": [
+        "Sweet rose! in air whose odors wave,",
+        "And color charms the eye,",
+        "Thy root is ever in its grave,",
+        "And thou, alas! must die."
+      ]
+    },
+    {
+      "lines": [
+        "Sweet spring! of days and roses made,",
+        "Whose charms for beauty vie,",
+        "Thy days depart, thy roses fade;",
+        "Thou too, alas! must die."
+      ]
+    },
+    {
+      "lines": [
+        "Only a sweet and holy soul",
+        "Hath tints that never fly;",
+        "While flowers decay, and seasons roll,",
+        "This lives, and cannot die."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: George Herbert died in 1633.",
+  "credits": "Words by George Herbert (1593–1633), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:962"
+}

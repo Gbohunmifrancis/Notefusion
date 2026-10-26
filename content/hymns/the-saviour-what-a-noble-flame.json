@@ -1,0 +1,63 @@
+{
+  "title": "The Saviour, What a Noble Flame",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "The Saviour, What a Noble Flame in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 223 of its twenty-second edition (1853), “\"He steadfastly set his face to go to Jerusalem.\"”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The Sa-viour, what a no-ble flame, Was kin-dled in his breast, When hast-ing to Je-ru-sa-lem, He marched be-fore the rest!",
+  "verses": [
+    {
+      "lines": [
+        "The Saviour, what a noble flame,",
+        "Was kindled in his breast,",
+        "When hasting to Jerusalem,",
+        "He marched before the rest!"
+      ]
+    },
+    {
+      "lines": [
+        "Good-will to men, and zeal for God,",
+        "His every thought engross;",
+        "He goes to be baptized with blood;",
+        "He goes to meet the cross."
+      ]
+    },
+    {
+      "lines": [
+        "With all his sufferings full in view,",
+        "And woes to us unknown,",
+        "Forth to the task his spirit flew;",
+        "'Twas love that urged him on."
+      ]
+    },
+    {
+      "lines": [
+        "And while his holy sorrows here",
+        "Engage our wondering eyes,",
+        "We learn our lighter cross to bear,",
+        "And hasten to the skies."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Hymns for Christian Devotion (1853); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:223"
+}

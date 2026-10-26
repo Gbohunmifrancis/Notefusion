@@ -1,0 +1,63 @@
+{
+  "title": "The Wandering Star and Fleeting Wind",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Benjamin Beddome",
+      "born": 1717,
+      "died": 1795,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "The Wandering Star and Fleeting Wind in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Benjamin Beddome wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 326 of its twenty-second edition (1853), “Inconstancy Lamented”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The wan-dering star and fleet-ing wind Are em-blems of the fick-le mind; The morn-ing cloud and ear-ly dew Bring our in-con-stan-cy to view.",
+  "verses": [
+    {
+      "lines": [
+        "The wandering star and fleeting wind",
+        "Are emblems of the fickle mind;",
+        "The morning cloud and early dew",
+        "Bring our inconstancy to view."
+      ]
+    },
+    {
+      "lines": [
+        "But cloud and wind and dew and star,",
+        "Only a faint resemblance bear;",
+        "Nor can there aught in nature be",
+        "So changeable and frail as we."
+      ]
+    },
+    {
+      "lines": [
+        "Our outward walk and inward frame",
+        "Are scarcely through an hour the same:",
+        "We vow, and straight our vows forget,",
+        "And then those very vows repeat."
+      ]
+    },
+    {
+      "lines": [
+        "With contrite hearts, Lord, we confess",
+        "Our folly and unsteadfastness:",
+        "When shall these hearts more stable be,",
+        "Fixed by thy grace alone on thee?"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Benjamin Beddome died in 1795.",
+  "credits": "Words by Benjamin Beddome (1717–1795), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:326"
+}

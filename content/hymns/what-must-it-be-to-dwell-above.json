@@ -1,0 +1,60 @@
+{
+  "title": "What Must It Be to Dwell Above",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "What Must It Be to Dwell Above in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 511 of its twenty-second edition (1853), “Foretaste of Heaven”, where the book credits them to the Christian Psalmist.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "What must it be to dwell a-bove, At God's right hand, where Je-sus reigns, Since the sweet ear-nest of his love O'er-whelms us on these earth-ly plains! No heart can think, no tongue ex-plain, What bliss it is with Christ to reign.",
+  "verses": [
+    {
+      "lines": [
+        "What must it be to dwell above,",
+        "At God's right hand, where Jesus reigns,",
+        "Since the sweet earnest of his love",
+        "O'erwhelms us on these earthly plains!",
+        "No heart can think, no tongue explain,",
+        "What bliss it is with Christ to reign."
+      ]
+    },
+    {
+      "lines": [
+        "When sin no more obstructs our sight,",
+        "When sorrow pains our hearts no more,",
+        "How shall we view the Prince of Light",
+        "And all his works of grace explore!",
+        "What heights and depths of love divine",
+        "Will there through endless ages shine!"
+      ]
+    },
+    {
+      "lines": [
+        "This is the heaven I long to know;",
+        "For this, with patience, I would wait,",
+        "Till, weaned from earth, and all below,",
+        "I mount to my celestial seat,",
+        "And wave my palm, and wear my crown,",
+        "And, with the elders, cast them down."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:511"
+}

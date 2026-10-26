@@ -1,0 +1,63 @@
+{
+  "title": "Praise Ye the Lord, Around Whose Throne",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Hosea Ballou II",
+      "born": 1796,
+      "died": 1861,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Praise Ye the Lord, Around Whose Throne in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Hosea Ballou II wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 157 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Praise ye the Lord, a-round whose throne All heaven in cease-less wor-ship waits, Whose glo-ry fills the worlds un-known Praise ye the Lord from Zi-on's gates.",
+  "verses": [
+    {
+      "lines": [
+        "Praise ye the Lord, around whose throne",
+        "All heaven in ceaseless worship waits,",
+        "Whose glory fills the worlds unknown —",
+        "Praise ye the Lord from Zion's gates."
+      ]
+    },
+    {
+      "lines": [
+        "With mingling souls and voices join;",
+        "To him the swelling anthem raise;",
+        "Repeat his name with joy divine,",
+        "And fill the temple with his praise."
+      ]
+    },
+    {
+      "lines": [
+        "All-gracious God, to thee we owe",
+        "Each joy and blessing time affords, —",
+        "Light, life, and health, and all below,",
+        "Spring from thy presence, Lord of lords."
+      ]
+    },
+    {
+      "lines": [
+        "Thine be the praise, for thine the love",
+        "That freely all our sins forgave,",
+        "Pointed our dying eyes above,",
+        "And showed us life beyond the grave."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Hosea Ballou II died in 1861.",
+  "credits": "Words by Hosea Ballou II (1796–1861), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:157"
+}

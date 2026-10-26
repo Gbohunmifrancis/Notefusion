@@ -1,0 +1,62 @@
+{
+  "title": "Thy Presence, Gracious God, Afford",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Thy Presence, Gracious God, Afford in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 23 of its twenty-second edition (1853), “For Opening or Close of Service”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thy pre-sence, gra-cious God, af-ford; Pre-pare us to re-ceive thy word; Now let thy voice en-gage our ear, And faith be mixed with what we hear.",
+  "verses": [
+    {
+      "lines": [
+        "Thy presence, gracious God, afford;",
+        "Prepare us to receive thy word;",
+        "Now let thy voice engage our ear,",
+        "And faith be mixed with what we hear."
+      ]
+    },
+    {
+      "lines": [
+        "Distracting thoughts and cares remove,",
+        "And fix our hearts and hopes above;",
+        "With food divine may we be fed,",
+        "And satisfied with living bread."
+      ]
+    },
+    {
+      "lines": [
+        "To us the sacred word apply",
+        "With sovereign power and energy;",
+        "And may we, in thy faith and fear,",
+        "Reduce to practice what we hear."
+      ]
+    },
+    {
+      "lines": [
+        "Father, in us thy Son reveal;",
+        "Teach us to know and do thy will;",
+        "Thy saving power and love display,",
+        "And guide us to the realms of day."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:23"
+}

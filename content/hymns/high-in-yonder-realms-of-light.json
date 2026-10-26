@@ -1,0 +1,55 @@
+{
+  "title": "High, in Yonder Realms of Light",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "Thomas Raffles",
+      "born": 1788,
+      "died": 1863,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "High, in Yonder Realms of Light in Tonic Solfa to HEINLEIN, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Thomas Raffles wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 562 of its twenty-second edition (1853), “The Saints in Glory”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to HEINLEIN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "High, in yon-der realms of light, Dwell the rap-tured saints a-bove, Far be-yond our fee-ble sight, Hap-py in Im-man-uel's love.",
+  "verses": [
+    {
+      "lines": [
+        "High, in yonder realms of light,",
+        "Dwell the raptured saints above,",
+        "Far beyond our feeble sight,",
+        "Happy in Immanuel's love."
+      ]
+    },
+    {
+      "lines": [
+        "Happy spirits, ye are fled",
+        "Where no grief can entrance find,",
+        "Lulled to rest the aching head,",
+        "Soothed the anguish of the mind."
+      ]
+    },
+    {
+      "lines": [
+        "'Mid the chorus of the skies,",
+        "'Mid the angelic lyres above",
+        "Hark! their songs melodious rise, —",
+        "Songs of praise to Jesus' love."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Thomas Raffles died in 1863.",
+  "credits": "Words by Thomas Raffles (1788–1863), public domain, as printed in Hymns for Christian Devotion (1853); set to HEINLEIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:562"
+}

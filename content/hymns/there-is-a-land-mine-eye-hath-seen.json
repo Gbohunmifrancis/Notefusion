@@ -1,0 +1,62 @@
+{
+  "title": "There Is a Land Mine Eye Hath Seen",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "There Is a Land Mine Eye Hath Seen in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 564 of its twenty-second edition (1853), “The Better Land”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "There is a land mine eye hath seen, In vi-sions of en-rap-tured thought So bright that all which spreads be-tween Is with its ra-diant glo-ry fraught;",
+  "verses": [
+    {
+      "lines": [
+        "There is a land mine eye hath seen,",
+        "In visions of enraptured thought",
+        "So bright that all which spreads between",
+        "Is with its radiant glory fraught; —"
+      ]
+    },
+    {
+      "lines": [
+        "A land upon whose blissful shore",
+        "There rests no shadow, falls no stain;",
+        "There those who meet shall part no more,",
+        "And those long parted meet again."
+      ]
+    },
+    {
+      "lines": [
+        "Its skies are not like earthly skies,",
+        "With varying hues of shade and light;",
+        "It hath no need of suns to rise,",
+        "To dissipate the gloom of night."
+      ]
+    },
+    {
+      "lines": [
+        "There sweeps no desolating wind",
+        "Across that calm, serene abode;",
+        "The wanderer there a home may find,",
+        "Within the paradise of God."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:564"
+}

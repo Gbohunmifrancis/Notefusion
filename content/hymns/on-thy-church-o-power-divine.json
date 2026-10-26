@@ -1,0 +1,50 @@
+{
+  "title": "On Thy Church, O Power Divine",
+  "tune": "ratisbon-werner",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "On Thy Church, O Power Divine in Tonic Solfa to RATISBON (WERNER), doh is D: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 308 of its twenty-second edition (1853), “Glory of the Church”, where the book credits them to the Spirit of the Psalms.",
+    "The book printed the words without tunes, marked Sevens, six lines (7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to RATISBON (WERNER); any other Sevens, six lines tune fits them as well."
+  ],
+  "underlay": "On thy church, O Power Di-vine, Cause thy glo-rious face to shine; Till the na-tions from a-far Hail her as their gui-ding star; Till her sons, from zone to zone, Make thy great sal-va-tion known.",
+  "verses": [
+    {
+      "lines": [
+        "On thy church, O Power Divine,",
+        "Cause thy glorious face to shine;",
+        "Till the nations from afar",
+        "Hail her as their guiding star;",
+        "Till her sons, from zone to zone,",
+        "Make thy great salvation known."
+      ]
+    },
+    {
+      "lines": [
+        "Then shall God, with lavish hand,",
+        "Scatter blessings o'er the land;",
+        "Earth shall yield her rich increase,",
+        "Every breeze shall whisper peace,",
+        "And the world's remotest bound",
+        "With the voice of praise resound."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to RATISBON (WERNER) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:308"
+}

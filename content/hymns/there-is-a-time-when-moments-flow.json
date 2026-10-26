@@ -1,0 +1,62 @@
+{
+  "title": "There Is a Time When Moments Flow",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "There Is a Time When Moments Flow in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 960 of its twenty-second edition (1853), “Sabbath Evening”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "There is a time when mo-ments flow More hap-pi-ly than all be-side; It is, of all the times be-low, A Sab-bath of the ev-en-tide.",
+  "verses": [
+    {
+      "lines": [
+        "There is a time when moments flow",
+        "More happily than all beside;",
+        "It is, of all the times below,",
+        "A Sabbath of the eventide."
+      ]
+    },
+    {
+      "lines": [
+        "O then the setting sun shines fair,",
+        "And all below, and all above,",
+        "The various forms of Nature, wear",
+        "One universal garb of love."
+      ]
+    },
+    {
+      "lines": [
+        "And then the peace that Jesus brought",
+        "The life of grace eternal beams,",
+        "And we, by his example taught,",
+        "Improve the life his love redeems."
+      ]
+    },
+    {
+      "lines": [
+        "Delightful scene! a world at rest;",
+        "A God all love; no grief, no fear;",
+        "A heavenly hope, a peaceful breast,",
+        "A smile, unsullied by a tear."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:960"
+}

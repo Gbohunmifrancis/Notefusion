@@ -1,0 +1,62 @@
+{
+  "title": "Father, Hear Us When We Pray",
+  "tune": "st-bees",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Father, Hear Us When We Pray in Tonic Solfa to ST. BEES, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 904 of its twenty-second edition (1853), “For a Prayer Meeting”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to ST. BEES; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Fa-ther, hear us when we pray, Look in mer-cy from a-bove; Turn not, Lord, thy face a-way, Hear, and grant thy par-doning love.",
+  "verses": [
+    {
+      "lines": [
+        "Father, hear us when we pray,",
+        "Look in mercy from above;",
+        "Turn not, Lord, thy face away,",
+        "Hear, and grant thy pardoning love."
+      ]
+    },
+    {
+      "lines": [
+        "In the name of Christ we come,",
+        "Asking grace and seeking peace,",
+        "Raise our hearts to heaven, our home,",
+        "And from worldly cares release."
+      ]
+    },
+    {
+      "lines": [
+        "Pure and holy may we be,",
+        "Far removed all vain desire;",
+        "From all hate and envy free,",
+        "Let our souls to thee aspire."
+      ]
+    },
+    {
+      "lines": [
+        "While we love the Saviour's name,",
+        "And his words with zeal obey,",
+        "His sweet promise we may claim; —",
+        "\"He will meet us when we pray.\""
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST. BEES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:904"
+}

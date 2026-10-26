@@ -1,0 +1,62 @@
+{
+  "title": "Again Our Earthly Cares We Leave",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Again Our Earthly Cares We Leave in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 32 of its twenty-second edition (1853), “A Blessing sought”, where the book credits them to Pratt's Collection.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "A-gain our earth-ly cares we leave, And to thy courts re-pair; A-gain, with joy-ful feet we come To meet our Sa-viour here.",
+  "verses": [
+    {
+      "lines": [
+        "Again our earthly cares we leave,",
+        "And to thy courts repair;",
+        "Again, with joyful feet we come",
+        "To meet our Saviour here."
+      ]
+    },
+    {
+      "lines": [
+        "The feeling heart, the melting eye,",
+        "The humble mind, bestow;",
+        "And shine upon us from on high,",
+        "To make our graces grow."
+      ]
+    },
+    {
+      "lines": [
+        "May we in faith receive thy word,",
+        "In faith present our prayers,",
+        "And in the presence of our Lord",
+        "Unbosom all our cares."
+      ]
+    },
+    {
+      "lines": [
+        "Show us some token of thy love,",
+        "Our fainting hope to raise,",
+        "And pour thy blessing from above,",
+        "That we may render praise."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:32"
+}

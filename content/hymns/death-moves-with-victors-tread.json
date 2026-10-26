@@ -1,0 +1,61 @@
+{
+  "title": "Death Moves with Victor's Tread",
+  "tune": "st-john-parish-choir",
+  "text": [
+    {
+      "name": "John Greenleaf Adams",
+      "born": 1810,
+      "died": 1887,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Death Moves with Victor's Tread in Tonic Solfa to ST. JOHN (PARISH CHOIR), doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Greenleaf Adams wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 1004 of its twenty-second edition (1853), “Death of a Magistrate or Public Man”.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.8.8), to be sung to any tune of that metre. This page sets them to ST. JOHN (PARISH CHOIR); any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "Death moves with vic-tor's tread In our high pla-ces, Lord! The hon-or-a-ble dead We mourn with one ac-cord; Our souls, op-pressed, be-fore thee bow, Heed thou the prayer, ac-cept the vow.",
+  "verses": [
+    {
+      "lines": [
+        "Death moves with victor's tread",
+        "In our high places, Lord!",
+        "The honorable dead",
+        "We mourn with one accord;",
+        "Our souls, oppressed, before thee bow,",
+        "Heed thou the prayer, accept the vow."
+      ]
+    },
+    {
+      "lines": [
+        "While thus we feel the rod",
+        "Of thine afflictive love,",
+        "Teach us, our fathers' God,",
+        "Thy justice to approve.",
+        "Though all thy ways we cannot trace,",
+        "May we not doubt thy guardian grace."
+      ]
+    },
+    {
+      "lines": [
+        "O keep us in thy hand,",
+        "A chosen race for thee;",
+        "And make our own loved land",
+        "The true home of the free;",
+        "Where sin shall cease, and righteousness",
+        "Forever dwell, forever bless."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Greenleaf Adams died in 1887.",
+  "credits": "Words by John Greenleaf Adams (1810–1887), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. JOHN (PARISH CHOIR) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:1004"
+}

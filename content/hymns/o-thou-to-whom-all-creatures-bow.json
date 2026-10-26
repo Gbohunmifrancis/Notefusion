@@ -1,0 +1,69 @@
+{
+  "title": "O Thou, to Whom All Creatures Bow",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Nahum Tate",
+      "born": 1652,
+      "died": 1715,
+      "role": "Words"
+    },
+    {
+      "name": "Nicholas Brady",
+      "born": 1659,
+      "died": 1726,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O Thou, to Whom All Creatures Bow in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Nahum Tate and Nicholas Brady wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 134 of its twenty-second edition (1853), “God's Condescension”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O Thou, to whom all crea-tures bow With-in this earth-ly frame, Through all the world how great art thou! How glo-rious is thy name!",
+  "verses": [
+    {
+      "lines": [
+        "O Thou, to whom all creatures bow",
+        "Within this earthly frame,",
+        "Through all the world how great art thou!",
+        "How glorious is thy name!"
+      ]
+    },
+    {
+      "lines": [
+        "When heaven, thy glorious work on high,",
+        "Employs my wondering sight, —",
+        "The moon, that nightly rules the sky,",
+        "With stars of feebler light, —"
+      ]
+    },
+    {
+      "lines": [
+        "Lord, what is man, that he is blessed",
+        "With thy peculiar care!",
+        "Why on his offspring is conferred",
+        "Of love so large a share?"
+      ]
+    },
+    {
+      "lines": [
+        "O Thou, to whom all creatures bow",
+        "Within this earthly frame,",
+        "Through all the world how great art thou!",
+        "How glorious is thy name!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Nahum Tate died in 1715; Nicholas Brady died in 1726.",
+  "credits": "Words by Nahum Tate (1652–1715) and Nicholas Brady (1659–1726), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:134"
+}

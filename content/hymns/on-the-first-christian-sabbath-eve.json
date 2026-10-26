@@ -1,0 +1,63 @@
+{
+  "title": "On the First Christian Sabbath Eve",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "On the First Christian Sabbath Eve in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 56 of its twenty-second edition (1853), “Introduction to Evening Worship”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "On the first Chris-tian Sab-bath eve, When his dis-ci-ples met O'er his lost fel-low-ship to grieve, Nor knew the Scrip-ture yet,",
+  "verses": [
+    {
+      "lines": [
+        "On the first Christian Sabbath eve,",
+        "When his disciples met",
+        "O'er his lost fellowship to grieve,",
+        "Nor knew the Scripture yet, —"
+      ]
+    },
+    {
+      "lines": [
+        "Lo! in their midst his form was seen, —",
+        "The form in which he died;",
+        "Their Master's marred and wounded mien, —",
+        "His hands, his feet, his side."
+      ]
+    },
+    {
+      "lines": [
+        "Then were they glad their Lord to know,",
+        "And hailed him, yet with fear; —",
+        "Jesus, again thy presence show;",
+        "Meet thy disciples here."
+      ]
+    },
+    {
+      "lines": [
+        "Be in our midst; let faith rejoice",
+        "Our risen Lord to view,",
+        "And make our spirits hear thy voice",
+        "Say, \"Peace be unto you!\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:56"
+}

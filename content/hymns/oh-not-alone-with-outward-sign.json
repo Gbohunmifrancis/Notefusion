@@ -1,0 +1,55 @@
+{
+  "title": "Oh! Not Alone with Outward Sign",
+  "tune": "all-saints-new",
+  "text": [
+    {
+      "name": "John Greenleaf Whittier",
+      "born": 1807,
+      "died": 1892,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Oh! Not Alone with Outward Sign in Tonic Solfa to ALL SAINTS, NEW, doh is Bb: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "John Greenleaf Whittier wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 821 of its twenty-second edition (1853), “The Call of Truth”.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to ALL SAINTS, NEW; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "Oh! not a-lone with out-ward sign, Of fear, or voice from heaven, The mes-sage of a truth di-vine, The call of God, is given; Awak-en-ing in the hu-man heart, Love for the true and right, Zeal for the Christ-ian's bet-ter part, Strength for the Christ-ian's fight.",
+  "verses": [
+    {
+      "lines": [
+        "Oh! not alone with outward sign,",
+        "Of fear, or voice from heaven,",
+        "The message of a truth divine,",
+        "The call of God, is given;",
+        "Awakening in the human heart,",
+        "Love for the true and right,",
+        "Zeal for the Christian's better part,",
+        "Strength for the Christian's fight."
+      ]
+    },
+    {
+      "lines": [
+        "Though heralded by nought of fear,",
+        "Or outward sign or show;",
+        "Though only to the inward ear",
+        "It whisper soft and low;",
+        "Though dropping as the manna fell,",
+        "Unseen, yet from above,",
+        "Holy and gentle, heed it well:",
+        "The call to truth and love."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Greenleaf Whittier died in 1892.",
+  "credits": "Words by John Greenleaf Whittier (1807–1892), public domain, as printed in Hymns for Christian Devotion (1853); set to ALL SAINTS, NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:821"
+}
