@@ -1,0 +1,79 @@
+{
+  "title": "Thou God That Answerest by Fire",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Thou God That Answerest by Fire in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 412.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thou God that an-swer-est by fire, On thee in Je-su's name we call; Ful-fil our faith-ful hearts' de-sire, And let on us thy Spir-it fall.",
+  "verses": [
+    {
+      "lines": [
+        "Thou God that answerest by fire,",
+        "On thee in Jesu's name we call;",
+        "Fulfil our faithful hearts' desire,",
+        "And let on us thy Spirit fall."
+      ]
+    },
+    {
+      "lines": [
+        "Bound on the altar of thy cross,",
+        "Our old offending nature lies;",
+        "Now, for the honour of thy cause,",
+        "Come, and consume the sacrifice!"
+      ]
+    },
+    {
+      "lines": [
+        "Consume our lusts as rotten wood,",
+        "Consume our stony hearts within!",
+        "Consume the dust, the serpent's food,",
+        "And dry up all the streams of sin."
+      ]
+    },
+    {
+      "lines": [
+        "Its body totally destroy!",
+        "Thyself The Lord, The God, approve!",
+        "And fill our hearts with holy joy,",
+        "And fervent zeal, and perfect love."
+      ]
+    },
+    {
+      "lines": [
+        "O that the fire from heaven might fall,",
+        "Our sins its ready victims find,",
+        "Seize on our sins, and burn up all,",
+        "Nor leave the least remains behind!"
+      ]
+    },
+    {
+      "lines": [
+        "Then shall our prostrate souls adore;",
+        "The Lord, He is the God, confess:",
+        "He is the God of saving power!",
+        "He is the God of hallowing grace!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:412"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "Stay, Thou Insulted Spirit, Stay",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Stay, Thou Insulted Spirit, Stay in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 161.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Stay, thou in-sult-ed Spir-it, stay, Though I have done thee such de-spite, Nor cast the sin-ner quite a-way, Nor take thine ev-er-last-ing flight.",
+  "verses": [
+    {
+      "lines": [
+        "Stay, thou insulted Spirit, stay,",
+        "Though I have done thee such despite,",
+        "Nor cast the sinner quite away,",
+        "Nor take thine everlasting flight."
+      ]
+    },
+    {
+      "lines": [
+        "Though I have steeled my stubborn heart,",
+        "And still shook off my guilty fears,",
+        "And vexed, and urged thee to depart,",
+        "For many long rebellious years;"
+      ]
+    },
+    {
+      "lines": [
+        "Though I have most unfaithful been",
+        "Of all who e'er thy grace received,",
+        "Ten thousand times thy goodness seen,",
+        "Ten thousand times thy goodness grieved;"
+      ]
+    },
+    {
+      "lines": [
+        "Yet O! the chief of sinners spare,",
+        "In honour of my great High-priest,",
+        "Nor in thy righteous anger swear",
+        "To exclude me from thy people's rest."
+      ]
+    },
+    {
+      "lines": [
+        "This only woe I deprecate.",
+        "This only plague I pray remove;",
+        "Nor leave me in my lost estate,",
+        "Nor curse me with this want of love."
+      ]
+    },
+    {
+      "lines": [
+        "Now, Lord, my weary soul release,",
+        "Up-raise me with thy gracious hand.",
+        "And guide into thy perfect peace,",
+        "And bring me to the promised land."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:161"
+}

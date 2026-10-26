@@ -1,0 +1,71 @@
+{
+  "title": "Young Men and Maidens, Raise",
+  "tune": "darwall",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Young Men and Maidens, Raise in Tonic Solfa to DARWALL, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 232.",
+    "The book printed the words without tunes. They are in Hallelujah Metre (6.6.6.6.8.8), and this page sets them to DARWALL; any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "Young men and maid-ens, raise Your tune-ful voi-ces high; Old men and child-ren, praise The Lord of earth and sky; Him Three in One, and One in Three, Ex-tol to all e-ter-ni-ty.",
+  "verses": [
+    {
+      "lines": [
+        "Young men and maidens, raise",
+        "Your tuneful voices high;",
+        "Old men and children, praise",
+        "The Lord of earth and sky;",
+        "Him Three in One, and One in Three,",
+        "Extol to all eternity."
+      ]
+    },
+    {
+      "lines": [
+        "The universal King",
+        "Let all the world proclaim;",
+        "Let every creature sing",
+        "His attributes and name!",
+        "Him Three in One, and One in Three,",
+        "Extol to all eternity."
+      ]
+    },
+    {
+      "lines": [
+        "In his great name alone",
+        "All excellencies meet,",
+        "Who sits upon the throne,",
+        "And shall for ever sit:",
+        "Him Three in One, and One in Three,",
+        "Extol to all eternity."
+      ]
+    },
+    {
+      "lines": [
+        "Glory to God belongs,",
+        "Glory to God be given,",
+        "Above the noblest songs",
+        "Of all in earth or heaven!",
+        "Him Three in One, and One in Three,",
+        "Extol to all eternity."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to DARWALL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:232"
+}

@@ -1,0 +1,70 @@
+{
+  "title": "For Ever Here My Rest Shall Be",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "For Ever Here My Rest Shall Be in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 346. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "For ev-er here my rest shall be, Close to thy bleed-ing side; This all my hope, and all my plea, For me the Sa-viour died!",
+  "verses": [
+    {
+      "lines": [
+        "For ever here my rest shall be,",
+        "Close to thy bleeding side;",
+        "This all my hope, and all my plea,",
+        "For me the Saviour died!"
+      ]
+    },
+    {
+      "lines": [
+        "My dying Saviour, and my God,",
+        "Fountain for guilt and sin,",
+        "Sprinkle me ever with thy blood,",
+        "And cleanse, and keep me clean."
+      ]
+    },
+    {
+      "lines": [
+        "Wash me, and make me thus thine own,",
+        "Wash me, and mine thou art,",
+        "Wash me, but not my feet alone,",
+        "My hands, my head, my heart."
+      ]
+    },
+    {
+      "lines": [
+        "The atonement of thy blood apply,",
+        "Till faith to sight improve,",
+        "Till hope in full fruition die,",
+        "And all my soul be love."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:346"
+}

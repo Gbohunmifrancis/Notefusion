@@ -1,0 +1,47 @@
+{
+  "title": "Pass a Few Swiftly-fleeting Years",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Pass a Few Swiftly-fleeting Years in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 48.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Pass a few swift-ly fleet-ing years, And all that now in bod-ies live Shall quit, like me, the vale of tears, Their right-eous sen-tence to re-ceive.",
+  "verses": [
+    {
+      "lines": [
+        "Pass a few swiftly-fleeting years,",
+        "And all that now in bodies live",
+        "Shall quit, like me, the vale of tears,",
+        "Their righteous sentence to receive."
+      ]
+    },
+    {
+      "lines": [
+        "But all, before they hence remove,",
+        "May mansions for themselves prepare",
+        "In that eternal house above;",
+        "And, O my God, shall I be there?"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:48"
+}

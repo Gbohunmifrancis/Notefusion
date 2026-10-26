@@ -1,0 +1,79 @@
+{
+  "title": "Jesus, Lord, We Look to Thee",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Jesus, Lord, We Look to Thee in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 509.",
+    "The book printed the words without tunes. They are in Sevens (7.7.7.7), and this page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Je-sus, Lord, we look to thee, Let us in thy name a-gree; Show thy-self the Prince of peace; Bid our jars for ev-er cease.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, Lord, we look to thee,",
+        "Let us in thy name agree;",
+        "Show thyself the Prince of peace;",
+        "Bid our jars for ever cease."
+      ]
+    },
+    {
+      "lines": [
+        "By thy reconciling love",
+        "Every stumbling-block remove;",
+        "Each to each unite, endear,",
+        "Come, and spread thy banner here!"
+      ]
+    },
+    {
+      "lines": [
+        "Make us of one heart and mind,",
+        "Courteous, pitiful, and kind,",
+        "Lowly, meek, in thought and word?",
+        "Together like our Lord."
+      ]
+    },
+    {
+      "lines": [
+        "Let us for each other care,",
+        "Each the other's burden bear,",
+        "To thy church the pattern give,",
+        "Show how true believers live."
+      ]
+    },
+    {
+      "lines": [
+        "Free from anger and from pride,",
+        "Let us thus in God abide;",
+        "All the depths of love express,",
+        "All the heights of holiness!"
+      ]
+    },
+    {
+      "lines": [
+        "Let us then with joy remove",
+        "To the family above;",
+        "On the wings of angels fly,",
+        "Show how true believers die."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:509"
+}

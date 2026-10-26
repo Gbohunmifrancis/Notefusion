@@ -1,0 +1,94 @@
+{
+  "title": "Brethren in Christ, and Well-beloved",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Brethren in Christ, and Well-beloved in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 490. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Bre-thren in Christ, and well be-loved, To Je-sus and his ser-vants dear, En-ter and show your-selves ap-proved; En-ter, and find that God is here.",
+  "verses": [
+    {
+      "lines": [
+        "Brethren in Christ, and well-beloved,",
+        "To Jesus and his servants dear,",
+        "Enter and show yourselves approved;",
+        "Enter, and find that God is here."
+      ]
+    },
+    {
+      "lines": [
+        "Welcome from earth: lo, the right hand",
+        "Of fellowship to you we give!",
+        "With open hearts and hands we stand,",
+        "And you in Jesu's name receive."
+      ]
+    },
+    {
+      "lines": [
+        "Say, are your hearts resolved as ours?",
+        "Then let them burn with sacred love;",
+        "Then let them taste the heavenly powers,",
+        "Partakers of the joys above."
+      ]
+    },
+    {
+      "lines": [
+        "Jesu, attend thyself reveal!",
+        "Are we not met in thy great name?",
+        "Thee in the midst we wait to feel,",
+        "We wait to catch the spreading flame."
+      ]
+    },
+    {
+      "lines": [
+        "Thou God that answerest by fire,",
+        "The Spirit of burning now impart;",
+        "And let the flames of pure desire",
+        "Rise from the altar of our heart."
+      ]
+    },
+    {
+      "lines": [
+        "Truly our fellowship below",
+        "With thee and with the Father is;",
+        "In thee eternal life we know,",
+        "And heaven's unutterable bliss."
+      ]
+    },
+    {
+      "lines": [
+        "In part we only know thee here,",
+        "But wait thy coming from above;",
+        "And we shall then behold thee near,",
+        "And we shall all be lost in love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:490"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "Our Earth We Now Lament to See",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Our Earth We Now Lament to See in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 442.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Our earth we now la-ment to see With floods of wick-ed-ness o'er-flowed, With vi-olence, wrong, and cru-el-ty, One wide ex-tend-ed field of blood, Where men like fiends each oth-er tear, In all the hell-ish rage of war.",
+  "verses": [
+    {
+      "lines": [
+        "Our earth we now lament to see",
+        "With floods of wickedness o'erflowed,",
+        "With violence, wrong, and cruelty,",
+        "One wide-extended field of blood,",
+        "Where men like fiends each other tear,",
+        "In all the hellish rage of war."
+      ]
+    },
+    {
+      "lines": [
+        "As listed on Abaddon's side,",
+        "They mangle their own flesh, and slay:",
+        "Tophet is moved, and opens wide",
+        "Its mouth for its enormous prey;",
+        "And myriads sink beneath the grave,",
+        "And plunge into the flaming wave."
+      ]
+    },
+    {
+      "lines": [
+        "O might the universal friend",
+        "This havoc of his creatures see!",
+        "Bid our unnatural discord end;",
+        "Declare us reconciled in thee;",
+        "Write kindness on our inward parts,",
+        "And chase the murderer from our hearts!"
+      ]
+    },
+    {
+      "lines": [
+        "Who now against each other rise,",
+        "The nations of the earth, constrain",
+        "To follow after peace, and prize",
+        "The blessings of thy righteous reign,",
+        "The joys of unity to prove,",
+        "The paradise of perfect love!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:442"
+}

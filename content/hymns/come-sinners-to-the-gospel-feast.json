@@ -1,0 +1,110 @@
+{
+  "title": "Come, Sinners, to the Gospel Feast",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Come, Sinners, to the Gospel Feast in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 2. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Come, sin-ners, to the gos-pel feast, Let ev-ery soul be Je-su's guest; Ye need not one be left be-hind, For God hath bid-den all man-kind.",
+  "verses": [
+    {
+      "lines": [
+        "Come, sinners, to the gospel feast,",
+        "Let every soul be Jesu's guest;",
+        "Ye need not one be left behind,",
+        "For God hath bidden all mankind."
+      ]
+    },
+    {
+      "lines": [
+        "Sent by my Lord, on you I call,",
+        "The invitation is to ALL:",
+        "Come, all the world; come, sinner, thou!",
+        "All things in Christ are ready now."
+      ]
+    },
+    {
+      "lines": [
+        "Come, all ye souls by sin opprest,",
+        "Ye restless wanderers after rest,",
+        "Ye poor, and maimed, and halt, and blind,",
+        "In Christ a hearty welcome find."
+      ]
+    },
+    {
+      "lines": [
+        "Come, and partake the gospel feast;",
+        "Be saved from sin; in Jesus rest;",
+        "O taste the goodness of your God,",
+        "And eat his flesh, and drink his blood!"
+      ]
+    },
+    {
+      "lines": [
+        "Ye vagrant souls, on you I call;",
+        "(O that my voice could reach you all!)",
+        "Ye all may now be justified,",
+        "Ye all may live, for Christ hath died."
+      ]
+    },
+    {
+      "lines": [
+        "My message as from God receive,",
+        "Ye all may come to Christ, and live;",
+        "O let his love your hearts constrain,",
+        "Nor suffer him to die in vain!"
+      ]
+    },
+    {
+      "lines": [
+        "His love is mighty to compel;",
+        "His conquering love consent to feel,",
+        "Yield to his love's resistless power,",
+        "And fight against your God no more."
+      ]
+    },
+    {
+      "lines": [
+        "See him set forth before your eyes,",
+        "That precious, bleeding sacrifice!",
+        "His offered benefits embrace,",
+        "And freely now be saved by grace."
+      ]
+    },
+    {
+      "lines": [
+        "This is the time; no more delay!",
+        "This is the acceptable day,",
+        "Come in, this moment, at his call,",
+        "And live for him who died for all."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:2"
+}

@@ -1,0 +1,110 @@
+{
+  "title": "Ho! Every One That Thirsts, Draw Nigh",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Ho! Every One That Thirsts, Draw Nigh in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 4. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Ho! ev-ery one that thirsts, draw nigh! ('Tis God in-vites the fall-en race) Mer-cy and free sal-va-tion buy; Buy wine, and milk, and gos-pel grace.",
+  "verses": [
+    {
+      "lines": [
+        "Ho! every one that thirsts, draw nigh!",
+        "('Tis God invites the fallen race)",
+        "Mercy and free salvation buy;",
+        "Buy wine, and milk, and gospel grace."
+      ]
+    },
+    {
+      "lines": [
+        "Come to the living waters, come!",
+        "Sinners, obey your Maker's call;",
+        "Return, ye weary wanderers, home,",
+        "And find my grace is free for all."
+      ]
+    },
+    {
+      "lines": [
+        "See from the Rock a fountain rise!",
+        "For you in healing streams it rolls;",
+        "Money ye need not bring, nor price,",
+        "Ye labouring, burdened, sin-sick souls."
+      ]
+    },
+    {
+      "lines": [
+        "Nothing ye in exchange shall give,",
+        "Leave all you have and are behind,",
+        "Frankly the gift of God receive,",
+        "Pardon and peace in Jesus find."
+      ]
+    },
+    {
+      "lines": [
+        "Why seek ye that which is not bread,",
+        "Nor can your hungry souls sustain?",
+        "On ashes, husks, and air ye feed;",
+        "Ye spend your little all in vain."
+      ]
+    },
+    {
+      "lines": [
+        "In search of empty joys below,",
+        "Ye toil with unavailing strife;",
+        "Whither, ah! whither would ye go?",
+        "I have the words of endless life."
+      ]
+    },
+    {
+      "lines": [
+        "Hearken to me with earnest care,",
+        "And freely eat substantial food,",
+        "The sweetness of my mercy share,",
+        "And taste that I alone am good."
+      ]
+    },
+    {
+      "lines": [
+        "I bid you all my goodness prove,",
+        "My promises for all are free,",
+        "Come, taste the manna of my love,",
+        "And let your souls delight in me."
+      ]
+    },
+    {
+      "lines": [
+        "Your willing ear and heart incline,",
+        "My words believingly receive;",
+        "Quickened your souls by faith divine",
+        "An everlasting life shall live."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:4"
+}

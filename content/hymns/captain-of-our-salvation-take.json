@@ -1,0 +1,71 @@
+{
+  "title": "Captain of Our Salvation, Take",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Captain of Our Salvation, Take in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 474.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Cap-tain of our sal-va-tion, take The souls we here pre-sent to thee, And fit for thy great ser-vice make These heirs of im-mor-tal-i-ty; And let them in thine i-mage rise, And then trans-plant to Par-a-dise.",
+  "verses": [
+    {
+      "lines": [
+        "Captain of our salvation, take",
+        "The souls we here present to thee,",
+        "And fit for thy great service make",
+        "These heirs of immortality;",
+        "And let them in thine image rise,",
+        "And then transplant to Paradise."
+      ]
+    },
+    {
+      "lines": [
+        "Unspotted from the world and pure,",
+        "Preserve them for thy glorious cause,",
+        "Accustomed daily to endure",
+        "The welcome burden of thy cross;",
+        "Inured to toil and patient pain,",
+        "Till all thy perfect mind they gain."
+      ]
+    },
+    {
+      "lines": [
+        "Our sons henceforth be wholly thine,",
+        "And serve and love thee all their days,",
+        "Infuse the principle divine",
+        "In all who here expect thy grace;",
+        "Let each improve the grace bestowed;",
+        "Rise every child a man of God!"
+      ]
+    },
+    {
+      "lines": [
+        "Train up thy hardy soldiers, Lord,",
+        "In all their Captain's steps to tread",
+        "Or send them to proclaim the word,",
+        "The gospel through the world to spread.",
+        "Freely as they receive to give,",
+        "And preach the death by which we live."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:474"
+}

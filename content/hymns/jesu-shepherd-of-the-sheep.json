@@ -1,0 +1,61 @@
+{
+  "title": "Jesu, Shepherd of the Sheep",
+  "tune": "ratisbon-werner",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Jesu, Shepherd of the Sheep in Tonic Solfa to RATISBON (WERNER), doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 183.",
+    "The book printed the words without tunes. They are in Sevens, six lines (7.7.7.7.7.7), and this page sets them to RATISBON (WERNER); any other Sevens, six lines tune fits them as well."
+  ],
+  "underlay": "Je-su, Shep-herd of the sheep, Pi-ty my un-set-tled soul! Guide, and nour-ish me, and keep, Till thy love shall make me whole: Give me per-fect sound-ness, give, Make me stead-fast-ly be-lieve.",
+  "verses": [
+    {
+      "lines": [
+        "Jesu, Shepherd of the sheep,",
+        "Pity my unsettled soul!",
+        "Guide, and nourish me, and keep,",
+        "Till thy love shall make me whole:",
+        "Give me perfect soundness, give,",
+        "Make me steadfastly believe."
+      ]
+    },
+    {
+      "lines": [
+        "I am never at one stay,",
+        "Changing every hour I am;",
+        "But thou art, as yesterday,",
+        "Now and evermore the same;",
+        "Constancy to me impart,",
+        "Stablish with thy grace my heart."
+      ]
+    },
+    {
+      "lines": [
+        "Give me faith to hold me up,",
+        "Walking over life's rough sea,",
+        "Holy, purifying hope",
+        "Still my souls sure anchor be;",
+        "That I may be always thine,",
+        "Perfect me in love divine."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to RATISBON (WERNER) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:183"
+}

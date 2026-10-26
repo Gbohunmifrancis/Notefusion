@@ -1,0 +1,95 @@
+{
+  "title": "Saviour, I Now with Shame Confess",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Saviour, I Now with Shame Confess in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 180.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Sa-viour, I now with shame con-fess My thirst for crea-ture happ-i-ness; By base de-sires I wronged thy love, And forced thy mer-cy to re-move.",
+  "verses": [
+    {
+      "lines": [
+        "Saviour, I now with shame confess",
+        "My thirst for creature happiness;",
+        "By base desires I wronged thy love,",
+        "And forced thy mercy to remove."
+      ]
+    },
+    {
+      "lines": [
+        "Yet would I not regard thy stroke;",
+        "But when thou didst thy grace revoke,",
+        "And when thou didst thy face conceal,",
+        "Thy absence I refused to feel."
+      ]
+    },
+    {
+      "lines": [
+        "I knew not that the Lord was gone,",
+        "In my own froward will went on,",
+        "And lived to the desires of men;",
+        "And thou hast all my wanderings seen."
+      ]
+    },
+    {
+      "lines": [
+        "Yet, O the riches of thy grace!",
+        "Thou, who hast seen my evil ways,",
+        "Wilt freely my backslidings heal,",
+        "And pardon on my conscience seal."
+      ]
+    },
+    {
+      "lines": [
+        "For this I at thy footstool wait,",
+        "Till thou my peace again create;",
+        "Fruit of thy gracious lips, restore",
+        "My peace, and bid me sin no more!"
+      ]
+    },
+    {
+      "lines": [
+        "Far off, yet at thy feet, I lie,",
+        "Till thou again thy blood apply;",
+        "Till thou repeat my sins forgiven,",
+        "As far from God as hell from heaven."
+      ]
+    },
+    {
+      "lines": [
+        "But, for thy truth and mercy's sake,",
+        "My comfort thou wilt give me back,",
+        "And lead me on from grace to grace,",
+        "In all the paths of righteousness;"
+      ]
+    },
+    {
+      "lines": [
+        "Till, throughly saved, my new-born soul,",
+        "And perfectly by faith made whole,",
+        "Doth bright in thy full image rise,",
+        "To share thy glory in the skies."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:180"
+}

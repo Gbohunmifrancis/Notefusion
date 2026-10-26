@@ -1,0 +1,79 @@
+{
+  "title": "Jesus, My Master and My Lord",
+  "tune": "all-saints-new",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Jesus, My Master and My Lord in Tonic Solfa to ALL SAINTS, NEW, doh is Bb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 310.",
+    "The book printed the words without tunes. They are in Common Metre Double (8.6.8.6.8.6.8.6), and this page sets them to ALL SAINTS, NEW; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "Je-sus, my Mas-ter and my Lord, I would thy will o-bey, Hum-bly re-ceive thy warn-ing word, And al-ways watch and pray. My con-stant need of watch-ful prayer I dail-y see and feel, To keep me safe from ev-ery snare Of sin, and earth, and hell.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, my Master and my Lord,",
+        "I would thy will obey,",
+        "Humbly receive thy warning word,",
+        "And always watch and pray.",
+        "My constant need of watchful prayer",
+        "I daily see and feel,",
+        "To keep me safe from every snare",
+        "Of sin, and earth, and hell."
+      ]
+    },
+    {
+      "lines": [
+        "Into a world of ruffians sent,",
+        "I walk on hostile ground,",
+        "Wild human bears on slaughter bent,",
+        "And ravening wolves, surround:",
+        "The lion seeks my soul to slay",
+        "In some unguarded hour,",
+        "And waits to tear his sleeping prey,",
+        "And watches to devour."
+      ]
+    },
+    {
+      "lines": [
+        "But worse than all my foes I find",
+        "The enemy within,",
+        "The evil heart, the carnal mind,",
+        "My own insidious sin:",
+        "My nature every moment waits",
+        "To render me secure,",
+        "And all my paths with ease besets,",
+        "To make my ruin sure."
+      ]
+    },
+    {
+      "lines": [
+        "But thou hast given a loud alarm;",
+        "And thou shalt still prepare",
+        "My soul for all assaults, and arm",
+        "With never-ceasing prayer;",
+        "O do not suffer me to sleep,",
+        "Who on thy love depend;",
+        "But still thy faithful servant keep,",
+        "And save me to the end!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ALL SAINTS, NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:310"
+}

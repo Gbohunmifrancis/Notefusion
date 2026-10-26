@@ -24,9 +24,9 @@ function diedPhrase(p) { return p.lived ? (/^fl\./.test(p.lived) ? `${p.name} li
 export const OHP = { name: "Open Hymnal Project", url: "http://openhymnal.org/", copying: "http://openhymnal.org/copying.html", editor: "Brian J. Dumont" };
 
 /** "Joseph Mohr (1792–1848)" for each person, joined with "and". */
-function peopleText(people) {
+function peopleText(people, join = "and") {
   const ps = people.map((p) => `${p.name}${years(p)}`);
-  return ps.length > 1 ? `${ps.slice(0, -1).join(", ")} and ${ps[ps.length - 1]}` : ps[0] || "";
+  return ps.length > 1 ? `${ps.slice(0, -1).join(", ")} ${join} ${ps[ps.length - 1]}` : ps[0] || "";
 }
 
 /**
@@ -39,7 +39,8 @@ export function creditLine(h) {
   const parts = [];
   const tuneCredit = `tune ${t.name} ${t.music.some((p) => !p.traditional) ? `by ${peopleText(t.music.filter((p) => !p.traditional))}` : `(${t.music.map((p) => p.name.replace(/^Traditional /, "traditional ")).join(", ")})`}`;
   parts.push(tuneCredit);
-  parts.push(`words by ${peopleText(authors)}`);
+  // "textOneOf": one of those named wrote the words, the source cannot say which (Wesley's "W.").
+  parts.push(`words by ${peopleText(authors, h.textOneOf ? "or" : "and")}`);
   if (translators.length) parts.push(`translated by ${peopleText(translators)}`);
   let lead = "", leadHtml = "";
   const what = h.source === OHP.name ? "Melody and words" : t.source === OHP.name ? "Melody" : null;

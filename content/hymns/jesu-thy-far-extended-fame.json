@@ -1,0 +1,95 @@
+{
+  "title": "Jesu, Thy Far-extended Fame",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Jesu, Thy Far-extended Fame in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 397.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Je-su, thy far ex-tend-ed fame My droop-ing soul ex-ults to hear; Thy name, thy all re-stor-ing name, Is mu-sic in a sin-ner's ear.",
+  "verses": [
+    {
+      "lines": [
+        "Jesu, thy far-extended fame",
+        "My drooping soul exults to hear;",
+        "Thy name, thy all-restoring name,",
+        "Is music in a sinner's ear."
+      ]
+    },
+    {
+      "lines": [
+        "Sinners of old thou didst receive,",
+        "With comfortable words and kind,",
+        "Their sorrows cheer, their wants relieve,",
+        "Heal the diseased, and cure the blind."
+      ]
+    },
+    {
+      "lines": [
+        "And art thou not the Saviour still,",
+        "In every place and age the same?",
+        "Hast thou forgot thy gracious skill,",
+        "Or lost the virtue of thy name?"
+      ]
+    },
+    {
+      "lines": [
+        "Faith in thy changeless name I have;",
+        "The good, the kind physician, thou",
+        "Art able now our souls to save,",
+        "Art willing to restore them now."
+      ]
+    },
+    {
+      "lines": [
+        "Though eighteen hundred years are past",
+        "Since thou didst in the flesh appear,",
+        "Thy tender mercies ever last;",
+        "And still thy healing power is here!"
+      ]
+    },
+    {
+      "lines": [
+        "Wouldst thou the body's health restore,",
+        "And not regard the sin-sick soul?",
+        "The sin-sick soul thou lov'st much more,",
+        "And surely thou shalt make it whole."
+      ]
+    },
+    {
+      "lines": [
+        "All my disease, my every sin,",
+        "To thee, O Jesus, I confess;",
+        "In pardon, Lord, my cure begin,",
+        "And perfect it in holiness."
+      ]
+    },
+    {
+      "lines": [
+        "That token of thine utmost good",
+        "Now, Saviour, now on me bestow;",
+        "And purge my conscience with thy blood,",
+        "And wash my nature white as snow."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:397"
+}

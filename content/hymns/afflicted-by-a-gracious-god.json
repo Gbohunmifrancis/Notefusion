@@ -1,0 +1,61 @@
+{
+  "title": "Afflicted by a Gracious God",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Afflicted by a Gracious God in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 331.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "A-fflic-ted by a gra-cious God, The stroke I pa-tient-ly sus-tain, Griev-ous to fee-ble flesh and blood; Un-a-ble to re-joice in pain, Be-neath my Fa-ther's hand I bow, And groan to feel his chas-tening now.",
+  "verses": [
+    {
+      "lines": [
+        "Afflicted by a gracious God,",
+        "The stroke I patiently sustain,",
+        "Grievous to feeble flesh and blood;",
+        "Unable to rejoice in pain,",
+        "Beneath my Father's hand I bow,",
+        "And groan to feel his chastening now."
+      ]
+    },
+    {
+      "lines": [
+        "But when he hath my patience proved,",
+        "And sees me to his will resigned,",
+        "His heavy hand and rod removed",
+        "Shall leave the blest effect behind,",
+        "The sure, inviolable peace,",
+        "The ripened fruit of righteousness."
+      ]
+    },
+    {
+      "lines": [
+        "This pain, this consecrated pain,",
+        "With which my soul and flesh are filled,",
+        "His instrument if he ordain,",
+        "The pure and perfect love shall yield;",
+        "But by whatever means 'tis done,",
+        "The work and praise are all his own."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:331"
+}

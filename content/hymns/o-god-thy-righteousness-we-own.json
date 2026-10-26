@@ -1,0 +1,71 @@
+{
+  "title": "O GOD, Thy Righteousness We Own",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "O GOD, Thy Righteousness We Own in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 176.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "O GOD, thy right-eous-ness we own, Judg-ment is at thy house be-gun With hum-ble awe thy rod we hear, And guilt-y in thy sight ap-pear, We can-not in thy judge-ment stand, But sink be-neath thy might-y hand.",
+  "verses": [
+    {
+      "lines": [
+        "O GOD, thy righteousness we own,",
+        "Judgment is at thy house begun",
+        "With humble awe thy rod we hear,",
+        "And guilty in thy sight appear,",
+        "We cannot in thy judgement stand,",
+        "But sink beneath thy mighty hand."
+      ]
+    },
+    {
+      "lines": [
+        "Our mouth as in the dust we lay,",
+        "And still for mercy, mercy, pray;",
+        "Unworthy to behold thy face,",
+        "Unfaithful stewards of thy grace,",
+        "Our sin and wickedness we own,",
+        "And deeply for acceptance groan."
+      ]
+    },
+    {
+      "lines": [
+        "We have not, Lord, thy gifts improved,",
+        "But basely from thy statutes roved,",
+        "And done thy loving Spirit despite,",
+        "And sinned against the clearest light",
+        "Brought back thy agonizing pain,",
+        "And nailed thee to thy cross again."
+      ]
+    },
+    {
+      "lines": [
+        "Yet do not drive us from thy face,",
+        "A stiff-necked and hard-hearted race;",
+        "But O! in tender mercy break",
+        "The iron sinew in our neck;",
+        "The softening power of love impart,",
+        "And melt the marble of our heart."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:176"
+}

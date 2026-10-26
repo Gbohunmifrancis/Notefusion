@@ -1,0 +1,74 @@
+{
+  "title": "Other Ground Can No Man Lay",
+  "tune": "martyn",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Other Ground Can No Man Lay in Tonic Solfa to MARTYN, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 516. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Sevens Double (7.7.7.7.7.7.7.7), and this page sets them to MARTYN; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Oth-er ground can no man lay, Je-sus takes our sins a-way; Je-sus the foun-da-tion is, This shall stand, and on-ly this: Fit-ly framed in him we are, All the build-ing ris-es fair; Let it to a tem-ple rise, Wor-thy him who fills the skies.",
+  "verses": [
+    {
+      "lines": [
+        "Other ground can no man lay,",
+        "Jesus takes our sins away;",
+        "Jesus the foundation is,",
+        "This shall stand, and only this:",
+        "Fitly framed in him we are,",
+        "All the building rises fair;",
+        "Let it to a temple rise,",
+        "Worthy him who fills the skies."
+      ]
+    },
+    {
+      "lines": [
+        "Husband of thy church below,",
+        "Christ, if thee our Lord we know,",
+        "Unto thee, betrothed in love,",
+        "Always let us faithful prove;",
+        "Never rob thee of our heart,",
+        "Never give the creature part;",
+        "Only thou possess the whole;",
+        "Take our body, spirit, soul."
+      ]
+    },
+    {
+      "lines": [
+        "Steadfast let us cleave to thee;",
+        "Love the mystic union be,",
+        "Union to the world unknown,",
+        "Joined to God, in spirit one:",
+        "Wait we till the Spouse shall come,",
+        "Till the Lamb shall take us home,",
+        "For his heaven the bride prepare,",
+        "Solemnize our nuptials there."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MARTYN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:516"
+}

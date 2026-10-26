@@ -1,0 +1,110 @@
+{
+  "title": "Happy Soul Who Sees the Day",
+  "tune": "messiah-herald",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Happy Soul Who Sees the Day in Tonic Solfa to MESSIAH (HERALD), doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 197. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Sevens Double (7.7.7.7.7.7.7.7), and this page sets them to MESSIAH (HERALD); any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Hap-py soul who sees the day, The glad day of gos-pel grace! Thee, my Lord (thou then wilt say) Thee will I for ev-er praise; Though thy wrath a-gainst me burned, Thou dost com-fort me a-gain; All thy wrath a-side is turned, Thou hast blot-ted out my sin.",
+  "verses": [
+    {
+      "lines": [
+        "Happy soul who sees the day,",
+        "The glad day of gospel grace!",
+        "Thee, my Lord (thou then wilt say)",
+        "Thee will I for ever praise;",
+        "Though thy wrath against me burned,",
+        "Thou dost comfort me again;",
+        "All thy wrath aside is turned,",
+        "Thou hast blotted out my sin."
+      ]
+    },
+    {
+      "lines": [
+        "Me, behold! thy mercy spares,",
+        "Jesus my salvation is:",
+        "Hence my doubts, away my fears!",
+        "Jesus is become my peace:",
+        "JAH, JEHOVAH, is my Lord,",
+        "Ever merciful and just;",
+        "I will lean upon his word,",
+        "I will on his promise trust."
+      ]
+    },
+    {
+      "lines": [
+        "Strong I am, for he is strong,",
+        "Just in righteousness divine:",
+        "He is my triumphal song;",
+        "All he has, and is, is mine;",
+        "Mine, and yours, whoe'er believe;",
+        "On his name whoe'er shall call",
+        "Freely shall his grace receive;",
+        "He is full of grace for all."
+      ]
+    },
+    {
+      "lines": [
+        "Therefore shall ye draw with joy",
+        "Water from salvation's well;",
+        "Praise shall your glad tongues employ,",
+        "While his streaming grace ye feel:",
+        "Each to each ye then shall say,",
+        "\"Sinners, call upon his name;",
+        "O rejoice to see his day,",
+        "See it, and his praise proclaim!\""
+      ]
+    },
+    {
+      "lines": [
+        "Glory to his name belongs,",
+        "Great, and marvelous, and high;",
+        "Sing unto the Lord your songs,",
+        "Cry to every nation, cry!",
+        "Wondrous things the Lord hath done,",
+        "Excellent his name we find;",
+        "This to all mankind is known;",
+        "Be it known to all mankind!"
+      ]
+    },
+    {
+      "lines": [
+        "Zion, shout thy Lord and King,",
+        "Israel's HOLY ONE is he!",
+        "Give him thanks, rejoice, and sing;",
+        "Great he is, and dwells in thee.",
+        "O the grace unsearchable!",
+        "While eternal ages roll,",
+        "God delights in man to dwell,",
+        "Soul of each believing soul."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MESSIAH (HERALD) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:197"
+}

@@ -1,0 +1,95 @@
+{
+  "title": "Thou Son of God, Whose Flaming Eyes",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Thou Son of God, Whose Flaming Eyes in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 83.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Thou Son of God, whose fla-ming eyes Our in-most thoughts per-ceive, Ac-cept th'e-ve-ning sac-ri-fice Which now to thee we give.",
+  "verses": [
+    {
+      "lines": [
+        "Thou Son of God, whose flaming eyes",
+        "Our inmost thoughts perceive,",
+        "Accept the evening sacrifice",
+        "Which now to thee we give."
+      ]
+    },
+    {
+      "lines": [
+        "We bow before thy gracious throne,",
+        "And think ourselves sincere;",
+        "But show us, Lord, is every one",
+        "Thy real worshipper?"
+      ]
+    },
+    {
+      "lines": [
+        "Is here a soul that knows thee not,",
+        "Nor feels his want of thee?",
+        "A stranger to the blood which bought",
+        "His pardon on the tree?"
+      ]
+    },
+    {
+      "lines": [
+        "Convince him now of unbelief,",
+        "His desperate state explain;",
+        "And fill his heart with sacred grief,",
+        "And penitential pain."
+      ]
+    },
+    {
+      "lines": [
+        "Speak with that voice which wakes the dead,",
+        "And bid the sleeper rise!",
+        "And bid his guilty conscience dread",
+        "The death that never dies."
+      ]
+    },
+    {
+      "lines": [
+        "Extort the cry, \"What must be done",
+        "To save a wretch like me?",
+        "How shall a trembling sinner shun",
+        "That endless misery?"
+      ]
+    },
+    {
+      "lines": [
+        "\"I must this instant now begin",
+        "Out of my sleep to awake;",
+        "And turn to God, and every sin",
+        "Continually forsake:"
+      ]
+    },
+    {
+      "lines": [
+        "\"I must for faith incessant cry,",
+        "And wrestle, Lord, with thee:",
+        "I must be born again, or die",
+        "To all eternity.\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:83"
+}

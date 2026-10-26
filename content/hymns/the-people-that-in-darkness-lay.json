@@ -1,0 +1,81 @@
+{
+  "title": "The People That in Darkness Lay",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "The People That in Darkness Lay in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 493.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "The peo-ple that in dark-ness lay, The con-fines of e-ter-nal night, We, we have seen a gos-pel day, The glo-rious beams of heav-enly light, His Spir-it in our hearts hath shone, And showed the Fa-ther in the Son.",
+  "verses": [
+    {
+      "lines": [
+        "The people that in darkness lay,",
+        "The confines of eternal night,",
+        "We, we have seen a gospel day,",
+        "The glorious beams of heavenly light,",
+        "His Spirit in our hearts hath shone,",
+        "And showed the Father in the Son."
+      ]
+    },
+    {
+      "lines": [
+        "Father of everlasting grace,",
+        "Thou hast in us thy arm revealed,",
+        "Hast multiplied the faithful race,",
+        "Who, conscious of their pardon sealed,",
+        "Of joy unspeakable possest,",
+        "Anticipate their heavenly rest."
+      ]
+    },
+    {
+      "lines": [
+        "In tears who sowed, in joy we reap,",
+        "And praise thy goodness all day long:",
+        "Him in our eye of faith we keep,",
+        "Who gave us our triumphal song,",
+        "And doth his spoils to all divide,",
+        "A lot among the sanctified."
+      ]
+    },
+    {
+      "lines": [
+        "Thou hast our bonds in sunder broke,",
+        "Took all our load of guilt away;",
+        "From sin, the world, and Satan's yoke,",
+        "(Like Israel saved in Midian's day)",
+        "Redeemed us by our conquering Lord,",
+        "Our Gideon, and his Spirit's sword."
+      ]
+    },
+    {
+      "lines": [
+        "Not like the warring sons of men,",
+        "With shouts, and garments rolled in blood,",
+        "Our Captain doth the fight maintain;",
+        "But, lo! the burning Spirit of God",
+        "Kindles in each a secret fire;",
+        "And all our sins as smoke expire."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:493"
+}

@@ -1,0 +1,110 @@
+{
+  "title": "Infinite, Unexhausted Love",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Infinite, Unexhausted Love in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 216. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "In-fin-ite, un-ex-haust-ed Love! Je-sus and love are one! If still to me thy bow-els move, They are re-strained to none.",
+  "verses": [
+    {
+      "lines": [
+        "Infinite, unexhausted Love!",
+        "Jesus and love are one!",
+        "If still to me thy bowels move,",
+        "They are restrained to none."
+      ]
+    },
+    {
+      "lines": [
+        "What shall I do my God to love?",
+        "My loving God to praise?",
+        "The length, and breadth, and height to prove",
+        "And depth of sovereign grace?"
+      ]
+    },
+    {
+      "lines": [
+        "Thy sovereign grace to all extends,",
+        "Immense and unconfined;",
+        "From age to age it never ends;",
+        "It reaches all mankind."
+      ]
+    },
+    {
+      "lines": [
+        "Throughout the world its breadth is known,",
+        "Wide as infinity;",
+        "So wide, it never passed by one,",
+        "Or it had passed by me."
+      ]
+    },
+    {
+      "lines": [
+        "My trespass was grown up to heaven;",
+        "But far above the skies,",
+        "In Christ abundantly forgiven,",
+        "I see thy mercies rise."
+      ]
+    },
+    {
+      "lines": [
+        "The depth of all-redeeming love",
+        "What angel-tongue can tell?",
+        "O may I to the utmost prove",
+        "The gift unspeakable!"
+      ]
+    },
+    {
+      "lines": [
+        "Deeper than hell, it plucked me thence;",
+        "Deeper than inbred sin,",
+        "Jesus's love my heart shall cleanse",
+        "When Jesus enters in."
+      ]
+    },
+    {
+      "lines": [
+        "Come quickly, gracious Lord, and take",
+        "Possession of thine own;",
+        "My longing heart vouchsafe to make",
+        "Thine everlasting throne!"
+      ]
+    },
+    {
+      "lines": [
+        "Assert thy claim, maintain thy right,",
+        "Come quickly from above;",
+        "And sink me to perfection's height,",
+        "The depth of humble love."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:216"
+}

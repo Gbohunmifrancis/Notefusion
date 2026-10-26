@@ -1,0 +1,79 @@
+{
+  "title": "Great God! to Me the Sight Afford",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Great God! to Me the Sight Afford in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 249.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Great God! to me the sight af-ford To him of old al-lowed; And let my faith be-hold its Lord De-scend-ing in a cloud.",
+  "verses": [
+    {
+      "lines": [
+        "Great God! to me the sight afford",
+        "To him of old allowed;",
+        "And let my faith behold its Lord",
+        "Descending in a cloud."
+      ]
+    },
+    {
+      "lines": [
+        "In that revealing Spirit come down,",
+        "Thine attributes proclaim,",
+        "And to my inmost soul make known",
+        "The glories of thy name."
+      ]
+    },
+    {
+      "lines": [
+        "Jehovah, Christ, I thee adore,",
+        "Who gav'st my soul to be!",
+        "Fountain of being, and of power,",
+        "And great in majesty."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord, the mighty God, thou art;",
+        "But let me rather prove",
+        "That name in-spoken to my heart,",
+        "That favourite name of Love."
+      ]
+    },
+    {
+      "lines": [
+        "Merciful God, thyself proclaim",
+        "In this polluted breast;",
+        "Mercy is thy distinguished name,",
+        "Which suits a sinner best."
+      ]
+    },
+    {
+      "lines": [
+        "Our misery doth for pity call,",
+        "Our sin implores thy grace;",
+        "An and thou art merciful to all",
+        "Our lost, apostate race."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:249"
+}

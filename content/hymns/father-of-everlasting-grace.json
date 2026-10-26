@@ -1,0 +1,78 @@
+{
+  "title": "Father of Everlasting, Grace",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Father of Everlasting, Grace in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 377. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Fa-ther of ev-er-last-ing, grace, Thy good-ness and thy truth we praise, Thy good-ness and thy truth we prove; Thou hast, in hon-our of thy Son, The gift un-speak-a-ble sent down, The Spirit of life, and power, and love.",
+  "verses": [
+    {
+      "lines": [
+        "Father of everlasting, grace,",
+        "Thy goodness and thy truth we praise,",
+        "Thy goodness and thy truth we prove;",
+        "Thou hast, in honour of thy Son,",
+        "The gift unspeakable sent down,",
+        "The Spirit of life, and power, and love."
+      ]
+    },
+    {
+      "lines": [
+        "Send us the Spirit of thy Son,",
+        "To make the depths of Godhead known,",
+        "To make us share the life divine;",
+        "Send him the sprinkled blood to apply,",
+        "Send him our souls to sanctify,",
+        "And show and seal us ever thine."
+      ]
+    },
+    {
+      "lines": [
+        "So shall we pray, and never cease,",
+        "So shall we thankfully confess",
+        "The wisdom, truth, and power, and love;",
+        "With joy unspeakable adore,",
+        "And bless and praise thee evermore,",
+        "And serve thee as thy hosts above:"
+      ]
+    },
+    {
+      "lines": [
+        "Till, added to that heavenly choir,",
+        "We raise our songs of triumph higher,",
+        "And praise thee in a bolder strain,",
+        "Out-soar the first-born seraph's flight,",
+        "And sing, with all our friends in light,",
+        "Thy everlasting love to man."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:377"
+}

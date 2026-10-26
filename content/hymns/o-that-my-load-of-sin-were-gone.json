@@ -1,0 +1,87 @@
+{
+  "title": "O THAT My Load of Sin Were Gone",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "O THAT My Load of Sin Were Gone in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 388.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O THAT my load of sin were gone O that I could at last sub-mit At Je-su's feet to lay it down, To lay my soul at Je-su's feet!.",
+  "verses": [
+    {
+      "lines": [
+        "O THAT my load of sin were gone",
+        "O that I could at last submit",
+        "At Jesu's feet to lay it down,",
+        "To lay my soul at Jesu's feet!."
+      ]
+    },
+    {
+      "lines": [
+        "When shall mine eyes behold the Lamb,",
+        "The God of my salvation see?",
+        "Weary, O Lord, thou know'st I am,",
+        "Yet still I cannot come to thee."
+      ]
+    },
+    {
+      "lines": [
+        "Rest for my soul I long to find:",
+        "Saviour of all, if mine thou art,",
+        "Give me thy meek and lowly mind,",
+        "And stamp thine image on my heart."
+      ]
+    },
+    {
+      "lines": [
+        "Break off the yoke of inbred sin,",
+        "And fully set my spirit free;",
+        "I cannot rest till pure within,",
+        "Till I am wholly lost in thee."
+      ]
+    },
+    {
+      "lines": [
+        "Fain would I learn of thee, my God;",
+        "Thy light and easy burden prove,",
+        "The cross, all stained with hallowed blood,",
+        "The labour of thy dying love."
+      ]
+    },
+    {
+      "lines": [
+        "I would; but thou must give the power,",
+        "My heart from every sin release;",
+        "Bring near, bring near, the joyful hour,",
+        "And fill me with thy perfect peace."
+      ]
+    },
+    {
+      "lines": [
+        "Come, Lord! the drooping sinner cheer,",
+        "Nor let thy chariot-wheels delay;",
+        "Appear, in my poor heart appear!",
+        "My God, my Saviour, come away!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:388"
+}

@@ -1,0 +1,70 @@
+{
+  "title": "Summoned My Labour to Renew",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Summoned My Labour to Renew in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 321. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Sum-moned my la-bour to re-new, And glad to act my part, Lord, in thy name my work I do, And with a sin-gle heart.",
+  "verses": [
+    {
+      "lines": [
+        "Summoned my labour to renew,",
+        "And glad to act my part,",
+        "Lord, in thy name my work I do,",
+        "And with a single heart."
+      ]
+    },
+    {
+      "lines": [
+        "End of my every action thou,",
+        "In all things thee I see:",
+        "Accept my hallowed labour now,",
+        "I do it unto thee."
+      ]
+    },
+    {
+      "lines": [
+        "Whate'er the Father views as thine,",
+        "He views with gracious eyes;",
+        "Jesus, this mean oblation join",
+        "To thy great sacrifice."
+      ]
+    },
+    {
+      "lines": [
+        "Stamped with all infinite desert,",
+        "Thy work he then shall own;",
+        "Well pleased with me, when mine thou art,",
+        "And I his favoured son."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:321"
+}

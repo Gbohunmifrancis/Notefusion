@@ -1,0 +1,134 @@
+{
+  "title": "When Shall Thy Love Constrain",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "When Shall Thy Love Constrain in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 12 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 137. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Short Metre (6.6.8.6), and this page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "When shall thy love con-strain, And force me to thy breast? When shall my soul re-turn a-gain To her e-ter-nal rest?",
+  "verses": [
+    {
+      "lines": [
+        "When shall thy love constrain,",
+        "And force me to thy breast?",
+        "When shall my soul return again",
+        "To her eternal rest?"
+      ]
+    },
+    {
+      "lines": [
+        "Ah! what avails my strife,",
+        "My wandering to and fro?",
+        "Thou hast the words of endless life;",
+        "Ah! whither should I go?"
+      ]
+    },
+    {
+      "lines": [
+        "Thy condescending grace",
+        "To me did freely move;",
+        "It calls me still to seek thy face,",
+        "And stoops to ask my love."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, at thy feet I fall!",
+        "I groan to be set free;",
+        "I fain would now obey the call,",
+        "And give up all for thee."
+      ]
+    },
+    {
+      "lines": [
+        "To rescue me from woe,",
+        "Thou didst with all things part;",
+        "Didst lead a suffering life below,",
+        "To gain my worthless heart."
+      ]
+    },
+    {
+      "lines": [
+        "My worthless heart to gain,",
+        "The God of all that breathe",
+        "Was found in fashion as a man,",
+        "And died a cursed death."
+      ]
+    },
+    {
+      "lines": [
+        "And can I yet delay",
+        "My little all to give?",
+        "To tear my soul from earth away,",
+        "For Jesus to receive?"
+      ]
+    },
+    {
+      "lines": [
+        "Nay, but I yield, I yield!",
+        "I can hold out no more,",
+        "I sink, by dying love compelled,",
+        "And own thee conqueror."
+      ]
+    },
+    {
+      "lines": [
+        "Though late, I all forsake,",
+        "My friends, my all resign;",
+        "Gracious Redeemer, take, O take,",
+        "And seal me ever thine!"
+      ]
+    },
+    {
+      "lines": [
+        "Come and possess me whole.",
+        "Nor hence again remove:",
+        "Settle and fix my wavering soul",
+        "With all thy weight of love."
+      ]
+    },
+    {
+      "lines": [
+        "My one desire be this,",
+        "Thy only love to know;",
+        "To seek and taste no other bliss",
+        "No other good below."
+      ]
+    },
+    {
+      "lines": [
+        "My Life, my portion thou,",
+        "Thou all-sufficient art;",
+        "My hope, my heavenly treasure, now",
+        "Enter, and keep my heart."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:137"
+}

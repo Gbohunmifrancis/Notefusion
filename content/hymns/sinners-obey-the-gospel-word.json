@@ -1,0 +1,111 @@
+{
+  "title": "Sinners, Obey the Gospel-word",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Sinners, Obey the Gospel-word in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 10 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 9.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Sin-ners, o-bey the gos-pel word! Haste to the sup-per of my Lord! Be wise to know your gra-cious day; All things are rea-dy, come a-way!",
+  "verses": [
+    {
+      "lines": [
+        "Sinners, obey the gospel-word!",
+        "Haste to the supper of my Lord!",
+        "Be wise to know your gracious day;",
+        "All things are ready, come away!"
+      ]
+    },
+    {
+      "lines": [
+        "Ready the Father is to own",
+        "And kiss his late-returning son;",
+        "Ready your loving Saviour stands,",
+        "And spreads for you his bleeding hands."
+      ]
+    },
+    {
+      "lines": [
+        "Ready the Spirit of his love",
+        "Just now the stony to remove,",
+        "To apply, and witness with the blood,",
+        "And wash and seal the sons of God."
+      ]
+    },
+    {
+      "lines": [
+        "Ready for you the angels wait,",
+        "To triumph in your blest estate;",
+        "Tuning their harps, they long to praise",
+        "The wonders of redeeming grace."
+      ]
+    },
+    {
+      "lines": [
+        "The Father, Son, and Holy Ghost",
+        "Is ready, with their shining host:",
+        "All heaven is ready to resound,",
+        "\"The dead's alive! the lost is found!\""
+      ]
+    },
+    {
+      "lines": [
+        "Come then, ye sinners, to your Lord,",
+        "In Christ to paradise restored;",
+        "His proffered benefits embrace,",
+        "The plenitude of gospel grace:"
+      ]
+    },
+    {
+      "lines": [
+        "A pardon written with his blood,",
+        "The favour and the peace of God;",
+        "The seeing eye, the feeling sense,",
+        "The mystic joys of penitence;"
+      ]
+    },
+    {
+      "lines": [
+        "The godly grief, the pleasing smart,",
+        "The meltings of a broken heart,",
+        "The tears that tell your sins forgiven,",
+        "The sighs that waft your souls to heaven;"
+      ]
+    },
+    {
+      "lines": [
+        "The guiltless shame, the sweet distress,",
+        "The unutterable tenderness,",
+        "The genuine, meek humility,",
+        "The wonder, \"Why such love to me?\""
+      ]
+    },
+    {
+      "lines": [
+        "The o'erwhelming power of saving grace,",
+        "The sight that veils the seraph's face;",
+        "The speechless awe that dares not move,",
+        "And all the silent heaven of love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:9"
+}

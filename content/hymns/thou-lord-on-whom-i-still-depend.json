@@ -1,0 +1,71 @@
+{
+  "title": "Thou, Lord, on Whom I Still Depend",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Thou, Lord, on Whom I Still Depend in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 69.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Thou, Lord, on whom I still de-pend, Shalt keep me faith-ful to the end; I trust thy truth, and love, and power Shall save me till my lat-est hour; And when I lay this bo-dy down, Re-ward with an im-mor-tal crown.",
+  "verses": [
+    {
+      "lines": [
+        "Thou, Lord, on whom I still depend,",
+        "Shalt keep me faithful to the end;",
+        "I trust thy truth, and love, and power",
+        "Shall save me till my latest hour;",
+        "And when I lay this body down,",
+        "Reward with an immortal crown."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, in thy great name I go",
+        "To conquer death, my final foe;",
+        "And when I quit this cumbrous clay,",
+        "And soar on angels' wings away,",
+        "My soul the second death defies,",
+        "And reigns eternal in the skies."
+      ]
+    },
+    {
+      "lines": [
+        "Eye hath not seen, nor ear hath heard,",
+        "What Christ hath for his saints prepared,",
+        "Who conquer through their Saviour's might,",
+        "Who sink into perfection's height,",
+        "And trample death beneath their feet,",
+        "And gladly die their Lord to meet."
+      ]
+    },
+    {
+      "lines": [
+        "Dost thou desire to know and see",
+        "What thy mysterious name shall be?",
+        "Contending for thy heavenly home,",
+        "Thy latest foe in death o'ercome;",
+        "Till then, thou searchest out in vain",
+        "What only conquest can explain."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:69"
+}

@@ -1,0 +1,94 @@
+{
+  "title": "Jesu, My Saviour, Brother, Friend",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Jesu, My Saviour, Brother, Friend in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 312. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Je-su, my Sa-viour, Bro-ther, Friend, On whom I cast my ev-ery care, On whom for all things I de-pend, In-spire, and then ac-cept, my prayer.",
+  "verses": [
+    {
+      "lines": [
+        "Jesu, my Saviour, Brother, Friend,",
+        "On whom I cast my every care,",
+        "On whom for all things I depend,",
+        "Inspire, and then accept, my prayer."
+      ]
+    },
+    {
+      "lines": [
+        "If I have tasted of thy grace,",
+        "The grace that sure salvation brings,",
+        "If with me now thy Spirit stays,",
+        "And hovering hides me in his wings."
+      ]
+    },
+    {
+      "lines": [
+        "Still let him with my weakness stay,",
+        "Nor for a moment's space depart,",
+        "Evil and danger turn away,",
+        "And keep till he renews my heart."
+      ]
+    },
+    {
+      "lines": [
+        "When to the right or left I stray,",
+        "His voice behind me may I hear,",
+        "\"Return, and walk in Christ thy way,",
+        "Fly back to Christ, for sin is near.\""
+      ]
+    },
+    {
+      "lines": [
+        "His sacred unction from above",
+        "Be still my comforter and guide;",
+        "Till all the hardness he remove,",
+        "And in my loving heart reside."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, I fain would walk in thee,",
+        "From nature's every path retreat;",
+        "Thou art my Way, my leader be,",
+        "And set upon the rock my feet."
+      ]
+    },
+    {
+      "lines": [
+        "Uphold me, Saviour, or I fall,",
+        "O reach me out thy gracious hand",
+        "Only on thee for help I call,",
+        "Only by faith in thee I stand."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:312"
+}

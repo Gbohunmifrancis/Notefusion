@@ -1,0 +1,91 @@
+{
+  "title": "Weary of Wandering from My God",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Weary of Wandering from My God in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 186.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Wea-ry of wan-dering from my God, And now made will-ing to re-turn, I hear, and bow me to the rod; For thee, not with-out hope, I mourn; I have an Ad-vo-cate a-bove, A Friend be-fore the throne of Love.",
+  "verses": [
+    {
+      "lines": [
+        "Weary of wandering from my God,",
+        "And now made willing to return,",
+        "I hear, and bow me to the rod;",
+        "For thee, not without hope, I mourn;",
+        "I have an Advocate above,",
+        "A Friend before the throne of Love."
+      ]
+    },
+    {
+      "lines": [
+        "O Jesus, full of truth and grace,",
+        "More full of grace than I of sin,",
+        "Yet once again I seek thy face;",
+        "Open thine arms, and take me in,",
+        "And freely my backslidings heal,",
+        "And love the faithless sinner still."
+      ]
+    },
+    {
+      "lines": [
+        "Thou know'st the way to bring me back",
+        "My fallen spirit to restore;",
+        "O! for thy truth and mercy's sake,",
+        "Forgive, and bid me sin no more;",
+        "The ruins of my soul repair,",
+        "And make my heart a house of prayer."
+      ]
+    },
+    {
+      "lines": [
+        "The stone to flesh again convert,",
+        "The veil of sin again remove;",
+        "Sprinkle thy blood upon my heart,",
+        "And melt it by thy dying love;",
+        "This rebel heart by love subdue,",
+        "And make it soft, and make it new."
+      ]
+    },
+    {
+      "lines": [
+        "Give to mine eyes refreshing tears,",
+        "And kindle my relentings now;",
+        "Fill my whole soul with filial fears,",
+        "To thy sweet yoke my spirit bow;",
+        "Bend by thy grace, O bend or break,",
+        "The iron sinew in my neck!"
+      ]
+    },
+    {
+      "lines": [
+        "Ah! give me, Lord, the tender heart",
+        "That trembles at the approach of sin;",
+        "A godly fear of sin impart,",
+        "Implant, and root it deep within,",
+        "That I may dread thy gracious power,",
+        "And never dare to offend thee more."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:186"
+}

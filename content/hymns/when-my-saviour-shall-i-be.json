@@ -1,0 +1,63 @@
+{
+  "title": "When, My Saviour, Shall I Be",
+  "tune": "pleyels-hymn",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "When, My Saviour, Shall I Be in Tonic Solfa to PLEYEL'S HYMN, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 381.",
+    "The book printed the words without tunes. They are in Sevens (7.7.7.7), and this page sets them to PLEYEL'S HYMN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "When, my Sa-viour, shall I be Per-fect-ly re-signed to thee Poor and vile in my own eyes, On-ly in thy wis-dom wise!",
+  "verses": [
+    {
+      "lines": [
+        "When, my Saviour, shall I be",
+        "Perfectly resigned to thee",
+        "Poor and vile in my own eyes,",
+        "Only in thy wisdom wise!"
+      ]
+    },
+    {
+      "lines": [
+        "Only thee content to know,",
+        "Ignorant of all below",
+        "Only guided by thy light,",
+        "Only mighty in thy might!"
+      ]
+    },
+    {
+      "lines": [
+        "So I may thy Spirit know,",
+        "Let him as he listeth blow;",
+        "Let the manner be unknown,",
+        "So I may with thee be one."
+      ]
+    },
+    {
+      "lines": [
+        "Fully in my life express",
+        "All the heights of holiness,",
+        "Sweetly let my spirit prove",
+        "All the depths of humble love!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to PLEYEL'S HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:381"
+}

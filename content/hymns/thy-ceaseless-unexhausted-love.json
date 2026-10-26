@@ -1,0 +1,79 @@
+{
+  "title": "Thy Ceaseless, Unexhausted Love",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Thy Ceaseless, Unexhausted Love in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 250.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Thy cease-less, un-ex-haust-ed love, Un-mer-it-ed and free, De-lights our e-vil to re-move, And help our mis-e-ry.",
+  "verses": [
+    {
+      "lines": [
+        "Thy ceaseless, unexhausted love,",
+        "Unmerited and free,",
+        "Delights our evil to remove,",
+        "And help our misery."
+      ]
+    },
+    {
+      "lines": [
+        "Thou waitest to be gracious still;",
+        "Thou dost with sinners bear,",
+        "That, saved, we may thy goodness feel,",
+        "And all thy grace declare."
+      ]
+    },
+    {
+      "lines": [
+        "Thy goodness and thy truth to me,",
+        "To every soul, abound,",
+        "A vast, unfathomable sea,",
+        "Where all our thoughts are drowned."
+      ]
+    },
+    {
+      "lines": [
+        "Its streams the whole creation reach,",
+        "So plenteous is the store,",
+        "Enough for all, enough for each,",
+        "Enough for evermore."
+      ]
+    },
+    {
+      "lines": [
+        "Faithful, O Lord, thy mercies are,",
+        "A rock that cannot move!",
+        "A thousand promises declare",
+        "Thy constancy of love."
+      ]
+    },
+    {
+      "lines": [
+        "Throughout the universe it reigns,",
+        "Unalterably sure;",
+        "And while the truth of God remains,",
+        "The goodness must endure."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:250"
+}

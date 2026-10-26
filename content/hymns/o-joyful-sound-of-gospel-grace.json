@@ -1,0 +1,110 @@
+{
+  "title": "O JOYFUL Sound of Gospel Grace",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "O JOYFUL Sound of Gospel Grace in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 405. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O JOY-FUL sound of gos-pel grace! Christ shall in me ap-pear; I, e-ven I, shall see his face, I shall be ho-ly here.",
+  "verses": [
+    {
+      "lines": [
+        "O JOYFUL sound of gospel grace!",
+        "Christ shall in me appear;",
+        "I, even I, shall see his face,",
+        "I shall be holy here."
+      ]
+    },
+    {
+      "lines": [
+        "This heart shall be his constant home;",
+        "I hear his Spirit's cry,",
+        "\"Surely,\" he saith, \"I quickly come,\"",
+        "He saith, who cannot lie."
+      ]
+    },
+    {
+      "lines": [
+        "The glorious crown of righteousness",
+        "To me reached out I view;",
+        "Conqueror through him, I soon shall seize,",
+        "And wear it as my due."
+      ]
+    },
+    {
+      "lines": [
+        "The promised land, from Pisgah's top,",
+        "I now exult to see;",
+        "My hope is full (O glorious hope!)",
+        "Of immortality."
+      ]
+    },
+    {
+      "lines": [
+        "He visits now the house of clay,",
+        "He shakes his future home;",
+        "O wouldst thou, Lord, on this glad day,",
+        "Into thy temple come!"
+      ]
+    },
+    {
+      "lines": [
+        "With me, I know, I feel, thou art;",
+        "But this cannot suffice,",
+        "Unless thou plantest in my heart",
+        "A constant paradise."
+      ]
+    },
+    {
+      "lines": [
+        "My earth thou waterest from on high,",
+        "But make it all a pool;",
+        "Spring up, O well, I ever cry,",
+        "Spring up within my soul!"
+      ]
+    },
+    {
+      "lines": [
+        "Come, O my God, thyself reveal,",
+        "Fill all this mighty void;",
+        "Thou only canst my spirit fill:",
+        "Come, O my God, my God!"
+      ]
+    },
+    {
+      "lines": [
+        "Fulfil, fulfil my large desires,",
+        "Large as infinity;",
+        "Give, give me all my soul requires,",
+        "All, all that is in thee!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:405"
+}

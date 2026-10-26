@@ -1,0 +1,86 @@
+{
+  "title": "Come, and Let Us Sweetly Join",
+  "tune": "messiah-herald",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Come, and Let Us Sweetly Join in Tonic Solfa to MESSIAH (HERALD), doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 519. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Sevens Double (7.7.7.7.7.7.7.7), and this page sets them to MESSIAH (HERALD); any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Come, and let us sweet-ly join Christ to praise in hymns di-vine! Give we all, with one ac-cord, Glo-ry to our com-mon Lord; Hands, and hearts, and voi-ces raise; Sing as in the an-cient days; An-te-date the joys a-bove, Cel-e-brate the feast of love.",
+  "verses": [
+    {
+      "lines": [
+        "Come, and let us sweetly join",
+        "Christ to praise in hymns divine!",
+        "Give we all, with one accord,",
+        "Glory to our common Lord;",
+        "Hands, and hearts, and voices raise;",
+        "Sing as in the ancient days;",
+        "Antedate the joys above,",
+        "Celebrate the feast of love."
+      ]
+    },
+    {
+      "lines": [
+        "Strive we, in affection strive;",
+        "Let the purer flame revive,",
+        "Such as in the martyrs glowed,",
+        "Dying champions for their God:",
+        "We, like them, may live and love;",
+        "Called we are their joys to prove,",
+        "Saved with them from future wrath,",
+        "Partners of like precious faith."
+      ]
+    },
+    {
+      "lines": [
+        "Sing we then in Jesu's name,",
+        "Now as yesterday the same;",
+        "One in every time and place,",
+        "Full for all of truth and grace:",
+        "We for Christ, our Master, stand,",
+        "Lights in a benighted land:",
+        "We our dying Lord confess;",
+        "We are Jesu's witnesses."
+      ]
+    },
+    {
+      "lines": [
+        "Witnesses that Christ hath died,",
+        "We with him are crucified;",
+        "Christ hath burst the bands of death,",
+        "We his quickening Spirit breathe;",
+        "Christ is now gone up on high,",
+        "Thither all our wishes fly;",
+        "Sits at God's right hand above;",
+        "There with him we reign in love!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MESSIAH (HERALD) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:519"
+}

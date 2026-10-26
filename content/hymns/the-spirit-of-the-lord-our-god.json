@@ -1,0 +1,79 @@
+{
+  "title": "The Spirit of the Lord Our God",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "The Spirit of the Lord Our God in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 107.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The Spir-it of the Lord our God (Spirit of po-wer, and health, and love) The Fa-ther hath on Christ be-stowed, And sent him from his throne a-bove;",
+  "verses": [
+    {
+      "lines": [
+        "The Spirit of the Lord our God",
+        "(Spirit of power, and health, and love)",
+        "The Father hath on Christ bestowed,",
+        "And sent him from his throne above;"
+      ]
+    },
+    {
+      "lines": [
+        "Prophet, and Priest, and King of peace,",
+        "Anointed to declare his will,",
+        "To minister his pardoning grace,",
+        "And every sin-sick soul to heal."
+      ]
+    },
+    {
+      "lines": [
+        "Sinners, obey the heavenly call;",
+        "Your prison-doors stand open wide;",
+        "Go forth, for he hath ransomed all,",
+        "For every soul of man hath died."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis his the drooping soul to raise,",
+        "To rescue all by sin opprest,",
+        "To clothe them with the robes of praise,",
+        "And give their weary spirits rest;"
+      ]
+    },
+    {
+      "lines": [
+        "To help their grovelling unbelief,",
+        "Beauty for ashes to confer,",
+        "The oil of joy for abject grief,",
+        "Triumphant joy for sad despair;"
+      ]
+    },
+    {
+      "lines": [
+        "To make them trees of righteousness,",
+        "The planting of the Lord below,",
+        "To spread the honour of his grace,",
+        "And on to full perfection grow."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:107"
+}

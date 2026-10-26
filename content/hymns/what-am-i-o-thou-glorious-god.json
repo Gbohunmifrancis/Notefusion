@@ -1,0 +1,71 @@
+{
+  "title": "What Am I, O Thou Glorious God",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "What Am I, O Thou Glorious God in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 206.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "What am I, O thou glo-rious God! And what my fa-ther's house to thee, That thou such mer-cies hast be-stowed On me, the chief of sin-ners, me! I take the bless-ing from a-bove, And won-der at thy bound-less love.",
+  "verses": [
+    {
+      "lines": [
+        "What am I, O thou glorious God!",
+        "And what my father's house to thee,",
+        "That thou such mercies hast bestowed",
+        "On me, the chief of sinners, me!",
+        "I take the blessing from above,",
+        "And wonder at thy boundless love."
+      ]
+    },
+    {
+      "lines": [
+        "Me in my blood thy love passed by,",
+        "And stopped, my ruin to retrieve;",
+        "Wept o'er my soul thy pitying eye,",
+        "Thy bowels yearned, and sounded \"Live!\"",
+        "Dying, I heard the welcome sound,",
+        "And pardon in thy mercy found."
+      ]
+    },
+    {
+      "lines": [
+        "Honour, and might, and thanks, and praise,",
+        "I render to my pardoning God,",
+        "Extol the riches of thy grace,",
+        "And spread thy saving name abroad,",
+        "That only name to sinners given,",
+        "Which lifts poor dying worms to heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, I bless thy gracious power,",
+        "And all within me shouts thy name;",
+        "Thy name let every soul adore,",
+        "Thy power let every tongue proclaim;",
+        "Thy grace let every sinner know,",
+        "And find with me their heaven below."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:206"
+}

@@ -1,0 +1,86 @@
+{
+  "title": "O MY God, What Must I Do",
+  "tune": "watchman",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "O MY God, What Must I Do in Tonic Solfa to WATCHMAN, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 158. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Sevens Double (7.7.7.7.7.7.7.7), and this page sets them to WATCHMAN; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "O MY God, what must I do? Thou a-lone the way canst show; Thou canst save me in this hour, I have nei-ther will nor power: God if o-ver all thou art, Great-er than my sin-ful heart, All thy power on me be shown, Take a-way the heart of stone.",
+  "verses": [
+    {
+      "lines": [
+        "O MY God, what must I do?",
+        "Thou alone the way canst show;",
+        "Thou canst save me in this hour,",
+        "I have neither will nor power:",
+        "God if over all thou art,",
+        "Greater than my sinful heart,",
+        "All thy power on me be shown,",
+        "Take away the heart of stone."
+      ]
+    },
+    {
+      "lines": [
+        "Take away my darling sin;",
+        "Make me willing to be clean;",
+        "Make me willing to receive",
+        "All thy goodness waits to give:",
+        "Force me, Lord, with all to part,",
+        "Tear these idols from my heart;",
+        "Now thy love almighty show,",
+        "Make even me a creature new."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, mighty to renew,",
+        "Work in me to will and do;",
+        "Turn my nature's rapid tide,",
+        "Stem the torrent of my pride,",
+        "Stop the whirlwind of my will,",
+        "Speak, and bid the sun stand still;",
+        "Now thy love almighty show,",
+        "Make even me a creature new."
+      ]
+    },
+    {
+      "lines": [
+        "Arm of God, thy strength put on,",
+        "Bow the heavens, and come down;",
+        "All my unbelief o'erthrow,",
+        "Lay the aspiring mountain low;",
+        "Conquer thy worst foe in me,",
+        "Get thyself the victory;",
+        "Save the vilest of the race,",
+        "Force me to be saved by grace."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to WATCHMAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:158"
+}

@@ -1,0 +1,74 @@
+{
+  "title": "Father, Son, and Spirit, Hear",
+  "tune": "watchman",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Father, Son, and Spirit, Hear in Tonic Solfa to WATCHMAN, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 515. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Sevens Double (7.7.7.7.7.7.7.7), and this page sets them to WATCHMAN; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Fa-ther, Son, and Spir-it, hear Faith's ef-fec-tual fer-vent prayer; Hear, and our pe-ti-tions seal, Let us now the an-swer feel. Still our fel-low-ship in-crease, Knit us in the bond of peace; Join our new born spi-rits, join Each to each, and all to thine.",
+  "verses": [
+    {
+      "lines": [
+        "Father, Son, and Spirit, hear",
+        "Faith's effectual fervent prayer;",
+        "Hear, and our petitions seal,",
+        "Let us now the answer feel.",
+        "Still our fellowship increase,",
+        "Knit us in the bond of peace;",
+        "Join our new-born spirits, join",
+        "Each to each, and all to thine."
+      ]
+    },
+    {
+      "lines": [
+        "Build us in one body up,",
+        "Called in one high calling's hope:",
+        "One the Spirit whom we claim,",
+        "One the pure baptismal flame,",
+        "One the faith, and common Lord,",
+        "One the Father lives adored,",
+        "Over, through, and in us all,",
+        "God incomprehensible."
+      ]
+    },
+    {
+      "lines": [
+        "One with God, the source of bliss,",
+        "Ground of our communion this:",
+        "Life of all that live below,",
+        "Let thine emanations flow!",
+        "Rise eternal in our heart:",
+        "Thou our long-sought Eden art;",
+        "Father, Son, and Holy Ghost,",
+        "Be to us what Adam lost."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to WATCHMAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:515"
+}

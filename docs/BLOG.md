@@ -482,12 +482,22 @@ The *Evangelical Lutheran Hymn-Book* (abridged edition, Concordia, St. Louis 192
 wrote in; a hymn from German or Latin is taken only with its translator named, so the translations the book prints
 without one (its own committee's, mostly) are left out. The pages say "in print by 1927".
 
+John Wesley's *A Collection of Hymns for the Use of the People Called Methodists* (1780; `--book wesley`,
+`import/wesley-1780.mjs`): hymns 1–539 of the Christian Classics Ethereal Library's text of the 1876 edition, which
+keeps them as Wesley published them in 1780. `--src` is a directory of its own holding the library's hymn pages as
+downloaded (`jwg0001.html`…, from https://ccel.org/ccel/wesley/hymn/files/, fetched a page a second) and the Internet
+Archive's OCR text of the 1877 printing's index (`index-*.txt`: collectionofhymn0000wesl_t0b4, methohymn00wesl,
+peoplca00wesl). The library's text names no writers; the index does: no name means Charles Wesley, "W." a hymn first
+printed in a book the brothers published together (which of them wrote it the book cannot say: the page credits
+"Charles Wesley or John Wesley", `"textOneOf": true`), any other writer by name. An index line counts only when its first
+words are the hymn's own, and a writer only when the scans agree (`wesleyWriters`); a hymn they do not settle is left out.
+
 Every book is held to the stresses of its tunes: the 8.7 metres' tunes we hold are trochaic, so words whose 8-syllable
 lines mostly end on a stressed syllable ("Alas, my God! my sins are great") are iambs and are left out
 (`iambsOnTrochees`), rather than sung with every stress wrong.
 
 A hymn several books print is the first book's page, in `SET_BY_METRE_ORDER` (watts.mjs): Watts' hymns, his psalms,
-Olney, the 1848 book, the 1846 book, Brownlie's, then the 1927 Lutheran book. Each importer leaves alone what is hand-set or in a book before it and takes no notice of the
+Olney, the 1848 book, the 1846 book, Brownlie's, the 1927 Lutheran book, then Wesley's Collection. Each importer leaves alone what is hand-set or in a book before it and takes no notice of the
 books after it, so the pages do not depend on which ran last; run them in that order.
 
 *The Christian Hymn Book* (Campbell, 1865) prints no authors and the *St. Gregory Hymnal* (1920) gives each hymn its own

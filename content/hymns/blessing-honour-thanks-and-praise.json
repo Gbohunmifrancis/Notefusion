@@ -1,0 +1,98 @@
+{
+  "title": "Blessing, Honour, Thanks, and Praise",
+  "tune": "messiah-herald",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Blessing, Honour, Thanks, and Praise in Tonic Solfa to MESSIAH (HERALD), doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 50. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Sevens Double (7.7.7.7.7.7.7.7), and this page sets them to MESSIAH (HERALD); any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Bless-ing, hon-our, thanks, and praise, Pay we, gra-cious God, to thee; Thou, in thine a-bun-dant grace, Giv-est us the vic-to-ry; True and faith-ful to thy word, Thou hast glo-ri-fied thy Son, Je-sus Christ, our dy-ing Lord, He for us the fight hath won.",
+  "verses": [
+    {
+      "lines": [
+        "Blessing, honour, thanks, and praise,",
+        "Pay we, gracious God, to thee;",
+        "Thou, in thine abundant grace,",
+        "Givest us the victory;",
+        "True and faithful to thy word,",
+        "Thou hast glorified thy Son,",
+        "Jesus Christ, our dying Lord,",
+        "He for us the fight hath won."
+      ]
+    },
+    {
+      "lines": [
+        "Lo! the prisoner is released,",
+        "Lightened of his fleshly load;",
+        "Where the weary are at rest,",
+        "He is gathered into God;",
+        "Lo! the pain of life is past,",
+        "All his warfare now is o'er,",
+        "Death and hell behind are cast,",
+        "Grief and suffering are no more."
+      ]
+    },
+    {
+      "lines": [
+        "Yes, the Christian's course is run,",
+        "Ended is the glorious strife;",
+        "Fought the fight, the work is done,",
+        "Death is swallowed up of life!",
+        "Borne by angels on their wings,",
+        "Far from earth the spirit flies,",
+        "Finds his God, and sits and sings,",
+        "Triumphing in Paradise."
+      ]
+    },
+    {
+      "lines": [
+        "Join we then, with one accord,",
+        "In the new, the joyful song;",
+        "Absent from our loving Lord",
+        "We shall not continue long;",
+        "We shall quit the house of clay,",
+        "We a better lot shall share,",
+        "We shall see the realms of day,",
+        "Meet our happy brother there."
+      ]
+    },
+    {
+      "lines": [
+        "Let the world bewail their dead,",
+        "Fondly of their loss complain,",
+        "Brother, friend, by Jesus freed,",
+        "Death to thee, to us, is gain;",
+        "Thou art entered into joy:",
+        "Let the unbelievers mourn;",
+        "We in songs our lives employ,",
+        "Till we all to God return."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MESSIAH (HERALD) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:50"
+}

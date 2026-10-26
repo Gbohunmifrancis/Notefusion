@@ -1,0 +1,86 @@
+{
+  "title": "What Is Our Calling's Glorious Hope",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "What Is Our Calling's Glorious Hope in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 406. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "What is our call-ing's glo-rious hope, But in-ward ho-li-ness? For this to Je-sus I look up, I calm-ly wait for this.",
+  "verses": [
+    {
+      "lines": [
+        "What is our calling's glorious hope,",
+        "But inward holiness?",
+        "For this to Jesus I look up,",
+        "I calmly wait for this."
+      ]
+    },
+    {
+      "lines": [
+        "I wait, till he shall touch me clean,",
+        "Shall life and power impart,",
+        "Give me the faith that casts out sin,",
+        "And purifies the heart."
+      ]
+    },
+    {
+      "lines": [
+        "This is the dear redeeming grace,",
+        "For every sinner free;",
+        "Surely it shall on me take place,",
+        "The chief of sinners, me."
+      ]
+    },
+    {
+      "lines": [
+        "From all iniquity, from all,",
+        "He shall my soul redeem;",
+        "In Jesus I believe, and shall",
+        "Believe myself to him."
+      ]
+    },
+    {
+      "lines": [
+        "When Jesus makes my heart his home,",
+        "My sin shall all depart;",
+        "And lo! he saith, I quickly come,",
+        "To fill and rule thy heart!"
+      ]
+    },
+    {
+      "lines": [
+        "Be it according to thy word!",
+        "Redeem me from all sin;",
+        "My heart would now receive thee, Lord,",
+        "Come in, my Lord, come in!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:406"
+}

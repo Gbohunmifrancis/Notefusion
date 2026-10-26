@@ -1,0 +1,68 @@
+{
+  "title": "O THOU Whom Fain My Soul Would Love",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "O THOU Whom Fain My Soul Would Love in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 113. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "O THOU whom fain my soul would love! Whom I would glad-ly die to know; This veil of un-be-lief re-move, And show me, all thy good-ness show; Je-sus, thy-self in me re-veal, Tell me thy name, thy na-ture tell.",
+  "verses": [
+    {
+      "lines": [
+        "O THOU whom fain my soul would love!",
+        "Whom I would gladly die to know;",
+        "This veil of unbelief remove,",
+        "And show me, all thy goodness show;",
+        "Jesus, thyself in me reveal,",
+        "Tell me thy name, thy nature tell."
+      ]
+    },
+    {
+      "lines": [
+        "Hast thou been with me, Lord, so long,",
+        "Yet thee, my Lord, have I not known?",
+        "I claim thee with a faltering tongue,",
+        "I pray thee, in a feeble groan,",
+        "Tell me, O tell me, who thou art,",
+        "And speak thy name into my heart!"
+      ]
+    },
+    {
+      "lines": [
+        "If now thou talkest by the way",
+        "With such an abject worm as me,",
+        "Thy mystery of grace display;",
+        "Open mine eyes that I may see,",
+        "That I may understand thy word,",
+        "And now cry out - \"It is the Lord!\""
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:113"
+}

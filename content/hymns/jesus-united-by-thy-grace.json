@@ -1,0 +1,103 @@
+{
+  "title": "Jesus, United by Thy Grace",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Jesus, United by Thy Grace in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 504.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus, u-ni-ted by thy grace, And each to each en-deared, With con-fi-dence we seek thy face, And know our prayer is heard.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, united by thy grace,",
+        "And each to each endeared,",
+        "With confidence we seek thy face,",
+        "And know our prayer is heard."
+      ]
+    },
+    {
+      "lines": [
+        "Still let us own our common Lord,",
+        "And bear thine easy yoke,",
+        "A band of love, a threefold cord,",
+        "Which never can be broke."
+      ]
+    },
+    {
+      "lines": [
+        "Make us into one spirit drink;",
+        "Baptize into thy name;",
+        "And let us always kindly think,",
+        "And sweetly speak, the same."
+      ]
+    },
+    {
+      "lines": [
+        "Touched by the loadstone of thy love,",
+        "Let all our hearts agree,",
+        "And ever towards each other move,",
+        "And ever move towards thee."
+      ]
+    },
+    {
+      "lines": [
+        "To thee, inseparably joined,",
+        "Let all our spirits cleave;",
+        "O may we all the loving mind",
+        "That was in thee receive!"
+      ]
+    },
+    {
+      "lines": [
+        "This is the bond of perfectness,",
+        "Thy spotless charity;",
+        "O let us (still we pray) possess",
+        "The mind that was in thee!"
+      ]
+    },
+    {
+      "lines": [
+        "Grant this, and then from all below",
+        "Insensibly remove:",
+        "Our souls their change shall scarcely know,",
+        "Made perfect first in love!"
+      ]
+    },
+    {
+      "lines": [
+        "With ease our souls through death shall glide",
+        "Into their paradise,",
+        "And thence, on wings of angels, ride",
+        "Triumphant through the skies."
+      ]
+    },
+    {
+      "lines": [
+        "Yet, when the fullest joy is given,",
+        "The same delight we prove,",
+        "In earth, in paradise, in heaven,",
+        "Our all in all is love."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:504"
+}

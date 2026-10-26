@@ -1,0 +1,81 @@
+{
+  "title": "Saviour, Prince of Israel's Race",
+  "tune": "spanish-hymn",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Saviour, Prince of Israel's Race in Tonic Solfa to SPANISH HYMN, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 101.",
+    "The book printed the words without tunes. They are in Sevens, six lines (7.7.7.7.7.7), and this page sets them to SPANISH HYMN; any other Sevens, six lines tune fits them as well."
+  ],
+  "underlay": "Sa-viour, Prince of Is-rael's race, See me from thy lof-ty throne; Give the sweet re-lent-ing grace, Soft-en this ob-du-rate stone! Stone to flesh, O God, con-vert; Cast a look, and break my heart!",
+  "verses": [
+    {
+      "lines": [
+        "Saviour, Prince of Israel's race,",
+        "See me from thy lofty throne;",
+        "Give the sweet relenting grace,",
+        "Soften this obdurate stone!",
+        "Stone to flesh, O God, convert;",
+        "Cast a look, and break my heart!"
+      ]
+    },
+    {
+      "lines": [
+        "By thy Spirit, Lord, reprove,",
+        "All my inmost sins reveal,",
+        "Sins against thy light and love",
+        "Let me see, and let me feel;",
+        "Sins that crucified my God,",
+        "Spilt again thy precious blood."
+      ]
+    },
+    {
+      "lines": [
+        "Jesu, seek thy wandering sheep,",
+        "Make me restless to return;",
+        "Bid me look on thee, and weep,",
+        "Bitterly as Peter mourn,",
+        "Till I say, by grace restored,",
+        "\"Now thou know'st I love thee, Lord!\""
+      ]
+    },
+    {
+      "lines": [
+        "Might I in thy sight appear,",
+        "As the publican distrest,",
+        "Stand, not daring to draw near,",
+        "Smite on my unworthy breast,",
+        "Groan the sinner's only plea,",
+        "\"God, be merciful to me!\""
+      ]
+    },
+    {
+      "lines": [
+        "O remember me for good,",
+        "Passing through the mortal vale!",
+        "Show me the atoning blood,",
+        "When my strength and spirit fail;",
+        "Give my gasping soul to see",
+        "Jesus crucified for me!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SPANISH HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:101"
+}

@@ -1,0 +1,63 @@
+{
+  "title": "God, the Offended God Most High",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "God, the Offended God Most High in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 11.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "God, the of-fend-ed God most high, Am-bas-sa-dors to re-bels sends; His mess-en-gers his place sup-ply, And Je-sus begs us to be friends.",
+  "verses": [
+    {
+      "lines": [
+        "God, the offended God most high,",
+        "Ambassadors to rebels sends;",
+        "His messengers his place supply,",
+        "And Jesus begs us to be friends."
+      ]
+    },
+    {
+      "lines": [
+        "Us, in the stead of Christ, they pray,",
+        "Us, in the stead of God, intreat,",
+        "To cast our arms, our sins, away,",
+        "And find forgiveness at his feet."
+      ]
+    },
+    {
+      "lines": [
+        "Our God in Christ! thine embassy,",
+        "And proffered mercy, we embrace;",
+        "And gladly reconciled to thee,",
+        "Thy condescending goodness praise."
+      ]
+    },
+    {
+      "lines": [
+        "Poor debtors, by our Lord's request",
+        "A full acquittance we receive!",
+        "And criminals, with pardon blest,",
+        "We, at our Judge's instance, live!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:11"
+}

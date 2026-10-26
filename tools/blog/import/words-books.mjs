@@ -6,7 +6,7 @@
 //   --book 1846  Hymns for Christian Devotion (John G. Adams and Edwin H. Chapin, Boston 1846; the twenty-second
 //                edition of 1853): eBook #20476
 //
-//   node tools/blog/import/words-books.mjs --book 1848|1846|olney|lutheran|greek-church|greek-office|east|morningland|early-church --src FILE [--date YYYY-MM-DD] [--publish] [--dry-run]
+//   node tools/blog/import/words-books.mjs --book 1848|1846|olney|lutheran|wesley|greek-church|greek-office|east|morningland|early-church --src FILE [--date YYYY-MM-DD] [--publish] [--dry-run]
 //
 // FILE is the book's plain text, downloaded beforehand into a directory of its own. It is data: read and parsed here,
 // never run.
@@ -34,6 +34,7 @@ import { titleCase, normalizeTitle } from "./ohp.mjs";
 import { fitLine, underlayDictionary, underlayOf, vowelSyllables } from "./syllables.mjs";
 import { TUNES as WATTS_TUNES, dohOf, fromLaterBook } from "./watts.mjs";
 import { parseLutheran, lutheranLabel, creditLutheran, NAMES as LUTHERAN_NAMES } from "./lutheran-1927.mjs";
+import { loadWesley, creditWesley, aboutWesley } from "./wesley-1780.mjs";
 
 const HYMNS_DIR = path.join(CONTENT_DIR, "hymns");
 const TUNES_DIR = path.join(HYMNS_DIR, "tunes");
@@ -90,6 +91,18 @@ export const BOOKS = {
   ...brownlie("east", "brownlie-east", "Hymns from the East", "Paisley", 1911, "Greek", true),
   ...brownlie("morningland", "brownlie-1911", "Hymns from the Morningland", "Paisley", 1911, "Greek"),
   ...brownlie("early-church", "brownlie-1896", "Hymns of the Early Church", "London", 1896, "Latin"),
+  wesley: {
+    id: "wesley-1780",
+    title: "A Collection of Hymns for the Use of the People Called Methodists",
+    source: "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+    printing: "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780), hymns 1–539 from the Christian Classics Ethereal Library's text of the 1876 edition; writers from the 1877 printing's index",
+    yearOf: () => 1780,
+    load: (dir) => loadWesley(dir),
+    metreUnmarked: true,
+    credit: (h) => creditWesley(h),
+    about: (h) => aboutWesley(h),
+    credits: (t, people) => `Words by ${people.map((p) => `${p.name} (${p.born}–${p.died})`).join(" or ")}, public domain, as printed in John Wesley's Collection of Hymns (1780); set to ${t.name} by NoteFusion, as words-only hymn books were sung.`,
+  },
   lutheran: {
     id: "lutheran-1927",
     title: "Evangelical Lutheran Hymn-Book",
@@ -577,7 +590,7 @@ const sentence = (s) => s.replace(/[.\s]+$/, "");
 
 export function runImport({ src, today, book, publish = false, dryRun = false, hymnsDir = HYMNS_DIR, tunesDir = TUNES_DIR, reportPath = BOOKS[book].report, log = console.log }) {
   const B = BOOKS[book];
-  const hymns = (B.parse || parseBook)(fs.readFileSync(src, "utf8"));
+  const hymns = B.load ? B.load(src) : (B.parse || parseBook)(fs.readFileSync(src, "utf8"));
   const dict = underlayDictionary(hymnsDir);
 
   // The tunes, checked: published, a doh we can name, one note per syllable of the metre.
@@ -640,6 +653,7 @@ export function runImport({ src, today, book, publish = false, dryRun = false, h
       text: people,
       textPublished: year,
       textPublishedBy: true,
+      ...(h.writer === "W" ? { textOneOf: true } : {}),
       description,
       about: [
         who + (h.altered || altered ? " The compilers changed some of the words, and this is their version." : ""),
@@ -679,7 +693,7 @@ function main() {
   const args = process.argv.slice(2);
   const arg = (name) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : null; };
   const src = arg("--src"), book = arg("--book");
-  if (!src || !BOOKS[book]) { console.error("usage: node tools/blog/import/words-books.mjs --book 1848|1846|olney|lutheran|greek-church|greek-office|east|morningland|early-church --src FILE [--date YYYY-MM-DD] [--publish] [--dry-run]"); process.exit(2); }
+  if (!src || !BOOKS[book]) { console.error("usage: node tools/blog/import/words-books.mjs --book 1848|1846|olney|lutheran|wesley|greek-church|greek-office|east|morningland|early-church --src FILE [--date YYYY-MM-DD] [--publish] [--dry-run]"); process.exit(2); }
   const today = arg("--date") || new Date().toISOString().slice(0, 10);
   runImport({ src, today, book, publish: args.includes("--publish"), dryRun: args.includes("--dry-run") });
 }

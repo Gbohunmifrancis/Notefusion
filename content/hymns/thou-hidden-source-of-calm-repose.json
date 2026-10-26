@@ -1,0 +1,71 @@
+{
+  "title": "Thou Hidden Source of Calm Repose",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Thou Hidden Source of Calm Repose in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 209.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Thou hid-den source of calm re-pose, Thou all su-ffic-ient Love Di-vine, My help and re-fuge from my foes, Se-cure I am, if thou art mine; And lo! from sin, and grief; and shame, I hide me, Je-sus, in thy name.",
+  "verses": [
+    {
+      "lines": [
+        "Thou hidden source of calm repose,",
+        "Thou all-sufficient Love Divine,",
+        "My help and refuge from my foes,",
+        "Secure I am, if thou art mine;",
+        "And lo! from sin, and grief; and shame,",
+        "I hide me, Jesus, in thy name."
+      ]
+    },
+    {
+      "lines": [
+        "Thy mighty name salvation is,",
+        "And keeps my happy soul above;",
+        "Comfort it brings, and power, and peace,",
+        "And joy, and everlasting love;",
+        "To me, with thy dear name, are given",
+        "Pardon, and holiness, and heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Jesu, my all in all thou art;",
+        "My rest in toil, my ease in pain,",
+        "The medicine of my broken heart,",
+        "In war my peace, in loss my gain,",
+        "My smile beneath the tyrant's frown,",
+        "In shame my glory and my crown:"
+      ]
+    },
+    {
+      "lines": [
+        "In want my plentiful supply,",
+        "In weakness my almighty power,",
+        "In bonds my perfect liberty,",
+        "My light in Satan's darkest hour,",
+        "In grief my joy unspeakable,",
+        "My life in death, my heaven in hell."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:209"
+}

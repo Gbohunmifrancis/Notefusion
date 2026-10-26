@@ -1,0 +1,95 @@
+{
+  "title": "God Only Wise, Almighty, Good",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "God Only Wise, Almighty, Good in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 468.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "God on-ly wise, al-might-y, good, Send forth thy truth and light, To point us out the nar-row road, And guide our steps a-right:",
+  "verses": [
+    {
+      "lines": [
+        "God only wise, almighty, good,",
+        "Send forth thy truth and light,",
+        "To point us out the narrow road,",
+        "And guide our steps aright:"
+      ]
+    },
+    {
+      "lines": [
+        "To steer our dangerous course between",
+        "The rocks on either hand;",
+        "And fix us in the golden mean,",
+        "And bring our charge to land."
+      ]
+    },
+    {
+      "lines": [
+        "Made apt, by thy sufficient grace,",
+        "To teach as taught by thee,",
+        "We come to train in all thy ways",
+        "Our rising progeny:"
+      ]
+    },
+    {
+      "lines": [
+        "Their selfish will in time subdue,",
+        "And mortify their pride;",
+        "And lend their youth a sacred clew",
+        "To find the crucified."
+      ]
+    },
+    {
+      "lines": [
+        "We would in every step look up,",
+        "By thy example taught",
+        "To alarm their fear, excite their hope,",
+        "And rectify their thought."
+      ]
+    },
+    {
+      "lines": [
+        "We would persuade their hearts to obey,",
+        "With mildest zeal proceed;",
+        "And never take the harsher way,",
+        "When love will do the deed."
+      ]
+    },
+    {
+      "lines": [
+        "For this we ask, in faith sincere,",
+        "The wisdom from above,",
+        "To touch their hearts with filial fear,",
+        "And pure, ingenuous love:"
+      ]
+    },
+    {
+      "lines": [
+        "To watch their will, to sense inclined;",
+        "Withhold the hurtful food;",
+        "And gently bend their tender mind,",
+        "And draw their souls to God."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:468"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "Father, to Thee My Soul I Lift",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Father, to Thee My Soul I Lift in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 435.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther, to thee my soul I lift, My soul on thee de-pends, Con-vinced that ev-ery per-fect gift From thee a-lone de-scends.",
+  "verses": [
+    {
+      "lines": [
+        "Father, to thee my soul I lift,",
+        "My soul on thee depends,",
+        "Convinced that every perfect gift",
+        "From thee alone descends."
+      ]
+    },
+    {
+      "lines": [
+        "Mercy and grace are thine alone,",
+        "And power and wisdom too;",
+        "Without the Spirit of thy Son",
+        "We nothing good can do."
+      ]
+    },
+    {
+      "lines": [
+        "We cannot speak one useful word,",
+        "One holy thought conceive,",
+        "Unless, in answer to our Lord,",
+        "Thyself the blessing give."
+      ]
+    },
+    {
+      "lines": [
+        "His blood demands the purchased grace;",
+        "His blood's availing plea",
+        "Obtained the help for all our race,",
+        "And sends it down to me."
+      ]
+    },
+    {
+      "lines": [
+        "Thou all our works in us hast wrought;",
+        "Our good is all divine;",
+        "The praise of every virtuous thought,",
+        "And righteous word, is thine."
+      ]
+    },
+    {
+      "lines": [
+        "From thee, through Jesus, we receive",
+        "The power on thee to call,",
+        "In whom we are, and move, and live;",
+        "Our God is all in all!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:435"
+}

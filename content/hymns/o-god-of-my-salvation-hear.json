@@ -1,0 +1,128 @@
+{
+  "title": "O GOD of My Salvation, Hear",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "O GOD of My Salvation, Hear in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 365. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "O GOD of my sal-va-tion, hear, And help a sin-ner to draw near With bold-ness to the throne of grace: Help me thy ben-e-fits to sing, And smile to see me fee-bly bring My hum-ble sac-ri-fice of praise.",
+  "verses": [
+    {
+      "lines": [
+        "O GOD of my salvation, hear,",
+        "And help a sinner to draw near",
+        "With boldness to the throne of grace:",
+        "Help me thy benefits to sing,",
+        "And smile to see me feebly bring",
+        "My humble sacrifice of praise."
+      ]
+    },
+    {
+      "lines": [
+        "I cannot praise thee as I would;",
+        "But thou art merciful and good,",
+        "I know thou never wilt despise",
+        "The day of small and feeble things,",
+        "But bear me, till on eagles' wings",
+        "To all the heights of love I rise."
+      ]
+    },
+    {
+      "lines": [
+        "I thank thee for that gracious taste,",
+        "(Which pride would not permit to last)",
+        "That touch of love, that pledge of heaven",
+        "Surely on me my Father smiled,",
+        "And once I knew him reconciled,",
+        "And once I felt my sins forgiven."
+      ]
+    },
+    {
+      "lines": [
+        "My Lord and God I then could see,",
+        "My Saviour, who hath died for me,",
+        "To bring the rebel near to God;",
+        "Thou didst, thou didst, thy peace impart;",
+        "Pardon was written on my heart,",
+        "In largest characters of blood."
+      ]
+    },
+    {
+      "lines": [
+        "Vilest of all the sons of men,",
+        "When I to folly turned again,",
+        "And sinned against thy light and love,",
+        "Grace did much more than sin abound;",
+        "Amazed, I still forgiveness found,",
+        "And thanked my Advocate above."
+      ]
+    },
+    {
+      "lines": [
+        "Saviour, for this I thank thee now;",
+        "My Saviour to the utmost, thou",
+        "Hast snatched me from the gates of hell;",
+        "That I to all mankind may prove",
+        "Thy free, thine everlasting love,",
+        "Which all mankind with me may feel."
+      ]
+    },
+    {
+      "lines": [
+        "The boundless love that found out me",
+        "For every soul of man is free,",
+        "None of thy mercy need despair;",
+        "Patient, and pitiful, and kind,",
+        "Thee every soul of man may find,",
+        "And, freely saved, thy grace declare."
+      ]
+    },
+    {
+      "lines": [
+        "A vile, backsliding sinner, I",
+        "Ten thousand deaths deserve to die,",
+        "Yet still by sovereign grace I live!",
+        "Saviour, to thee I still look up;",
+        "I see all open door of hope,",
+        "And wait thy fulness to receive."
+      ]
+    },
+    {
+      "lines": [
+        "How shall I thank thee for the grace,",
+        "The trust I have to see thy face,",
+        "When sin shall all be purged away!",
+        "The night of doubts and fears is past;",
+        "The morning star appears at last,",
+        "And I shall see the perfect day."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:365"
+}

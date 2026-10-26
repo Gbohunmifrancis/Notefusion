@@ -1,0 +1,71 @@
+{
+  "title": "Eternal Lord of Earth and Skies",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Eternal Lord of Earth and Skies in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 448.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "E-ter-nal Lord of earth and skies, We wait thy Spi-rit's lat-est call: Bid all our fall-en race a-rise, Thou who hast pur-chased life for all; Whose on-ly name, to sin-ners given, Snatch-es from hell, and lifts to heaven.",
+  "verses": [
+    {
+      "lines": [
+        "Eternal Lord of earth and skies,",
+        "We wait thy Spirit's latest call:",
+        "Bid all our fallen race arise,",
+        "Thou who hast purchased life for all;",
+        "Whose only name, to sinners given,",
+        "Snatches from hell, and lifts to heaven."
+      ]
+    },
+    {
+      "lines": [
+        "The word thy sacred lips has past,",
+        "The sure irrevocable word,",
+        "That every soul shall bow at last,",
+        "And yield allegiance to its Lord;",
+        "The kingdoms of the earth shall be",
+        "For ever subjected to thee."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, for this we still attend,",
+        "Thy kingdom in the isles to prove;",
+        "The law of sin and death to end,",
+        "We wait for all the power of love,",
+        "The law of perfect liberty,",
+        "The law of life which is in thee."
+      ]
+    },
+    {
+      "lines": [
+        "O might it now from thee proceed,",
+        "With thee, into the souls of men!",
+        "Throughout the world thy gospel spread;",
+        "And let thy glorious Spirit reign,",
+        "On all the ransomed race bestowed;",
+        "And let the world be filled with God!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:448"
+}

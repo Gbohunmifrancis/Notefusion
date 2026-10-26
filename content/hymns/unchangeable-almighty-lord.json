@@ -1,0 +1,110 @@
+{
+  "title": "Unchangeable Almighty Lord",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Unchangeable Almighty Lord in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 505. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Un-chan-ge-able al-might-y Lord, Our souls up-on thy truth we stay; Ac-com-plish now thy faith-ful word, And give, O give us all one way!",
+  "verses": [
+    {
+      "lines": [
+        "Unchangeable almighty Lord,",
+        "Our souls upon thy truth we stay;",
+        "Accomplish now thy faithful word,",
+        "And give, O give us all one way!"
+      ]
+    },
+    {
+      "lines": [
+        "O let us all join hand in hand",
+        "Who seek redemption in thy blood,",
+        "Fast in one mind and spirit stand,",
+        "And build the temple of our God!"
+      ]
+    },
+    {
+      "lines": [
+        "Thou only canst our wills control,",
+        "Our wild unruly passions bind,",
+        "Tame the old Adam in our soul,",
+        "And make us of one heart and mind."
+      ]
+    },
+    {
+      "lines": [
+        "Speak but the reconciling word,",
+        "The winds shall cease, the waves subside,",
+        "We all shall praise our common Lord,",
+        "Our Jesus, and him crucified."
+      ]
+    },
+    {
+      "lines": [
+        "Giver of peace and unity,",
+        "Send down thy mild, pacific Dove;",
+        "We all shall then in one agree,",
+        "And breathe the spirit of thy love."
+      ]
+    },
+    {
+      "lines": [
+        "We all shall think and speak the same,",
+        "Delightful lesson of thy grace!",
+        "One undivided Christ proclaim,",
+        "And jointly glory in thy praise."
+      ]
+    },
+    {
+      "lines": [
+        "O let us take a softer mould,",
+        "Blended and gathered into thee;",
+        "Under one Shepherd make one fold,",
+        "Where all is love and harmony!"
+      ]
+    },
+    {
+      "lines": [
+        "Regard thine own eternal prayer,",
+        "And send a peaceful answer down;",
+        "To us thy Father's name declare;",
+        "Unite and perfect us in one!"
+      ]
+    },
+    {
+      "lines": [
+        "So shall the world believe and know",
+        "That God hath sent thee from above,",
+        "When thou art seen in us below,",
+        "And every soul displays thy love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:505"
+}

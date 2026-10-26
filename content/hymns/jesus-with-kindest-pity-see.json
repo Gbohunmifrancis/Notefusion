@@ -1,0 +1,71 @@
+{
+  "title": "Jesus, with Kindest Pity See",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Jesus, with Kindest Pity See in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 513.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Je-sus, with kind-est pi-ty see The souls that would be one in thee: If now, ac-cept-ed in thy sight, Thou dost our up-right hearts u-nite, Al-low us even on earth to prove The no-blest joys of heav-enly love.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, with kindest pity see",
+        "The souls that would be one in thee:",
+        "If now, accepted in thy sight,",
+        "Thou dost our upright hearts unite,",
+        "Allow us even on earth to prove",
+        "The noblest joys of heavenly love."
+      ]
+    },
+    {
+      "lines": [
+        "Before thy glorious eyes we spread",
+        "The wish which doth from thee proceed:",
+        "Our love from earthly dross refine;",
+        "Holy, angelical, divine,",
+        "Thee its great Author let it show,",
+        "And back to the pure fountain flow."
+      ]
+    },
+    {
+      "lines": [
+        "A drop of that unbounded sea,",
+        "O Lord, resorb it into thee!",
+        "While all our souls, with restless strife,",
+        "Spring up into eternal life,",
+        "And, lost in endless raptures, prove",
+        "Thy whole immensity of love."
+      ]
+    },
+    {
+      "lines": [
+        "A spark of that ethereal fire,",
+        "Still let it to its source aspire,",
+        "To thee in every wish return,",
+        "Intensely for thy glory burn;",
+        "While all our souls fly up to thee,",
+        "And blaze through all eternity."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:513"
+}

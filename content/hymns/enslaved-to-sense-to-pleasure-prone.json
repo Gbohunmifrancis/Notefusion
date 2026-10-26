@@ -1,0 +1,102 @@
+{
+  "title": "Enslaved to Sense, to Pleasure Prone",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Enslaved to Sense, to Pleasure Prone in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 108. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "En-slaved to sense, to plea-sure prone, Fond of cre-a-ted good, Fa-ther, our help-less-ness we own, And trem-bling taste our food.",
+  "verses": [
+    {
+      "lines": [
+        "Enslaved to sense, to pleasure prone,",
+        "Fond of created good,",
+        "Father, our helplessness we own,",
+        "And trembling taste our food."
+      ]
+    },
+    {
+      "lines": [
+        "Trembling we taste; for, ah! no more",
+        "To thee the creatures lead;",
+        "Changed, they exert a baneful power,",
+        "And poison while they feed."
+      ]
+    },
+    {
+      "lines": [
+        "Cursed for the sake of wretched man,",
+        "They now engross him whole;",
+        "With pleasing force on earth detain,",
+        "And sensualize his soul."
+      ]
+    },
+    {
+      "lines": [
+        "Grovelling on earth we still must lie,",
+        "Till Christ the curse repeal;",
+        "Till Christ, descending from on high,",
+        "Infected nature heal."
+      ]
+    },
+    {
+      "lines": [
+        "Come then, our heavenly Adam, come,",
+        "Thy healing influence give,",
+        "Hallow our food, reverse our doom,",
+        "And bid us eat and live!"
+      ]
+    },
+    {
+      "lines": [
+        "The bondage of corruption break,",
+        "For this our spirits groan;",
+        "Thy only will we fain would seek,",
+        "O save us from our own!"
+      ]
+    },
+    {
+      "lines": [
+        "Turn the full stream of nature's tide;",
+        "Let all our actions tend",
+        "To thee their source; thy love the guide,",
+        "Thy glory be the end."
+      ]
+    },
+    {
+      "lines": [
+        "Earth then a scale to heaven shall be,",
+        "Sense shall point out the road,",
+        "The creatures all shall lead to thee,",
+        "And all we taste be God."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:108"
+}

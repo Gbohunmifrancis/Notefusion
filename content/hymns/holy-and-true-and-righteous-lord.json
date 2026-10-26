@@ -1,0 +1,63 @@
+{
+  "title": "Holy, and True, and Righteous Lord",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Holy, and True, and Righteous Lord in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 393.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Ho-ly, and true, and right-eous Lord, I wait to prove thy per-fect will, Be mind-ful of thy gra-cious word, And stamp me with thy Spi-rit's seal.",
+  "verses": [
+    {
+      "lines": [
+        "Holy, and true, and righteous Lord,",
+        "I wait to prove thy perfect will,",
+        "Be mindful of thy gracious word,",
+        "And stamp me with thy Spirit's seal."
+      ]
+    },
+    {
+      "lines": [
+        "Open my faith's interior eye,",
+        "Display thy glory from above;",
+        "And all I am shall sink and die,",
+        "Lost in astonishment and love"
+      ]
+    },
+    {
+      "lines": [
+        "Confound, o'erpower me by thy grace,",
+        "I would be by myself abhorred;",
+        "All might, all majesty, all praise,",
+        "All glory, be to Christ my Lord"
+      ]
+    },
+    {
+      "lines": [
+        "Now let me gain perfection's height,",
+        "Now let me into nothing fall;",
+        "Be less than nothing in thy sight,",
+        "And feel that Christ is all in all!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:393"
+}

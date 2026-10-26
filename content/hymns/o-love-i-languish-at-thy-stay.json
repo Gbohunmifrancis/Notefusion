@@ -1,0 +1,88 @@
+{
+  "title": "O LOVE, I Languish at Thy Stay",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "O LOVE, I Languish at Thy Stay in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 379. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "O LOVE, I lan-guish at thy stay! I pine for thee with lin-gering smart; Wea-ry and faint through long de-lay, When wilt thou come in-to my heart? From sin and sor-row set me free, And swal-low up my soul in thee?",
+  "verses": [
+    {
+      "lines": [
+        "O LOVE, I languish at thy stay!",
+        "I pine for thee with lingering smart;",
+        "Weary and faint through long delay,",
+        "When wilt thou come into my heart?",
+        "From sin and sorrow set me free,",
+        "And swallow up my soul in thee?"
+      ]
+    },
+    {
+      "lines": [
+        "Come, O thou universal Good!",
+        "Balm of the wounded conscience, come",
+        "The hungry, dying spirit's food,",
+        "The weary, wandering pilgrim's home;",
+        "Haven to take the shipwrecked in,",
+        "My everlasting rest from sin!"
+      ]
+    },
+    {
+      "lines": [
+        "Be thou, O Love, whate'er I want;",
+        "Support my feebleness of mind,",
+        "Relieve the thirsty soul, the faint",
+        "Revive, illuminate the blind,",
+        "The mournful cheer, the drooping lead,",
+        "And heal the sick, and raise the dead."
+      ]
+    },
+    {
+      "lines": [
+        "Come, O my comfort and delight!",
+        "My strength and health, my shield and sun,",
+        "My boast, and confidence, and might,",
+        "My joy, my glory, and my crown,",
+        "My gospel hope, my calling's prize,",
+        "My tree o life, my paradise!"
+      ]
+    },
+    {
+      "lines": [
+        "The secret of the Lord thou art.",
+        "The mystery so long unknown;",
+        "Christ in a pure and perfect heart,",
+        "The name inscribed in the white stone,",
+        "The Life divine, the little leaven,",
+        "My precious pearl, my present heaven."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:379"
+}

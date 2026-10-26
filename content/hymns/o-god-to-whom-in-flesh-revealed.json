@@ -1,0 +1,95 @@
+{
+  "title": "O GOD, to Whom, in Flesh Revealed",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "O GOD, to Whom, in Flesh Revealed in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 395.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O GOD, to whom, in flesh re-vealed, The help-less all for suc-cour came, The sick to be re-lieved and healed, And found sal-va-tion in thy name;",
+  "verses": [
+    {
+      "lines": [
+        "O GOD, to whom, in flesh revealed,",
+        "The helpless all for succour came,",
+        "The sick to be relieved and healed,",
+        "And found salvation in thy name;"
+      ]
+    },
+    {
+      "lines": [
+        "With publicans and harlots, I,",
+        "In these thy Spirit's gospel-days,",
+        "To thee, the sinner's friend, draw nigh,",
+        "And humbly sue for saving grace."
+      ]
+    },
+    {
+      "lines": [
+        "Thou seest me helpless and distrest,",
+        "Feeble, and faint, and blind, and poor,",
+        "Weary, I come to thee for rest,",
+        "And sick of sin, implore a cure."
+      ]
+    },
+    {
+      "lines": [
+        "My sin's incurable disease",
+        "Thou, Jesus, thou alone, canst heal,",
+        "Inspire me with thy power and peace,",
+        "And pardon on my conscience seal."
+      ]
+    },
+    {
+      "lines": [
+        "A touch, a word, a look from thee,",
+        "Can turn my heart, and make it clean,",
+        "Purge the foul, inbred leprosy,",
+        "And save me from my bosom sin."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, if thou wilt, I do believe",
+        "Thou canst the saving grace impart,",
+        "Thou canst this instant now forgive,",
+        "And stamp thine image on my heart."
+      ]
+    },
+    {
+      "lines": [
+        "My heart, which now to thee I raise;",
+        "I know thou canst this moment cleanse,",
+        "The deepest stains of sin efface,",
+        "And drive the evil spirit hence."
+      ]
+    },
+    {
+      "lines": [
+        "Be it according to thy word,",
+        "Accomplish now thy work in me;",
+        "And let my soul, to health restored,",
+        "Devote its little all to thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:395"
+}

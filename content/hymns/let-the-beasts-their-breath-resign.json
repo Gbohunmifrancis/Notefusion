@@ -1,0 +1,86 @@
+{
+  "title": "Let the Beasts Their Breath Resign",
+  "tune": "messiah-herald",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Let the Beasts Their Breath Resign in Tonic Solfa to MESSIAH (HERALD), doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 7. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Sevens Double (7.7.7.7.7.7.7.7), and this page sets them to MESSIAH (HERALD); any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Let the beasts their breath re-sign, Stran-gers to the life di-vine; Who their God can nev-er know, Let their spir-it down-ward go. You for high-er ends were born, You may all to God re-turn, Dwell with him a-bove the sky; Why will you for ev-er die?",
+  "verses": [
+    {
+      "lines": [
+        "Let the beasts their breath resign,",
+        "Strangers to the life divine;",
+        "Who their God can never know,",
+        "Let their spirit downward go.",
+        "You for higher ends were born,",
+        "You may all to God return,",
+        "Dwell with him above the sky;",
+        "Why will you for ever die?"
+      ]
+    },
+    {
+      "lines": [
+        "You, on whom he favours showers,",
+        "You, possest of nobler powers,",
+        "You, of reason's powers possest,",
+        "You, with will and memory blest,",
+        "You, with finer sense endued,",
+        "Creatures capable of God;",
+        "Noblest of his creatures, why,",
+        "Why will you for ever die?"
+      ]
+    },
+    {
+      "lines": [
+        "You, whom he ordained to be",
+        "Transcripts of the Deity;",
+        "You, whom he in life doth hold;",
+        "You, for whom himself was sold;",
+        "You, on whom he still doth wait,",
+        "Whom he would again create;",
+        "Made by him, and purchased, why,",
+        "Why will you for ever die?"
+      ]
+    },
+    {
+      "lines": [
+        "You, who own his record true,",
+        "You, his chosen people, you,",
+        "You, who call the Saviour Lord,",
+        "You, who read his written word,",
+        "You, who see the gospel-light,",
+        "Claim a crown in Jesu's right;",
+        "Why will you, ye Christians, why",
+        "Will the house of Israel die?"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MESSIAH (HERALD) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:7"
+}

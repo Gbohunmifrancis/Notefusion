@@ -1,0 +1,110 @@
+{
+  "title": "Jesus, My King, to Thee I Bow",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Jesus, My King, to Thee I Bow in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 293. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus, my King, to thee I bow, En-list-ed un-der thy com-mand; Cap-tain of my sal-va-tion, thou Shalt lead me to the pro-mised land.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, my King, to thee I bow,",
+        "Enlisted under thy command;",
+        "Captain of my salvation, thou",
+        "Shalt lead me to the promised land."
+      ]
+    },
+    {
+      "lines": [
+        "Thou hast a great deliverance wrought,",
+        "The staff from off my shoulder broke,",
+        "Out of the house of bondage brought,",
+        "And freed me from the Egyptian yoke."
+      ]
+    },
+    {
+      "lines": [
+        "O'er the vast howling wilderness,",
+        "To Canaan's bounds thou hast me led;",
+        "Thou bidd'st me now the land possess,",
+        "And on thy milk and honey feed."
+      ]
+    },
+    {
+      "lines": [
+        "I see an open door of hope,",
+        "Legions of sins in vain oppose;",
+        "Bold I with thee, my Head, march up,",
+        "And triumph o'er a world of foes."
+      ]
+    },
+    {
+      "lines": [
+        "Gigantic lusts come forth to fight,",
+        "I mark, disdain, and all break through,",
+        "I tread them down in Jesu's might,",
+        "Through Jesus I can all things do."
+      ]
+    },
+    {
+      "lines": [
+        "Lo! the tall sons of Anak rise!",
+        "Who can the sons of Anak meet?",
+        "Captain, to thee I lift mine eyes,",
+        "And, lo! they fall beneath my feet."
+      ]
+    },
+    {
+      "lines": [
+        "Passion, and appetite, and pride,",
+        "(Pride, my old, dreadful, tyrant-foe)",
+        "I see cast down on every side,",
+        "And conquering, I to conquer go."
+      ]
+    },
+    {
+      "lines": [
+        "My Lord in my behalf appears;",
+        "Captain, thy strength-inspiring eye",
+        "Scatters my doubts, dispels my fears,",
+        "And makes the host of aliens fly."
+      ]
+    },
+    {
+      "lines": [
+        "Who can before my Captain stand?",
+        "Who is so great a King as mine?",
+        "High over all is thy right hand,",
+        "And might and majesty are thine!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:293"
+}

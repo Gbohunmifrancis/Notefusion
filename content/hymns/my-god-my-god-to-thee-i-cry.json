@@ -1,0 +1,126 @@
+{
+  "title": "My God, My God, to Thee I Cry",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "My God, My God, to Thee I Cry in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 11 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 184. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "My God, my God, to thee I cry, Thee on-ly would I know; Thy pu-ri-fy-ing blood ap-ply, And wash me white as snow.",
+  "verses": [
+    {
+      "lines": [
+        "My God, my God, to thee I cry,",
+        "Thee only would I know;",
+        "Thy purifying blood apply,",
+        "And wash me white as snow."
+      ]
+    },
+    {
+      "lines": [
+        "Touch me, and make the leper clean;",
+        "Purge my iniquity;",
+        "Unless thou wash my soul from sin,",
+        "I have no part in thee."
+      ]
+    },
+    {
+      "lines": [
+        "But art thou not already mine?",
+        "Answer, if mine thou art!",
+        "Whisper within, thou Love divine,",
+        "And cheer my drooping heart."
+      ]
+    },
+    {
+      "lines": [
+        "Tell me again my peace is made,",
+        "And bid the sinner live;",
+        "The debt's discharged, the ransom's paid,",
+        "My Father must forgive."
+      ]
+    },
+    {
+      "lines": [
+        "Behold, for me the victim bleeds,",
+        "His wounds are opened wide;",
+        "For me the blood of sprinkling pleads,",
+        "And speaks me justified."
+      ]
+    },
+    {
+      "lines": [
+        "O why did I my Saviour leave?",
+        "So soon unfaithful prove!",
+        "How could I thy good Spirit grieve,",
+        "And sin against thy love?"
+      ]
+    },
+    {
+      "lines": [
+        "I forced thee first to disappear,",
+        "I turned thy face aside;",
+        "Ah, Lord! if thou hadst still been here,",
+        "Thy servant had not died."
+      ]
+    },
+    {
+      "lines": [
+        "But O, how soon thy wrath is o'er,",
+        "And pardoning love takes place!",
+        "Assist me, Saviour, to adore",
+        "The riches of thy grace."
+      ]
+    },
+    {
+      "lines": [
+        "O could I lose myself in thee,",
+        "Thy depth of mercy prove,",
+        "Thou vast, unfathomable sea",
+        "Of unexhausted love!"
+      ]
+    },
+    {
+      "lines": [
+        "My humbled soul, when thou art near,",
+        "In dust and ashes lies;",
+        "How shall a sinful worm appear,",
+        "Or meet thy purer eyes?"
+      ]
+    },
+    {
+      "lines": [
+        "I loathe myself when God I see,",
+        "And into nothing fall;",
+        "Content if thou exalted be,",
+        "And Christ be in my all."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:184"
+}

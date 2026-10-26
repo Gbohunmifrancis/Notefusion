@@ -1,0 +1,94 @@
+{
+  "title": "When, Gracious Lord, When Shall It Be",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "When, Gracious Lord, When Shall It Be in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 163. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When, gra-cious Lord, when shall it be, That I shall find my all in thee, The ful-ness of thy pro-mise prove, The seal of thine e-ter-nal love?",
+  "verses": [
+    {
+      "lines": [
+        "When, gracious Lord, when shall it be,",
+        "That I shall find my all in thee,",
+        "The fulness of thy promise prove,",
+        "The seal of thine eternal love?"
+      ]
+    },
+    {
+      "lines": [
+        "A poor blind child I wander here,",
+        "If haply I may feel thee near:",
+        "O dark! dark! dark! I still must say,",
+        "Amid the blaze of gospel day."
+      ]
+    },
+    {
+      "lines": [
+        "Thee, only thee, I fain would find,",
+        "And cast the world and flesh behind;",
+        "Thou, only thou, to me be given,",
+        "Of all thou hast in earth or heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Whom man forsakes thou wilt not leave,",
+        "Ready the outcasts to receive,",
+        "Though all my simpleness I own,",
+        "And all my faults to thee are known."
+      ]
+    },
+    {
+      "lines": [
+        "Ah, wherefore did I ever doubt!",
+        "Thou wilt in no wise cast me out,",
+        "A helpless soul that comes to thee,",
+        "With only sin and misery."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, I am sick, my sickness cure;",
+        "I want, do thou enrich the poor;",
+        "Under thy mighty hand I stoop,",
+        "O lift the abject sinner up!"
+      ]
+    },
+    {
+      "lines": [
+        "Lord, I am blind, be thou my sight;",
+        "Lord, I am weak be thou my might;",
+        "A helper of the helpless be,",
+        "And let me find my all in thee!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:163"
+}

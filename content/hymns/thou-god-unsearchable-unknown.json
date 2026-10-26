@@ -1,0 +1,71 @@
+{
+  "title": "Thou God Unsearchable, Unknown",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Thou God Unsearchable, Unknown in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 130.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Thou God un-search-a-ble, un-known, Who still con-ceal'st thy-self from me, Hear an a-pos-tate spir-it groan, Broke off, and ban-ished far from thee; But con-scious of my fall I mourn, And fain I would to thee re-turn.",
+  "verses": [
+    {
+      "lines": [
+        "Thou God unsearchable, unknown,",
+        "Who still conceal'st thyself from me,",
+        "Hear an apostate spirit groan,",
+        "Broke off, and banished far from thee;",
+        "But conscious of my fall I mourn,",
+        "And fain I would to thee return."
+      ]
+    },
+    {
+      "lines": [
+        "Send forth one ray of heavenly light,",
+        "Of gospel hope, of humble fear,",
+        "To guide me through the gulf of night,",
+        "My poor desponding soul to cheer,",
+        "Till thou my unbelief remove,",
+        "And show me all thy glorious love."
+      ]
+    },
+    {
+      "lines": [
+        "A hidden God indeed thou art!",
+        "Thy absence I this moment feel;",
+        "Yet must I own it from my heart,",
+        "Concealed, thou art a Saviour still;",
+        "And though thy face I cannot see,",
+        "I know thine eye is fixed on me."
+      ]
+    },
+    {
+      "lines": [
+        "My Saviour thou, not yet revealed,",
+        "Yet will I thee my Saviour call;",
+        "Adore thy hand, from sin withheld;",
+        "Thy hand shall save me from my fall:",
+        "Now, Lord, throughout my darkness shine,",
+        "And show thyself for ever mine."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:130"
+}

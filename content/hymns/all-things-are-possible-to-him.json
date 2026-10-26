@@ -1,0 +1,91 @@
+{
+  "title": "All Things Are Possible to Him",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "All Things Are Possible to Him in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 401.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "All things are pos-si-ble to him That can in Je-su's name be-lieve: Lord, I no more thy truth blas-pheme, Thy truth I lov-ing-ly re-ceive; I can, I do be-lieve in thee, All things are pos-si-ble to me.",
+  "verses": [
+    {
+      "lines": [
+        "All things are possible to him",
+        "That can in Jesu's name believe:",
+        "Lord, I no more thy truth blaspheme,",
+        "Thy truth I lovingly receive;",
+        "I can, I do believe in thee,",
+        "All things are possible to me."
+      ]
+    },
+    {
+      "lines": [
+        "The most impossible of all",
+        "Is, that I e'er from sin should cease;",
+        "Yet shall it be, I know it shall;",
+        "Jesus, look to thy faithfulness!",
+        "If nothing is too hard for thee,",
+        "All things are possible to me."
+      ]
+    },
+    {
+      "lines": [
+        "Though earth and hell the word gainsay,",
+        "The word of God can never fail;",
+        "The Lamb shall take my sins away,",
+        "'Tis certain, though impossible;",
+        "The thing impossible shall be,",
+        "All things are possible to me."
+      ]
+    },
+    {
+      "lines": [
+        "When thou the work of faith hast wrought,",
+        "I here shall in thine image shine,",
+        "Nor sin in deed, or word, or thought;",
+        "Let men exclaim, and fiends repine,",
+        "They cannot break the firm decree;",
+        "All things are possible to me."
+      ]
+    },
+    {
+      "lines": [
+        "Thy mouth, O Lord, hath spoke, hath sworn",
+        "That I shall serve thee without fear,",
+        "Shall find the pearl which others spurn,",
+        "Holy, and pure, and perfect here,",
+        "The servant as his Lord shall be;",
+        "All things are possible to me."
+      ]
+    },
+    {
+      "lines": [
+        "All things are possible to God,",
+        "To Christ, the power of God in man,",
+        "To me, when I am all renewed,",
+        "When I in Christ am formed again,",
+        "And witness, from all sin set free,",
+        "All things are possible to me."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:401"
+}

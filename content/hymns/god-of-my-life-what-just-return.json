@@ -1,0 +1,102 @@
+{
+  "title": "God of My Life, What Just Return",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "God of My Life, What Just Return in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 155. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "God of my life, what just re-turn Can sin-ful dust and ash-es give? I on-ly live my sin to mourn; To love my God I on-ly live.",
+  "verses": [
+    {
+      "lines": [
+        "God of my life, what just return",
+        "Can sinful dust and ashes give?",
+        "I only live my sin to mourn;",
+        "To love my God I only live."
+      ]
+    },
+    {
+      "lines": [
+        "To thee, benign and saving Power,",
+        "I consecrate my lengthened days;",
+        "While, marked with blessings, every hour",
+        "Shall speak thy co-extended praise."
+      ]
+    },
+    {
+      "lines": [
+        "Be all my added life employed",
+        "Thine image in my soul to see;",
+        "Fill with thyself the mighty void,",
+        "Enlarge my heart to compass thee."
+      ]
+    },
+    {
+      "lines": [
+        "O give me, Saviour, give me more!",
+        "Thy mercies to my soul reveal;",
+        "Alas! I see their endless store,",
+        "But O, I cannot, cannot feel!"
+      ]
+    },
+    {
+      "lines": [
+        "The blessing of thy love bestow,",
+        "For this my cries shall never fail;",
+        "Wrestling, I will not let thee go,",
+        "I will not, till my suit prevail."
+      ]
+    },
+    {
+      "lines": [
+        "I'll weary thee with my complaint,",
+        "Here at thy feet for ever lie,",
+        "With longing sick, with groaning faint;",
+        "O give me love or else I die!"
+      ]
+    },
+    {
+      "lines": [
+        "come then, my Hope, my Life, my Lord,",
+        "And fix in me thy lasting home,",
+        "Be mindful of thy gracious word,",
+        "Thou with thy promised Father come!"
+      ]
+    },
+    {
+      "lines": [
+        "Prepare, and then possess my heart,",
+        "O take me, seize me, from above!",
+        "Thee may I love, for God thou art!",
+        "Thee may I feel, for God is love!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:155"
+}

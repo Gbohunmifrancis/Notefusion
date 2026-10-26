@@ -1,0 +1,94 @@
+{
+  "title": "How Do Thy Mercies Close Me Round",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "How Do Thy Mercies Close Me Round in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 227. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "How do thy mer-cies close me round! For ev-er be thy name a-dored! I blush in all things to a-bound; The ser-vant is a-bove his Lord!",
+  "verses": [
+    {
+      "lines": [
+        "How do thy mercies close me round!",
+        "For ever be thy name adored!",
+        "I blush in all things to abound;",
+        "The servant is above his Lord!"
+      ]
+    },
+    {
+      "lines": [
+        "Inured to poverty and pain,",
+        "A suffering life my Master led;",
+        "The Son of God, the Son of man,",
+        "He had not where to lay his head."
+      ]
+    },
+    {
+      "lines": [
+        "But lo! a place he hath prepared",
+        "For me, whom watchful angels keep;",
+        "Yea, he himself becomes my guard,",
+        "He smooths my bed, and gives me sleep."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus protects; my fears, be gone!",
+        "What can the Rock of ages move?",
+        "Safe in thy arms I lay me down,",
+        "Thy everlasting arms of love."
+      ]
+    },
+    {
+      "lines": [
+        "While thou art intimately nigh,",
+        "Who, who shall violate my rest?",
+        "Sin, earth, and hell I now defy;",
+        "I lean upon my Saviour's breast."
+      ]
+    },
+    {
+      "lines": [
+        "I rest beneath the Almighty's shade,",
+        "My griefs expire, my troubles cease:",
+        "Thou, Lord, on whom my soul is stayed,",
+        "Wilt keep me still in perfect peace."
+      ]
+    },
+    {
+      "lines": [
+        "Me for thine own thou lov'st to take,",
+        "In time and in eternity;",
+        "Thou never, never wilt forsake",
+        "A helpless worm that trusts in thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:227"
+}

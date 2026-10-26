@@ -1,0 +1,86 @@
+{
+  "title": "Father, Whose Everlasting Love",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "textOneOf": true,
+  "description": "Father, Whose Everlasting Love in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Wesley printed these words in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 39. They first appeared in a book he and his brother Charles published together, and the Collection's own index cannot say which of the two wrote them.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther, whose ev-er-last-ing love Thy on-ly Son for sin-ners gave, Whose grace to all did free-ly move, And sent him down the world to save;",
+  "verses": [
+    {
+      "lines": [
+        "Father, whose everlasting love",
+        "Thy only Son for sinners gave,",
+        "Whose grace to all did freely move,",
+        "And sent him down the world to save;"
+      ]
+    },
+    {
+      "lines": [
+        "Help us thy mercy to extol,",
+        "Immense, unfathomed, unconfined;",
+        "To praise the Lamb who died for all,",
+        "The general Saviour of mankind."
+      ]
+    },
+    {
+      "lines": [
+        "Thy undistinguishing regard",
+        "Was cast on Adam's fallen race;",
+        "For all thou hast in Christ prepared",
+        "Sufficient, sovereign, saving grace."
+      ]
+    },
+    {
+      "lines": [
+        "The world he suffered to redeem;",
+        "For all he hath the atonement made;",
+        "For those that will not come to him",
+        "The ransom of his life was paid."
+      ]
+    },
+    {
+      "lines": [
+        "Why then, thou universal Love,",
+        "Should any of thy grace despair?",
+        "To all, to all, thy bowels move,",
+        "But straitened in our own we are."
+      ]
+    },
+    {
+      "lines": [
+        "Arise, O God, maintain thy cause!",
+        "The fulness of the Gentiles call;",
+        "Lift up the standard of thy cross,",
+        "And all shall own thou diedst for all."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788; John Wesley died in 1791.",
+  "credits": "Words by Charles Wesley (1707–1788) or John Wesley (1703–1791), public domain, as printed in John Wesley's Collection of Hymns (1780); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:39"
+}

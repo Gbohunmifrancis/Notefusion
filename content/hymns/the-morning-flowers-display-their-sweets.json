@@ -1,0 +1,79 @@
+{
+  "title": "The Morning Flowers Display Their Sweets",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Samuel Wesley Jr.",
+      "born": 1691,
+      "died": 1739,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "The Morning Flowers Display Their Sweets in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Samuel Wesley Jr. wrote these words. John Wesley printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 46.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The morn-ing flowers dis-play their sweets, And gay their sil-ken leaves un-fold As care-less of the noon-tide heats, As fear-less of th'e-ve-ning cold.",
+  "verses": [
+    {
+      "lines": [
+        "The morning flowers display their sweets,",
+        "And gay their silken leaves unfold",
+        "As careless of the noontide heats,",
+        "As fearless of the evening cold."
+      ]
+    },
+    {
+      "lines": [
+        "Nipt by the wind's unkindly blast,",
+        "Parched by the sun's directer ray,",
+        "The momentary glories waste,",
+        "The short-lived beauties die away."
+      ]
+    },
+    {
+      "lines": [
+        "So blooms the human face divine,",
+        "When youth its pride of beauty shows;",
+        "Fairer than spring the colours shine,",
+        "And sweeter than the virgin rose."
+      ]
+    },
+    {
+      "lines": [
+        "Or worn by slowly-rolling years,",
+        "Or broke by sickness in a day,",
+        "The fading glory disappears,",
+        "The short-lived beauties die away."
+      ]
+    },
+    {
+      "lines": [
+        "Yet these, new rising from the tomb,",
+        "With lustre brighter far shall shine;",
+        "Revive with ever-during bloom,",
+        "Safe from diseases and decline."
+      ]
+    },
+    {
+      "lines": [
+        "Let sickness blast, let death devour,",
+        "If heaven must recompense our pains:",
+        "Perish the grass, and fade the flower,",
+        "If firm the word of God remains."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Samuel Wesley Jr. died in 1739.",
+  "credits": "Words by Samuel Wesley Jr. (1691–1739), public domain, as printed in John Wesley's Collection of Hymns (1780); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:46"
+}

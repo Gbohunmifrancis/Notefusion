@@ -1,0 +1,63 @@
+{
+  "title": "Thee, Jesus, Full of Truth and Grace",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Thee, Jesus, Full of Truth and Grace in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 329.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Thee, Je-sus, full of truth and grace, Thee, Sa-viour, we a-dore, Thee in af-flic-tion's fur-nace praise, And mag-ni-fy thy power.",
+  "verses": [
+    {
+      "lines": [
+        "Thee, Jesus, full of truth and grace,",
+        "Thee, Saviour, we adore,",
+        "Thee in affliction's furnace praise,",
+        "And magnify thy power."
+      ]
+    },
+    {
+      "lines": [
+        "Thy power, in human weakness shown,",
+        "Shall make us all entire;",
+        "We now thy guardian presence own,",
+        "And walk unburned in fire."
+      ]
+    },
+    {
+      "lines": [
+        "Thee, Son of man, by faith we see,",
+        "And glory in our guide;",
+        "Surrounded and upheld by thee,",
+        "The fiery test abide."
+      ]
+    },
+    {
+      "lines": [
+        "The fire our graces shall refine,",
+        "Till, moulded from above,",
+        "We bear the character divine,",
+        "The stamp of perfect love."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:329"
+}

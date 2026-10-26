@@ -1,0 +1,55 @@
+{
+  "title": "After All That I Have Done",
+  "tune": "hollingside",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "After All That I Have Done in Tonic Solfa to HOLLINGSIDE, doh is D: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 185.",
+    "The book printed the words without tunes. They are in Sevens Double (7.7.7.7.7.7.7.7), and this page sets them to HOLLINGSIDE; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Af-ter all that I have done, Sa-viour, art thou pa-ci-fied? Whith-er shall my vile-ness run? Hide me, earth, the sin-ner hide! Let me sink in-to the dust, Full of ho-ly shame, a-dore! Je-sus Christ, the good, the just, Bids me go, and sin no more.",
+  "verses": [
+    {
+      "lines": [
+        "After all that I have done,",
+        "Saviour, art thou pacified?",
+        "Whither shall my vileness run?",
+        "Hide me, earth, the sinner hide!",
+        "Let me sink into the dust,",
+        "Full of holy shame, adore!",
+        "Jesus Christ, the good, the just,",
+        "Bids me go, and sin no more."
+      ]
+    },
+    {
+      "lines": [
+        "O confirm the gracious word,",
+        "Jesus, Son of God and man!",
+        "Let me never grieve thee, Lord,",
+        "Never turn to sin again:",
+        "Till my all in all thou art,",
+        "Till thou bring thy nature in,",
+        "Keep this feeble, trembling heart,",
+        "Save me, save me, Lord, from sin!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to HOLLINGSIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:185"
+}

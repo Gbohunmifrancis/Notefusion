@@ -1,0 +1,81 @@
+{
+  "title": "Jesus, I Believe Thee Near",
+  "tune": "ratisbon-werner",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1780,
+  "textPublishedBy": true,
+  "description": "Jesus, I Believe Thee Near in Tonic Solfa to RATISBON (WERNER), doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. His brother John printed them in A Collection of Hymns for the Use of the People Called Methodists (1780), hymn 173.",
+    "The book printed the words without tunes. They are in Sevens, six lines (7.7.7.7.7.7), and this page sets them to RATISBON (WERNER); any other Sevens, six lines tune fits them as well."
+  ],
+  "underlay": "Je-sus, I be-lieve thee near, Now my fall-en soul re-store! Now my guilt-y con-science clear, Give me back my peace and power, Stone to flesh a-gain con-vert, Write for-give-ness on my heart.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, I believe thee near,",
+        "Now my fallen soul restore!",
+        "Now my guilty conscience clear,",
+        "Give me back my peace and power,",
+        "Stone to flesh again convert,",
+        "Write forgiveness on my heart."
+      ]
+    },
+    {
+      "lines": [
+        "I believe thy pardoning grace,",
+        "As at the beginning, free;",
+        "Open are thy arms to embrace",
+        "Me, the worst of rebels, me;",
+        "In me all the hindrance lies;",
+        "Called, I still refuse to rise."
+      ]
+    },
+    {
+      "lines": [
+        "Yet, for thy own mercy's sake,",
+        "Patience with thy rebel have;",
+        "Me thy mercy's witness make,",
+        "Witness of thy power to save;",
+        "Make me willing to be free,",
+        "Restless to be saved by thee."
+      ]
+    },
+    {
+      "lines": [
+        "Now the gracious work begin,",
+        "Mow for good some token give;",
+        "Give me now to feel my sin,",
+        "Give me now my sin to leave;",
+        "Bid me look on thee and mourn,",
+        "Bid me to thy arms return."
+      ]
+    },
+    {
+      "lines": [
+        "Take this heart of stone away,",
+        "Melt me into gracious tears;",
+        "Grant me power to watch and pray.",
+        "Till thy lovely face appears,",
+        "Till thy favour I retrieve,",
+        "Till by faith again I live."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "John Wesley, A Collection of Hymns for the Use of the People Called Methodists (1780)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in John Wesley's Collection of Hymns (1780); set to RATISBON (WERNER) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "wesley-1780:173"
+}
