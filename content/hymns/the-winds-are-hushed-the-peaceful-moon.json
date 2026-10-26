@@ -1,0 +1,63 @@
+{
+  "title": "The Winds Are Hushed; the Peaceful Moon",
+  "tune": "york",
+  "text": [
+    {
+      "name": "John Pierpont",
+      "born": 1785,
+      "died": 1866,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "The Winds Are Hushed; the Peaceful Moon in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Pierpont wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 474, “The Hymn of the Last Supper”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The winds are hushed; the peace-ful moon Looks down on Zi-on's hill; The cit-y sleeps; 'tis night's calm moon, And all the streets are still.",
+  "verses": [
+    {
+      "lines": [
+        "The winds are hushed; the peaceful moon",
+        "Looks down on Zion's hill;",
+        "The city sleeps; 'tis night's calm moon,",
+        "And all the streets are still."
+      ]
+    },
+    {
+      "lines": [
+        "How soft, how holy, is the light!",
+        "And hark! a sweet, low song,",
+        "As gently as these dews of night,",
+        "Floats on the air along."
+      ]
+    },
+    {
+      "lines": [
+        "Affection's wish, devotion's prayer,",
+        "Are in that holy strain;",
+        "And hope and love and trust are there,",
+        "And triumph, won through pain."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis Jesus and his faithful few",
+        "That soul-deep hymn who pour; —",
+        "O Christ! may we the song renew,",
+        "And learn to love thee more."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Pierpont died in 1866.",
+  "credits": "Words by John Pierpont (1785–1866), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:474"
+}

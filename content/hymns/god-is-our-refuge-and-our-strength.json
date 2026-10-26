@@ -1,0 +1,79 @@
+{
+  "title": "God Is Our Refuge and Our Strength",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Henry Alford",
+      "born": 1810,
+      "died": 1871,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "God Is Our Refuge and Our Strength in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Henry Alford wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 255, “God Our Refuge. Psalm xlvi”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "God is our re-fuge and our strength, When trou-ble's hour is near; A ve-ry pre-sent help is He; There-fore we will not fear.",
+  "verses": [
+    {
+      "lines": [
+        "God is our refuge and our strength,",
+        "When trouble's hour is near;",
+        "A very present help is He;",
+        "Therefore we will not fear."
+      ]
+    },
+    {
+      "lines": [
+        "Although the pillars of the earth",
+        "Shall clean removed be,",
+        "The very mountains carried forth,",
+        "And cast into the sea;"
+      ]
+    },
+    {
+      "lines": [
+        "Although the waters rage and swell,",
+        "So that the earth shall shake;",
+        "Yea, and the solid mountain roots",
+        "Shall with the tempest quake;"
+      ]
+    },
+    {
+      "lines": [
+        "There is a river that makes glad",
+        "The city of our God;",
+        "The tabernacle's holy place",
+        "Of the Most High's abode."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord is in the midst of her,",
+        "Removed she shall not be;",
+        "Because the Lord our God himself",
+        "Shall help her speedily."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord our strength and refuge is,",
+        "When trouble's hour is near;",
+        "A very present help is He;",
+        "Therefore we will not fear."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Henry Alford died in 1871.",
+  "credits": "Words by Henry Alford (1810–1871), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:255"
+}

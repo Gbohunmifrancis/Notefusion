@@ -1,0 +1,95 @@
+{
+  "title": "\"No More, on Earth No More",
+  "tune": "franconia",
+  "text": [
+    {
+      "name": "William Gaskell",
+      "born": 1805,
+      "died": 1884,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "\"No More, on Earth No More in Tonic Solfa to FRANCONIA, doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "William Gaskell wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 352, “No More!”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to FRANCONIA; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "\"No more, on earth no more, Shall beam for us that eye; Closed in a strange for-get-ful-ness For-ev-er it must lie.",
+  "verses": [
+    {
+      "lines": [
+        "\"No more, on earth no more,",
+        "Shall beam for us that eye;",
+        "Closed in a strange forgetfulness",
+        "Forever it must lie."
+      ]
+    },
+    {
+      "lines": [
+        "\"No more, on earth no more,",
+        "Shall we behold that face;",
+        "Within the mournful halls of death",
+        "Must be its dwelling-place."
+      ]
+    },
+    {
+      "lines": [
+        "\"No more, on earth no more,",
+        "Shall those dear lips be heard;",
+        "Cold silence there hath fixed its seal,",
+        "Breathed is their latest word.\""
+      ]
+    },
+    {
+      "lines": [
+        "'Tis so fond Nature mourns",
+        "Affection's broken ties;",
+        "But Faith stands forth, she points on high,",
+        "Serenely she replies: —"
+      ]
+    },
+    {
+      "lines": [
+        "\"No more, in heaven no more,",
+        "That eye is dim with tears;",
+        "But bright, and brighter still, the scene",
+        "Before its view appears."
+      ]
+    },
+    {
+      "lines": [
+        "\"No more, in heaven no more,",
+        "That face a shadow bears;",
+        "But looks of light, born of a bliss",
+        "Unknown to earth, it wears."
+      ]
+    },
+    {
+      "lines": [
+        "\"No more, in heaven no more,",
+        "That voice is faint with pain;",
+        "It mingles with angelic bands,",
+        "In their enraptured strain."
+      ]
+    },
+    {
+      "lines": [
+        "\"No more, in heaven no more,",
+        "The parting grief is known;",
+        "But love has all eternity",
+        "To look through as its own.\""
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Gaskell died in 1884.",
+  "credits": "Words by William Gaskell (1805–1884), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to FRANCONIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:352"
+}

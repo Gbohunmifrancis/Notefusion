@@ -1,0 +1,61 @@
+{
+  "title": "Quiet, Lord, My Froward Heart",
+  "tune": "ratisbon-werner",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Quiet, Lord, My Froward Heart in Tonic Solfa to RATISBON (WERNER), doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 234, “For a Childlike Spirit”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked Sevens, six lines (7.7.7.7.7.7) (7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to RATISBON (WERNER); any other Sevens, six lines (7.7.7.7.7.7) tune fits them as well."
+  ],
+  "underlay": "Qui-et, Lord, my fro-ward heart; Make me lov-ing, meek, and mild, Up-right, sim-ple, free from art; Make me as a lit-tle child; From dis-trust and en-vy free; Pleased with all that plea-seth Thee.",
+  "verses": [
+    {
+      "lines": [
+        "Quiet, Lord, my froward heart;",
+        "Make me loving, meek, and mild,",
+        "Upright, simple, free from art;",
+        "Make me as a little child;",
+        "From distrust and envy free;",
+        "Pleased with all that pleaseth Thee."
+      ]
+    },
+    {
+      "lines": [
+        "What Thou shalt to-day provide",
+        "Let me as a child receive;",
+        "What to-morrow may betide",
+        "Calmly to Thy wisdom leave;",
+        "'Tis enough that Thou wilt care;",
+        "Why should I the burden bear?"
+      ]
+    },
+    {
+      "lines": [
+        "As a little child relies",
+        "On a care beyond his own,",
+        "Knows beneath his father's eyes",
+        "He is never left alone;",
+        "So would I with Thee abide,",
+        "Thou my Father, Guard, and Guide!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to RATISBON (WERNER) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:234"
+}

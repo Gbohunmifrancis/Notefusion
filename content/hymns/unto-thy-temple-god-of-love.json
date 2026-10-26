@@ -1,0 +1,63 @@
+{
+  "title": "Unto Thy Temple, God of Love",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "William Gaskell",
+      "born": 1805,
+      "died": 1884,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Unto Thy Temple, God of Love in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Gaskell wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 10, “\"It is Good to be Here.\"”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Un-to Thy tem-ple, God of love, Once more we come with will-ing feet, To raise our thoughts this world a-bove, And Thy pa-ter-nal bless-ing meet.",
+  "verses": [
+    {
+      "lines": [
+        "Unto Thy temple, God of love,",
+        "Once more we come with willing feet,",
+        "To raise our thoughts this world above,",
+        "And Thy paternal blessing meet."
+      ]
+    },
+    {
+      "lines": [
+        "May all Thy purest presence feel,",
+        "And silent keep each vain desire;",
+        "With humble hearts before Thee kneel,",
+        "And unto holier strength aspire."
+      ]
+    },
+    {
+      "lines": [
+        "May all be bound in bonds more true",
+        "To Thee, who art our life and light,",
+        "That through each path which we pursue,",
+        "We still may keep Thy love in sight."
+      ]
+    },
+    {
+      "lines": [
+        "And may we, when the day shall close,",
+        "Review its course without a fear;",
+        "And, nearer heaven than when it rose,",
+        "Feel it is good to have been here."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Gaskell died in 1884.",
+  "credits": "Words by William Gaskell (1805–1884), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:10"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "O, Richly, Father, Have I Been",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "William Henry Furness",
+      "born": 1802,
+      "died": 1896,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O, Richly, Father, Have I Been in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Henry Furness wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 203, “The Penitent Son”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O, rich-ly, Fa-ther, have I been Blest ev-er-more by Thee! And morn-ing, noon, and night Thou hast Pre-served me ten-der-ly.",
+  "verses": [
+    {
+      "lines": [
+        "O, richly, Father, have I been",
+        "Blest evermore by Thee!",
+        "And morning, noon, and night Thou hast",
+        "Preserved me tenderly."
+      ]
+    },
+    {
+      "lines": [
+        "And yet the love which Thou shouldst claim",
+        "To idols I have given;",
+        "Too oft have bound to earth the hopes",
+        "That know no home but heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Unworthy to be called Thy son,",
+        "I come with shame to Thee,",
+        "Father! — O, more than Father, Thou",
+        "Hast always been to me!"
+      ]
+    },
+    {
+      "lines": [
+        "Help me to break the heavy chains",
+        "The world has round me thrown,",
+        "And know the glorious liberty",
+        "Of an obedient son."
+      ]
+    },
+    {
+      "lines": [
+        "That I may henceforth heed whate'er",
+        "Thy voice within me saith,",
+        "Fix deeply in my heart of hearts",
+        "A principle of faith, —"
+      ]
+    },
+    {
+      "lines": [
+        "Faith that, like armor to my soul,",
+        "Shall keep all evil out,",
+        "More mighty than an angel host,",
+        "Encamping round about."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Henry Furness died in 1896.",
+  "credits": "Words by William Henry Furness (1802–1896), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:203"
+}

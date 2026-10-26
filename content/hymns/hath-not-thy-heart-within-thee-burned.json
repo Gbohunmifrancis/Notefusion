@@ -1,0 +1,71 @@
+{
+  "title": "Hath Not Thy Heart Within Thee Burned",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Stephen Greenleaf Bulfinch",
+      "born": 1809,
+      "died": 1870,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Hath Not Thy Heart Within Thee Burned in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Stephen Greenleaf Bulfinch wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 90, “Voice of God in the Soul”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Hath not thy heart with-in thee burned At e-vening's calm and ho-ly hour, As if its in-most depths dis-cerned The pre-sence of a lofti-er power?",
+  "verses": [
+    {
+      "lines": [
+        "Hath not thy heart within thee burned",
+        "At evening's calm and holy hour,",
+        "As if its inmost depths discerned",
+        "The presence of a loftier power?"
+      ]
+    },
+    {
+      "lines": [
+        "Hast thou not heard 'mid forest glades,",
+        "While ancient rivers murmured by,",
+        "A voice from forth the eternal shades,",
+        "That spake a present Deity?"
+      ]
+    },
+    {
+      "lines": [
+        "And as, upon the sacred page,",
+        "Thine eye in rapt attention turned",
+        "O'er records of a holier age,",
+        "Hath not thy heart within thee burned?"
+      ]
+    },
+    {
+      "lines": [
+        "It was the voice of God that spake",
+        "In silence to thy silent heart;",
+        "And bade each worthier thought awake,",
+        "And every dream of earth depart."
+      ]
+    },
+    {
+      "lines": [
+        "Voice of our God, O, yet be near!",
+        "In low, sweet accents, whisper peace;",
+        "Direct us on our pathway here,",
+        "Then bid in heaven our wanderings cease."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Stephen Greenleaf Bulfinch died in 1870.",
+  "credits": "Words by Stephen Greenleaf Bulfinch (1809–1870), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:90"
+}

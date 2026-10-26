@@ -1,0 +1,70 @@
+{
+  "title": "We Follow, Lord, Where Thou Dost Lead",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "We Follow, Lord, Where Thou Dost Lead in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 563, “Christ a Quickening Spirit”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "We fol-low, Lord, where thou dost lead, And, quick-ened, would as-cend to thee, Re-deemed from sin, set free in-deed In-to thy glo-rious lib-er-ty.",
+  "verses": [
+    {
+      "lines": [
+        "We follow, Lord, where thou dost lead,",
+        "And, quickened, would ascend to thee,",
+        "Redeemed from sin, set free indeed",
+        "Into thy glorious liberty."
+      ]
+    },
+    {
+      "lines": [
+        "We cast behind fear, sin and death;",
+        "With thee we seek the things above;",
+        "Our inmost souls thy spirit breathe,",
+        "Of power, of calmness, and of love."
+      ]
+    },
+    {
+      "lines": [
+        "The power, 'mid worldliness and sin,",
+        "To do, in all, our Father's will;",
+        "Like thee, the victory to win,",
+        "And bid each tempting voice be still."
+      ]
+    },
+    {
+      "lines": [
+        "The calmness perfect faith inspires,",
+        "Which waiteth patiently and long;",
+        "The love which faileth not, nor tires,",
+        "Triumphant over every wrong."
+      ]
+    },
+    {
+      "lines": [
+        "Thus through thy quickening spirit, Lord,",
+        "Thy perfect life in us reveal,",
+        "And help us, as we live to God,",
+        "Still more and more with man to feel."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:563"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "Child, Amidst the Flowers at Play",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "Felicia Hemans",
+      "born": 1793,
+      "died": 1835,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Child, Amidst the Flowers at Play in Tonic Solfa to HEINLEIN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Felicia Hemans wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 98, “All Must Pray”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7) (7.7.7.7), to be sung to any tune of that metre. This page sets them to HEINLEIN; any other Sevens (7.7.7.7) tune fits them as well."
+  ],
+  "underlay": "Child, a-midst the flowers at play, While the red light fades a-way; Moth-er, with thine ear-nest eye, Ev-er fol-lowing si-lent-ly;",
+  "verses": [
+    {
+      "lines": [
+        "Child, amidst the flowers at play,",
+        "While the red light fades away;",
+        "Mother, with thine earnest eye,",
+        "Ever following silently;"
+      ]
+    },
+    {
+      "lines": [
+        "Father, by the breeze of eve",
+        "Called thy daily toil to leave;",
+        "Pray! ere yet the dark hours be,",
+        "Lift the heart, and bend the knee!"
+      ]
+    },
+    {
+      "lines": [
+        "Traveller in the stranger's land,",
+        "Far from thine own household band;",
+        "Mourner, haunted by the tone",
+        "Of a voice from this world gone;"
+      ]
+    },
+    {
+      "lines": [
+        "Captive, in whose narrow cell",
+        "Sunshine hath not leave to dwell;",
+        "Sailor, on the darkening sea,",
+        "Lift the heart, and bend the knee!"
+      ]
+    },
+    {
+      "lines": [
+        "Ye that triumph, ye that sigh,",
+        "Kindred by one holy tie,",
+        "Heaven's first star alike ye see;",
+        "Lift the heart, and bend the knee!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Felicia Hemans died in 1835.",
+  "credits": "Words by Felicia Hemans (1793–1835), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to HEINLEIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:98"
+}

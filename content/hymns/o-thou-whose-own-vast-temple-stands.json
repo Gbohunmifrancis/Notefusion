@@ -1,0 +1,63 @@
+{
+  "title": "O Thou, Whose Own Vast Temple Stands",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "William Cullen Bryant",
+      "born": 1794,
+      "died": 1878,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O Thou, Whose Own Vast Temple Stands in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Cullen Bryant wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 383, “Dedication Hymns”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O Thou, whose own vast tem-ple stands Built o-ver earth and sea, Ac-cept the walls that hu-man hands Have raised to wor-ship Thee!",
+  "verses": [
+    {
+      "lines": [
+        "O Thou, whose own vast temple stands",
+        "Built over earth and sea,",
+        "Accept the walls that human hands",
+        "Have raised to worship Thee!"
+      ]
+    },
+    {
+      "lines": [
+        "Lord, from Thine inmost glory send,",
+        "Within these courts to bide,",
+        "The peace that dwelleth, without end,",
+        "Serenely by Thy side!"
+      ]
+    },
+    {
+      "lines": [
+        "May erring minds that worship here",
+        "Be taught the better way;",
+        "And they who mourn, and they who fear,",
+        "Be strengthened as they pray."
+      ]
+    },
+    {
+      "lines": [
+        "May faith grow firm, and love grow warm,",
+        "And pure devotion rise,",
+        "While round these hallowed walls the storm",
+        "Of earth-born passion dies."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Cullen Bryant died in 1878.",
+  "credits": "Words by William Cullen Bryant (1794–1878), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:383"
+}

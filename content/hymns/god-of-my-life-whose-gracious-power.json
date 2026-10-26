@@ -1,0 +1,71 @@
+{
+  "title": "God of My Life, Whose Gracious Power",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "God of My Life, Whose Gracious Power in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 530, “God Our Deliverer”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "God of my life, whose gra-cious power Through var-ied deaths my soul hath led, Or turned a-side the fa-tal hour, Or lift-ed up my sink-ing head!",
+  "verses": [
+    {
+      "lines": [
+        "God of my life, whose gracious power",
+        "Through varied deaths my soul hath led,",
+        "Or turned aside the fatal hour,",
+        "Or lifted up my sinking head!"
+      ]
+    },
+    {
+      "lines": [
+        "In all my ways Thy hand I own,",
+        "Thy ruling providence I see:",
+        "Assist me still my course to run,",
+        "And still direct my paths to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Whither, oh whither should I fly,",
+        "But to my loving Father's breast;",
+        "Secure within Thine arms to lie,",
+        "And safe beneath Thy wings to rest!"
+      ]
+    },
+    {
+      "lines": [
+        "I have no skill the snare to shun,",
+        "But Thou, O God, my wisdom art;",
+        "I ever into ruin run:",
+        "But Thou art greater than my heart."
+      ]
+    },
+    {
+      "lines": [
+        "Foolish, and ignorant, and blind,",
+        "Lead me a way I have not known;",
+        "Bring me where I my heaven may find,",
+        "The heaven of loving Thee alone."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:530"
+}

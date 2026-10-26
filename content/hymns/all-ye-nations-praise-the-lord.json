@@ -1,0 +1,55 @@
+{
+  "title": "All Ye Nations, Praise the Lord",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "All Ye Nations, Praise the Lord in Tonic Solfa to HEINLEIN, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 499, “Praise the Lord!”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7) (7.7.7.7), to be sung to any tune of that metre. This page sets them to HEINLEIN; any other Sevens (7.7.7.7) tune fits them as well."
+  ],
+  "underlay": "All ye na-tions, praise the Lord; All ye lands, your voi-ces raise; Heaven and earth, with loud ac-cord, Praise the Lord, for-ev-er praise.",
+  "verses": [
+    {
+      "lines": [
+        "All ye nations, praise the Lord;",
+        "All ye lands, your voices raise;",
+        "Heaven and earth, with loud accord,",
+        "Praise the Lord, forever praise."
+      ]
+    },
+    {
+      "lines": [
+        "For His truth and mercy stand,",
+        "Past, and present, and to be,",
+        "Like the years of His right hand,",
+        "Like His own eternity."
+      ]
+    },
+    {
+      "lines": [
+        "Praise Him, ye who know His love;",
+        "Praise Him, from the depths beneath;",
+        "Praise Him in the heights above;",
+        "Praise your Maker, all that breathe!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to HEINLEIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:499"
+}

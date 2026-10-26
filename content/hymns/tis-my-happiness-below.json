@@ -1,0 +1,55 @@
+{
+  "title": "'Tis My Happiness Below",
+  "tune": "messiah-herald",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "'Tis My Happiness Below in Tonic Solfa to MESSIAH (HERALD), doh is F: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 271, “The Cross”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7 D) (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to MESSIAH (HERALD); any other Sevens Double (7.7.7.7 D) tune fits them as well."
+  ],
+  "underlay": "'Tis my happ-i-ness be-low Not to live with-out the cross, But the Sav-iour's power to know, Sanc-ti-fying ev-e-ry loss: Tri-als must and will be-fall; But with hum-ble faith to see Love in-scribed up-on them all, This is happ-i-ness to me.",
+  "verses": [
+    {
+      "lines": [
+        "'Tis my happiness below",
+        "Not to live without the cross,",
+        "But the Saviour's power to know,",
+        "Sanctifying every loss:",
+        "Trials must and will befall;",
+        "But with humble faith to see",
+        "Love inscribed upon them all, —",
+        "This is happiness to me."
+      ]
+    },
+    {
+      "lines": [
+        "God in Israel sows the seeds",
+        "Of affliction, pain, and toil;",
+        "These spring up, and choke the weeds",
+        "Which would else o'erspread the soil;",
+        "Trials make our faith sublime,",
+        "Trials give new life to prayer,",
+        "Lift us to a holier clime,",
+        "Make us strong to do and bear."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MESSIAH (HERALD) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:271"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "Thanks to God for Those Who Came",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "John Johns",
+      "born": 1801,
+      "died": 1847,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Thanks to God for Those Who Came in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Johns wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 166, “The Preachers of the Word”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7) (7.7.7.7), to be sung to any tune of that metre. This page sets them to VIENNA; any other Sevens (7.7.7.7) tune fits them as well."
+  ],
+  "underlay": "Thanks to God for those who came In the Sav-iour's glo-rious name; Who up-on the green earth trod But to teach the truth of God.",
+  "verses": [
+    {
+      "lines": [
+        "Thanks to God for those who came",
+        "In the Saviour's glorious name;",
+        "Who upon the green earth trod",
+        "But to teach the truth of God."
+      ]
+    },
+    {
+      "lines": [
+        "For the great Apostles, first,",
+        "Who from life's endearments burst,",
+        "Going from the Cross, and then",
+        "Leading to the Cross again:"
+      ]
+    },
+    {
+      "lines": [
+        "For the next, who meekly poured",
+        "Willing blood to serve the Lord;",
+        "Fearless bore the racks of pain,",
+        "Felon's death, or captive's chain;"
+      ]
+    },
+    {
+      "lines": [
+        "And for all, from shore to shore,",
+        "Who the blessed tidings bore;",
+        "All who wrought for liberty",
+        "When 'twas treason to be free."
+      ]
+    },
+    {
+      "lines": [
+        "Ye, who now, in better days,",
+        "Live to spread your Maker's praise,",
+        "Shedding, each man's home around,",
+        "Light that consecrates the ground;"
+      ]
+    },
+    {
+      "lines": [
+        "Teachers of the word of light,",
+        "Go forth in your Master's might!",
+        "Speed your embassy where'er",
+        "Life has grief, or death has fear!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Johns died in 1847.",
+  "credits": "Words by John Johns (1801–1847), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:166"
+}

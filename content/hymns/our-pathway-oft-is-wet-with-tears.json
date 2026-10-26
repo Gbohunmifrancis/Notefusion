@@ -1,0 +1,67 @@
+{
+  "title": "Our Pathway Oft Is Wet with Tears",
+  "tune": "all-saints-new",
+  "text": [
+    {
+      "name": "Bernard Barton",
+      "born": 1784,
+      "died": 1849,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Our Pathway Oft Is Wet with Tears in Tonic Solfa to ALL SAINTS, NEW, doh is Bb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Bernard Barton wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 331, “At Evening There Shall Be Light”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to ALL SAINTS, NEW; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "Our path-way oft is wet with tears, Our sky with clouds o'er-cast, And world-ly cares and world-ly fears Go with us to the last; Not to the last! God's word hath said, Could we but read a-right: O pil-grim! lift in hope thy head, At eve it shall be light!",
+  "verses": [
+    {
+      "lines": [
+        "Our pathway oft is wet with tears,",
+        "Our sky with clouds o'ercast,",
+        "And worldly cares and worldly fears",
+        "Go with us to the last; —",
+        "Not to the last! God's word hath said,",
+        "Could we but read aright:",
+        "O pilgrim! lift in hope thy head,",
+        "At eve it shall be light!"
+      ]
+    },
+    {
+      "lines": [
+        "Though earth-born shadows now may shroud",
+        "Our toilsome path a while,",
+        "God's blessed word can part each cloud,",
+        "And bid the sunshine smile.",
+        "If we but trust in living faith,",
+        "His love and power divine,",
+        "Then, though our sun may set in death,",
+        "His light shall round us shine."
+      ]
+    },
+    {
+      "lines": [
+        "When tempest-clouds are dark on high,",
+        "His bow of love and peace",
+        "Shines beauteous in the vaulted sky,",
+        "Token that storms shall cease.",
+        "Then keep we on, with hope unchilled,",
+        "By faith and not by sight,",
+        "And we shall own his word fulfilled, —",
+        "\"At eve it shall be light.\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Bernard Barton died in 1849.",
+  "credits": "Words by Bernard Barton (1784–1849), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ALL SAINTS, NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:331"
+}

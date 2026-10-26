@@ -1,0 +1,87 @@
+{
+  "title": "Forever with the Lord",
+  "tune": "franconia",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Forever with the Lord in Tonic Solfa to FRANCONIA, doh is Eb: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 231, “Forever with the Lord”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to FRANCONIA; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "For-ev-er with the Lord! So, Fa-ther, let it be; Life from the dead is in that word, 'Tis im-mor-tal-i-ty.",
+  "verses": [
+    {
+      "lines": [
+        "Forever with the Lord!",
+        "So, Father, let it be;",
+        "Life from the dead is in that word,",
+        "'Tis immortality."
+      ]
+    },
+    {
+      "lines": [
+        "Here in the body pent,",
+        "Absent from Thee I roam;",
+        "Yet nightly pitch my moving tent",
+        "A day's march nearer home."
+      ]
+    },
+    {
+      "lines": [
+        "My Father's house on high!",
+        "Home of my soul, how near",
+        "At times to faith's foreseeing eye",
+        "Thy golden gates appear!"
+      ]
+    },
+    {
+      "lines": [
+        "I hear at morn and even,",
+        "At noon and midnight hour,",
+        "The choral harmonies of heaven",
+        "Earth's Babel-tongues o'erpower."
+      ]
+    },
+    {
+      "lines": [
+        "And then I feel, that He,",
+        "Remembered or forgot,",
+        "The Lord, is never far from me,",
+        "Though I perceive Him not."
+      ]
+    },
+    {
+      "lines": [
+        "Forever with the Lord!",
+        "Father, if 'tis Thy will,",
+        "The promise of that blessed word",
+        "Even here to me fulfil."
+      ]
+    },
+    {
+      "lines": [
+        "Be Thou at my right hand,",
+        "Then can I never fail;",
+        "Uphold Thou me, and I shall stand;",
+        "Help, and I must prevail."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to FRANCONIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:231"
+}

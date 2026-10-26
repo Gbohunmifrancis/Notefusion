@@ -1,0 +1,54 @@
+{
+  "title": "Love Divine, All Love Excelling",
+  "tune": "lux-eoi",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Love Divine, All Love Excelling in Tonic Solfa to LUX EOI, doh is D: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 8, “Love Divine”, where the book credits them to Wesleyan.",
+    "The book printed the words without tunes, marked Eights and Sevens Double (8.7.8.7 D) (8.7.8.7.8.7.8.7), to be sung to any tune of that metre. This page sets them to LUX EOI; any other Eights and Sevens Double (8.7.8.7 D) tune fits them as well."
+  ],
+  "underlay": "Love di-vine, all love ex-cel-ling, Joy of heaven, to earth come down! Fix in us Thy hum-ble dwell-ing, All Thy faith-ful mer-cies crown. Fa-ther! Thou art all com-pas-sion, Pure, un-bound-ed love Thou art; Vis-it us with Thy sal-va-tion, En-ter ev-ery long-ing heart.",
+  "verses": [
+    {
+      "lines": [
+        "Love divine, all love excelling,",
+        "Joy of heaven, to earth come down!",
+        "Fix in us Thy humble dwelling,",
+        "All Thy faithful mercies crown.",
+        "Father! Thou art all compassion,",
+        "Pure, unbounded love Thou art;",
+        "Visit us with Thy salvation,",
+        "Enter every longing heart."
+      ]
+    },
+    {
+      "lines": [
+        "Breathe, O, breathe Thy loving spirit",
+        "Into every troubled breast;",
+        "Let us all in Thee inherit,",
+        "Let us find Thy promised rest.",
+        "Come, almighty to deliver,",
+        "Let us all Thy life receive;",
+        "Graciously come down, and never,",
+        "Never more Thy temples leave!"
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to LUX EOI by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:8"
+}

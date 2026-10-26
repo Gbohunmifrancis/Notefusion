@@ -1,0 +1,71 @@
+{
+  "title": "All Men Are Equal in Their Birth",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Harriet Martineau",
+      "born": 1802,
+      "died": 1876,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "All Men Are Equal in Their Birth in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Harriet Martineau wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 182, “Christian Equality”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "All men are e-qual in their birth, Heirs of the earth and skies; All men are e-qual, when that earth Fails from their dy-ing eyes.",
+  "verses": [
+    {
+      "lines": [
+        "All men are equal in their birth,",
+        "Heirs of the earth and skies;",
+        "All men are equal, when that earth",
+        "Fails from their dying eyes."
+      ]
+    },
+    {
+      "lines": [
+        "God greets the throngs who pay their vows",
+        "In courts their hands have made;",
+        "And hears the worshipper who bows",
+        "Beneath the plantain shade."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis man alone who difference sees,",
+        "And speaks of high and low;",
+        "And worships those, and tramples these,",
+        "While the same path they go."
+      ]
+    },
+    {
+      "lines": [
+        "O, let man hasten to restore",
+        "To all their rights of love!",
+        "In power and wealth exult no more,",
+        "In wisdom lowly move."
+      ]
+    },
+    {
+      "lines": [
+        "Ye great! renounce your earth-born pride;",
+        "Ye low! your shame and fear;",
+        "Live, as ye worship, side by side;",
+        "Your brotherhood revere."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Harriet Martineau died in 1876.",
+  "credits": "Words by Harriet Martineau (1802–1876), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:182"
+}

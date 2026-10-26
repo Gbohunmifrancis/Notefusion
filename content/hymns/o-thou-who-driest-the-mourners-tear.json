@@ -1,0 +1,71 @@
+{
+  "title": "O Thou Who Driest the Mourner's Tear",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Thomas Moore",
+      "born": 1779,
+      "died": 1852,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O Thou Who Driest the Mourner's Tear in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Thomas Moore wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 475, “Consolation”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O Thou who driest the mourn-er's tear, How dark this world would be, If, when de-ceived and woun-ded here, We could not fly to Thee!",
+  "verses": [
+    {
+      "lines": [
+        "O Thou who driest the mourner's tear,",
+        "How dark this world would be,",
+        "If, when deceived and wounded here,",
+        "We could not fly to Thee!"
+      ]
+    },
+    {
+      "lines": [
+        "But Thou wilt heal the broken heart,",
+        "Which, like the plants that throw",
+        "Their fragrance from the wounded part,",
+        "Breathes sweetness out of woe."
+      ]
+    },
+    {
+      "lines": [
+        "When joy no longer soothes or cheers,",
+        "And e'en the hope that threw",
+        "A moment's sparkle o'er our tears",
+        "Is dimmed and vanished too;"
+      ]
+    },
+    {
+      "lines": [
+        "O, who would bear life's stormy doom,",
+        "Did not Thy wing of love",
+        "Come, brightly wafting through the gloom",
+        "Our peace-branch from above?"
+      ]
+    },
+    {
+      "lines": [
+        "Then sorrow, touched by Thee, grows bright,",
+        "With more than rapture's ray;",
+        "The darkness shows us worlds of light",
+        "We never saw by day."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Thomas Moore died in 1852.",
+  "credits": "Words by Thomas Moore (1779–1852), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:475"
+}

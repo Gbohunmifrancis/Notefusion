@@ -1,0 +1,63 @@
+{
+  "title": "O, Here, If Ever, God of Love",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Emily Taylor",
+      "born": 1795,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O, Here, If Ever, God of Love in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Emily Taylor wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 158, “Communion”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O, here, if ev-er, God of love! Let strife and ha-tred cease; And ev-ery thought har-mo-nious move, And ev-ery heart be peace.",
+  "verses": [
+    {
+      "lines": [
+        "O, here, if ever, God of love!",
+        "Let strife and hatred cease;",
+        "And every thought harmonious move,",
+        "And every heart be peace."
+      ]
+    },
+    {
+      "lines": [
+        "Not here, where met to think of him",
+        "Whose latest thoughts were ours,",
+        "Shall mortal passions come to dim",
+        "The prayer devotion pours."
+      ]
+    },
+    {
+      "lines": [
+        "No, gracious Master, not in vain",
+        "Thy life of love hath been;",
+        "The peace thou gav'st may yet remain,",
+        "Though thou no more art seen."
+      ]
+    },
+    {
+      "lines": [
+        "Thy kingdom come! we watch, we wait,",
+        "To hear thy cheering call;",
+        "When heaven shall ope its glorious gate,",
+        "And God be all in all."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Emily Taylor died in 1872.",
+  "credits": "Words by Emily Taylor (1795–1872), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:158"
+}

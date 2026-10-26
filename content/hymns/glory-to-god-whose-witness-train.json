@@ -1,0 +1,70 @@
+{
+  "title": "Glory to God! Whose Witness-train",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Glory to God! Whose Witness-train in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 429, “The Noble Army of Martyrs”, where the book credits them to Moravian.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Glo-ry to God! whose wit-ness train, Those he-roes bold in faith, Could smile on po-ver-ty and pain, And tri-umph even in death.",
+  "verses": [
+    {
+      "lines": [
+        "Glory to God! whose witness-train,",
+        "Those heroes bold in faith,",
+        "Could smile on poverty and pain,",
+        "And triumph even in death."
+      ]
+    },
+    {
+      "lines": [
+        "O, may that faith our hearts sustain,",
+        "Wherein they fearless stood",
+        "When, in the power of cruel men,",
+        "They poured their willing blood."
+      ]
+    },
+    {
+      "lines": [
+        "God, whom we serve, our God, can save;",
+        "Can damp the scorching flame,",
+        "Can build an ark, or smooth the wave,",
+        "For such as love His name."
+      ]
+    },
+    {
+      "lines": [
+        "Yea, should it even to man appear,",
+        "At times, as though the Lord",
+        "Forsook His chosen servants here,",
+        "We yet will trust His word."
+      ]
+    },
+    {
+      "lines": [
+        "Lord! if Thine arm support us still",
+        "With its eternal strength,",
+        "We shall o'ercome the mightiest ill,",
+        "And conquerors prove, at length."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:429"
+}

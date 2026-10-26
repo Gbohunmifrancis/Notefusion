@@ -1,0 +1,62 @@
+{
+  "title": "My God! in Morning's Radiant Hour",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "My God! in Morning's Radiant Hour in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 56, “Perpetual Praise”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "My God! in morn-ing's ra-diant hour To Thee will I lift up my heart; The shades of night o-bey Thy power, And at Thy sun's bright beams de-part.",
+  "verses": [
+    {
+      "lines": [
+        "My God! in morning's radiant hour",
+        "To Thee will I lift up my heart;",
+        "The shades of night obey Thy power,",
+        "And at Thy sun's bright beams depart."
+      ]
+    },
+    {
+      "lines": [
+        "Father and Guardian! to Thy shrine",
+        "The life Thou shieldest will I bring;",
+        "All, great Creator! all is Thine;",
+        "The heart my noblest offering!"
+      ]
+    },
+    {
+      "lines": [
+        "The morning light shall see my prayer,",
+        "The noonday calm shall know my praise;",
+        "And evening's still and fragrant air",
+        "My grateful hymn to Thee shall raise."
+      ]
+    },
+    {
+      "lines": [
+        "So shall sweet thoughts and hopes sublime",
+        "My constant inspirations be;",
+        "And every shifting scene of time",
+        "Reflect, my God, a light from Thee!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:56"
+}

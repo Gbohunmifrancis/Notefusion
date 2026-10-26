@@ -1,0 +1,63 @@
+{
+  "title": "How Happy Is He Born or Taught",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Henry Wotton",
+      "born": 1568,
+      "died": 1639,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "How Happy Is He Born or Taught in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Henry Wotton wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 279, “Independence”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "How hap-py is he born or taught Who ser-veth not an-oth-er's will; Whose ar-mor is his hon-est thought, And sim-ple truth his high-est skill;",
+  "verses": [
+    {
+      "lines": [
+        "How happy is he born or taught",
+        "Who serveth not another's will;",
+        "Whose armor is his honest thought,",
+        "And simple truth his highest skill;"
+      ]
+    },
+    {
+      "lines": [
+        "Whose passions not his masters are;",
+        "Whose soul is still prepared for death;",
+        "Not tied unto the world with care",
+        "Of public fame or private breath;"
+      ]
+    },
+    {
+      "lines": [
+        "Who God doth late and early pray",
+        "More of His grace than goods to lend,",
+        "And walks with man, from day to day,",
+        "As with a brother and a friend!"
+      ]
+    },
+    {
+      "lines": [
+        "This man is freed from servile bands",
+        "Of hope to rise, or fear to fall;",
+        "Lord of himself, though not of lands,",
+        "And having nothing, yet hath all."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Henry Wotton died in 1639.",
+  "credits": "Words by Henry Wotton (1568–1639), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:279"
+}

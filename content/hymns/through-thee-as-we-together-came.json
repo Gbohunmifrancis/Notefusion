@@ -1,0 +1,54 @@
+{
+  "title": "Through Thee as We Together Came",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Through Thee as We Together Came in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 163, “Parting Hymn”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Through thee as we to-ge-ther came, In sin-gle-ness of heart, And met, O Je-sus! in thy name, So in thy name we part.",
+  "verses": [
+    {
+      "lines": [
+        "Through thee as we together came,",
+        "In singleness of heart,",
+        "And met, O Jesus! in thy name,",
+        "So in thy name we part."
+      ]
+    },
+    {
+      "lines": [
+        "Nearer to thee our spirits lead,",
+        "And still thy love bestow,",
+        "Till thou hast made us free indeed,",
+        "And spotless, here below."
+      ]
+    },
+    {
+      "lines": [
+        "When to the right or left we stray,",
+        "Leave us not comfortless,",
+        "But guide our feet into the way",
+        "Of everlasting peace."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:163"
+}

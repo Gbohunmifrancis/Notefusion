@@ -1,0 +1,62 @@
+{
+  "title": "Earth's Busy Sounds and Ceaseless Din",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Earth's Busy Sounds and Ceaseless Din in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 481, “The Hour of Prayer”, where the book credits them to Orig. Hymns.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Earth's bu-sy sounds and cease-less din Wake not this morn-ing air! A ho-ly calm should wel-come in This sol-emn hour of prayer.",
+  "verses": [
+    {
+      "lines": [
+        "Earth's busy sounds and ceaseless din",
+        "Wake not this morning air!",
+        "A holy calm should welcome in",
+        "This solemn hour of prayer."
+      ]
+    },
+    {
+      "lines": [
+        "Now peace, be still, unhallowed care,",
+        "And hushed within the breast!",
+        "A holy joy should welcome there",
+        "This happy day of rest."
+      ]
+    },
+    {
+      "lines": [
+        "Each better thought the spirit knows,",
+        "This hour, the spirit fill!",
+        "And Thou, from whom its being flows,",
+        "O, teach it all Thy will!"
+      ]
+    },
+    {
+      "lines": [
+        "Then shall this day, which God hath blest,",
+        "Hallow life's every hour,",
+        "And bear us to our better rest,",
+        "Eternal, perfect, sure."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:481"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "Another Hand Is Beckoning Us",
+  "tune": "york",
+  "text": [
+    {
+      "name": "John Greenleaf Whittier",
+      "born": 1807,
+      "died": 1892,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Another Hand Is Beckoning Us in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Greenleaf Whittier wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 404, “Not Lost, But Gone Before”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "An-oth-er hand is beck-oning us, An-oth-er call is given; And glows once more with an-gel steps The path that leads to heaven.",
+  "verses": [
+    {
+      "lines": [
+        "Another hand is beckoning us,",
+        "Another call is given;",
+        "And glows once more with angel steps",
+        "The path that leads to heaven."
+      ]
+    },
+    {
+      "lines": [
+        "O, half we deemed she needed not",
+        "The changing of her sphere,",
+        "To give to heaven a shining one,",
+        "Who walked an angel here."
+      ]
+    },
+    {
+      "lines": [
+        "Unto our Father's will alone",
+        "One thought hath reconciled;",
+        "That He whose love exceedeth ours",
+        "Hath taken home his child."
+      ]
+    },
+    {
+      "lines": [
+        "Fold her, O Father, in thine arms,",
+        "And let her henceforth be",
+        "A messenger of love between",
+        "Our human hearts and Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Still let her mild rebukings stand",
+        "Between us and the wrong,",
+        "And her dear memory serve to make",
+        "Our faith in goodness strong."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Greenleaf Whittier died in 1892.",
+  "credits": "Words by John Greenleaf Whittier (1807–1892), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:404"
+}

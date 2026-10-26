@@ -1,0 +1,71 @@
+{
+  "title": "Out of the Depths of Woe",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Out of the Depths of Woe in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 547, “The Bow in the Cloud”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Out of the depths of woe, To Thee, O Lord, I cry; Dark-ness sur-rounds Thee, but I know That Thou art ev-er nigh.",
+  "verses": [
+    {
+      "lines": [
+        "Out of the depths of woe,",
+        "To Thee, O Lord, I cry;",
+        "Darkness surrounds Thee, but I know",
+        "That Thou art ever nigh."
+      ]
+    },
+    {
+      "lines": [
+        "Like them whose longing eyes",
+        "Watch till the morning star,",
+        "Though late and seen through tempests, rise,",
+        "Heaven's portals to unbar, —"
+      ]
+    },
+    {
+      "lines": [
+        "Like them I watch and pray;",
+        "And though it tarry long,",
+        "Catch the first gleam of welcome day",
+        "Then burst into a song."
+      ]
+    },
+    {
+      "lines": [
+        "Glory to God above!",
+        "The waters soon will cease;",
+        "For lo, the swift returning dove",
+        "Brings home the sign of peace."
+      ]
+    },
+    {
+      "lines": [
+        "Though storms Thy face obscure,",
+        "And dangers threaten loud,",
+        "Thy holy covenant is sure;",
+        "Thy bow is in the cloud!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:547"
+}

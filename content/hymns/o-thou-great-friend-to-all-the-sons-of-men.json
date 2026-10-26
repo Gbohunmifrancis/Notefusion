@@ -1,0 +1,55 @@
+{
+  "title": "O Thou Great Friend to All the Sons of Men",
+  "tune": "ellers",
+  "text": [
+    {
+      "name": "Theodore Parker",
+      "born": 1810,
+      "died": 1860,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O Thou Great Friend to All the Sons of Men in Tonic Solfa to ELLERS, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Theodore Parker wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 156, “Christ the Way, the Truth and the Life”.",
+    "The book printed the words without tunes, marked Tens (10.10.10.10) (10.10.10.10), to be sung to any tune of that metre. This page sets them to ELLERS; any other Tens (10.10.10.10) tune fits them as well."
+  ],
+  "underlay": "O Thou great Friend to all the sons of men, Who once ap-peared in hum-blest guise be-low, Sin to re-buke, to break the cap-tive's chain, And call thy bre-thren forth from want and woe;",
+  "verses": [
+    {
+      "lines": [
+        "O Thou great Friend to all the sons of men,",
+        "Who once appeared in humblest guise below,",
+        "Sin to rebuke, to break the captive's chain,",
+        "And call thy brethren forth from want and woe;"
+      ]
+    },
+    {
+      "lines": [
+        "We look to thee! thy truth is still the Light,",
+        "Which guides the nations, groping on their way,",
+        "Stumbling and falling in disastrous night,",
+        "Yet hoping ever for the perfect day."
+      ]
+    },
+    {
+      "lines": [
+        "Yes! thou art still the Life; thou art the way",
+        "The holiest know; — Light, Life, and Way of heaven!",
+        "And they who dearest hope, and deepest pray,",
+        "Toil by the light, life, way, which thou hast given."
+      ]
+    }
+  ],
+  "metre": "10 10 10 10",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Theodore Parker died in 1860.",
+  "credits": "Words by Theodore Parker (1810–1860), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ELLERS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:156"
+}

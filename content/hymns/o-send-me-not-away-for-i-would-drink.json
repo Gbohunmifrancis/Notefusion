@@ -1,0 +1,54 @@
+{
+  "title": "O, Send Me Not Away! for I Would Drink",
+  "tune": "langran",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O, Send Me Not Away! for I Would Drink in Tonic Solfa to LANGRAN, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 202, “The Broken Shield”.",
+    "The book printed the words without tunes, marked Tens (10.10.10.10) (10.10.10.10), to be sung to any tune of that metre. This page sets them to LANGRAN; any other Tens (10.10.10.10) tune fits them as well."
+  ],
+  "underlay": "O, send me not a-way! for I would drink, Even I, the weak-est, at the fount of life; Chide not my steps, that ven-ture near the brink, Wea-ry and faint-ing from the dead-ly strife.",
+  "verses": [
+    {
+      "lines": [
+        "O, send me not away! for I would drink,",
+        "Even I, the weakest, at the fount of life;",
+        "Chide not my steps, that venture near the brink,",
+        "Weary and fainting from the deadly strife."
+      ]
+    },
+    {
+      "lines": [
+        "Went I not forth undaunted and alone,",
+        "Strong in the majesty of human might?",
+        "Lo! I return, all wounded and forlorn,",
+        "My dream of glory lost in shades of night."
+      ]
+    },
+    {
+      "lines": [
+        "Was I not girded for the battle-field?",
+        "Bore I not helm of pride and glittering sword?",
+        "Behold the fragments of my broken shield,",
+        "And lend to me Thy heavenly armor, Lord!"
+      ]
+    }
+  ],
+  "metre": "10 10 10 10",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to LANGRAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:202"
+}

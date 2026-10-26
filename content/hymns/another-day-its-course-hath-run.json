@@ -1,0 +1,47 @@
+{
+  "title": "Another Day Its Course Hath Run",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Pierpont",
+      "born": 1785,
+      "died": 1866,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Another Day Its Course Hath Run in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "John Pierpont wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 372, “Evening Hymn for a Child”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "An-oth-er day its course hath run, And still, O God! Thy child is blest; For Thou hast been by day my sun, And Thou wilt be by night my rest.",
+  "verses": [
+    {
+      "lines": [
+        "Another day its course hath run,",
+        "And still, O God! Thy child is blest;",
+        "For Thou hast been by day my sun,",
+        "And Thou wilt be by night my rest."
+      ]
+    },
+    {
+      "lines": [
+        "Sweet sleep descends, mine eyes to close;",
+        "And now, while all the world is still,",
+        "I give my body to repose,",
+        "My spirit to my Father's will."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Pierpont died in 1866.",
+  "credits": "Words by John Pierpont (1785–1866), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:372"
+}

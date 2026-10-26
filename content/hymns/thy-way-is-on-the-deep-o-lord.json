@@ -1,0 +1,62 @@
+{
+  "title": "Thy Way Is on the Deep, O Lord",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Thy Way Is on the Deep, O Lord in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 332, “God's Way is on the Deep”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Thy way is on the deep, O Lord! E'en there we'll go with Thee; We'll meet the tem-pest at Thy word, And walk up-on the sea.",
+  "verses": [
+    {
+      "lines": [
+        "Thy way is on the deep, O Lord!",
+        "E'en there we'll go with Thee;",
+        "We'll meet the tempest at Thy word,",
+        "And walk upon the sea."
+      ]
+    },
+    {
+      "lines": [
+        "Poor tremblers at His rougher wind,",
+        "Why do we doubt Him so?",
+        "Who gives the storms a path will find",
+        "The way our feet shall go."
+      ]
+    },
+    {
+      "lines": [
+        "A moment may His hand seem lost,",
+        "Drear moment of delay; —",
+        "We cry, \"Lord, help the tempest-tost!\"",
+        "And safe we're borne away."
+      ]
+    },
+    {
+      "lines": [
+        "O happy soul, of faith divine!",
+        "Thy victory how sure!",
+        "The love that kindles joy is thine,",
+        "The patience to endure."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:332"
+}

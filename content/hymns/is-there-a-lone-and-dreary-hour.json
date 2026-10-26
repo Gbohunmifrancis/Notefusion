@@ -1,0 +1,63 @@
+{
+  "title": "Is There a Lone and Dreary Hour",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Caroline Gilman",
+      "born": 1794,
+      "died": 1888,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Is There a Lone and Dreary Hour in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Caroline Gilman wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 266, “A Father's Care”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Is there a lone and drea-ry hour, When world-ly plea-sures lose their power; My Fa-ther! let me turn to Thee, And set each thought of dark-ness free.",
+  "verses": [
+    {
+      "lines": [
+        "Is there a lone and dreary hour,",
+        "When worldly pleasures lose their power; —",
+        "My Father! let me turn to Thee,",
+        "And set each thought of darkness free."
+      ]
+    },
+    {
+      "lines": [
+        "Is there a time of racking grief,",
+        "Which scorns the prospect of relief;",
+        "My Father! break the cheerless gloom,",
+        "And bid my heart its calm resume."
+      ]
+    },
+    {
+      "lines": [
+        "Is there an hour of peace and joy,",
+        "When hope is all my soul's employ; —",
+        "My Father! still my hopes will roam,",
+        "Until they rest with Thee, their home."
+      ]
+    },
+    {
+      "lines": [
+        "The noontide blaze, the midnight scene,",
+        "The dawn, or twilight's sweet serene,",
+        "The glow of health, the dying hour,",
+        "Shall own my Father's grace and power."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Caroline Gilman died in 1888.",
+  "credits": "Words by Caroline Gilman (1794–1888), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:266"
+}

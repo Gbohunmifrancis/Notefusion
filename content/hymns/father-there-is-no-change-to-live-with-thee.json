@@ -1,0 +1,55 @@
+{
+  "title": "Father! There Is No Change to Live with Thee",
+  "tune": "song-twenty-two",
+  "text": [
+    {
+      "name": "Jones Very",
+      "born": 1813,
+      "died": 1880,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Father! There Is No Change to Live with Thee in Tonic Solfa to SONG TWENTY-TWO, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Jones Very wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 77, “God's Fatherly Care”.",
+    "The book printed the words without tunes, marked Tens (10.10.10.10) (10.10.10.10), to be sung to any tune of that metre. This page sets them to SONG TWENTY-TWO; any other Tens (10.10.10.10) tune fits them as well."
+  ],
+  "underlay": "Fa-ther! there is no change to live with Thee; Save that in Christ I grow from day to day; In each new word I hear, each thing I see, I but re-joic-ing has-ten on my way.",
+  "verses": [
+    {
+      "lines": [
+        "Father! there is no change to live with Thee;",
+        "Save that in Christ I grow from day to day;",
+        "In each new word I hear, each thing I see,",
+        "I but rejoicing hasten on my way."
+      ]
+    },
+    {
+      "lines": [
+        "The morning comes, with blushes overspread,",
+        "And I, new-wakened, find a morn within;",
+        "And in its modest dawn around me shed,",
+        "Thou hear'st the prayer and the ascending hymn."
+      ]
+    },
+    {
+      "lines": [
+        "Hour follows hour, the lengthening shades descend;",
+        "Yet they could never reach as far as me.",
+        "Did not Thy love its kind protection lend,",
+        "That I, Thy child, might sleep in peace with Thee."
+      ]
+    }
+  ],
+  "metre": "10 10 10 10",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Jones Very died in 1880.",
+  "credits": "Words by Jones Very (1813–1880), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to SONG TWENTY-TWO by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:77"
+}

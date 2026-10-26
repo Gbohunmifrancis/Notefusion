@@ -1,0 +1,62 @@
+{
+  "title": "Triumphant Zion! Lift Thy Head",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Triumphant Zion! Lift Thy Head in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 178, “Hymn of the Church Triumphant”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Tri-um-phant Zi-on! lift thy head From dust, and dark-ness, and the dead; Though hum-bled long, a-wake at length And gird thee with thy Sav-iour's strength!",
+  "verses": [
+    {
+      "lines": [
+        "Triumphant Zion! lift thy head",
+        "From dust, and darkness, and the dead;",
+        "Though humbled long, awake at length",
+        "And gird thee with thy Saviour's strength!"
+      ]
+    },
+    {
+      "lines": [
+        "Put all thy beauteous garments on,",
+        "And let thine excellence be known;",
+        "Decked in the robes of righteousness,",
+        "Thy glories shall the world confess."
+      ]
+    },
+    {
+      "lines": [
+        "No more shall foes unclean invade,",
+        "And fill thy hallowed walls with dread;",
+        "No more shall sin's insulting host",
+        "Their victory and thy sorrows boast."
+      ]
+    },
+    {
+      "lines": [
+        "Thy God on high has heard thy prayer,",
+        "His hand thy ruin shall repair;",
+        "Nor will thy watchful Monarch cease",
+        "To guard thee in eternal peace."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:178"
+}

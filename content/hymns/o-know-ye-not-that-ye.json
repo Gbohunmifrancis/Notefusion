@@ -1,0 +1,63 @@
+{
+  "title": "O! Know Ye Not That Ye",
+  "tune": "franconia",
+  "text": [
+    {
+      "name": "John Johns",
+      "born": 1801,
+      "died": 1847,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O! Know Ye Not That Ye in Tonic Solfa to FRANCONIA, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Johns wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 280, “Purity”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to FRANCONIA; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "O! know ye not that ye The tem-ple are of God? Re-vere the earth built shrine, where He Should find a meet a-bode!",
+  "verses": [
+    {
+      "lines": [
+        "O! know ye not that ye",
+        "The temple are of God?",
+        "Revere the earth-built shrine, where He",
+        "Should find a meet abode!"
+      ]
+    },
+    {
+      "lines": [
+        "Immortal man, keep pure",
+        "Thyself, that mystic shrine;",
+        "Let hate of all that's dark endure,",
+        "And love of all divine."
+      ]
+    },
+    {
+      "lines": [
+        "Let saintly thoughts be shown",
+        "In act by saintly things;",
+        "Like glories through the temple thrown,",
+        "From cherub's curtained wings."
+      ]
+    },
+    {
+      "lines": [
+        "Let life, a holy stream,",
+        "Its fountain holy show;",
+        "Reflecting, with a softened gleam,",
+        "Heaven's purity below."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Johns died in 1847.",
+  "credits": "Words by John Johns (1801–1847), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to FRANCONIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:280"
+}

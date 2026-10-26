@@ -1,0 +1,62 @@
+{
+  "title": "Bear on, My Soul! the Bitter Cross",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Bear on, My Soul! the Bitter Cross in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 532, “Through Cross to Light”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Bear on, my soul! the bit-ter cross Of ev-ery tri-al here Shall lift thee to thy heaven a-bove, But shall not en-ter there.",
+  "verses": [
+    {
+      "lines": [
+        "Bear on, my soul! the bitter cross",
+        "Of every trial here",
+        "Shall lift thee to thy heaven above,",
+        "But shall not enter there."
+      ]
+    },
+    {
+      "lines": [
+        "Bear on, my soul! on God rely;",
+        "Deliverance will come;",
+        "A thousand ways the Father hath",
+        "To bring His children home."
+      ]
+    },
+    {
+      "lines": [
+        "And Thou, my heavenly Friend and Guide,",
+        "Hast kindly led me on;",
+        "Taught me to rest my fainting head",
+        "Upon Thy heart alone."
+      ]
+    },
+    {
+      "lines": [
+        "So comforted and so sustained,",
+        "With dark events I strove,",
+        "And found, when rightly understood,",
+        "All, messengers of love."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:532"
+}

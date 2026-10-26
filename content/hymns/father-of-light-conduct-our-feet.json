@@ -1,0 +1,63 @@
+{
+  "title": "Father of Light! Conduct Our Feet",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Christopher Smart",
+      "born": 1722,
+      "died": 1771,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Father of Light! Conduct Our Feet in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Christopher Smart wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 37, “Prayer for Wisdom”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther of light! con-duct our feet Through life's dark, dan-gerous road; Let each ad-vanc-ing step still bring Us near-er to our God.",
+  "verses": [
+    {
+      "lines": [
+        "Father of light! conduct our feet",
+        "Through life's dark, dangerous road;",
+        "Let each advancing step still bring",
+        "Us nearer to our God."
+      ]
+    },
+    {
+      "lines": [
+        "Let heaven-eyed prudence be our guide;",
+        "And when we go astray,",
+        "Recall our feet from folly's paths",
+        "To wisdom's better way."
+      ]
+    },
+    {
+      "lines": [
+        "That heavenly wisdom from above",
+        "Abundantly impart;",
+        "And let it guard, and guide, and warm,",
+        "And penetrate each heart;"
+      ]
+    },
+    {
+      "lines": [
+        "Till it shall lead us to Thyself,",
+        "Fountain of bliss and love!",
+        "And all our darkness be dispersed",
+        "In endless light above."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Christopher Smart died in 1771.",
+  "credits": "Words by Christopher Smart (1722–1771), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:37"
+}

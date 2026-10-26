@@ -1,0 +1,78 @@
+{
+  "title": "Go When the Morning Shineth",
+  "tune": "angels-story",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Go When the Morning Shineth in Tonic Solfa to ANGEL'S STORY, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 97, “Pray Without Ceasing”.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6 D) (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to ANGEL'S STORY; any other Sevens and Sixes Double (7.6.7.6 D) tune fits them as well."
+  ],
+  "underlay": "Go when the morn-ing shin-eth, Go when the noon is bright, Go when the eve de-cli-neth, Go in the hush of night; Go with pure mind and feel-ing, Put earth-ly thoughts a-way, And, in God's pre-sence kneel-ing, Do thou in se-cret pray.",
+  "verses": [
+    {
+      "lines": [
+        "Go when the morning shineth,",
+        "Go when the noon is bright,",
+        "Go when the eve declineth,",
+        "Go in the hush of night;",
+        "Go with pure mind and feeling,",
+        "Put earthly thoughts away,",
+        "And, in God's presence kneeling,",
+        "Do thou in secret pray."
+      ]
+    },
+    {
+      "lines": [
+        "Remember all who love thee,",
+        "All who are loved by thee;",
+        "Pray, too, for those who hate thee,",
+        "If any such there be;",
+        "Then for thyself, in meekness,",
+        "A blessing humbly claim,",
+        "And blend with each petition",
+        "Thy great Redeemer's name."
+      ]
+    },
+    {
+      "lines": [
+        "Or, if 'tis e'er denied thee",
+        "In solitude to pray,",
+        "Should holy thoughts come o'er thee",
+        "When friends are round thy way,",
+        "E'en then, the silent breathing",
+        "Thy spirit lifts above",
+        "Will reach His throne of glory,",
+        "Where dwells eternal love."
+      ]
+    },
+    {
+      "lines": [
+        "O, not a joy or blessing",
+        "With this can we compare, —",
+        "The grace our Father gives us",
+        "To pour our souls in prayer:",
+        "Whene'er thou pin'st in sadness,",
+        "On Him who saveth, call!",
+        "Remember, in thy gladness,",
+        "His love who gave thee all."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ANGEL'S STORY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:97"
+}

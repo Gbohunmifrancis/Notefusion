@@ -1,0 +1,47 @@
+{
+  "title": "Father, Supply My Every Need",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Father, Supply My Every Need in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 501, “The Bread of Life”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther, sup-ply my ev-ery need; Sus-tain the life Thy-self hast given; Oh! grant the nev-er fail-ing bread, The man-na that comes down from heaven!",
+  "verses": [
+    {
+      "lines": [
+        "Father, supply my every need;",
+        "Sustain the life Thyself hast given;",
+        "Oh! grant the never-failing bread,",
+        "The manna that comes down from heaven!"
+      ]
+    },
+    {
+      "lines": [
+        "The gracious fruits of righteousness,",
+        "Thy blessings' unexhausted store,",
+        "In me abundantly increase,",
+        "Nor ever let me hunger more!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:501"
+}

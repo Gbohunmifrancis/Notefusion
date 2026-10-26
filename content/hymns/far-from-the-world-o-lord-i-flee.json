@@ -1,0 +1,71 @@
+{
+  "title": "Far from the World, O Lord! I Flee",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Far from the World, O Lord! I Flee in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 94, “Retirement”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Far from the world, O Lord! I flee, From strife and tu-mult far; From scenes where sin is wag-ing still Its most suc-cess-ful war.",
+  "verses": [
+    {
+      "lines": [
+        "Far from the world, O Lord! I flee,",
+        "From strife and tumult far;",
+        "From scenes where sin is waging still",
+        "Its most successful war."
+      ]
+    },
+    {
+      "lines": [
+        "The calm retreat, the silent shade,",
+        "With prayer and praise agree;",
+        "And seem by Thy sweet bounty made,",
+        "For those who follow Thee."
+      ]
+    },
+    {
+      "lines": [
+        "There, if Thy presence cheer the soul,",
+        "And grace her mean abode,",
+        "O, with what peace, and joy, and love,",
+        "She communes with her God!"
+      ]
+    },
+    {
+      "lines": [
+        "There, like the nightingale, she pours",
+        "Her solitary lays;",
+        "Nor asks a witness of her song,",
+        "Nor thirsts for human praise."
+      ]
+    },
+    {
+      "lines": [
+        "Author and Guardian of my life,",
+        "Sweet source of light divine,",
+        "And, — all harmonious names in one, —",
+        "My Father! Thou art mine!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:94"
+}

@@ -1,0 +1,62 @@
+{
+  "title": "O, for a Heart to Praise My God",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "O, for a Heart to Praise My God in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 518, “Desires for Holiness”, where the book credits them to Wesleyan.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O, for a heart to praise my God, A heart from sin set free; A heart that al-ways feels how good, Thou, Lord, hast been to me.",
+  "verses": [
+    {
+      "lines": [
+        "O, for a heart to praise my God,",
+        "A heart from sin set free;",
+        "A heart that always feels how good,",
+        "Thou, Lord, hast been to me."
+      ]
+    },
+    {
+      "lines": [
+        "O for an humble, trustful heart,",
+        "Believing, true, and clean,",
+        "Which neither life nor death can part",
+        "From Him who dwells within; —"
+      ]
+    },
+    {
+      "lines": [
+        "A heart in every thought renewed,",
+        "And full of love divine,",
+        "Perfect, and right, and pure, and good,",
+        "Conformed, O Lord, to Thine."
+      ]
+    },
+    {
+      "lines": [
+        "Thy spirit, gracious Lord, impart;",
+        "Come quickly from above;",
+        "O, write Thy name upon my heart!",
+        "Thy name, O God, is love."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:518"
+}

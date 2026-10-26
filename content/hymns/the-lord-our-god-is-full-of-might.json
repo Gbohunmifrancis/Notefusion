@@ -1,0 +1,63 @@
+{
+  "title": "The Lord Our God Is Full of Might",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Henry Kirke White",
+      "born": 1785,
+      "died": 1806,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "The Lord Our God Is Full of Might in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Henry Kirke White wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 573, “In a Storm”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The Lord our God is full of might, The winds o-bey His will; He speaks, and in His heav-enly height The roll-ing sun stands still.",
+  "verses": [
+    {
+      "lines": [
+        "The Lord our God is full of might,",
+        "The winds obey His will;",
+        "He speaks, and in His heavenly height",
+        "The rolling sun stands still."
+      ]
+    },
+    {
+      "lines": [
+        "Rebel, ye waves! and o'er the land",
+        "With threatening aspect roar;",
+        "The Lord uplifts His awful hand,",
+        "And chains you to the shore."
+      ]
+    },
+    {
+      "lines": [
+        "Howl, winds of night! your force combine;",
+        "Without His high behest,",
+        "Ye shall not in the mountain pine",
+        "Disturb the sparrow's nest."
+      ]
+    },
+    {
+      "lines": [
+        "Ye nations bend, in reverence bend;",
+        "Ye monarchs, wait His nod,",
+        "And bid the choral song ascend",
+        "To celebrate our God!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Henry Kirke White died in 1806.",
+  "credits": "Words by Henry Kirke White (1785–1806), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:573"
+}

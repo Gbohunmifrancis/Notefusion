@@ -1,0 +1,63 @@
+{
+  "title": "I Saw on Earth Another Light",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Jones Very",
+      "born": 1813,
+      "died": 1880,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "I Saw on Earth Another Light in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Jones Very wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 91, “The Light from Within”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "I saw on earth an-oth-er light Than that which lit my eye Come forth, as from my soul with-in, And from a high-er sky.",
+  "verses": [
+    {
+      "lines": [
+        "I saw on earth another light",
+        "Than that which lit my eye",
+        "Come forth, as from my soul within,",
+        "And from a higher sky."
+      ]
+    },
+    {
+      "lines": [
+        "Its beams still shone unclouded on,",
+        "When in the distant west",
+        "The sun I once had known had sunk",
+        "Forever to his rest."
+      ]
+    },
+    {
+      "lines": [
+        "And on I walked, though dark the night,",
+        "Nor rose his orb by day;",
+        "As one to whom a surer guide",
+        "Was pointing out the way."
+      ]
+    },
+    {
+      "lines": [
+        "'Twas brighter far than noonday's beam,",
+        "It shone from God within;",
+        "And lit, as by a lamp from heaven,",
+        "The world's dark track of sin."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Jones Very died in 1880.",
+  "credits": "Words by Jones Very (1813–1880), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:91"
+}

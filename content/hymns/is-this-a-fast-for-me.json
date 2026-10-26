@@ -1,0 +1,63 @@
+{
+  "title": "\"Is This a Fast for Me?\"",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "William Drummond of Hawthornden",
+      "born": 1585,
+      "died": 1649,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "\"Is This a Fast for Me?\" in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Drummond of Hawthornden wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 387, “A Public Fast”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "\"Is this a fast for me?\" Thus saith the Lord our God; \"A day for man to vex his soul, And feel af-flic-tion's rod?",
+  "verses": [
+    {
+      "lines": [
+        "\"Is this a fast for me?\"",
+        "Thus saith the Lord our God;",
+        "\"A day for man to vex his soul,",
+        "And feel affliction's rod?"
+      ]
+    },
+    {
+      "lines": [
+        "\"No; is not this alone",
+        "The sacred fast I choose:",
+        "Oppression's yoke to burst in twain,",
+        "The bands of guilt unloose?"
+      ]
+    },
+    {
+      "lines": [
+        "\"To nakedness and want",
+        "Your food and raiment deal,",
+        "To dwell your kindred race among,",
+        "And all their sufferings heal?"
+      ]
+    },
+    {
+      "lines": [
+        "\"Then, like the morning ray,",
+        "Shall spring your health and light;",
+        "Before you, righteousness shall shine,",
+        "Around, my glory bright!\""
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Drummond of Hawthornden died in 1649.",
+  "credits": "Words by William Drummond of Hawthornden (1585–1649), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:387"
+}

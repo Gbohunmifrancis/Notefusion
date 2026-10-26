@@ -1,0 +1,71 @@
+{
+  "title": "As the Sun's Enlivening Eye",
+  "tune": "pleyels-hymn",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "As the Sun's Enlivening Eye in Tonic Solfa to PLEYEL'S HYMN, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 69, “God Ever Near”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7) (7.7.7.7), to be sung to any tune of that metre. This page sets them to PLEYEL'S HYMN; any other Sevens (7.7.7.7) tune fits them as well."
+  ],
+  "underlay": "As the sun's en-liven-ing eye Shines on ev-ery place the same; So the Lord is al-ways nigh To the souls that love His name.",
+  "verses": [
+    {
+      "lines": [
+        "As the sun's enlivening eye",
+        "Shines on every place the same;",
+        "So the Lord is always nigh",
+        "To the souls that love His name."
+      ]
+    },
+    {
+      "lines": [
+        "When they move at duty's call,",
+        "He is with them by the way;",
+        "He is ever with them all,",
+        "Those who go and those who stay."
+      ]
+    },
+    {
+      "lines": [
+        "From His holy mercy-seat",
+        "Nothing can their souls confine;",
+        "Still in spirit they may meet,",
+        "And in sweet communion join."
+      ]
+    },
+    {
+      "lines": [
+        "Father, hear our humble prayer!",
+        "Tender Shepherd of Thy sheep,",
+        "Let Thy mercy and Thy care",
+        "All our souls in safety keep."
+      ]
+    },
+    {
+      "lines": [
+        "In Thy strength may we be strong;",
+        "Sanctify each cross and pain;",
+        "Give us, if Thou wilt, ere long",
+        "Here to meet in peace again."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to PLEYEL'S HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:69"
+}

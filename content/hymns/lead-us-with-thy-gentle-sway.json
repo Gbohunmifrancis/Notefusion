@@ -1,0 +1,51 @@
+{
+  "title": "Lead Us with Thy Gentle Sway",
+  "tune": "spanish-hymn",
+  "text": [
+    {
+      "name": "John Bowring",
+      "born": 1792,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Lead Us with Thy Gentle Sway in Tonic Solfa to SPANISH HYMN, doh is Ab: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "John Bowring wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 502, “The Pilgrim's Prayer”.",
+    "The book printed the words without tunes, marked Sevens, six lines (7.7.7.7.7.7) (7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to SPANISH HYMN; any other Sevens, six lines (7.7.7.7.7.7) tune fits them as well."
+  ],
+  "underlay": "Lead us with Thy gen-tle sway, As a will-ing child is led; Speed us on our up-ward way, As a pil-grim, Lord, is sped, Who with prayers and helps di-vine Seeks a con-se-cra-ted shrine.",
+  "verses": [
+    {
+      "lines": [
+        "Lead us with Thy gentle sway,",
+        "As a willing child is led;",
+        "Speed us on our upward way,",
+        "As a pilgrim, Lord, is sped,",
+        "Who with prayers and helps divine",
+        "Seeks a consecrated shrine."
+      ]
+    },
+    {
+      "lines": [
+        "Lead us, Father! Thou dost know",
+        "All the way; but, wanderers, we",
+        "Often miss our way below,",
+        "And stretch out our hands to Thee;",
+        "Guide us, save us, and prepare",
+        "Our appointed mansion there!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Bowring died in 1872.",
+  "credits": "Words by John Bowring (1792–1872), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to SPANISH HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:502"
+}

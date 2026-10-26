@@ -1,0 +1,54 @@
+{
+  "title": "Thy Servants in the Temple Watched",
+  "tune": "all-saints-new",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Thy Servants in the Temple Watched in Tonic Solfa to ALL SAINTS, NEW, doh is Bb: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 589, “The Day-Spring From on High”, where the book credits them to Sp. of Psalms.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to ALL SAINTS, NEW; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "Thy ser-vants in the tem-ple watched The daw-ning of the day, Im-pa-tient with its ear-liest beams Their ho-ly vows to pay; And cho-sen saints far off be-held That great and glo-rious morn, When the glad day spring from on high Aus-pi-cious-ly should dawn.",
+  "verses": [
+    {
+      "lines": [
+        "Thy servants in the temple watched",
+        "The dawning of the day,",
+        "Impatient with its earliest beams",
+        "Their holy vows to pay;",
+        "And chosen saints far off beheld",
+        "That great and glorious morn,",
+        "When the glad day-spring from on high",
+        "Auspiciously should dawn."
+      ]
+    },
+    {
+      "lines": [
+        "On us the Sun of Righteousness",
+        "Its brightest beams hath poured;",
+        "With grateful hearts and holy zeal,",
+        "Lord, be Thy love adored;",
+        "And let us look with joyful hope",
+        "To that more glorious day,",
+        "Before whose brightness sin and death,",
+        "And grief, shall flee away."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to ALL SAINTS, NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:589"
+}

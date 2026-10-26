@@ -1,0 +1,55 @@
+{
+  "title": "The Earth, All Light and Loveliness",
+  "tune": "materna",
+  "text": [
+    {
+      "name": "Sarah Elizabeth Miles",
+      "born": 1807,
+      "died": 1877,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "The Earth, All Light and Loveliness in Tonic Solfa to MATERNA, doh is C: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Sarah Elizabeth Miles wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 395, “Summer”.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to MATERNA; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "The earth, all light and love-li-ness, In sum-mer's gol-den hours, Shines, in her bri-dal ves-ture clad, And crowned with fest-al flowers, So ra-di-ant-ly beau-ti-ful, So like to heaven a-bove, We scarce can deem more fair that world Of per-fect bliss and love.",
+  "verses": [
+    {
+      "lines": [
+        "The earth, all light and loveliness,",
+        "In summer's golden hours,",
+        "Shines, in her bridal vesture clad,",
+        "And crowned with festal flowers,",
+        "So radiantly beautiful,",
+        "So like to heaven above,",
+        "We scarce can deem more fair that world",
+        "Of perfect bliss and love."
+      ]
+    },
+    {
+      "lines": [
+        "Is this a shadow faint and dim",
+        "Of that which is to come!",
+        "What shall the unveiled splendor be",
+        "Of our celestial home,",
+        "Where waves the glorious tree of life,",
+        "Where streams of bliss gush free,",
+        "And all is glowing in the light",
+        "Of immortality!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Sarah Elizabeth Miles died in 1877.",
+  "credits": "Words by Sarah Elizabeth Miles (1807–1877), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MATERNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:395"
+}

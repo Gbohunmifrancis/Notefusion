@@ -1,0 +1,63 @@
+{
+  "title": "O Father! Humbly We Repose",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "William Gaskell",
+      "born": 1805,
+      "died": 1884,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O Father! Humbly We Repose in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Gaskell wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 250, “Faith in God's Love”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Fa-ther! hum-bly we re-pose Our souls on Thee, who dwell'st a-bove, And bless Thee for the peace which flows From faith in Thine en-cir-cling love.",
+  "verses": [
+    {
+      "lines": [
+        "O Father! humbly we repose",
+        "Our souls on Thee, who dwell'st above,",
+        "And bless Thee for the peace which flows",
+        "From faith in Thine encircling love."
+      ]
+    },
+    {
+      "lines": [
+        "Though every earthly trust may break,",
+        "Infinite might belongs to Thee;",
+        "Though every earthly friend forsake,",
+        "Unchangeable Thou still wilt be."
+      ]
+    },
+    {
+      "lines": [
+        "Though griefs may gather darkly round,",
+        "They cannot veil us from Thy sight;",
+        "Though vain all human aid be found,",
+        "Thou every grief canst turn to light."
+      ]
+    },
+    {
+      "lines": [
+        "All things Thy wise designs fulfil,",
+        "In earth beneath, and heaven above,",
+        "And good breaks out from every ill,",
+        "Through faith in Thine encircling love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Gaskell died in 1884.",
+  "credits": "Words by William Gaskell (1805–1884), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:250"
+}

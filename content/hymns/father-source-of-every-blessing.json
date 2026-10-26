@@ -1,0 +1,62 @@
+{
+  "title": "Father, Source of Every Blessing",
+  "tune": "all-for-jesus",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Father, Source of Every Blessing in Tonic Solfa to ALL FOR JESUS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 245, “Song of the Redeemed”, where the book credits them to Episcopal Collection.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7) (8.7.8.7), to be sung to any tune of that metre. This page sets them to ALL FOR JESUS; any other Eights and Sevens (8.7.8.7) tune fits them as well."
+  ],
+  "underlay": "Fa-ther, source of ev-ery bless-ing, Tune my heart to grate-ful lays! Streams of mer-cy, nev-er ceas-ing, Call for cease-less songs of praise.",
+  "verses": [
+    {
+      "lines": [
+        "Father, source of every blessing,",
+        "Tune my heart to grateful lays!",
+        "Streams of mercy, never ceasing,",
+        "Call for ceaseless songs of praise."
+      ]
+    },
+    {
+      "lines": [
+        "Teach me some melodious measure,",
+        "Sung by raptured saints above;",
+        "Fill my soul with sacred pleasure,",
+        "While I sing redeeming love."
+      ]
+    },
+    {
+      "lines": [
+        "Thou didst seek me when a stranger,",
+        "Wandering from the fold above;",
+        "Thou, to save my soul from danger,",
+        "Didst redeem me with Thy love."
+      ]
+    },
+    {
+      "lines": [
+        "By Thy hand restored, defended,",
+        "Safe through life thus far I've come;",
+        "Safe, O Lord, when life is ended,",
+        "Bring me to my heavenly home."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ALL FOR JESUS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:245"
+}

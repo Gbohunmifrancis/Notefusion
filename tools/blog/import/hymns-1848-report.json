@@ -1,0 +1,3640 @@
+{
+  "source": "A Book of Hymns for Public and Private Devotion (Samuel Longfellow and Samuel Johnson, 1848), fifteenth edition, 1866",
+  "date": "2026-10-26",
+  "written": [
+    {
+      "ref": "1",
+      "slug": "come-to-the-house-of-prayer",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "Emily Taylor"
+    },
+    {
+      "ref": "3",
+      "slug": "come-ye-who-love-the-lord",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "Isaac Watts"
+    },
+    {
+      "ref": "4",
+      "slug": "be-still-be-still-for-all-around",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "7",
+      "slug": "o-father-though-the-anxious-fear",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "8",
+      "slug": "love-divine-all-love-excelling",
+      "metre": "8 7 8 7 8 7 8 7",
+      "tune": "lux-eoi",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "10",
+      "slug": "unto-thy-temple-god-of-love",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "William Gaskell"
+    },
+    {
+      "ref": "12",
+      "slug": "here-in-this-place-of-prayer",
+      "metre": "6 6 8 6",
+      "tune": "st-bride",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "13",
+      "slug": "lo-god-is-here-let-us-adore",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "14",
+      "slug": "in-thy-courts-let-peace-be-found",
+      "metre": "7 7 7 7",
+      "tune": "innocents",
+      "author": "John Bowring"
+    },
+    {
+      "ref": "18",
+      "slug": "before-jehovahs-awful-throne",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Isaac Watts"
+    },
+    {
+      "ref": "19",
+      "slug": "the-offerings-to-thy-throne-which-rise",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "John Bowring"
+    },
+    {
+      "ref": "21",
+      "slug": "light-of-life-seraphic-fire",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "martyn",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "22",
+      "slug": "father-thy-paternal-care",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "watchman",
+      "author": "John Bowring"
+    },
+    {
+      "ref": "23",
+      "slug": "o-god-whose-presence-glows-in-all",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Nathaniel Langdon Frothingham"
+    },
+    {
+      "ref": "28",
+      "slug": "our-heavenly-father-hear",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "29",
+      "slug": "father-and-god-of-all-mankind",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "30",
+      "slug": "day-by-day-the-manna-fell",
+      "metre": "7 7 7 7",
+      "tune": "innocents",
+      "author": "Josiah Conder"
+    },
+    {
+      "ref": "32",
+      "slug": "what-shall-we-ask-of-god-in-prayer",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "34",
+      "slug": "o-god-who-knowest-how-frail-we-are",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "William Gaskell"
+    },
+    {
+      "ref": "35",
+      "slug": "from-every-fear-and-doubt-o-lord",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "36",
+      "slug": "when-israel-of-the-lord-beloved",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Walter Scott"
+    },
+    {
+      "ref": "37",
+      "slug": "father-of-light-conduct-our-feet",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "Christopher Smart"
+    },
+    {
+      "ref": "42",
+      "slug": "shine-on-our-souls-eternal-god",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "Philip Doddridge"
+    },
+    {
+      "ref": "43",
+      "slug": "almighty-god-in-humble-prayer",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "45",
+      "slug": "father-united-by-thy-grace",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "48",
+      "slug": "songs-of-praise-the-angels-sang",
+      "metre": "7 7 7 7",
+      "tune": "innocents",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "50",
+      "slug": "o-god-we-praise-thee-and-confess",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "John Patrick"
+    },
+    {
+      "ref": "54",
+      "slug": "lord-in-heaven-thy-dwelling-place",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "hollingside",
+      "author": "John Bowring"
+    },
+    {
+      "ref": "56",
+      "slug": "my-god-in-mornings-radiant-hour",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "60",
+      "slug": "part-in-peace-is-day-before-us",
+      "metre": "8 7 8 7",
+      "tune": "omni-die",
+      "author": "Sarah Flower Adams"
+    },
+    {
+      "ref": "62",
+      "slug": "guide-us-lord-while-hand-in-hand",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "watchman",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "63",
+      "slug": "from-all-that-dwell-below-the-skies",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Isaac Watts"
+    },
+    {
+      "ref": "64",
+      "slug": "go-in-peace-serene-dismission",
+      "metre": "8 7 8 7",
+      "tune": "omni-die",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "65",
+      "slug": "o-god-by-whom-the-seed-is-given",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "Reginald Heber"
+    },
+    {
+      "ref": "66",
+      "slug": "through-all-this-lifes-eventful-road",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "William Gaskell"
+    },
+    {
+      "ref": "67",
+      "slug": "thy-presence-ever-living-god",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Philip Doddridge"
+    },
+    {
+      "ref": "68",
+      "slug": "god-of-our-fathers-by-whose-hand",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "69",
+      "slug": "as-the-suns-enlivening-eye",
+      "metre": "7 7 7 7",
+      "tune": "pleyels-hymn",
+      "author": "John Newton"
+    },
+    {
+      "ref": "75",
+      "slug": "o-source-divine-and-life-of-all",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "John Sterling"
+    },
+    {
+      "ref": "77",
+      "slug": "father-there-is-no-change-to-live-with-thee",
+      "metre": "10 10 10 10",
+      "tune": "song-twenty-two",
+      "author": "Jones Very"
+    },
+    {
+      "ref": "78",
+      "slug": "father-to-thy-kind-love-we-owe",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "William Cullen Bryant"
+    },
+    {
+      "ref": "80",
+      "slug": "god-in-the-high-and-holy-place",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "81",
+      "slug": "o-thou-to-whom-in-ancient-time",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Pierpont"
+    },
+    {
+      "ref": "85",
+      "slug": "the-ocean-looketh-up-to-heaven",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "John Greenleaf Whittier"
+    },
+    {
+      "ref": "88",
+      "slug": "though-wandering-in-a-stranger-land",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "90",
+      "slug": "hath-not-thy-heart-within-thee-burned",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Stephen Greenleaf Bulfinch"
+    },
+    {
+      "ref": "91",
+      "slug": "i-saw-on-earth-another-light",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "Jones Very"
+    },
+    {
+      "ref": "92",
+      "slug": "wouldst-thou-in-thy-lonely-hour",
+      "metre": "7 7 7 7",
+      "tune": "vienna",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "94",
+      "slug": "far-from-the-world-o-lord-i-flee",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "95",
+      "slug": "while-thee-i-seek-protecting-power",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Helen Maria Williams"
+    },
+    {
+      "ref": "97",
+      "slug": "go-when-the-morning-shineth",
+      "metre": "7 6 7 6 7 6 7 6",
+      "tune": "angels-story",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "98",
+      "slug": "child-amidst-the-flowers-at-play",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "Felicia Hemans"
+    },
+    {
+      "ref": "99",
+      "slug": "prayer-is-the-souls-sincere-desire",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "100",
+      "slug": "prayer-is-to-god-the-souls-sure-way",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Joseph Hart"
+    },
+    {
+      "ref": "101",
+      "slug": "sweet-is-the-prayer-whose-holy-stream",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "108",
+      "slug": "brightest-and-best-of-the-sons-of-the-morning",
+      "metre": "11 10 11 10",
+      "tune": "wesley-mason",
+      "author": "Reginald Heber"
+    },
+    {
+      "ref": "115",
+      "slug": "fear-was-within-the-tossing-bark",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Felicia Hemans"
+    },
+    {
+      "ref": "116",
+      "slug": "the-aged-sufferer-waited-long",
+      "metre": "8 6 8 6 8 6 8 6",
+      "tune": "all-saints-new",
+      "author": "Stephen Greenleaf Bulfinch"
+    },
+    {
+      "ref": "117",
+      "slug": "lord-in-whose-might-the-saviour-trod",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Stephen Greenleaf Bulfinch"
+    },
+    {
+      "ref": "120",
+      "slug": "ever-patient-loving-meek",
+      "metre": "7 7 7 7 7 7",
+      "tune": "ratisbon-werner",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "121",
+      "slug": "come-said-jesus-sacred-voice",
+      "metre": "7 7 7 7",
+      "tune": "pleyels-hymn",
+      "author": "Anna Laetitia Barbauld"
+    },
+    {
+      "ref": "124",
+      "slug": "how-beauteous-were-the-marks-divine",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Arthur Cleveland Coxe"
+    },
+    {
+      "ref": "128",
+      "slug": "dark-were-the-paths-our-master-trod",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "William Gaskell"
+    },
+    {
+      "ref": "129",
+      "slug": "o-suffering-friend-of-human-kind",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Stephen Greenleaf Bulfinch"
+    },
+    {
+      "ref": "130",
+      "slug": "father-divine-the-saviour-cried",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Philip Doddridge"
+    },
+    {
+      "ref": "131",
+      "slug": "a-voice-upon-the-midnight-air",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "136",
+      "slug": "it-is-finished-glorious-word",
+      "metre": "7 7 7 7 7 7",
+      "tune": "ratisbon-werner",
+      "author": "Stephen Greenleaf Bulfinch"
+    },
+    {
+      "ref": "139",
+      "slug": "according-to-thy-gracious-word",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "144",
+      "slug": "when-my-love-to-christ-grows-weak",
+      "metre": "7 7 7 7",
+      "tune": "vienna",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "145",
+      "slug": "in-the-cross-of-christ-we-glory",
+      "metre": "8 7 8 7",
+      "tune": "galilee-jude",
+      "author": "John Bowring"
+    },
+    {
+      "ref": "146",
+      "slug": "if-love-the-noblest-purest-best",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Emily Taylor"
+    },
+    {
+      "ref": "148",
+      "slug": "when-arise-the-thoughts-of-sin",
+      "metre": "7 7 7 7 7 7",
+      "tune": "spanish-hymn",
+      "author": "William Gaskell"
+    },
+    {
+      "ref": "149",
+      "slug": "in-vain-we-thus-recall-to-mind",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "William Gaskell"
+    },
+    {
+      "ref": "151",
+      "slug": "o-not-for-these-alone-i-pray",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Emily Taylor"
+    },
+    {
+      "ref": "154",
+      "slug": "when-blest-redeemer-thou-art-near",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "155",
+      "slug": "not-in-the-name-of-pride",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "156",
+      "slug": "o-thou-great-friend-to-all-the-sons-of-men",
+      "metre": "10 10 10 10",
+      "tune": "ellers",
+      "author": "Theodore Parker"
+    },
+    {
+      "ref": "157",
+      "slug": "a-holy-air-is-breathing-round",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "158",
+      "slug": "o-here-if-ever-god-of-love",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Emily Taylor"
+    },
+    {
+      "ref": "159",
+      "slug": "come-who-will-the-voice-from-heaven",
+      "metre": "8 7 8 7",
+      "tune": "omni-die",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "160",
+      "slug": "come-unto-me-when-shadows-darkly-gather",
+      "metre": "11 10 11 10",
+      "tune": "wesley-mason",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "161",
+      "slug": "come-to-jesus-o-my-brothers",
+      "metre": "8 7 8 7 4 7",
+      "tune": "st-austin",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "163",
+      "slug": "through-thee-as-we-together-came",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "165",
+      "slug": "forth-went-the-heralds-of-the-cross",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "William Gaskell"
+    },
+    {
+      "ref": "166",
+      "slug": "thanks-to-god-for-those-who-came",
+      "metre": "7 7 7 7",
+      "tune": "vienna",
+      "author": "John Johns"
+    },
+    {
+      "ref": "168",
+      "slug": "god-of-the-prophets-power",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "170",
+      "slug": "behold-the-sun-how-bright",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "Thomas Moore"
+    },
+    {
+      "ref": "171",
+      "slug": "thy-kingdom-come-the-heathen-lands",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Emily Taylor"
+    },
+    {
+      "ref": "172",
+      "slug": "o-god-the-darkness-roll-away",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "William Gaskell"
+    },
+    {
+      "ref": "173",
+      "slug": "lord-jesus-come-for-here",
+      "metre": "6 6 8 6",
+      "tune": "aylesbury",
+      "author": "Harriet Martineau"
+    },
+    {
+      "ref": "174",
+      "slug": "thou-whose-almighty-word",
+      "metre": "6 6 4 6 6 6 4",
+      "tune": "dort",
+      "author": "John Marriott"
+    },
+    {
+      "ref": "175",
+      "slug": "who-shall-behold-the-glorious-day",
+      "metre": "8 6 8 6 8 6 8 6",
+      "tune": "materna",
+      "author": "Thomas Moore"
+    },
+    {
+      "ref": "178",
+      "slug": "triumphant-zion-lift-thy-head",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "179",
+      "slug": "daughter-of-zion-from-the-dust",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "181",
+      "slug": "o-fairest-born-of-love-and-light",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "John Greenleaf Whittier"
+    },
+    {
+      "ref": "182",
+      "slug": "all-men-are-equal-in-their-birth",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Harriet Martineau"
+    },
+    {
+      "ref": "184",
+      "slug": "hush-the-loud-cannons-roar",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "John Johns"
+    },
+    {
+      "ref": "185",
+      "slug": "how-long-o-lord-his-brothers-blood",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "William Gaskell"
+    },
+    {
+      "ref": "186",
+      "slug": "lord-thou-didst-arise-and-say",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "messiah-herald",
+      "author": "Henry Hart Milman"
+    },
+    {
+      "ref": "189",
+      "slug": "god-made-all-his-creatures-free",
+      "metre": "7 7 7 7",
+      "tune": "vienna",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "191",
+      "slug": "o-pure-reformers-not-in-vain",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "John Greenleaf Whittier"
+    },
+    {
+      "ref": "192",
+      "slug": "hear-what-god-the-lord-hath-spoken",
+      "metre": "8 7 8 7 8 7 8 7",
+      "tune": "lux-eoi",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "197",
+      "slug": "soul-celestial-in-thy-birth",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "198",
+      "slug": "o-not-alone-with-outward-sign",
+      "metre": "8 6 8 6 8 6 8 6",
+      "tune": "all-saints-new",
+      "author": "John Greenleaf Whittier"
+    },
+    {
+      "ref": "200",
+      "slug": "thou-must-be-born-again",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "John Johns"
+    },
+    {
+      "ref": "202",
+      "slug": "o-send-me-not-away-for-i-would-drink",
+      "metre": "10 10 10 10",
+      "tune": "langran",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "203",
+      "slug": "o-richly-father-have-i-been",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "William Henry Furness"
+    },
+    {
+      "ref": "204",
+      "slug": "lord-have-mercy-when-we-pray",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "hollingside",
+      "author": "Henry Hart Milman"
+    },
+    {
+      "ref": "206",
+      "slug": "yes-prayer-is-strong-and-god-is-good",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "209",
+      "slug": "o-help-us-lord-each-hour-of-need",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Henry Hart Milman"
+    },
+    {
+      "ref": "213",
+      "slug": "father-when-oer-our-trembling-hearts",
+      "metre": "8 6 8 6 8 6 8 6",
+      "tune": "all-saints-new",
+      "author": "Stephen Greenleaf Bulfinch"
+    },
+    {
+      "ref": "214",
+      "slug": "feeble-helpless-how-shall-i",
+      "metre": "7 7 7 7",
+      "tune": "st-bees",
+      "author": "William Henry Furness"
+    },
+    {
+      "ref": "215",
+      "slug": "when-in-thine-hour-of-conflict-lord",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "218",
+      "slug": "return-my-soul-unto-thy-rest",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "224",
+      "slug": "i-want-a-principle-within",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "226",
+      "slug": "as-the-hart-with-eager-looks",
+      "metre": "7 7 7 7 7 7",
+      "tune": "ratisbon-werner",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "227",
+      "slug": "o-where-shall-rest-be-found",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "228",
+      "slug": "lord-i-believe-a-rest-remains",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "229",
+      "slug": "that-blessed-law-of-thine",
+      "metre": "6 6 8 6",
+      "tune": "aylesbury",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "231",
+      "slug": "forever-with-the-lord",
+      "metre": "6 6 8 6",
+      "tune": "franconia",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "232",
+      "slug": "heaven-is-a-state-of-rest-from-sin",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "234",
+      "slug": "quiet-lord-my-froward-heart",
+      "metre": "7 7 7 7 7 7",
+      "tune": "ratisbon-werner",
+      "author": "John Newton"
+    },
+    {
+      "ref": "235",
+      "slug": "father-i-will-not-pray",
+      "metre": "6 6 8 6",
+      "tune": "aylesbury",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "241",
+      "slug": "my-soul-no-more-shall-strive-in-vain",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Anne Steele"
+    },
+    {
+      "ref": "245",
+      "slug": "father-source-of-every-blessing",
+      "metre": "8 7 8 7",
+      "tune": "all-for-jesus",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "246",
+      "slug": "o-lord-through-thee-we-own",
+      "metre": "6 6 8 6",
+      "tune": "aylesbury",
+      "author": "Stephen Greenleaf Bulfinch"
+    },
+    {
+      "ref": "248",
+      "slug": "they-who-on-the-lord-rely",
+      "metre": "7 7 7 7",
+      "tune": "innocents",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "250",
+      "slug": "o-father-humbly-we-repose",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "William Gaskell"
+    },
+    {
+      "ref": "254",
+      "slug": "commit-thou-all-thy-griefs",
+      "metre": "6 6 8 6",
+      "tune": "aylesbury",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "255",
+      "slug": "god-is-our-refuge-and-our-strength",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "Henry Alford"
+    },
+    {
+      "ref": "258",
+      "slug": "how-gentle-gods-commands",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "Philip Doddridge"
+    },
+    {
+      "ref": "259",
+      "slug": "god-moves-in-a-mysterious-way",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "260",
+      "slug": "author-of-good-we-rest-on-thee",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "James Merrick"
+    },
+    {
+      "ref": "262",
+      "slug": "when-grief-and-anguish-press-me-down",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "266",
+      "slug": "is-there-a-lone-and-dreary-hour",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Caroline Gilman"
+    },
+    {
+      "ref": "268",
+      "slug": "father-i-wait-thy-word-the-sun-doth-stand",
+      "metre": "10 10 10 10",
+      "tune": "penitentia",
+      "author": "Jones Very"
+    },
+    {
+      "ref": "271",
+      "slug": "tis-my-happiness-below",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "messiah-herald",
+      "author": "William Cowper"
+    },
+    {
+      "ref": "272",
+      "slug": "saviour-i-my-cross-have-taken",
+      "metre": "8 7 8 7",
+      "tune": "all-for-jesus",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "273",
+      "slug": "the-dove-let-loose-in-eastern-skies",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "Thomas Moore"
+    },
+    {
+      "ref": "274",
+      "slug": "the-world-may-change-from-old-to-new",
+      "metre": "8 6 8 6 8 6 8 6",
+      "tune": "materna",
+      "author": "Sarah Flower Adams"
+    },
+    {
+      "ref": "275",
+      "slug": "not-that-thy-boundless-love-my-god",
+      "metre": "8 6 8 6 8 6 8 6",
+      "tune": "materna",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "277",
+      "slug": "ye-servants-of-the-lord",
+      "metre": "6 6 8 6",
+      "tune": "st-bride",
+      "author": "Philip Doddridge"
+    },
+    {
+      "ref": "279",
+      "slug": "how-happy-is-he-born-or-taught",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Henry Wotton"
+    },
+    {
+      "ref": "280",
+      "slug": "o-know-ye-not-that-ye",
+      "metre": "6 6 8 6",
+      "tune": "franconia",
+      "author": "John Johns"
+    },
+    {
+      "ref": "282",
+      "slug": "quiet-from-god-how-beautiful-to-keep",
+      "metre": "10 10 10 10",
+      "tune": "langran",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "285",
+      "slug": "speak-gently-it-is-better-far",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "286",
+      "slug": "turn-not-from-him-who-asks-of-thee",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "Jones Very"
+    },
+    {
+      "ref": "287",
+      "slug": "o-if-thy-brow-serene-and-calm",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "291",
+      "slug": "one-cup-of-healing-oil-and-wine",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "William Drummond of Hawthornden"
+    },
+    {
+      "ref": "292",
+      "slug": "thus-said-jesus-go-and-do",
+      "metre": "7 7 7 7",
+      "tune": "pleyels-hymn",
+      "author": "William Roscoe"
+    },
+    {
+      "ref": "294",
+      "slug": "pour-forth-the-oil-pour-boldly-forth",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "Richard Chenevix Trench"
+    },
+    {
+      "ref": "295",
+      "slug": "beneath-the-thick-but-struggling-clouds",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "300",
+      "slug": "the-bud-will-soon-become-a-flower",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "Jones Very"
+    },
+    {
+      "ref": "302",
+      "slug": "teach-me-my-god-and-king",
+      "metre": "6 6 8 6",
+      "tune": "st-bride",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "303",
+      "slug": "thou-lord-who-rearst-the-mountains-height",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "John Sterling"
+    },
+    {
+      "ref": "304",
+      "slug": "if-on-our-daily-course-our-mind",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "John Keble"
+    },
+    {
+      "ref": "306",
+      "slug": "all-around-us-fair-with-flowers",
+      "metre": "8 7 8 7",
+      "tune": "stuttgart",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "307",
+      "slug": "scorn-not-the-slightest-word-or-deed",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "309",
+      "slug": "nay-tell-us-not-of-dangers-dire",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Mirabeau B. Lamar"
+    },
+    {
+      "ref": "311",
+      "slug": "am-i-a-soldier-of-the-cross",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Isaac Watts"
+    },
+    {
+      "ref": "312",
+      "slug": "press-on-press-on-ye-sons-of-light",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "William Gaskell"
+    },
+    {
+      "ref": "314",
+      "slug": "sleep-not-soldier-of-the-cross",
+      "metre": "7 7 7 7",
+      "tune": "pleyels-hymn",
+      "author": "William Gaskell"
+    },
+    {
+      "ref": "315",
+      "slug": "awake-my-soul-stretch-every-nerve",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "Philip Doddridge"
+    },
+    {
+      "ref": "316",
+      "slug": "o-speed-thee-christian-on-thy-way",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "318",
+      "slug": "awake-my-soul-lift-up-thine-eyes",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Anna Laetitia Barbauld"
+    },
+    {
+      "ref": "319",
+      "slug": "theres-a-strife-we-all-must-wage",
+      "metre": "7 7 7 7",
+      "tune": "st-bees",
+      "author": "Stephen Greenleaf Bulfinch"
+    },
+    {
+      "ref": "323",
+      "slug": "be-still-my-heart-these-anxious-cares",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Newton"
+    },
+    {
+      "ref": "324",
+      "slug": "we-would-leave-o-god-to-thee",
+      "metre": "7 7 7 7",
+      "tune": "vienna",
+      "author": "William Gaskell"
+    },
+    {
+      "ref": "326",
+      "slug": "deem-not-that-they-are-blest-alone",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "William Cullen Bryant"
+    },
+    {
+      "ref": "327",
+      "slug": "my-god-i-thank-thee-may-no-thought",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Andrews Norton"
+    },
+    {
+      "ref": "329",
+      "slug": "afflictions-faded-form-draws-nigh",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "330",
+      "slug": "thou-that-art-strong-to-comfort-look-on-me",
+      "metre": "10 10 10 10",
+      "tune": "penitentia",
+      "author": "Mary Howitt"
+    },
+    {
+      "ref": "331",
+      "slug": "our-pathway-oft-is-wet-with-tears",
+      "metre": "8 6 8 6 8 6 8 6",
+      "tune": "all-saints-new",
+      "author": "Bernard Barton"
+    },
+    {
+      "ref": "332",
+      "slug": "thy-way-is-on-the-deep-o-lord",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "333",
+      "slug": "thou-infinite-in-love",
+      "metre": "6 6 6 6 8 8",
+      "tune": "st-john-parish-choir",
+      "author": "Sarah Elizabeth Miles"
+    },
+    {
+      "ref": "334",
+      "slug": "in-trouble-and-in-grief-o-god",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "335",
+      "slug": "gently-fall-the-dews-of-eve",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "Sarah Flower Adams"
+    },
+    {
+      "ref": "336",
+      "slug": "though-lonely-be-thy-path-fear-not-for-he",
+      "metre": "10 10 10 10",
+      "tune": "song-twenty-two",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "338",
+      "slug": "let-me-not-wander-comfortless",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "339",
+      "slug": "we-love-this-outward-world",
+      "metre": "6 6 8 6",
+      "tune": "st-bride",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "340",
+      "slug": "weep-thou-o-mourner-but-in-lamentation",
+      "metre": "11 10 11 10",
+      "tune": "perfect-love",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "346",
+      "slug": "o-stay-thy-tears-for-they-are-blest",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Andrews Norton"
+    },
+    {
+      "ref": "349",
+      "slug": "where-is-thy-sting-o-death",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "John Bowring"
+    },
+    {
+      "ref": "350",
+      "slug": "how-blest-the-righteous-when-he-dies",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Anna Laetitia Barbauld"
+    },
+    {
+      "ref": "351",
+      "slug": "o-spirit-freed-from-earth",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "Mary Howitt"
+    },
+    {
+      "ref": "352",
+      "slug": "no-more-on-earth-no-more",
+      "metre": "6 6 8 6",
+      "tune": "franconia",
+      "author": "William Gaskell"
+    },
+    {
+      "ref": "353",
+      "slug": "the-dead-are-like-the-stars-by-day",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Bernard Barton"
+    },
+    {
+      "ref": "356",
+      "slug": "it-is-a-faith-sublime-and-sure",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "James Handasyd Perkins"
+    },
+    {
+      "ref": "357",
+      "slug": "there-is-a-state-unknown-unseen",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "Jane Taylor"
+    },
+    {
+      "ref": "359",
+      "slug": "when-on-devotions-seraph-wing",
+      "metre": "8 6 8 6 8 6 8 6",
+      "tune": "all-saints-new",
+      "author": "Sarah Elizabeth Miles"
+    },
+    {
+      "ref": "360",
+      "slug": "come-to-the-land-of-peace",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "361",
+      "slug": "o-heaven-is-where-no-secret-dread",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "363",
+      "slug": "now-the-shades-of-night-are-gone",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "364",
+      "slug": "in-the-morning-i-will-pray",
+      "metre": "7 7 7 7",
+      "tune": "vienna",
+      "author": "William Henry Furness"
+    },
+    {
+      "ref": "366",
+      "slug": "o-god-i-thank-thee-that-the-night",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Pierpont"
+    },
+    {
+      "ref": "371",
+      "slug": "slowly-by-gods-hand-unfurled",
+      "metre": "7 7 7 7",
+      "tune": "innocents",
+      "author": "William Henry Furness"
+    },
+    {
+      "ref": "372",
+      "slug": "another-day-its-course-hath-run",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "John Pierpont"
+    },
+    {
+      "ref": "373",
+      "slug": "lord-of-the-sabbath-hear-our-vows",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Philip Doddridge"
+    },
+    {
+      "ref": "374",
+      "slug": "how-sweet-how-calm-this-sabbath-morn",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "375",
+      "slug": "within-thy-courts-have-millions-met",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "377",
+      "slug": "this-child-we-dedicate-to-thee",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "378",
+      "slug": "to-thee-o-god-in-heaven",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "379",
+      "slug": "to-him-who-children-blest",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "380",
+      "slug": "we-join-to-pray-with-wishes-kind",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "William Gaskell"
+    },
+    {
+      "ref": "381",
+      "slug": "father-in-thy-presence-now",
+      "metre": "7 7 7 7",
+      "tune": "vienna",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "383",
+      "slug": "o-thou-whose-own-vast-temple-stands",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "William Cullen Bryant"
+    },
+    {
+      "ref": "387",
+      "slug": "is-this-a-fast-for-me",
+      "metre": "6 6 8 6",
+      "tune": "aylesbury",
+      "author": "William Drummond of Hawthornden"
+    },
+    {
+      "ref": "390",
+      "slug": "our-father-through-the-coming-year",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "William Gaskell"
+    },
+    {
+      "ref": "393",
+      "slug": "praise-the-lord-when-blushing-morning",
+      "metre": "8 7 8 7",
+      "tune": "galilee-jude",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "395",
+      "slug": "the-earth-all-light-and-loveliness",
+      "metre": "8 6 8 6 8 6 8 6",
+      "tune": "materna",
+      "author": "Sarah Elizabeth Miles"
+    },
+    {
+      "ref": "396",
+      "slug": "fountain-of-life-and-god-of-love",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "398",
+      "slug": "god-of-the-year-with-songs-of-praise",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Lydia Sigourney"
+    },
+    {
+      "ref": "399",
+      "slug": "the-heavenly-spheres-to-thee-o-god",
+      "metre": "8 6 8 6 8 6 8 6",
+      "tune": "materna",
+      "author": "John Bowring"
+    },
+    {
+      "ref": "400",
+      "slug": "god-of-the-changing-year-whose-arm-of-power",
+      "metre": "10 10 10 10",
+      "tune": "song-twenty-two",
+      "author": "Emily Taylor"
+    },
+    {
+      "ref": "401",
+      "slug": "o-god-to-thee-our-hearts-would-pay",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "William Gaskell"
+    },
+    {
+      "ref": "404",
+      "slug": "another-hand-is-beckoning-us",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "John Greenleaf Whittier"
+    },
+    {
+      "ref": "406",
+      "slug": "clay-to-clay-and-dust-to-dust",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "407",
+      "slug": "dear-as-thou-wast-and-justly-dear",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "Thomas Dale"
+    },
+    {
+      "ref": "408",
+      "slug": "go-to-the-grave-in-all-thy-glorious-prime",
+      "metre": "10 10 10 10",
+      "tune": "ellers",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "410",
+      "slug": "calm-on-the-bosom-of-thy-god",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "Felicia Hemans"
+    },
+    {
+      "ref": "411",
+      "slug": "fare-thee-well-our-fondly-cherished",
+      "metre": "8 7 8 7",
+      "tune": "all-for-jesus",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "412",
+      "slug": "to-the-fathers-love-we-trust",
+      "metre": "7 7 7 7 7 7",
+      "tune": "spanish-hymn",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "413",
+      "slug": "in-the-broad-fields-of-heaven",
+      "metre": "7 6 7 6 7 6 7 6",
+      "tune": "angels-story",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "414",
+      "slug": "mighty-one-whose-name-is-holy",
+      "metre": "8 7 8 7 8 7 8 7",
+      "tune": "lux-eoi",
+      "author": "John Pierpont"
+    },
+    {
+      "ref": "417",
+      "slug": "where-for-a-thousand-miles",
+      "metre": "6 6 4 6 6 6 4",
+      "tune": "dort",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "418",
+      "slug": "westward-lord-the-world-alluring",
+      "metre": "8 7 8 7 8 7 8 7",
+      "tune": "lux-eoi",
+      "author": "Arthur Cleveland Coxe"
+    },
+    {
+      "ref": "422",
+      "slug": "to-god-be-glory-peace-on-earth",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "423",
+      "slug": "we-love-the-venerable-house",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Ralph Waldo Emerson"
+    },
+    {
+      "ref": "424",
+      "slug": "a-wondrous-star-our-pioneer",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "John Weiss"
+    },
+    {
+      "ref": "429",
+      "slug": "glory-to-god-whose-witness-train",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "435",
+      "slug": "o-thou-whose-presence-went-before",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "John Greenleaf Whittier"
+    },
+    {
+      "ref": "437",
+      "slug": "men-whose-boast-it-is-that-ye",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "martyn",
+      "author": "James Russell Lowell"
+    },
+    {
+      "ref": "439",
+      "slug": "ages-ages-have-departed",
+      "metre": "8 7 8 7 4 7",
+      "tune": "st-raphael",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "443",
+      "slug": "o-say-not-think-not-heavenly-notes",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "John Keble"
+    },
+    {
+      "ref": "445",
+      "slug": "see-israels-gentle-shepherd-stand",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "446",
+      "slug": "ye-joyous-ones-upon-whose-brow",
+      "metre": "8 6 8 6 8 6 8 6",
+      "tune": "materna",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "447",
+      "slug": "while-yet-the-youthful-spirit-bears",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Letitia Elizabeth Landon"
+    },
+    {
+      "ref": "448",
+      "slug": "great-god-and-wilt-thou-condescend",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "449",
+      "slug": "our-country-is-immanuels-ground",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Anna Laetitia Barbauld"
+    },
+    {
+      "ref": "450",
+      "slug": "there-is-a-world-we-have-not-seen",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "451",
+      "slug": "now-gird-your-patient-loins-again",
+      "metre": "8 6 8 6 8 6 8 6",
+      "tune": "all-saints-new",
+      "author": "William Croswell"
+    },
+    {
+      "ref": "452",
+      "slug": "jesus-while-he-dwelt-below",
+      "metre": "7 7 7 7 7 7",
+      "tune": "ratisbon-werner",
+      "author": "Robert Grant"
+    },
+    {
+      "ref": "453",
+      "slug": "the-saints-on-earth-and-those-above",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "459",
+      "slug": "beneath-thy-trees-to-day-we-met",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "John Weiss"
+    },
+    {
+      "ref": "462",
+      "slug": "sweet-is-the-light-of-sabbath-eve",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "James Edmeston"
+    },
+    {
+      "ref": "463",
+      "slug": "come-at-the-morning-hour",
+      "metre": "6 6 8 6",
+      "tune": "aylesbury",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "465",
+      "slug": "heralds-of-creation-cry",
+      "metre": "7 7 7 7",
+      "tune": "pleyels-hymn",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "468",
+      "slug": "praise-to-god-immortal-praise",
+      "metre": "7 7 7 7 7 7",
+      "tune": "ratisbon-werner",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "471",
+      "slug": "eternal-god-almighty-cause",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Simon Browne"
+    },
+    {
+      "ref": "474",
+      "slug": "the-winds-are-hushed-the-peaceful-moon",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "John Pierpont"
+    },
+    {
+      "ref": "475",
+      "slug": "o-thou-who-driest-the-mourners-tear",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "Thomas Moore"
+    },
+    {
+      "ref": "476",
+      "slug": "there-is-a-book-who-runs-may-read",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "John Keble"
+    },
+    {
+      "ref": "477",
+      "slug": "o-thou-the-primal-fount-of-life-and-peace",
+      "metre": "10 10 10 10",
+      "tune": "ellers",
+      "author": "John Sterling"
+    },
+    {
+      "ref": "481",
+      "slug": "earths-busy-sounds-and-ceaseless-din",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "482",
+      "slug": "o-thou-who-hast-thy-servants-taught",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Henry Alford"
+    },
+    {
+      "ref": "483",
+      "slug": "holy-spirit-source-of-gladness",
+      "metre": "8 7 8 7 8 7 8 7",
+      "tune": "rustington",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "484",
+      "slug": "we-bless-thee-for-this-sacred-day",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Caroline Gilman"
+    },
+    {
+      "ref": "486",
+      "slug": "o-thou-at-whose-divine-command",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Henry Alford"
+    },
+    {
+      "ref": "490",
+      "slug": "father-adored-in-worlds-above",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "492",
+      "slug": "thy-bounteous-hand-with-food-can-bless",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Reginald Heber"
+    },
+    {
+      "ref": "493",
+      "slug": "heavenly-father-to-whose-eye",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "Josiah Conder"
+    },
+    {
+      "ref": "499",
+      "slug": "all-ye-nations-praise-the-lord",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "501",
+      "slug": "father-supply-my-every-need",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "502",
+      "slug": "lead-us-with-thy-gentle-sway",
+      "metre": "7 7 7 7 7 7",
+      "tune": "spanish-hymn",
+      "author": "John Bowring"
+    },
+    {
+      "ref": "503",
+      "slug": "ere-to-the-world-again-we-go",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "504",
+      "slug": "lord-of-the-families-below",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "505",
+      "slug": "lord-subdue-our-selfish-will",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "508",
+      "slug": "now-from-the-altar-of-our-hearts",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "510",
+      "slug": "like-morning-when-her-early-breeze",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Thomas Moore"
+    },
+    {
+      "ref": "511",
+      "slug": "brother-will-you-slight-the-message",
+      "metre": "8 7 8 7 4 7",
+      "tune": "st-austin",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "514",
+      "slug": "father-divine-this-deadening-power-control",
+      "metre": "10 10 10 10",
+      "tune": "eventide",
+      "author": "Joseph Tuckerman"
+    },
+    {
+      "ref": "515",
+      "slug": "father-this-slumber-shake",
+      "metre": "6 6 8 6",
+      "tune": "franconia",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "516",
+      "slug": "thou-seest-my-feebleness",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "517",
+      "slug": "o-come-and-dwell-in-me",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "518",
+      "slug": "o-for-a-heart-to-praise-my-god",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "520",
+      "slug": "o-for-a-faith-that-will-not-shrink",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "521",
+      "slug": "one-prayer-i-have-all-prayers-in-one",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "522",
+      "slug": "speak-with-us-lord-thyself-reveal",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "526",
+      "slug": "that-might-of-faith-o-lord-bestow",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "527",
+      "slug": "father-of-might-my-bonds-i-feel",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "528",
+      "slug": "holy-father-thou-hast-taught-me",
+      "metre": "8 7 8 7 8 7 8 7",
+      "tune": "lux-eoi",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "529",
+      "slug": "wait-on-the-lord-ye-heirs-of-hope",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Philip Doddridge"
+    },
+    {
+      "ref": "530",
+      "slug": "god-of-my-life-whose-gracious-power",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "532",
+      "slug": "bear-on-my-soul-the-bitter-cross",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "535",
+      "slug": "cross-reproach-and-tribulation",
+      "metre": "8 7 8 7",
+      "tune": "omni-die",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "536",
+      "slug": "let-the-world-despise-and-leave-me",
+      "metre": "8 7 8 7 8 7 8 7",
+      "tune": "lux-eoi",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "537",
+      "slug": "eternal-and-immortal-king",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Philip Doddridge"
+    },
+    {
+      "ref": "539",
+      "slug": "father-we-look-up-to-thee",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "545",
+      "slug": "oh-god-that-madst-the-earth-and-sky",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "Reginald Heber"
+    },
+    {
+      "ref": "546",
+      "slug": "great-ruler-of-all-natures-frame",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Philip Doddridge"
+    },
+    {
+      "ref": "547",
+      "slug": "out-of-the-depths-of-woe",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "551",
+      "slug": "be-thou-o-god-by-night-by-day",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "554",
+      "slug": "on-the-dewy-breath-of-even",
+      "metre": "8 7 8 7",
+      "tune": "galilee-jude",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "555",
+      "slug": "while-the-stars-unnumbered-roll",
+      "metre": "7 7 7 7",
+      "tune": "st-bees",
+      "author": "Philip Doddridge"
+    },
+    {
+      "ref": "560",
+      "slug": "jesus-we-thy-promise-claim",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "messiah-herald",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "561",
+      "slug": "partners-of-a-glorious-hope",
+      "metre": "7 7 7 7",
+      "tune": "st-bees",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "563",
+      "slug": "we-follow-lord-where-thou-dost-lead",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "565",
+      "slug": "god-of-eternity-from-thee",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Philip Doddridge"
+    },
+    {
+      "ref": "566",
+      "slug": "bless-o-lord-each-opening-year",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "John Newton"
+    },
+    {
+      "ref": "571",
+      "slug": "when-the-parting-bosom-bleeds",
+      "metre": "7 7 7 7 7 7",
+      "tune": "ratisbon-werner",
+      "author": "Lydia Sigourney"
+    },
+    {
+      "ref": "572",
+      "slug": "lord-of-the-wide-extended-main",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "573",
+      "slug": "the-lord-our-god-is-full-of-might",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "Henry Kirke White"
+    },
+    {
+      "ref": "575",
+      "slug": "lord-lead-the-way-the-saviour-went",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "William Croswell"
+    },
+    {
+      "ref": "578",
+      "slug": "o-he-whom-jesus-loved-has-truly-spoken",
+      "metre": "11 10 11 10",
+      "tune": "henley",
+      "author": "John Greenleaf Whittier"
+    },
+    {
+      "ref": "581",
+      "slug": "lord-deliver-thou-canst-save",
+      "metre": "7 7 7 7",
+      "tune": "st-bees",
+      "author": "Eliza Lee Cabot Follen"
+    },
+    {
+      "ref": "584",
+      "slug": "come-kingdom-of-our-god",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "John Johns"
+    },
+    {
+      "ref": "585",
+      "slug": "the-glorious-universe-around",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "587",
+      "slug": "o-spirit-of-the-living-god",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "588",
+      "slug": "o-where-are-kings-and-empires-now",
+      "metre": "8 6 8 6 8 6 8 6",
+      "tune": "all-saints-new",
+      "author": "Arthur Cleveland Coxe"
+    },
+    {
+      "ref": "589",
+      "slug": "thy-servants-in-the-temple-watched",
+      "metre": "8 6 8 6 8 6 8 6",
+      "tune": "all-saints-new",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "590",
+      "slug": "now-let-our-voices-join",
+      "metre": "6 6 8 6",
+      "tune": "st-bride",
+      "author": "Philip Doddridge"
+    },
+    {
+      "ref": "595",
+      "slug": "we-wait-in-faith-in-prayer-we-wait",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "596",
+      "slug": "god-comes-with-succor-speedy",
+      "metre": "7 6 7 6 7 6 7 6",
+      "tune": "aurelia",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "598",
+      "slug": "faint-the-earth-and-parched-with-drought",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "messiah-herald",
+      "author": "Anonymous"
+    }
+  ],
+  "alreadyOurs": [
+    {
+      "ref": "49",
+      "first": "Holy, holy, holy Lord God Almighty!",
+      "page": "holy-holy-holy"
+    },
+    {
+      "ref": "51",
+      "first": "Praise the Lord! ye heavens adore Him!",
+      "page": "praise-the-lord-ye-heavens-adore-him"
+    },
+    {
+      "ref": "70",
+      "first": "Lord! dismiss us with Thy blessing,",
+      "page": "lord-dismiss-us-with-thy-blessing"
+    },
+    {
+      "ref": "105",
+      "first": "While shepherds watched their flocks by night,",
+      "page": "while-shepherds-watched-their-flocks"
+    },
+    {
+      "ref": "109",
+      "first": "Hark! the glad sound! the Saviour comes,",
+      "page": "hark-the-glad-sound"
+    },
+    {
+      "ref": "110",
+      "first": "Joy to the world! the Lord is come!",
+      "page": "joy-to-the-world"
+    },
+    {
+      "ref": "143",
+      "first": "Go to dark Gethsemane,",
+      "page": "go-to-dark-gethsemane"
+    },
+    {
+      "ref": "147",
+      "first": "My dear Redeemer, and my Lord,",
+      "page": "my-dear-redeemer-and-my-lord"
+    },
+    {
+      "ref": "153",
+      "first": "Bread of heaven, on thee we feed,",
+      "page": "bread-of-heaven-on-thee-we-feed"
+    },
+    {
+      "ref": "176",
+      "first": "Jesus shall reign where'er the sun",
+      "page": "jesus-shall-reign"
+    },
+    {
+      "ref": "180",
+      "first": "Glorious things of thee are spoken,",
+      "page": "glorious-things-of-thee-are-spoken"
+    },
+    {
+      "ref": "193",
+      "first": "Our blest Redeemer, ere he breathed",
+      "page": "our-blest-redeemer-ere-he-breathed"
+    },
+    {
+      "ref": "221",
+      "first": "My God! permit me not to be",
+      "page": "my-god-permit-me-not-to-be"
+    },
+    {
+      "ref": "239",
+      "first": "Nearer, my God, to Thee,",
+      "page": "nearer-my-god-to-thee"
+    },
+    {
+      "ref": "281",
+      "first": "Blest are the pure in heart,",
+      "page": "blest-are-the-pure-in-heart"
+    },
+    {
+      "ref": "454",
+      "first": "Not to the terrors of the Lord,",
+      "page": "not-to-the-terrors-of-the-lord"
+    },
+    {
+      "ref": "480",
+      "first": "Come, Thou almighty King!",
+      "page": "come-thou-almighty-king"
+    },
+    {
+      "ref": "541",
+      "first": "Awake, our souls, away, our fears;",
+      "page": "awake-our-souls-away-our-fears"
+    },
+    {
+      "ref": "562",
+      "first": "O sacred head, now wounded,",
+      "page": "o-sacred-head-now-wounded"
+    }
+  ],
+  "skipped": [
+    {
+      "ref": "2",
+      "first": "To prayer, to prayer! — for the morning breaks,",
+      "why": "no tune we hold for “P. M.” in 6-line verses"
+    },
+    {
+      "ref": "5",
+      "first": "Thirsting for a living spring,",
+      "why": "the book names no author"
+    },
+    {
+      "ref": "6",
+      "first": "Forth from the dark and stormy sky,",
+      "why": "no tune we hold for “L. M.” in 6-line verses"
+    },
+    {
+      "ref": "9",
+      "first": "Far from mortal cares retreating,",
+      "why": "an author we cannot name in full: “J. Taylor”"
+    },
+    {
+      "ref": "11",
+      "first": "Lord! what offering shall we bring,",
+      "why": "an author we cannot name in full: “J. Taylor”"
+    },
+    {
+      "ref": "15",
+      "first": "Suppliant, lo! Thy children bend,",
+      "why": "an author we cannot name in full: “Gray”"
+    },
+    {
+      "ref": "16",
+      "first": "Lord of the worlds above,",
+      "why": "no tune we hold for “H. M.” in 8-line verses"
+    },
+    {
+      "ref": "17",
+      "first": "Lord, before Thy presence come,",
+      "why": "an author we cannot name in full: “J. Taylor”"
+    },
+    {
+      "ref": "20",
+      "first": "Our God is a spirit, and they who aright",
+      "why": "no tune we hold for “P. M.” in 4-line verses"
+    },
+    {
+      "ref": "24",
+      "first": "Great God! the followers of Thy Son,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "25",
+      "first": "How shall we praise Thee, Lord of light!",
+      "why": "no tune we hold for “L. M.” in 8-line verses"
+    },
+    {
+      "ref": "26",
+      "first": "O Holy Father! 'mid the calm",
+      "why": "no tune we hold for “L. M.” in 8-line verses"
+    },
+    {
+      "ref": "27",
+      "first": "Teach us to pray!",
+      "why": "no tune we hold for “P. M.” in 4-line verses"
+    },
+    {
+      "ref": "31",
+      "first": "God of all grace, we come to Thee,",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "33",
+      "first": "Father, in Thy mysterious presence kneeling,",
+      "why": "an author we cannot name in full: “*”"
+    },
+    {
+      "ref": "38",
+      "first": "O Thou, who hast at Thy command",
+      "why": "an author we cannot name in full: “Mrs. Cotterill”"
+    },
+    {
+      "ref": "39",
+      "first": "O Father! lift our souls above,",
+      "why": "no tune we hold for “L. M.” in 6-line verses"
+    },
+    {
+      "ref": "40",
+      "first": "Father, who art on high!",
+      "why": "no tune we hold for “6 & 10s. M.” in 6-line verses"
+    },
+    {
+      "ref": "41",
+      "first": "Father in heaven, to whom our hearts",
+      "why": "an author we cannot name in full: “H. Ware, Jr”"
+    },
+    {
+      "ref": "44",
+      "first": "Supreme and universal Light!",
+      "why": "an author we cannot name in full: “H. Moore”"
+    },
+    {
+      "ref": "46",
+      "first": "Father, to us Thy children, humbly kneeling,",
+      "why": "its first verse cannot be sung as 11.10.11.10"
+    },
+    {
+      "ref": "47",
+      "first": "\"Lord, Thy glory fills the heaven;",
+      "why": "a translation (from Ancient Hymns) whose translator the book does not name"
+    },
+    {
+      "ref": "52",
+      "first": "Father of Spirits! humbly bent before Thee,",
+      "why": "no tune we hold for “P. M.” in 6-line verses"
+    },
+    {
+      "ref": "53",
+      "first": "Glory be to God on high,",
+      "why": "an author we cannot name in full: “J. Taylor”"
+    },
+    {
+      "ref": "55",
+      "first": "Blessed be Thy name forever,",
+      "why": "no tune we hold for “P. M.” in 8-line verses"
+    },
+    {
+      "ref": "57",
+      "why": "no verses"
+    },
+    {
+      "ref": "58",
+      "first": "Israel's Shepherd, guide us, feed us,",
+      "why": "an author we cannot name in full: “Bickersteth”"
+    },
+    {
+      "ref": "59",
+      "first": "As every day Thy mercy spares",
+      "why": "no tune we hold for “L. M.” in 6-line verses"
+    },
+    {
+      "ref": "61",
+      "why": "no verses"
+    },
+    {
+      "ref": "71",
+      "first": "Unchangeable, all-perfect Lord!",
+      "why": "an author we cannot name in full: “Lange”"
+    },
+    {
+      "ref": "72",
+      "first": "Mighty God! the first, the last!",
+      "why": "an author we cannot name in full: “M. Gaskell”"
+    },
+    {
+      "ref": "73",
+      "first": "God is love; His mercy brightens",
+      "why": "an author we cannot name in full: “M. Bowring”"
+    },
+    {
+      "ref": "74",
+      "first": "I cannot always trace the way",
+      "why": "no tune we hold for “P. M.” in 4-line verses"
+    },
+    {
+      "ref": "76",
+      "first": "No human eyes Thy face may see;",
+      "why": "an author we cannot name in full: “*”"
+    },
+    {
+      "ref": "79",
+      "first": "Father! Thy wonders do not singly stand,",
+      "why": "its first verse cannot be sung as 10.10.10.10"
+    },
+    {
+      "ref": "82",
+      "first": "They who seek the throne of grace",
+      "why": "only 12 of 16 lines sing as 7.7.7.7"
+    },
+    {
+      "ref": "83",
+      "first": "There's nothing bright, above, below,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "84",
+      "first": "Thou art, O God, the life and light",
+      "why": "no tune we hold for “L. M.” in 6-line verses"
+    },
+    {
+      "ref": "86",
+      "first": "My God! all nature owns Thy sway;",
+      "why": "no tune we hold for “L. M.” in 8-line verses"
+    },
+    {
+      "ref": "87",
+      "first": "God of the ocean, earth, and sky,",
+      "why": "an author we cannot name in full: “Wreford”"
+    },
+    {
+      "ref": "89",
+      "first": "Not only doth the voiceful day",
+      "why": "no tune we hold for “L. M.” in 8-line verses"
+    },
+    {
+      "ref": "93",
+      "first": "Open, Lord, mine inward ear,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "96",
+      "first": "As, down in the sunless retreats of the ocean,",
+      "why": "no tune we hold for “P. M.” in 6-line verses"
+    },
+    {
+      "ref": "102",
+      "first": "Watchman! tell us of the night,",
+      "why": "only 17 of 24 lines sing as 7.7.7.7.7.7.7.7"
+    },
+    {
+      "ref": "103",
+      "first": "A Voice from the desert comes awful and shrill;",
+      "why": "no tune we hold for “11s. M.” in 4-line verses"
+    },
+    {
+      "ref": "104",
+      "first": "Darkness o'er the world was brooding",
+      "why": "its first verse cannot be sung as 8.7.8.7"
+    },
+    {
+      "ref": "106",
+      "first": "Calm on the listening ear of night",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "107",
+      "first": "O Lovely Voices of the sky,",
+      "why": "no tune we hold for “P. M.” in 8-line verses"
+    },
+    {
+      "ref": "111",
+      "first": "Sons of men, behold from far,",
+      "why": "an author we cannot name in full: “M.                    C. Wesley”"
+    },
+    {
+      "ref": "112",
+      "first": "Behold, the Prince of Peace,",
+      "why": "an author we cannot name in full: “Needham”"
+    },
+    {
+      "ref": "113",
+      "first": "As oft, with worn and weary feet,",
+      "why": "no tune we hold for “L. M.” in 6-line verses"
+    },
+    {
+      "ref": "114",
+      "first": "Holy Son of God most high!",
+      "why": "its first verse cannot be sung as 7.7.7.7.7.7"
+    },
+    {
+      "ref": "118",
+      "first": "He was there alone, when even",
+      "why": "no tune we hold for “P. M.” in 4-line verses"
+    },
+    {
+      "ref": "119",
+      "first": "How sweetly flowed the gospel's sound",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "122",
+      "first": "O, not to crush with abject fear",
+      "why": "its first verse cannot be sung as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "123",
+      "first": "\"See how he loved!\" exclaimed the Jews,",
+      "why": "an author we cannot name in full: “Bache”"
+    },
+    {
+      "ref": "125",
+      "first": "He lived as none but he has lived,",
+      "why": "an author we cannot name in full: “Brettell”"
+    },
+    {
+      "ref": "126",
+      "first": "Birds have their quiet nest,",
+      "why": "no tune we hold for “P. M.” in 4-line verses"
+    },
+    {
+      "ref": "127",
+      "first": "On the dark-wave of Galilee",
+      "why": "an author we cannot name in full: “Russell”"
+    },
+    {
+      "ref": "132",
+      "first": "He knelt; the Saviour knelt and prayed,",
+      "why": "no tune we hold for “C. H. M.” in 6-line verses"
+    },
+    {
+      "ref": "133",
+      "first": "Burden of shame and woe!",
+      "why": "no tune we hold for “6 & 10s. M.” in 6-line verses"
+    },
+    {
+      "ref": "134",
+      "first": "In the Saviour's hour of death,",
+      "why": "its first verse cannot be sung as 7.7.7.7.7.7.7.7"
+    },
+    {
+      "ref": "135",
+      "first": "Jews were wrought to cruel madness,",
+      "why": "no tune we hold for “P. M.” in 3-line verses"
+    },
+    {
+      "ref": "137",
+      "first": "Lift your glad voices in triumph on high,",
+      "why": "no tune we hold for “P. M.” in 8-line verses"
+    },
+    {
+      "ref": "138",
+      "first": "On earth was darkness spread,",
+      "why": "no tune we hold for “6 & 4s. M.” in 4-line verses"
+    },
+    {
+      "ref": "140",
+      "first": "O Thou, who in the garden's shade",
+      "why": "no tune we hold for “P. M.” in 4-line verses"
+    },
+    {
+      "ref": "141",
+      "first": "\"It is finished!\" Man of sorrows!",
+      "why": "an author we cannot name in full: “F. H. Hedge”"
+    },
+    {
+      "ref": "142",
+      "first": "It was no path of flowers,",
+      "why": "no tune we hold for “6 & 10s. M.” in 6-line verses"
+    },
+    {
+      "ref": "150",
+      "first": "O, What though our feet may not tread where Christ trod,",
+      "why": "no tune we hold for “11s. M.” in 4-line verses"
+    },
+    {
+      "ref": "152",
+      "first": "Not in this simple rite alone",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "162",
+      "first": "Come, ye disconsolate, where'er ye languish;",
+      "why": "no tune we hold for “P. M.” in 4-line verses"
+    },
+    {
+      "ref": "164",
+      "first": "The peace which God bestows",
+      "why": "no tune we hold for “6 & 10s. M.” in 6-line verses"
+    },
+    {
+      "ref": "167",
+      "first": "For all Thy saints, O God,",
+      "why": "a translation (from Ancient Hymns) whose translator the book does not name"
+    },
+    {
+      "ref": "169",
+      "first": "Mark the soft falling snow",
+      "why": "no tune we hold for “H. M.” in 8-line verses"
+    },
+    {
+      "ref": "177",
+      "first": "Pour, blessed gospel, glorious news for man!",
+      "why": "an author we cannot name in full: “Ashworth”"
+    },
+    {
+      "ref": "183",
+      "first": "Was it in vain that Jesus prayed",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "187",
+      "first": "The Past is dark with sin and shame,",
+      "why": "an author we cannot name in full: “*”"
+    },
+    {
+      "ref": "188",
+      "first": "Hark! through the waking earth,",
+      "why": "no tune we hold for “6s. M.” in 4-line verses"
+    },
+    {
+      "ref": "190",
+      "first": "Oppression shall not always reign;",
+      "why": "no tune we hold for “P. M.” in 8-line verses"
+    },
+    {
+      "ref": "194",
+      "first": "The Spirit in our hearts",
+      "why": "its first verse cannot be sung as 6.6.8.6"
+    },
+    {
+      "ref": "195",
+      "first": "Brother, hast thou wandered far",
+      "why": "its first verse cannot be sung as 7.7.7.7"
+    },
+    {
+      "ref": "196",
+      "first": "Turn, child of doubt, estranged from God!",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "199",
+      "first": "Acquaint thee, O spirit, acquaint thee with God,",
+      "why": "no tune we hold for “11s. M.” in 4-line verses"
+    },
+    {
+      "ref": "201",
+      "first": "God of mercy! God of love!",
+      "why": "an author we cannot name in full: “John Taylor”"
+    },
+    {
+      "ref": "205",
+      "first": "To Thine eternal arms, O God,",
+      "why": "an author we cannot name in full: “*”"
+    },
+    {
+      "ref": "207",
+      "first": "Lord! I believe; Thy power I own",
+      "why": "an author we cannot name in full: “Wreford”"
+    },
+    {
+      "ref": "208",
+      "first": "O, from these visions dark and drear,",
+      "why": "an author we cannot name in full: “Bartrum”"
+    },
+    {
+      "ref": "210",
+      "first": "Why, thou never-setting Light,",
+      "why": "an author we cannot name in full: “Russian”"
+    },
+    {
+      "ref": "211",
+      "first": "O Thou, from whom all goodness flows,",
+      "why": "an author we cannot name in full: “Humphries”"
+    },
+    {
+      "ref": "212",
+      "first": "When, with error bewildered, our path becomes dreary,",
+      "why": "no tune we hold for “P. M.” in 4-line verses"
+    },
+    {
+      "ref": "216",
+      "first": "Hasten, Lord, to my release;",
+      "why": "its first verse cannot be sung as 7.7.7.7"
+    },
+    {
+      "ref": "217",
+      "first": "Almighty Father! Thou hast many a blessing",
+      "why": "its first verse cannot be sung as 11.10.11.10"
+    },
+    {
+      "ref": "219",
+      "first": "Thou hidden love of God, whose height,",
+      "why": "no tune we hold for “L. M.” in 6-line verses"
+    },
+    {
+      "ref": "220",
+      "first": "Send kindly light amid the encircling gloom,",
+      "why": "no tune we hold for “P. M.” in 6-line verses"
+    },
+    {
+      "ref": "222",
+      "first": "O, Draw me, Father, after Thee!",
+      "why": "no tune we hold for “L. M.” in 6-line verses"
+    },
+    {
+      "ref": "223",
+      "first": "I Want the spirit of power within,",
+      "why": "no tune we hold for “L. M.” in 6-line verses"
+    },
+    {
+      "ref": "225",
+      "first": "My God, my strength, my hope,",
+      "why": "no tune we hold for “S. M.” in 8-line verses"
+    },
+    {
+      "ref": "230",
+      "first": "O Lord! how happy should we be,",
+      "why": "no tune we hold for “C. P. M.” in 6-line verses"
+    },
+    {
+      "ref": "233",
+      "first": "O Love, how cheering is Thy ray!",
+      "why": "no tune we hold for “L. M.” in 6-line verses"
+    },
+    {
+      "ref": "236",
+      "first": "I thirst! — O, grant the waters pure",
+      "why": "an author we cannot name in full: “Miss Bremer”"
+    },
+    {
+      "ref": "237",
+      "first": "Wilt Thou not visit me?",
+      "why": "no tune we hold for “P. M.” in 4-line verses"
+    },
+    {
+      "ref": "238",
+      "first": "Rise, my soul, and stretch thy wings,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "240",
+      "first": "The fountain in its source",
+      "why": "an author we cannot name in full: “Mme. Guion”"
+    },
+    {
+      "ref": "242",
+      "first": "O Lord, Thy heavenly grace impart,",
+      "why": "an author we cannot name in full: “Oberlin”"
+    },
+    {
+      "ref": "243",
+      "first": "O God, to Thee, who first hast given",
+      "why": "an author we cannot name in full: “Jane Roscoe”"
+    },
+    {
+      "ref": "244",
+      "first": "I am free! I am free! I have broken away,",
+      "why": "no tune we hold for “12s. M.” in 4-line verses"
+    },
+    {
+      "ref": "247",
+      "first": "The Lord is my Shepherd, no want shall I know;",
+      "why": "no tune we hold for “11s. M.” in 4-line verses"
+    },
+    {
+      "ref": "249",
+      "first": "None loves me, Father, with Thy love,",
+      "why": "a translation (from German) whose translator the book does not name"
+    },
+    {
+      "ref": "251",
+      "first": "We all, O Father, all are Thine;",
+      "why": "an author we cannot name in full: “Dyer”"
+    },
+    {
+      "ref": "252",
+      "first": "O let my trembling soul be still,",
+      "why": "no tune we hold for “L. M.” in 6-line verses"
+    },
+    {
+      "ref": "253",
+      "first": "See the Lord, thy keeper, stand,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "256",
+      "first": "Give to the winds thy fears!",
+      "why": "its first verse cannot be sung as 6.6.8.6"
+    },
+    {
+      "ref": "257",
+      "first": "Rejoice in God alway;",
+      "why": "its first verse cannot be sung as 6.6.8.6"
+    },
+    {
+      "ref": "261",
+      "first": "Through all the various shifting scene",
+      "why": "an author we cannot name in full: “Collett”"
+    },
+    {
+      "ref": "263",
+      "first": "My God, my Father, while I stray",
+      "why": "no tune we hold for “P. M.” in 4-line verses"
+    },
+    {
+      "ref": "264",
+      "first": "He sendeth sun, He sendeth shower;",
+      "why": "no tune we hold for “L. M.” in 6-line verses"
+    },
+    {
+      "ref": "265",
+      "first": "Thy will be done! In devious way",
+      "why": "no tune we hold for “P. M.” in 4-line verses"
+    },
+    {
+      "ref": "267",
+      "first": "Lo, the lilies of the field!",
+      "why": "only 11 of 16 lines sing as 7.7.7.7.7.7.7.7"
+    },
+    {
+      "ref": "269",
+      "first": "Father! glorify Thy name!",
+      "why": "no tune we hold for “7s. M.” in 5-line verses"
+    },
+    {
+      "ref": "270",
+      "first": "Leader of Israel's host, and Guide",
+      "why": "no tune we hold for “L. M.” in 6-line verses"
+    },
+    {
+      "ref": "276",
+      "first": "Thy will be done! I will not fear",
+      "why": "an author we cannot name in full: “Jane Roscoe”"
+    },
+    {
+      "ref": "278",
+      "first": "Shall we grow weary in our watch,",
+      "why": "no tune we hold for “P. M.” in 4-line verses"
+    },
+    {
+      "ref": "283",
+      "first": "O, who shall say he knows the folds",
+      "why": "an author we cannot name in full: “Jane Roscoe”"
+    },
+    {
+      "ref": "284",
+      "first": "Think gently of the erring one!",
+      "why": "an author we cannot name in full: “Miss Fletcher”"
+    },
+    {
+      "ref": "288",
+      "first": "All-seeing God! 'tis Thine to know",
+      "why": "an author we cannot name in full: “Scott”"
+    },
+    {
+      "ref": "289",
+      "first": "'Tis not the gift, but 'tis the spirit",
+      "why": "no tune we hold for “9 & 4s. M.” in 4-line verses"
+    },
+    {
+      "ref": "290",
+      "first": "O, not alone on the mount of prayer",
+      "why": "no tune we hold for “P. M.” in 4-line verses"
+    },
+    {
+      "ref": "293",
+      "first": "Who is thy neighbor? he whom thou",
+      "why": "an author we cannot name in full: “Peabody”"
+    },
+    {
+      "ref": "296",
+      "first": "This world is not a fleeting show,",
+      "why": "no tune we hold for “P. M.” in 5-line verses"
+    },
+    {
+      "ref": "297",
+      "first": "O, be not faithless! with the morn",
+      "why": "no tune we hold for “C. H. M.” in 6-line verses"
+    },
+    {
+      "ref": "298",
+      "first": "Love on! love on! but not the things that own",
+      "why": "an author we cannot name in full: “Mrs. Case”"
+    },
+    {
+      "ref": "299",
+      "first": "O, still trust on, if in the heart",
+      "why": "no tune we hold for “L. M.” in 6-line verses"
+    },
+    {
+      "ref": "301",
+      "first": "Hast thou, 'midst life's empty noises,",
+      "why": "no tune we hold for “P. M.” in 4-line verses"
+    },
+    {
+      "ref": "305",
+      "first": "The uplifted eye and bended knee",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "308",
+      "first": "O'er the mount and through the moor",
+      "why": "an author we cannot name in full: “Bulwer”"
+    },
+    {
+      "ref": "310",
+      "first": "Tell me not, in mournful numbers,",
+      "why": "an author we cannot name in full: “Longfellow”"
+    },
+    {
+      "ref": "313",
+      "first": "Onward, Christian, though the region",
+      "why": "an author we cannot name in full: “*”"
+    },
+    {
+      "ref": "317",
+      "first": "Breast the wave, Christian! when it is strongest;",
+      "why": "an author we cannot name in full: “Staughton”"
+    },
+    {
+      "ref": "320",
+      "first": "Cheek grow pale, but heart be vigorous!",
+      "why": "an author we cannot name in full: “Miss Bremer”"
+    },
+    {
+      "ref": "321",
+      "first": "Go, suffering pilgrim of the earth,",
+      "why": "an author we cannot name in full: “Roscoe”"
+    },
+    {
+      "ref": "322",
+      "first": "Faint not, poor traveller, though the way",
+      "why": "only 13 of 20 lines sing as 8.8.8.8"
+    },
+    {
+      "ref": "325",
+      "first": "How little of ourselves we know,",
+      "why": "an author we cannot name in full: “Morpeth”"
+    },
+    {
+      "ref": "328",
+      "first": "The darkened sky, how thick it lowers!",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "337",
+      "first": "My Father, when around me spread",
+      "why": "an author we cannot name in full: “Jane Roscoe”"
+    },
+    {
+      "ref": "341",
+      "first": "Father! who in the olive shade,",
+      "why": "no tune we hold for “P. M.” in 4-line verses"
+    },
+    {
+      "ref": "342",
+      "first": "With silence only as their benediction,",
+      "why": "no tune we hold for “11 & 4s. M.” in 4-line verses"
+    },
+    {
+      "ref": "343",
+      "first": "O, not when the death-prayer is said,",
+      "why": "an author we cannot name in full: “Wilson”"
+    },
+    {
+      "ref": "344",
+      "first": "Lowly and solemn be",
+      "why": "no tune we hold for “P. M.” in 6-line verses"
+    },
+    {
+      "ref": "345",
+      "first": "Thanks, thanks unto God! who in mercy hath spoken",
+      "why": "no tune we hold for “12 & 11s. M.” in 4-line verses"
+    },
+    {
+      "ref": "347",
+      "first": "The mourners came, at break of day,",
+      "why": "no tune we hold for “L. M.” in 6-line verses"
+    },
+    {
+      "ref": "348",
+      "first": "Blessed, blessed are the dead",
+      "why": "no tune we hold for “7 & 5s. M.” in 4-line verses"
+    },
+    {
+      "ref": "354",
+      "first": "The spirits of the loved and the departed",
+      "why": "no tune we hold for “P. M.” in 6-line verses"
+    },
+    {
+      "ref": "355",
+      "first": "How dear is the thought, that the angels of God",
+      "why": "no tune we hold for “11s. M.” in 4-line verses"
+    },
+    {
+      "ref": "358",
+      "first": "Brother, the angels say,",
+      "why": "no tune we hold for “P. M.” in 8-line verses"
+    },
+    {
+      "ref": "362",
+      "first": "Sweet morn! from countless cups of gold,",
+      "why": "no tune we hold for “P. M.” in 4-line verses"
+    },
+    {
+      "ref": "365",
+      "first": "Now that the sun is beaming bright,",
+      "why": "an author we cannot name in full: “St. Ambrose”"
+    },
+    {
+      "ref": "367",
+      "why": "no verses"
+    },
+    {
+      "ref": "368",
+      "first": "Source of light and life divine!",
+      "why": "an author we cannot name in full: “St. Gregory”"
+    },
+    {
+      "ref": "369",
+      "first": "Up to the throne of God is borne",
+      "why": "an author we cannot name in full: “Wordsworth”"
+    },
+    {
+      "ref": "370",
+      "first": "Fading, still fading, the last beam is shining;",
+      "why": "no tune we hold for “P. M.” in 7-line verses"
+    },
+    {
+      "ref": "376",
+      "first": "When from the Jordan's gleaming wave",
+      "why": "an author we cannot name in full: “*”"
+    },
+    {
+      "ref": "382",
+      "first": "Where ancient forests widely spread,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "384",
+      "first": "O God! Thy children, gathered here,",
+      "why": "an author we cannot name in full: “*”"
+    },
+    {
+      "ref": "385",
+      "first": "Go, preach the gospel in my name,",
+      "why": "an author we cannot name in full: “*”"
+    },
+    {
+      "ref": "386",
+      "first": "Thy servant's sandals, Lord, are wet",
+      "why": "an author we cannot name in full: “*”"
+    },
+    {
+      "ref": "388",
+      "first": "O Thou, whose power stupendous",
+      "why": "an author we cannot name in full: “Italian”"
+    },
+    {
+      "ref": "389",
+      "first": "Joy! joy! a year is born;",
+      "why": "no tune we hold for “6s. M.” in 8-line verses"
+    },
+    {
+      "ref": "391",
+      "first": "Praise and thanks and cheerful love",
+      "why": "its first verse cannot be sung as 7.7.7.7.7.7"
+    },
+    {
+      "ref": "392",
+      "first": "There cometh o'er the spirit,",
+      "why": "an author we cannot name in full: “W. V”"
+    },
+    {
+      "ref": "394",
+      "first": "How glad the tone when summer's sun",
+      "why": "an author we cannot name in full: “J. Richardson”"
+    },
+    {
+      "ref": "397",
+      "first": "House of our God, with cheerful anthems ring,",
+      "why": "no tune we hold for “10 & 11s. M.” in 6-line verses"
+    },
+    {
+      "ref": "402",
+      "first": "Like shadows gliding o'er the plain,",
+      "why": "an author we cannot name in full: “John Taylor”"
+    },
+    {
+      "ref": "403",
+      "first": "Brother, thou art gone before us,",
+      "why": "no tune we hold for “P. M.” in 8-line verses"
+    },
+    {
+      "ref": "405",
+      "first": "Brother, though from yonder sky",
+      "why": "an author we cannot name in full: “J. H. Bancroft”"
+    },
+    {
+      "ref": "409",
+      "first": "Thou art gone to the grave; — but we will not deplore thee,",
+      "why": "no tune we hold for “12 & 11s. M.” in 4-line verses"
+    },
+    {
+      "ref": "415",
+      "first": "Lord, from Thy blessed throne,",
+      "why": "an author we cannot name in full: “Nicoll”"
+    },
+    {
+      "ref": "416",
+      "first": "From Greenland's icy mountains,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "419",
+      "first": "Not with the flashing steel,",
+      "why": "an author we cannot name in full: “E. Davis”"
+    },
+    {
+      "ref": "420",
+      "first": "Lord, once our faith in man no fear could move;",
+      "why": "an author we cannot name in full: “*”"
+    },
+    {
+      "ref": "421",
+      "first": "Down the dark future, through long generations,",
+      "why": "an author we cannot name in full: “Longfellow”"
+    },
+    {
+      "ref": "425",
+      "first": "Thou Lord of Hosts, whose guiding hand",
+      "why": "an author we cannot name in full: “*”"
+    },
+    {
+      "ref": "426",
+      "first": "An offering at the shrine of power",
+      "why": "an author we cannot name in full: “Nicoll”"
+    },
+    {
+      "ref": "427",
+      "first": "The kings of old have shrine and tomb",
+      "why": "no tune we hold for “L. M.” in 6-line verses"
+    },
+    {
+      "ref": "428",
+      "first": "Flung to the heedless winds,",
+      "why": "an author we cannot name in full: “Luther”"
+    },
+    {
+      "ref": "430",
+      "first": "Heave, mighty ocean, heave!",
+      "why": "an author we cannot name in full: “Graham”"
+    },
+    {
+      "ref": "431",
+      "first": "Launch thy bark, mariner!",
+      "why": "no tune we hold for “P. M.” in 8-line verses"
+    },
+    {
+      "ref": "432",
+      "first": "Many a power within earth's bosom,",
+      "why": "its first verse cannot be sung as 8.7.8.7"
+    },
+    {
+      "ref": "433",
+      "first": "In pleasant lands have fallen the lines",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "434",
+      "first": "From foes that would our land devour;",
+      "why": "only 6 of 8 lines sing as 8.6.8.6"
+    },
+    {
+      "ref": "436",
+      "first": "The land our fathers left to us",
+      "why": "an author we cannot name in full: “*”"
+    },
+    {
+      "ref": "438",
+      "first": "Lord, when Thine ancient people cried,",
+      "why": "an author we cannot name in full: “Caroline Sewall”"
+    },
+    {
+      "ref": "440",
+      "first": "Climb we the mountain afar,",
+      "why": "no tune we hold for “P. M.” in 8-line verses"
+    },
+    {
+      "ref": "441",
+      "first": "O Thou, at whose rebuke, the grave",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "442",
+      "first": "What precept, Jesus, is like thine, —",
+      "why": "an author we cannot name in full: “Mrs. Livermore”"
+    },
+    {
+      "ref": "444",
+      "first": "By cool Siloam's shady rill",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "455",
+      "first": "By earth hemmed in, by earth oppressed,",
+      "why": "no tune we hold for “P. M.” in 4-line verses"
+    },
+    {
+      "ref": "456",
+      "first": "Grows dark thy path before thee?",
+      "why": "no tune we hold for “7 & 6s. M.” in 4-line verses"
+    },
+    {
+      "ref": "457",
+      "first": "When thirst for power or for gold",
+      "why": "a translation (from German) whose translator the book does not name"
+    },
+    {
+      "ref": "458",
+      "first": "The light pours down from heaven,",
+      "why": "no tune we hold for “7 & 6s. M.” in 4-line verses"
+    },
+    {
+      "ref": "460",
+      "first": "Our Father! we thank Thee for sleep,",
+      "why": "no tune we hold for “P. M.” in 6-line verses"
+    },
+    {
+      "ref": "461",
+      "first": "O'er silent field and lonely lawn",
+      "why": "an author we cannot name in full: “Goethe”"
+    },
+    {
+      "ref": "464",
+      "first": "Approach not the altar with gloom in thy soul,",
+      "why": "no tune we hold for “11s. M.” in 4-line verses"
+    },
+    {
+      "ref": "466",
+      "first": "God is in His holy temple:",
+      "why": "its first verse cannot be sung as 8.7.8.7.8.7.8.7"
+    },
+    {
+      "ref": "467",
+      "first": "O Thou whose power o'er moving worlds presides,",
+      "why": "an author we cannot name in full: “Dr. Johnson”"
+    },
+    {
+      "ref": "469",
+      "first": "Lo, my Shepherd's hand divine!",
+      "why": "its first verse cannot be sung as 7.7.7.7.7.7"
+    },
+    {
+      "ref": "470",
+      "first": "Father, whate'er of earthly bliss",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "472",
+      "first": "The Lord descended from above,",
+      "why": "an author we cannot name in full: “Sternhold”"
+    },
+    {
+      "ref": "473",
+      "first": "From Zion's holy hill there rose",
+      "why": "an author we cannot name in full: “J. Richardson”"
+    },
+    {
+      "ref": "478",
+      "first": "The breaking waves dashed high",
+      "why": "no tune we hold for “P. M.” in 8-line verses"
+    },
+    {
+      "ref": "479",
+      "first": "Of all the thoughts of God, that are",
+      "why": "no tune we hold for “L. P. M.” in 6-line verses"
+    },
+    {
+      "ref": "485",
+      "first": "Thou givest Thy Sabbath, Lord; the din is stilled",
+      "why": "no tune we hold for “10 & 6s. M.” in 4-line verses"
+    },
+    {
+      "ref": "487",
+      "first": "Our Father God! not face to face",
+      "why": "no tune we hold for “L. M.” in 8-line verses"
+    },
+    {
+      "ref": "488",
+      "first": "Hear, Father, hear our prayer!",
+      "why": "no tune we hold for “P. M.” in 5-line verses"
+    },
+    {
+      "ref": "489",
+      "first": "From the recesses of a lowly spirit,",
+      "why": "no tune we hold for “P. M.” in 4-line verses"
+    },
+    {
+      "ref": "491",
+      "first": "Holy and reverend is the name",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "494",
+      "why": "no verses"
+    },
+    {
+      "ref": "495",
+      "first": "All, from the sun's uprise",
+      "why": "no tune we hold for “H. M.” in 8-line verses"
+    },
+    {
+      "ref": "496",
+      "first": "O, give thanks to Him who made",
+      "why": "its first verse cannot be sung as 7.7.7.7.7.7"
+    },
+    {
+      "ref": "497",
+      "first": "Meet and right it is to sing,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "498",
+      "first": "Hallelujah! best and sweetest",
+      "why": "a translation (from Breviary) whose translator the book does not name"
+    },
+    {
+      "ref": "500",
+      "why": "no verses"
+    },
+    {
+      "ref": "506",
+      "first": "It is the hour of prayer:",
+      "why": "no tune we hold for “S. M.” in 8-line verses"
+    },
+    {
+      "ref": "507",
+      "first": "For mercies past we praise Thee, Lord,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "509",
+      "first": "Father, we bless the gentle care",
+      "why": "no tune we hold for “L. M.” in 8-line verses"
+    },
+    {
+      "ref": "512",
+      "first": "O Thou, who all things dost control,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "513",
+      "first": "O Thou, in whom the weary find",
+      "why": "no tune we hold for “L. M.” in 6-line verses"
+    },
+    {
+      "ref": "519",
+      "first": "Come to me, thoughts of heaven!",
+      "why": "no tune we hold for “S. M.” in 8-line verses"
+    },
+    {
+      "ref": "523",
+      "first": "Father divine, our wants relieve",
+      "why": "an author we cannot name in full: “Wesley”"
+    },
+    {
+      "ref": "524",
+      "first": "O almighty God of love!",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "525",
+      "first": "We pray for truth and peace;",
+      "why": "an author we cannot name in full: “*”"
+    },
+    {
+      "ref": "531",
+      "first": "My God! in life's most doubtful hour,",
+      "why": "an author we cannot name in full: “*”"
+    },
+    {
+      "ref": "533",
+      "first": "We will not weep; for God is standing by us,",
+      "why": "an author we cannot name in full: “*”"
+    },
+    {
+      "ref": "534",
+      "first": "Call the Lord thy sure salvation,",
+      "why": "its first verse cannot be sung as 8.7.8.7"
+    },
+    {
+      "ref": "538",
+      "first": "Supreme disposer of the heart!",
+      "why": "a translation (from Breviary) whose translator the book does not name"
+    },
+    {
+      "ref": "540",
+      "first": "Sow in the morn thy seed,",
+      "why": "no tune we hold for “S. M.” in 8-line verses"
+    },
+    {
+      "ref": "542",
+      "first": "Followers of Christ! arise,",
+      "why": "its first verse cannot be sung as 6.6.8.6"
+    },
+    {
+      "ref": "543",
+      "first": "My soul, be on thy guard;",
+      "why": "an author we cannot name in full: “Heath”"
+    },
+    {
+      "ref": "544",
+      "first": "Every bird that upward springs",
+      "why": "an author we cannot name in full: “Neale”"
+    },
+    {
+      "ref": "548",
+      "first": "In time of tribulation,",
+      "why": "no tune we hold for “7 & 6s. M.” in 4-line verses"
+    },
+    {
+      "ref": "549",
+      "first": "Yea, I will extol Thee,",
+      "why": "no tune we hold for “6 & 5s. M.” in 4-line verses"
+    },
+    {
+      "ref": "550",
+      "first": "Behold, night's shadows fade,",
+      "why": "a translation (from Breviary) whose translator the book does not name"
+    },
+    {
+      "ref": "552",
+      "first": "The daylight is fading o'er earth and o'er ocean,",
+      "why": "no tune we hold for “12 & 11s. M.” in 4-line verses"
+    },
+    {
+      "ref": "553",
+      "first": "Father supreme! Thou high and holy One,",
+      "why": "no tune we hold for “10 & 4s. M.” in 4-line verses"
+    },
+    {
+      "ref": "556",
+      "first": "Be near us, O Father! through night's silent hour;",
+      "why": "a translation (from Breviary) whose translator the book does not name"
+    },
+    {
+      "ref": "557",
+      "first": "Lord of the world, who hast preserved",
+      "why": "a translation (from Breviary) whose translator the book does not name"
+    },
+    {
+      "ref": "558",
+      "first": "Creator of all! through whose all-seeing might",
+      "why": "a translation (from Breviary) whose translator the book does not name"
+    },
+    {
+      "ref": "559",
+      "first": "Throughout the hours of darkness dim,",
+      "why": "a translation (from Breviary) whose translator the book does not name"
+    },
+    {
+      "ref": "564",
+      "first": "Beneath the shadow of the cross,",
+      "why": "an author we cannot name in full: “*”"
+    },
+    {
+      "ref": "567",
+      "first": "Father of mercies! God of peace!",
+      "why": "no tune we hold for “L. M.” in 6-line verses"
+    },
+    {
+      "ref": "568",
+      "first": "When in silence, o'er the deep,",
+      "why": "an author we cannot name in full: “Mary W. Hale”"
+    },
+    {
+      "ref": "569",
+      "first": "Christ to the young man said: \"Yet one thing more,",
+      "why": "an author we cannot name in full: “Longfellow”"
+    },
+    {
+      "ref": "570",
+      "first": "Lord! whom winds and seas obey,",
+      "why": "its first verse cannot be sung as 7.7.7.7"
+    },
+    {
+      "ref": "574",
+      "first": "When long the soul had slept in chains",
+      "why": "no tune we hold for “L. M.” in 8-line verses"
+    },
+    {
+      "ref": "576",
+      "first": "Now, host with host assembling,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "577",
+      "first": "Slavery and death the cup contains;",
+      "why": "an author we cannot name in full: “Sargent”"
+    },
+    {
+      "ref": "579",
+      "first": "God's angels! not only on high do they sing,",
+      "why": "no tune we hold for “11s. M.” in 4-line verses"
+    },
+    {
+      "ref": "580",
+      "first": "While sounds of war are heard around,",
+      "why": "an author we cannot name in full: “Aikin”"
+    },
+    {
+      "ref": "582",
+      "first": "May freedom speed onward, wherever the blood",
+      "why": "no tune we hold for “12s. M.” in 4-line verses"
+    },
+    {
+      "ref": "583",
+      "first": "Daughter of Zion, awake from thy sadness!",
+      "why": "no tune we hold for “P.M.” in 4-line verses"
+    },
+    {
+      "ref": "586",
+      "first": "Nature hath seasons of repose;",
+      "why": "no tune we hold for “P. M.” in 4-line verses"
+    },
+    {
+      "ref": "591",
+      "first": "Onward speed thy conquering flight,",
+      "why": "no tune we hold for “7 & 5s. M.” in 8-line verses"
+    },
+    {
+      "ref": "592",
+      "first": "God of the earnest heart,",
+      "why": "an author we cannot name in full: “*”"
+    },
+    {
+      "ref": "593",
+      "first": "Prisoners of hope! be strong, be bold;",
+      "why": "no tune we hold for “L. M.” in 6-line verses"
+    },
+    {
+      "ref": "594",
+      "first": "Almighty Spirit, now behold",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "597",
+      "first": "Sing, ye redeemed of the Lord,",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "599",
+      "first": "Spirit of peace and love and power,",
+      "why": "an author we cannot name in full: “J. Wesley”"
+    },
+    {
+      "ref": "600",
+      "first": "Gone is the hollow, murky night,",
+      "why": "a translation (from Breviary) whose translator the book does not name"
+    }
+  ],
+  "counts": {
+    "hymns": 600,
+    "written": 314,
+    "alreadyOurs": 19,
+    "skipped": 267,
+    "removed": 0
+  }
+}

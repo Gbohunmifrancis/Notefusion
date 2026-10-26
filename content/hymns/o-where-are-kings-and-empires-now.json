@@ -1,0 +1,55 @@
+{
+  "title": "O Where Are Kings and Empires Now",
+  "tune": "all-saints-new",
+  "text": [
+    {
+      "name": "Arthur Cleveland Coxe",
+      "born": 1818,
+      "died": 1896,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "O Where Are Kings and Empires Now in Tonic Solfa to ALL SAINTS, NEW, doh is Bb: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Arthur Cleveland Coxe wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 588, “The Church Everlasting”.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to ALL SAINTS, NEW; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "O where are kings and em-pires now Of old that went and came? But Ho-ly Church is pray-ing yet, A thou-sand years the same. Mark ye her ho-ly bat-tle-ments, And her foun-da-tions strong; And hear with-in, her sol-emn voice, And her un-end-ing song.",
+  "verses": [
+    {
+      "lines": [
+        "O where are kings and empires now",
+        "Of old that went and came?",
+        "But Holy Church is praying yet,",
+        "A thousand years the same.",
+        "Mark ye her holy battlements,",
+        "And her foundations strong;",
+        "And hear within, her solemn voice,",
+        "And her unending song."
+      ]
+    },
+    {
+      "lines": [
+        "For not like kingdoms of the world",
+        "The Holy Church of God!",
+        "Though earthquake shocks are rocking her,",
+        "And tempests are abroad;",
+        "Unshaken as eternal hills,",
+        "Unmovable she stands, —",
+        "A mountain that shall fill the earth,",
+        "A fane unbuilt by hands."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Arthur Cleveland Coxe died in 1896.",
+  "credits": "Words by Arthur Cleveland Coxe (1818–1896), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to ALL SAINTS, NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:588"
+}

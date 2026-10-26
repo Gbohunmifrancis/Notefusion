@@ -1,0 +1,54 @@
+{
+  "title": "To Him Who Children Blest",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "To Him Who Children Blest in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 379, “Baptism of Children”, where the book credits them to Disciples' H. B.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "To Him who child-ren blest, And suff-ered them to come, To Him who took them to his breast, We bring these child-ren home.",
+  "verses": [
+    {
+      "lines": [
+        "To Him who children blest,",
+        "And suffered them to come,",
+        "To Him who took them to his breast,",
+        "We bring these children home."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee, O God, whose face",
+        "Their spirits still behold,",
+        "We bring them, praying that Thy grace",
+        "May keep, Thine arms enfold."
+      ]
+    },
+    {
+      "lines": [
+        "And as this water falls",
+        "On each unconscious brow,",
+        "Thy holy spirit grant, O Lord,",
+        "To keep them pure as now!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:379"
+}

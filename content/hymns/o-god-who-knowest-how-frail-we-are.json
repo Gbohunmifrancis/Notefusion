@@ -1,0 +1,55 @@
+{
+  "title": "O God! Who Knowest How Frail We Are",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "William Gaskell",
+      "born": 1805,
+      "died": 1884,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O God! Who Knowest How Frail We Are in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "William Gaskell wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 34, “Seeking Strength”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O God! who knowest how frail we are, How soon the thought of good de-parts; We pray that Thou wouldst feed the fount Of ho-ly yearn-ing in our hearts.",
+  "verses": [
+    {
+      "lines": [
+        "O God! who knowest how frail we are,",
+        "How soon the thought of good departs;",
+        "We pray that Thou wouldst feed the fount",
+        "Of holy yearning in our hearts."
+      ]
+    },
+    {
+      "lines": [
+        "Let not the choking cares of earth",
+        "The precious springs of life o'ergrow;",
+        "But, ever guarded by Thy love,",
+        "Still purer may their waters flow."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee, with sweeter hope and trust,",
+        "Be every day our spirits given;",
+        "And may we, while we walk on earth,",
+        "Walk more as citizens of heaven."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Gaskell died in 1884.",
+  "credits": "Words by William Gaskell (1805–1884), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:34"
+}

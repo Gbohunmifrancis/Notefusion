@@ -1,0 +1,71 @@
+{
+  "title": "Thou, Infinite in Love",
+  "tune": "st-john-parish-choir",
+  "text": [
+    {
+      "name": "Sarah Elizabeth Miles",
+      "born": 1807,
+      "died": 1877,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Thou, Infinite in Love in Tonic Solfa to ST. JOHN (PARISH CHOIR), doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Sarah Elizabeth Miles wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 333, “In Affliction”.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.8.8) (6.6.6.6.8.8), to be sung to any tune of that metre. This page sets them to ST. JOHN (PARISH CHOIR); any other Hallelujah Metre (6.6.6.6.8.8) tune fits them as well."
+  ],
+  "underlay": "Thou, in-fin-ite in love! Guide this be-wil-dered mind, Which, like the trem-bling dove, No rest-ing place can find On the wild wa-ters, God of light, Through the thick dark-ness lead me right!",
+  "verses": [
+    {
+      "lines": [
+        "Thou, infinite in love!",
+        "Guide this bewildered mind,",
+        "Which, like the trembling dove,",
+        "No resting-place can find",
+        "On the wild waters, — God of light,",
+        "Through the thick darkness lead me right!"
+      ]
+    },
+    {
+      "lines": [
+        "Bid the fierce conflict cease,",
+        "And fear and anguish fly;",
+        "Let there again be peace,",
+        "As in the days gone by:",
+        "In Jesus' name I cry to Thee,",
+        "Remembering Gethsemane."
+      ]
+    },
+    {
+      "lines": [
+        "Fain would earth's true and dear",
+        "Save me in this dark hour;",
+        "And art not Thou more near?",
+        "Art Thou not love and power?",
+        "Vain is the help of man, — but Thou",
+        "Canst send deliverance even now."
+      ]
+    },
+    {
+      "lines": [
+        "Though through the future's shade",
+        "Pale phantoms I descry,",
+        "Let me not shrink dismayed,",
+        "But ever feel Thee nigh;",
+        "There may be grief, and pain, and care",
+        "But, O my Father! Thou art there."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Sarah Elizabeth Miles died in 1877.",
+  "credits": "Words by Sarah Elizabeth Miles (1807–1877), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. JOHN (PARISH CHOIR) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:333"
+}

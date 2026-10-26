@@ -1,0 +1,62 @@
+{
+  "title": "Come at the Morning Hour",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Come at the Morning Hour in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 463, “Seasons for Prayer”, where the book credits them to Briggs' Collection.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Come at the morn-ing hour, Come, let us kneel and pray; Prayer is the Chris-tian pil-grim's staff To walk with God all day.",
+  "verses": [
+    {
+      "lines": [
+        "Come at the morning hour,",
+        "Come, let us kneel and pray;",
+        "Prayer is the Christian pilgrim's staff",
+        "To walk with God all day."
+      ]
+    },
+    {
+      "lines": [
+        "At noon, beneath the Rock",
+        "Of Ages, rest and pray;",
+        "Sweet is that shelter from the sun",
+        "In the weary heat of day."
+      ]
+    },
+    {
+      "lines": [
+        "At evening, in thy home,",
+        "Around its altar, pray;",
+        "And finding there the house of God,",
+        "With heaven then close the day."
+      ]
+    },
+    {
+      "lines": [
+        "When midnight veils our eyes,",
+        "O, it is sweet to say,",
+        "I sleep, but my heart waketh, Lord,",
+        "With Thee to watch and pray."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:463"
+}

@@ -1,0 +1,54 @@
+{
+  "title": "In the Broad Fields of Heaven",
+  "tune": "angels-story",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "In the Broad Fields of Heaven in Tonic Solfa to ANGEL'S STORY, doh is G: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 413, “Children in Heaven”.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6 D) (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to ANGEL'S STORY; any other Sevens and Sixes Double (7.6.7.6 D) tune fits them as well."
+  ],
+  "underlay": "In the broad fields of hea-ven, In th'im-mor-tal bo-wers, By life's clear riv-er dwell-ing, A-mid un-dying flo-wers, There hosts of beau-teous spi-rits, Fair child-ren of the earth, Linked in bright bands ce-les-tial, Sing of their hu-man birth.",
+  "verses": [
+    {
+      "lines": [
+        "In the broad fields of heaven, —",
+        "In the immortal bowers,",
+        "By life's clear river dwelling,",
+        "Amid undying flowers, —",
+        "There hosts of beauteous spirits,",
+        "Fair children of the earth,",
+        "Linked in bright bands celestial,",
+        "Sing of their human birth."
+      ]
+    },
+    {
+      "lines": [
+        "They sing of earth and heaven, —",
+        "Divinest voices rise",
+        "To God, their gracious Father,",
+        "Who called them to the skies:",
+        "They all are there, — in heaven, —",
+        "Safe, safe, and sweetly blest;",
+        "No cloud of sin can shadow",
+        "Their bright and holy rest."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ANGEL'S STORY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:413"
+}

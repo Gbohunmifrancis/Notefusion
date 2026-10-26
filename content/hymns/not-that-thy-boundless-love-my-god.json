@@ -1,0 +1,66 @@
+{
+  "title": "Not That Thy Boundless Love, My God",
+  "tune": "materna",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Not That Thy Boundless Love, My God in Tonic Solfa to MATERNA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 275, “Faith Triumphant Over Sorrow”, where the book credits them to Chr. Register.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to MATERNA; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "Not that Thy bound-less love, my God, Sheds bless-ing on my way, And gilds as with a heav-enly beam The dark-ness of earth's day, Not now for breath of sum-mer flowers, For smiles of sun-ny skies, The still, small voice of grat-i-tude Shall to Thine ear a-rise.",
+  "verses": [
+    {
+      "lines": [
+        "Not that Thy boundless love, my God,",
+        "Sheds blessing on my way,",
+        "And gilds as with a heavenly beam",
+        "The darkness of earth's day, —",
+        "Not now for breath of summer flowers,",
+        "For smiles of sunny skies,",
+        "The still, small voice of gratitude",
+        "Shall to Thine ear arise."
+      ]
+    },
+    {
+      "lines": [
+        "I bless Thee for the ministry",
+        "Of sorrow's lonely hour,",
+        "When darkly o'er my stricken head",
+        "I see the storm-clouds lower;",
+        "Thy love can still the billows' roar,",
+        "And whisper, \"Peace; be still!\"",
+        "While faith doth on Thy promise rest,",
+        "And bless the Father's will."
+      ]
+    },
+    {
+      "lines": [
+        "The shadow and the storm must come;",
+        "O, grant that faith divine",
+        "Which triumphs o'er the might of grief,",
+        "And moulds man's will to Thine!",
+        "In hours of deepest gloom, mine eye",
+        "One blessed ray can see;",
+        "A sunlit side that cloud must have,",
+        "Which hides Thy face from me."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MATERNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:275"
+}

@@ -1,0 +1,55 @@
+{
+  "title": "O, Where Shall Rest Be Found",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O, Where Shall Rest Be Found in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 227, “Seeking Rest”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "O, where shall rest be found, Rest for the wea-ry soul? 'Twere vain the o-cean depths to sound, Or pierce to ei-ther pole:",
+  "verses": [
+    {
+      "lines": [
+        "O, where shall rest be found,",
+        "Rest for the weary soul?",
+        "'Twere vain the ocean depths to sound,",
+        "Or pierce to either pole:"
+      ]
+    },
+    {
+      "lines": [
+        "The world can never give",
+        "The rest for which we sigh;",
+        "'Tis not the whole of life to live,",
+        "Nor all of death to die."
+      ]
+    },
+    {
+      "lines": [
+        "In Thee we end our quest;",
+        "Alone are found in Thee",
+        "The life of perfect love, — the rest",
+        "Of immortality."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:227"
+}

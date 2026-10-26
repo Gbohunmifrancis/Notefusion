@@ -1,0 +1,62 @@
+{
+  "title": "Great God! and Wilt Thou Condescend",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Great God! and Wilt Thou Condescend in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 448, “A Child's Prayer”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Great God! and wilt Thou con-de-scend To be my Fa-ther and my Friend? I but a child, and Thou so high, The Lord of earth and air and sky!",
+  "verses": [
+    {
+      "lines": [
+        "Great God! and wilt Thou condescend",
+        "To be my Father and my Friend?",
+        "I but a child, — and Thou so high,",
+        "The Lord of earth and air and sky!"
+      ]
+    },
+    {
+      "lines": [
+        "Art Thou my Father? — Let me be",
+        "A meek, obedient child to Thee;",
+        "And try, in word and deed and thought,",
+        "To serve and please Thee as I ought."
+      ]
+    },
+    {
+      "lines": [
+        "Art Thou my Father? — I'll depend",
+        "Upon the care of such a friend;",
+        "And only wish to do and be",
+        "Whatever seemeth good to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Art Thou my Father? — Then, at last,",
+        "When all my days on earth are past,",
+        "Send down, and take me, in Thy love,",
+        "To be Thy better child above."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:448"
+}

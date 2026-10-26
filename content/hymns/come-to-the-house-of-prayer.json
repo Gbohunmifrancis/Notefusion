@@ -1,0 +1,79 @@
+{
+  "title": "Come to the House of Prayer",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Emily Taylor",
+      "born": 1795,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Come to the House of Prayer in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Emily Taylor wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 1, “Invitation”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Come to the house of prayer, O ye a-fflic-ted, come! The God of peace shall meet you there, He makes that house His home.",
+  "verses": [
+    {
+      "lines": [
+        "Come to the house of prayer,",
+        "O ye afflicted, come!",
+        "The God of peace shall meet you there,",
+        "He makes that house His home."
+      ]
+    },
+    {
+      "lines": [
+        "Come to the house of praise,",
+        "Ye who are happy now;",
+        "In sweet accord your voices raise,",
+        "In kindred homage bow."
+      ]
+    },
+    {
+      "lines": [
+        "Ye aged, hither come,",
+        "For ye have felt His love;",
+        "Soon shall ye lift a holier song",
+        "In fairer courts above."
+      ]
+    },
+    {
+      "lines": [
+        "Ye young, before His throne,",
+        "Come, bow; your voices raise;",
+        "Let not your hearts His praise disown,",
+        "Who gives the power to praise."
+      ]
+    },
+    {
+      "lines": [
+        "Thou, whose benignant eye",
+        "In mercy looks on all;",
+        "Who seest the tear of misery,",
+        "And hear'st the mourner's call;"
+      ]
+    },
+    {
+      "lines": [
+        "Up to Thy dwelling-place",
+        "Bear our frail spirits on,",
+        "Till they outstrip time's tardy pace,",
+        "And heaven on earth be won."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Emily Taylor died in 1872.",
+  "credits": "Words by Emily Taylor (1795–1872), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:1"
+}

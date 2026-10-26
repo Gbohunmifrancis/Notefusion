@@ -1,0 +1,55 @@
+{
+  "title": "Lord, Lead the Way the Saviour Went",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "William Croswell",
+      "born": 1804,
+      "died": 1851,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Lord, Lead the Way the Saviour Went in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "William Croswell wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 575, “He Went About Doing Good”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Lord, lead the way the Sa-viour went, By lane and cell ob-scure, And let our trea-sures still be spent, Like his, up-on the poor.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, lead the way the Saviour went,",
+        "By lane and cell obscure,",
+        "And let our treasures still be spent,",
+        "Like his, upon the poor."
+      ]
+    },
+    {
+      "lines": [
+        "Like him, through scenes of deep distress,",
+        "Who bore the world's sad weight,",
+        "We, in their gloomy loneliness,",
+        "Would seek the desolate."
+      ]
+    },
+    {
+      "lines": [
+        "For Thou hast placed us side by side",
+        "In this wide world of ill;",
+        "And that Thy followers may be tried,",
+        "The poor are with us still."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Croswell died in 1851.",
+  "credits": "Words by William Croswell (1804–1851), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:575"
+}

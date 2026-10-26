@@ -1,0 +1,71 @@
+{
+  "title": "Father, to Thy Kind Love We Owe",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "William Cullen Bryant",
+      "born": 1794,
+      "died": 1878,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Father, to Thy Kind Love We Owe in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Cullen Bryant wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 78, “Loving-Kindness of God”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther, to Thy kind love we owe All that is fair and good be-low; Be-stow-er of the health that lies On tear-less cheeks and cheer-ful eyes!",
+  "verses": [
+    {
+      "lines": [
+        "Father, to Thy kind love we owe",
+        "All that is fair and good below;",
+        "Bestower of the health that lies",
+        "On tearless cheeks and cheerful eyes!"
+      ]
+    },
+    {
+      "lines": [
+        "Giver of sunshine and of rain!",
+        "Ripener of fruits on hill and plain!",
+        "Fountain of light, that rayed afar,",
+        "Fills the vast urns of sun and star!"
+      ]
+    },
+    {
+      "lines": [
+        "Who send'st Thy storms and frosts to bind",
+        "The plagues that rise to waste mankind;",
+        "Then breathest, o'er the naked scene,",
+        "Spring gales, and life, and tender green."
+      ]
+    },
+    {
+      "lines": [
+        "Yet deem we not that thus alone,",
+        "Thy mercy and Thy love are shown;",
+        "For we have learned, with higher praise,",
+        "And holier names, to speak Thy ways."
+      ]
+    },
+    {
+      "lines": [
+        "In woe's dark hour, our kindest stay!",
+        "Sole trust when life shall pass away!",
+        "Teacher of hopes that light the gloom",
+        "Of death, and consecrate the tomb!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Cullen Bryant died in 1878.",
+  "credits": "Words by William Cullen Bryant (1794–1878), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:78"
+}

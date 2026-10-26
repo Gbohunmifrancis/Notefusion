@@ -1,0 +1,62 @@
+{
+  "title": "Father, I Will Not Pray",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Father, I Will Not Pray in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 235, “Walking with God”, where the book credits them to Briggs' Collection.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther, I will not pray Free-dom from earth-ly ill; But may Thy peace be o'er my way With its dove pin-ion still!",
+  "verses": [
+    {
+      "lines": [
+        "Father, I will not pray",
+        "Freedom from earthly ill;",
+        "But may Thy peace be o'er my way",
+        "With its dove-pinion still!"
+      ]
+    },
+    {
+      "lines": [
+        "O, let a sense of Thee,",
+        "Of Thy sustaining love,",
+        "My bosom-guest forever be,",
+        "Where'er I rest or move!"
+      ]
+    },
+    {
+      "lines": [
+        "A heavenly light serene,",
+        "With its unfading beams,",
+        "Within my trusting heart be seen,",
+        "More bright than childhood's dreams!"
+      ]
+    },
+    {
+      "lines": [
+        "So let me walk with Thee,",
+        "Thy presence round my way;",
+        "Made by Thine aiding spirit free;",
+        "Thy love, my joy and stay."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:235"
+}

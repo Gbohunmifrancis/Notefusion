@@ -1,0 +1,63 @@
+{
+  "title": "Return, My Soul, unto Thy Rest",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Return, My Soul, unto Thy Rest in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 218, “The Soul's Rest”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Re-turn, my soul, un-to thy rest, From vain pur-suits and mad-dening cares; From lone-ly woes that wring thy breast, The world's al-lure-ments, toils, and snares.",
+  "verses": [
+    {
+      "lines": [
+        "Return, my soul, unto thy rest,",
+        "From vain pursuits and maddening cares;",
+        "From lonely woes that wring thy breast,",
+        "The world's allurements, toils, and snares."
+      ]
+    },
+    {
+      "lines": [
+        "Return unto thy rest, my soul,",
+        "From all the wanderings of thy thought;",
+        "From sickness unto death made whole;",
+        "Safe through a thousand perils brought."
+      ]
+    },
+    {
+      "lines": [
+        "Then to thy rest, my soul, return,",
+        "From passions every hour at strife;",
+        "Sin's works, and ways, and wages, spurn,",
+        "Lay hold upon eternal life."
+      ]
+    },
+    {
+      "lines": [
+        "God is thy rest; with heart inclined",
+        "To keep His word, that word believe;",
+        "Christ is thy rest; with lowly mind,",
+        "His light and easy yoke receive."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:218"
+}

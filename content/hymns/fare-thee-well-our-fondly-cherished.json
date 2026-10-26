@@ -1,0 +1,78 @@
+{
+  "title": "Fare Thee Well, Our Fondly Cherished",
+  "tune": "all-for-jesus",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Fare Thee Well, Our Fondly Cherished in Tonic Solfa to ALL FOR JESUS, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 411, “Death of a Child”, where the book credits them to Briggs' Collection.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7) (8.7.8.7), to be sung to any tune of that metre. This page sets them to ALL FOR JESUS; any other Eights and Sevens (8.7.8.7) tune fits them as well."
+  ],
+  "underlay": "Fare thee well, our fond-ly cher-ished! Dear, dear blos-som, fare thee well! He who lent thee hath re-called thee, Back with Him and His to dwell.",
+  "verses": [
+    {
+      "lines": [
+        "Fare thee well, our fondly cherished!",
+        "Dear, dear blossom, fare thee well!",
+        "He who lent thee hath recalled thee,",
+        "Back with Him and His to dwell."
+      ]
+    },
+    {
+      "lines": [
+        "Like a sunbeam through our dwelling",
+        "Shone thy presence, bright and calm;",
+        "Thou didst add a zest to pleasure;",
+        "To our sorrows thou wast balm."
+      ]
+    },
+    {
+      "lines": [
+        "Yet while mourning, O our lost one,",
+        "Come no visions of despair!",
+        "Seated on thy tomb, Faith's angel",
+        "Saith, thou art not, art not there."
+      ]
+    },
+    {
+      "lines": [
+        "Where, then, art thou? with the Saviour,",
+        "Blest, forever blest, to be;",
+        "'Mid the sinless little children",
+        "Who have heard his \"Come to me.\""
+      ]
+    },
+    {
+      "lines": [
+        "Passed the shades of death's dark valley,",
+        "Thou art leaning on his breast,",
+        "Where the wicked may not enter,",
+        "And the weary are at rest."
+      ]
+    },
+    {
+      "lines": [
+        "Plead, that in a Father's mercy",
+        "All our sins may be forgiven;",
+        "Angel! plead, that thou may'st greet us,",
+        "Ransomed, at the gates of heaven."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ALL FOR JESUS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:411"
+}

@@ -1,0 +1,63 @@
+{
+  "title": "Slowly, by God's Hand Unfurled",
+  "tune": "innocents",
+  "text": [
+    {
+      "name": "William Henry Furness",
+      "born": 1802,
+      "died": 1896,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Slowly, by God's Hand Unfurled in Tonic Solfa to INNOCENTS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Henry Furness wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 371, “The Light of Stars”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7) (7.7.7.7), to be sung to any tune of that metre. This page sets them to INNOCENTS; any other Sevens (7.7.7.7) tune fits them as well."
+  ],
+  "underlay": "Slow-ly, by God's hand un-furled, Down a-round the wea-ry world Falls the dark-ness; O, how still Is the work-ing of His will!",
+  "verses": [
+    {
+      "lines": [
+        "Slowly, by God's hand unfurled,",
+        "Down around the weary world",
+        "Falls the darkness; O, how still",
+        "Is the working of His will!"
+      ]
+    },
+    {
+      "lines": [
+        "Mighty spirit, ever nigh!",
+        "Work in me as silently;",
+        "Veil the day's distracting sights,",
+        "Show me heaven's eternal lights."
+      ]
+    },
+    {
+      "lines": [
+        "Living stars to view be brought",
+        "In the boundless realms of thought;",
+        "High and infinite desires,",
+        "Flaming like those upper fires!"
+      ]
+    },
+    {
+      "lines": [
+        "Holy Truth, Eternal Right,",
+        "Let them break upon my sight;",
+        "Let them shine serene and still,",
+        "And with light my being fill."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Henry Furness died in 1896.",
+  "credits": "Words by William Henry Furness (1802–1896), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to INNOCENTS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:371"
+}

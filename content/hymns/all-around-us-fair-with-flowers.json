@@ -1,0 +1,70 @@
+{
+  "title": "All Around Us, Fair with Flowers",
+  "tune": "stuttgart",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "All Around Us, Fair with Flowers in Tonic Solfa to STUTTGART, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 306, “Life's Work”.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7) (8.7.8.7), to be sung to any tune of that metre. This page sets them to STUTTGART; any other Eights and Sevens (8.7.8.7) tune fits them as well."
+  ],
+  "underlay": "All a-round us, fair with flo-wers, Fields of beau-ty sleep-ing lie; All a-round us clar-ion voi-ces Call to du-ty stern and high.",
+  "verses": [
+    {
+      "lines": [
+        "All around us, fair with flowers,",
+        "Fields of beauty sleeping lie;",
+        "All around us clarion voices",
+        "Call to duty stern and high."
+      ]
+    },
+    {
+      "lines": [
+        "Thankfully we will rejoice in",
+        "All the beauty God has given;",
+        "But beware it does not win us",
+        "From the work ordained of Heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Following every voice of mercy",
+        "With a trusting, loving heart;",
+        "Let us in life's earnest labor",
+        "Still be sure to do our part."
+      ]
+    },
+    {
+      "lines": [
+        "Now, to-day, and not to-morrow,",
+        "Let us work with all our might,",
+        "Lest the wretched faint and perish",
+        "In the coming stormy night."
+      ]
+    },
+    {
+      "lines": [
+        "Now, to-day, and not to-morrow, —",
+        "Lest, before to-morrow's sun,",
+        "We too, mournfully departing,",
+        "Shall have left our work undone."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to STUTTGART by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:306"
+}

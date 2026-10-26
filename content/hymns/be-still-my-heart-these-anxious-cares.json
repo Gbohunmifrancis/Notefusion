@@ -1,0 +1,63 @@
+{
+  "title": "Be Still, My Heart! These Anxious Cares",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Be Still, My Heart! These Anxious Cares in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 323, “Trust in God”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Be still, my heart! these anx-ious cares To thee are bur-dens, thorns, and snares, They cast dis-hon-or on thy Lord, And con-tra-dict His gra-cious word.",
+  "verses": [
+    {
+      "lines": [
+        "Be still, my heart! these anxious cares",
+        "To thee are burdens, thorns, and snares,",
+        "They cast dishonor on thy Lord,",
+        "And contradict His gracious word."
+      ]
+    },
+    {
+      "lines": [
+        "Brought safely by His hand thus far,",
+        "Why wilt thou now give place to fear?",
+        "How canst thou want if He provide,",
+        "Or lose thy way with such a guide?"
+      ]
+    },
+    {
+      "lines": [
+        "Did ever trouble yet befall,",
+        "And He refuse to hear thy call?",
+        "And has He not His promise past,",
+        "That thou shalt overcome at last?"
+      ]
+    },
+    {
+      "lines": [
+        "He who has helped me hitherto",
+        "Will help me all my journey through,",
+        "And give me daily cause to raise",
+        "New trophies to His endless praise."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:323"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "How Beauteous Were the Marks Divine",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Arthur Cleveland Coxe",
+      "born": 1818,
+      "died": 1896,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "How Beauteous Were the Marks Divine in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Arthur Cleveland Coxe wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 124, “Divine Beauty of Christ's Character”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "How beau-teous were the marks di-vine, That in thy meek-ness used to shine, That lit thy lone-ly path-way, trod In won-drous love, O Son of God!",
+  "verses": [
+    {
+      "lines": [
+        "How beauteous were the marks divine,",
+        "That in thy meekness used to shine,",
+        "That lit thy lonely pathway, trod",
+        "In wondrous love, O Son of God!"
+      ]
+    },
+    {
+      "lines": [
+        "O, who like thee, — so calm, so bright,",
+        "So pure, so made to live in light?",
+        "O, who like thee did ever go",
+        "So patient through a world of woe?"
+      ]
+    },
+    {
+      "lines": [
+        "O, who like thee so humbly bore",
+        "The scorn, the scoffs, of men before?",
+        "So meek, forgiving, godlike, high,",
+        "So glorious in humility?"
+      ]
+    },
+    {
+      "lines": [
+        "The bending angels stooped to see",
+        "The lisping infant clasp thy knee,",
+        "And smile, as in a father's eye,",
+        "Upon thy mild divinity."
+      ]
+    },
+    {
+      "lines": [
+        "And death, which sets the prisoner free,",
+        "Was pang and scoff and scorn to thee;",
+        "Yet love through all thy torture glowed,",
+        "And mercy with thy life-blood flowed."
+      ]
+    },
+    {
+      "lines": [
+        "O, in thy light be mine to go,",
+        "Illuming all my way of woe;",
+        "And give me ever on the road",
+        "To trace thy footsteps, Son of God!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Arthur Cleveland Coxe died in 1896.",
+  "credits": "Words by Arthur Cleveland Coxe (1818–1896), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:124"
+}

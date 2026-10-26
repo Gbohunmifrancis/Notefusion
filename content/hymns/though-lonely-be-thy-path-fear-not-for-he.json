@@ -1,0 +1,46 @@
+{
+  "title": "Though Lonely Be Thy Path, Fear Not, for He",
+  "tune": "song-twenty-two",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Though Lonely Be Thy Path, Fear Not, for He in Tonic Solfa to SONG TWENTY-TWO, doh is F: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 336, “The Strength of the Lonely”.",
+    "The book printed the words without tunes, marked Tens (10.10.10.10) (10.10.10.10), to be sung to any tune of that metre. This page sets them to SONG TWENTY-TWO; any other Tens (10.10.10.10) tune fits them as well."
+  ],
+  "underlay": "Though lone-ly be thy path, fear not, for He Who marks the spar-row fall is guard-ing thee; And not a star shines o'er thy head by night, But He hath known that it will reach thy sight.",
+  "verses": [
+    {
+      "lines": [
+        "Though lonely be thy path, fear not, for He",
+        "Who marks the sparrow fall is guarding thee;",
+        "And not a star shines o'er thy head by night,",
+        "But He hath known that it will reach thy sight."
+      ]
+    },
+    {
+      "lines": [
+        "And not a grief can darken or surprise,",
+        "Swell in thy heart, or dim with tears thine eyes,",
+        "But it is sent in mercy and in love,",
+        "To bid thy helplessness seek strength above."
+      ]
+    }
+  ],
+  "metre": "10 10 10 10",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to SONG TWENTY-TWO by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:336"
+}

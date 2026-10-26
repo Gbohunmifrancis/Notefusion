@@ -1,0 +1,63 @@
+{
+  "title": "Beneath Thy Trees To-day We Met",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "John Weiss",
+      "born": 1818,
+      "died": 1879,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Beneath Thy Trees To-day We Met in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Weiss wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 459, “For a Summer Festival”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Be-neath Thy trees to day we met, A-mid Thy sum-mer flowers; And ev-ery heart is bless-ing yet These hap-py, fleet-ing hours.",
+  "verses": [
+    {
+      "lines": [
+        "Beneath Thy trees to-day we met,",
+        "Amid Thy summer flowers;",
+        "And every heart is blessing yet",
+        "These happy, fleeting hours."
+      ]
+    },
+    {
+      "lines": [
+        "But creeping shades to vespers call,",
+        "And timely lore impart,",
+        "To make our latest shadows fall",
+        "From sunshine in the heart."
+      ]
+    },
+    {
+      "lines": [
+        "Yes, even so; the summer leaf,",
+        "The summer flowers, declare",
+        "Their childlike, chastening belief,",
+        "That Thou dost make them fair."
+      ]
+    },
+    {
+      "lines": [
+        "O, let us cherish nature's creed,",
+        "And live and bloom to Thee;",
+        "For only childlike hearts, we read,",
+        "Can grace eternity."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Weiss died in 1879.",
+  "credits": "Words by John Weiss (1818–1879), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:459"
+}

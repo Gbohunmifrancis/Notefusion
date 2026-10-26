@@ -1,0 +1,55 @@
+{
+  "title": "Calm on the Bosom of Thy God",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Felicia Hemans",
+      "born": 1793,
+      "died": 1835,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Calm on the Bosom of Thy God in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Felicia Hemans wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 410, “Death of the Young”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Calm on the bo-som of thy God, Fair spir-it, rest thee now! E'en while with us thy foot-step trod, His seal was on thy brow.",
+  "verses": [
+    {
+      "lines": [
+        "Calm on the bosom of thy God,",
+        "Fair spirit, rest thee now!",
+        "E'en while with us thy footstep trod,",
+        "His seal was on thy brow."
+      ]
+    },
+    {
+      "lines": [
+        "Dust, to its narrow house beneath!",
+        "Soul, to its home on high!",
+        "They that have seen thy look in death",
+        "No more may fear to die."
+      ]
+    },
+    {
+      "lines": [
+        "Lone are the paths, and sad the hours,",
+        "Since thy meek spirit's gone;",
+        "But, O, a brighter home than ours,",
+        "In heaven, is now thine own!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Felicia Hemans died in 1835.",
+  "credits": "Words by Felicia Hemans (1793–1835), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:410"
+}

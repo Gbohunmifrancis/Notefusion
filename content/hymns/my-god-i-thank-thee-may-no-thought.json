@@ -1,0 +1,63 @@
+{
+  "title": "My God, I Thank Thee! May No Thought",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Andrews Norton",
+      "born": 1786,
+      "died": 1853,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "My God, I Thank Thee! May No Thought in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Andrews Norton wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 327, “My God, I Thank Thee!”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "My God, I thank Thee! may no thought E'er deem Thy chas-tise-ments se-vere; But may this heart, by sor-row taught, Calm each wild wish, each id-le fear.",
+  "verses": [
+    {
+      "lines": [
+        "My God, I thank Thee! may no thought",
+        "E'er deem Thy chastisements severe;",
+        "But may this heart, by sorrow taught,",
+        "Calm each wild wish, each idle fear."
+      ]
+    },
+    {
+      "lines": [
+        "Thy mercy bids all nature bloom;",
+        "The sun shines bright, and man is gay;",
+        "Thine equal mercy spreads the gloom",
+        "That darkens o'er his little day."
+      ]
+    },
+    {
+      "lines": [
+        "Full many a throb of grief and pain",
+        "Thy frail and erring child must know;",
+        "But not one prayer is breathed in vain,",
+        "Nor does one tear unheeded flow."
+      ]
+    },
+    {
+      "lines": [
+        "Thy various messengers employ;",
+        "Thy purposes of love fulfil;",
+        "And, 'mid the wreck of human joy,",
+        "Let kneeling faith adore Thy will."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Andrews Norton died in 1853.",
+  "credits": "Words by Andrews Norton (1786–1853), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:327"
+}

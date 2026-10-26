@@ -1,0 +1,61 @@
+{
+  "title": "When Arise the Thoughts of Sin",
+  "tune": "spanish-hymn",
+  "text": [
+    {
+      "name": "William Gaskell",
+      "born": 1805,
+      "died": 1884,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "When Arise the Thoughts of Sin in Tonic Solfa to SPANISH HYMN, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "William Gaskell wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 148, “Christ Who Strengtheneth Me”.",
+    "The book printed the words without tunes, marked Sevens, six lines (7.7.7.7.7.7) (7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to SPANISH HYMN; any other Sevens, six lines (7.7.7.7.7.7) tune fits them as well."
+  ],
+  "underlay": "When a-rise the thoughts of sin, When the world our hearts would win, When, to self-ish plea-sure given, Droops the love that blooms for heaven; Lord, we would re-mem-ber thee, Thou wilt our Re-deem-er be.",
+  "verses": [
+    {
+      "lines": [
+        "When arise the thoughts of sin,",
+        "When the world our hearts would win,",
+        "When, to selfish pleasure given,",
+        "Droops the love that blooms for heaven;",
+        "Lord, we would remember thee, —",
+        "Thou wilt our Redeemer be."
+      ]
+    },
+    {
+      "lines": [
+        "When, with footsteps faint and slow,",
+        "Duty's upward path we go;",
+        "When, by toils and hardship pressed,",
+        "Round we turn to look for rest;",
+        "Lord, we would remember thee,",
+        "Thou our Guide and Strength wilt be."
+      ]
+    },
+    {
+      "lines": [
+        "When the way grows dark and drear,",
+        "When, beset by doubt and fear,",
+        "We can see no beam of light",
+        "Struggling through the thickening night;",
+        "Lord, we would remember thee,",
+        "Thou our Comforter wilt be."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Gaskell died in 1884.",
+  "credits": "Words by William Gaskell (1805–1884), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to SPANISH HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:148"
+}

@@ -1,0 +1,66 @@
+{
+  "title": "Guide Us, Lord! While, Hand in Hand",
+  "tune": "watchman",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Guide Us, Lord! While, Hand in Hand in Tonic Solfa to WATCHMAN, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 62, “Prayer for Guidance”, where the book credits them to Beard's Collection.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7 D) (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to WATCHMAN; any other Sevens Double (7.7.7.7 D) tune fits them as well."
+  ],
+  "underlay": "Guide us, Lord! while, hand in hand, Jour-neying toward the bet-ter land; Foes we know are to be met, Snares the pil-grim's path be-set; Clouds up-on the val-ley rest, Rough and dark the moun-tain's breast; And our home may not be gained, Save through tri-als well sus-tained.",
+  "verses": [
+    {
+      "lines": [
+        "Guide us, Lord! while, hand in hand,",
+        "Journeying toward the better land;",
+        "Foes we know are to be met,",
+        "Snares the pilgrim's path beset;",
+        "Clouds upon the valley rest,",
+        "Rough and dark the mountain's breast;",
+        "And our home may not be gained,",
+        "Save through trials well sustained."
+      ]
+    },
+    {
+      "lines": [
+        "Guide us, while we onward move,",
+        "Linked in closest bonds of love,",
+        "Striving for the holy mind,",
+        "And the soul from sense refined;",
+        "That when life no longer burns,",
+        "And the dust to dust returns,",
+        "With the strength which Thou hast given",
+        "We may rise to Thee and heaven."
+      ]
+    },
+    {
+      "lines": [
+        "God of mercy! on Thee, all",
+        "Humbly for Thy guidance call;",
+        "Save us from the evil tongue,",
+        "From the heart that thinketh wrong,",
+        "From the sins, whate'er they be,",
+        "That divide the soul from Thee.",
+        "God of grace! on Thee we rest;",
+        "Bless us, and we shall be blest."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WATCHMAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:62"
+}

@@ -1,0 +1,47 @@
+{
+  "title": "Lord! Subdue Our Selfish Will",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Lord! Subdue Our Selfish Will in Tonic Solfa to HEINLEIN, doh is F: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 505, “Brotherly Love”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7) (7.7.7.7), to be sung to any tune of that metre. This page sets them to HEINLEIN; any other Sevens (7.7.7.7) tune fits them as well."
+  ],
+  "underlay": "Lord! sub-due our self-ish will; Each to each our tem-pers suit, By Thy mod-u-lat-ing skill, Heart to heart, as lute to lute.",
+  "verses": [
+    {
+      "lines": [
+        "Lord! subdue our selfish will;",
+        "Each to each our tempers suit,",
+        "By Thy modulating skill,",
+        "Heart to heart, as lute to lute."
+      ]
+    },
+    {
+      "lines": [
+        "Sweetly on our spirits move;",
+        "Gently touch the trembling strings;",
+        "Make the harmony of love,",
+        "Music for the King of kings!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to HEINLEIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:505"
+}

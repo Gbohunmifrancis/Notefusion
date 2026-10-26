@@ -1,0 +1,55 @@
+{
+  "title": "In Vain We Thus Recall to Mind",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "William Gaskell",
+      "born": 1805,
+      "died": 1884,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "In Vain We Thus Recall to Mind in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "William Gaskell wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 149, “Following After Jesus”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "In vain we thus re-call to mind The cross our Mas-ter bore, Un-less a holi-er strength we find, And love his spir-it more.",
+  "verses": [
+    {
+      "lines": [
+        "In vain we thus recall to mind",
+        "The cross our Master bore,",
+        "Unless a holier strength we find,",
+        "And love his spirit more."
+      ]
+    },
+    {
+      "lines": [
+        "May we, like him, though thanked with ill;",
+        "Insulted, and withstood,",
+        "In hope and patience labor still",
+        "To do our brethren good."
+      ]
+    },
+    {
+      "lines": [
+        "Like him may we, unmurmuring, go",
+        "Our heaven-appointed way,",
+        "And learn, 'midst gathering storms of woe,",
+        "\"God's will be done!\" to say."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Gaskell died in 1884.",
+  "credits": "Words by William Gaskell (1805–1884), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:149"
+}

@@ -1,0 +1,63 @@
+{
+  "title": "O Suffering Friend of Human Kind",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Stephen Greenleaf Bulfinch",
+      "born": 1809,
+      "died": 1870,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O Suffering Friend of Human Kind in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Stephen Greenleaf Bulfinch wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 129, “Christ The Sufferer”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O suf-fering Friend of hu-man kind! How, as the fa-tal hour drew near, Came throng-ing on thy ho-ly mind The im-a-ges of grief and fear.",
+  "verses": [
+    {
+      "lines": [
+        "O suffering Friend of human kind!",
+        "How, as the fatal hour drew near,",
+        "Came thronging on thy holy mind",
+        "The images of grief and fear."
+      ]
+    },
+    {
+      "lines": [
+        "Gethsemane's sad midnight scene,",
+        "The faithless friends, the exulting foes,",
+        "The thorny crown, the insult keen,",
+        "The scourge, the cross, before thee rose."
+      ]
+    },
+    {
+      "lines": [
+        "Did not thy spirit shrink dismayed,",
+        "As the dark vision o'er it came;",
+        "And though in sinless strength arrayed,",
+        "Turn, shuddering, from the death of shame?"
+      ]
+    },
+    {
+      "lines": [
+        "Onward, like thee, through scorn and dread,",
+        "May we our Father's call obey,",
+        "Steadfast thy path of duty tread,",
+        "And rise, through death, to endless day."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Stephen Greenleaf Bulfinch died in 1870.",
+  "credits": "Words by Stephen Greenleaf Bulfinch (1809–1870), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:129"
+}

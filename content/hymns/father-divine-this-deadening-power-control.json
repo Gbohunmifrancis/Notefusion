@@ -1,0 +1,55 @@
+{
+  "title": "Father Divine, This Deadening Power Control",
+  "tune": "eventide",
+  "text": [
+    {
+      "name": "Joseph Tuckerman",
+      "born": 1778,
+      "died": 1840,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Father Divine, This Deadening Power Control in Tonic Solfa to EVENTIDE, doh is Eb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Joseph Tuckerman wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 514, “My Heaven in Thee”.",
+    "The book printed the words without tunes, marked Tens (10.10.10.10) (10.10.10.10), to be sung to any tune of that metre. This page sets them to EVENTIDE; any other Tens (10.10.10.10) tune fits them as well."
+  ],
+  "underlay": "Fa-ther di-vine, this dead-ening power con-trol, Which to the sens-es binds th'im-mor-tal soul; O break this bon-dage, Lord! I would be free, And in my soul would find my heaven, in Thee.",
+  "verses": [
+    {
+      "lines": [
+        "Father divine, this deadening power control,",
+        "Which to the senses binds the immortal soul;",
+        "O break this bondage, Lord! I would be free,",
+        "And in my soul would find my heaven, in Thee."
+      ]
+    },
+    {
+      "lines": [
+        "My heaven in Thee! O God, no other heaven",
+        "To the immortal soul can e'er be given;",
+        "O, let Thy kingdom now within me come,",
+        "And as above, so here, Thy will be done!"
+      ]
+    },
+    {
+      "lines": [
+        "My heaven in Thee, O Father, let me find —",
+        "My heaven in Thee, within a heart resigned;",
+        "No more, of heaven and bliss, my soul, despair,",
+        "For where my God is found, my heaven is there."
+      ]
+    }
+  ],
+  "metre": "10 10 10 10",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Joseph Tuckerman died in 1840.",
+  "credits": "Words by Joseph Tuckerman (1778–1840), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to EVENTIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:514"
+}

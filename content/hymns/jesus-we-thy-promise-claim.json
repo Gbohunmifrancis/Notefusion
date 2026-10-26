@@ -1,0 +1,66 @@
+{
+  "title": "Jesus, We Thy Promise Claim",
+  "tune": "messiah-herald",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Jesus, We Thy Promise Claim in Tonic Solfa to MESSIAH (HERALD), doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 560, “Communion Hymn”, where the book credits them to Wesleyan.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7 D) (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to MESSIAH (HERALD); any other Sevens Double (7.7.7.7 D) tune fits them as well."
+  ],
+  "underlay": "Je-sus, we thy pro-mise claim; We are met in thy dear name; In the midst do thou ap-pear, Man-i-fest thy pre-sence here! Sanc-ti-fy us, Lord, and bless; Breathe thy spir-it, give thy peace; Thou thy-self with-in us move; Make our feast a feast of love!",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, we thy promise claim;",
+        "We are met in thy dear name;",
+        "In the midst do thou appear,",
+        "Manifest thy presence here!",
+        "Sanctify us, Lord, and bless;",
+        "Breathe thy spirit, give thy peace;",
+        "Thou thyself within us move;",
+        "Make our feast a feast of love!"
+      ]
+    },
+    {
+      "lines": [
+        "Give to us thy humble mind,",
+        "Patient, fearless, just and kind;",
+        "Meek and lowly let us be,",
+        "Full of goodness, full of thee.",
+        "Still, O Lord, our faith increase,",
+        "Give to us the fruits of peace,",
+        "Utterly abolish sin,",
+        "Write thy law of love within."
+      ]
+    },
+    {
+      "lines": [
+        "Hence may all our actions flow,",
+        "Love, the proof that Christ we know;",
+        "Mutual love the token be,",
+        "Lord, that we have walked with thee!",
+        "Love, thine image, love impart,",
+        "Stamp its impress on each heart,",
+        "Only love to us be given,",
+        "Lord, we ask no other heaven."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to MESSIAH (HERALD) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:560"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "Fear Was Within the Tossing Bark",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Felicia Hemans",
+      "born": 1793,
+      "died": 1835,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Fear Was Within the Tossing Bark in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Felicia Hemans wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 115, “Christ Stilling the Tempest”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fear was with-in the toss-ing bark, When storm-y winds grew loud; And waves came roll-ing high and dark, And the tall mast was bowed.",
+  "verses": [
+    {
+      "lines": [
+        "Fear was within the tossing bark,",
+        "When stormy winds grew loud;",
+        "And waves came rolling high and dark,",
+        "And the tall mast was bowed."
+      ]
+    },
+    {
+      "lines": [
+        "But the wind ceased, — it ceased, — a word",
+        "Passed through the gloomy sky;",
+        "The troubled billows knew their Lord,",
+        "And sank beneath his eye."
+      ]
+    },
+    {
+      "lines": [
+        "And slumber settled on the deep,",
+        "And silence on the blast;",
+        "They sank as flowers that fold to sleep",
+        "When sultry day is past."
+      ]
+    },
+    {
+      "lines": [
+        "O Thou that in its wildest hour",
+        "Didst rule the tempest's mood,",
+        "Send now thy Spirit forth in power",
+        "O'er our dark souls to brood!"
+      ]
+    },
+    {
+      "lines": [
+        "Thou that didst bow the billows' pride,",
+        "Thy mandate to fulfil,",
+        "Speak, speak to passion's raging tide,",
+        "Speak, and say, \"Peace, be still!\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Felicia Hemans died in 1835.",
+  "credits": "Words by Felicia Hemans (1793–1835), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:115"
+}

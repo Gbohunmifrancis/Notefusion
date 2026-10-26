@@ -1,0 +1,62 @@
+{
+  "title": "Lo! God Is Here; Let Us Adore",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Lo! God Is Here; Let Us Adore in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 13, “The Lord is in His Holy Temple”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Lo! God is here; let us a-dore, And hum-bly bow be-fore His face; Let all with-in us feel His power, Let all with-in us seek His peace.",
+  "verses": [
+    {
+      "lines": [
+        "Lo! God is here; let us adore,",
+        "And humbly bow before His face;",
+        "Let all within us feel His power,",
+        "Let all within us seek His peace."
+      ]
+    },
+    {
+      "lines": [
+        "Lo! God is here; Him day and night",
+        "United choirs of angels sing;",
+        "To Him, enthroned above all height,",
+        "Heaven's host their noblest praises bring."
+      ]
+    },
+    {
+      "lines": [
+        "Being of beings! may our praise",
+        "Thy courts with grateful incense fill:",
+        "Still may we stand before thy face,",
+        "Still hear and do thy sovereign will."
+      ]
+    },
+    {
+      "lines": [
+        "More of Thy presence, Lord! impart;",
+        "More of Thine image may we bear:",
+        "O, fix Thy throne in every heart,",
+        "And reign without a rival there."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:13"
+}

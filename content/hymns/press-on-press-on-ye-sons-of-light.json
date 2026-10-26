@@ -1,0 +1,55 @@
+{
+  "title": "Press on, Press on! Ye Sons of Light",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "William Gaskell",
+      "born": 1805,
+      "died": 1884,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Press on, Press on! Ye Sons of Light in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "William Gaskell wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 312, “Press On!”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Press on, press on! ye sons of light, Un-tir-ing in your ho-ly fight, Still trea-ding each temp-ta-tion down, And bat-tling for a bright-er crown.",
+  "verses": [
+    {
+      "lines": [
+        "Press on, press on! ye sons of light,",
+        "Untiring in your holy fight,",
+        "Still treading each temptation down,",
+        "And battling for a brighter crown."
+      ]
+    },
+    {
+      "lines": [
+        "Press on, press on! through toil and woe,",
+        "With calm resolve, to triumph go,",
+        "And make each dark and threatening ill",
+        "Yield but a higher glory still."
+      ]
+    },
+    {
+      "lines": [
+        "Press on, press on! still look in faith",
+        "To him who vanquished sin and death;",
+        "Then shall ye hear God's word, \"Well done!\"",
+        "True to the last, press on, press on!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Gaskell died in 1884.",
+  "credits": "Words by William Gaskell (1805–1884), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:312"
+}

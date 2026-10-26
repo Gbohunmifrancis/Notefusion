@@ -1,0 +1,63 @@
+{
+  "title": "Thou That Art Strong to Comfort, Look on Me",
+  "tune": "penitentia",
+  "text": [
+    {
+      "name": "Mary Howitt",
+      "born": 1799,
+      "died": 1888,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Thou That Art Strong to Comfort, Look on Me in Tonic Solfa to PENITENTIA, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Mary Howitt wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 330, “In Affliction”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked Tens (10.10.10.10) (10.10.10.10), to be sung to any tune of that metre. This page sets them to PENITENTIA; any other Tens (10.10.10.10) tune fits them as well."
+  ],
+  "underlay": "Thou that art strong to com-fort, look on me! I sit in dark-ness and be-hold no light; O-ver my soul the waves of a-go-ny Have gone, and left me in a ray-less night.",
+  "verses": [
+    {
+      "lines": [
+        "Thou that art strong to comfort, look on me!",
+        "I sit in darkness and behold no light;",
+        "Over my soul the waves of agony",
+        "Have gone, and left me in a rayless night."
+      ]
+    },
+    {
+      "lines": [
+        "A bruised and broken reed sustain! sustain!",
+        "Divinest Comforter, to Thee I fly,",
+        "To whom no soul hath ever fled in vain;",
+        "Support me with thy love, or else I die."
+      ]
+    },
+    {
+      "lines": [
+        "Father, what'er I had, it all was thine;",
+        "A God of mercy Thou hast ever been;",
+        "O, help me what I most loved to resign,",
+        "And if I murmur, count it not for sin."
+      ]
+    },
+    {
+      "lines": [
+        "My soul is strengthened now, and it shall bear",
+        "All that remains, whatever it may be;",
+        "And from the very depths of my despair",
+        "I will look up, O God, and trust in Thee!"
+      ]
+    }
+  ],
+  "metre": "10 10 10 10",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Mary Howitt died in 1888.",
+  "credits": "Words by Mary Howitt (1799–1888), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to PENITENTIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:330"
+}

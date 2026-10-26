@@ -1,0 +1,54 @@
+{
+  "title": "Now the Shades of Night Are Gone",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Now the Shades of Night Are Gone in Tonic Solfa to HEINLEIN, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 363, “Morning Hymn”, where the book credits them to Episcopal Collection.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7) (7.7.7.7), to be sung to any tune of that metre. This page sets them to HEINLEIN; any other Sevens (7.7.7.7) tune fits them as well."
+  ],
+  "underlay": "Now the shades of night are gone; Now the morn-ing light is come: Lord, may we be Thine to day; Drive the shades of sin a-way.",
+  "verses": [
+    {
+      "lines": [
+        "Now the shades of night are gone;",
+        "Now the morning light is come:",
+        "Lord, may we be Thine to-day;",
+        "Drive the shades of sin away."
+      ]
+    },
+    {
+      "lines": [
+        "Fill our souls with heavenly light,",
+        "Banish doubt, and clear our sight;",
+        "In Thy service, Lord, to-day,",
+        "May we stand, and watch, and pray."
+      ]
+    },
+    {
+      "lines": [
+        "Keep our haughty passions bound;",
+        "Save us from our foes around;",
+        "Going out and coming in,",
+        "Keep us safe from every sin."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to HEINLEIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:363"
+}

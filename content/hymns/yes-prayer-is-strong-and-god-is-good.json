@@ -1,0 +1,46 @@
+{
+  "title": "Yes! Prayer Is Strong, and God Is Good",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Yes! Prayer Is Strong, and God Is Good in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 206, “The Strength of the Erring”, where the book credits them to Flint's Collection.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Yes! prayer is strong, and God is good; Man is not made for end-less ill; Th'of-fend-ing soul, in dark-est mood, Hath yet a hope, a re-fuge still.",
+  "verses": [
+    {
+      "lines": [
+        "Yes! prayer is strong, and God is good;",
+        "Man is not made for endless ill;",
+        "The offending soul, in darkest mood,",
+        "Hath yet a hope, a refuge still."
+      ]
+    },
+    {
+      "lines": [
+        "Thou, God, wilt hear; these pangs are meant",
+        "To heal the spirit, not destroy;",
+        "And even remorse, for chastening sent,",
+        "When Thou commandest, works for joy."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:206"
+}

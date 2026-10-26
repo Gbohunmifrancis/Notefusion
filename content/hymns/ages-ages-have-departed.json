@@ -1,0 +1,71 @@
+{
+  "title": "Ages, Ages Have Departed",
+  "tune": "st-raphael",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Ages, Ages Have Departed in Tonic Solfa to ST. RAPHAEL, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 439, “Slavery”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked 8.7.8.7.4.7 (8.7.8.7.4.7), to be sung to any tune of that metre. This page sets them to ST. RAPHAEL; any other 8.7.8.7.4.7 tune fits them as well."
+  ],
+  "underlay": "A-ges, a-ges have de-part-ed, Since the first dark ves-sel bore A-fric's child-ren, bro-ken heart-ed, To this far off west-ern shore; She, like Ra-chel, Weep-ing, for they were no more.",
+  "verses": [
+    {
+      "lines": [
+        "Ages, ages have departed,",
+        "Since the first dark vessel bore",
+        "Afric's children, broken-hearted,",
+        "To this far-off western shore;",
+        "She, like Rachel,",
+        "Weeping, for they were no more."
+      ]
+    },
+    {
+      "lines": [
+        "Millions, millions have been slaughtered",
+        "In the fight and on the deep;",
+        "Millions, millions more have watered,",
+        "With such tears as captives weep,",
+        "Fields of labor",
+        "Where their wasted bodies sleep."
+      ]
+    },
+    {
+      "lines": [
+        "Mercy, mercy, vainly pleading,",
+        "Rends her garments, smites her breast,",
+        "Till a voice from heaven proceeding",
+        "Gladden all the waiting west:",
+        "\"Come, ye weary!",
+        "Come, and I will give you rest!\""
+      ]
+    },
+    {
+      "lines": [
+        "Tidings, tidings of salvation!",
+        "Brothers, rise with one accord,",
+        "Purge the plague-spot from our nation,",
+        "Till, unto their rights restored,",
+        "Slaves no longer,",
+        "All are freemen in the Lord!"
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 4 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. RAPHAEL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:439"
+}

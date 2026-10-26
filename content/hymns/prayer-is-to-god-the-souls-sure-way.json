@@ -1,0 +1,63 @@
+{
+  "title": "Prayer Is to God the Soul's Sure Way",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Joseph Hart",
+      "born": 1712,
+      "died": 1768,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Prayer Is to God the Soul's Sure Way in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Joseph Hart wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 100, “Prayer the Life of the Soul”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Prayer is to God the soul's sure way; So flows the grace he waits to give; Long as they live should Christ-ians pray; They learn to pray when first they live.",
+  "verses": [
+    {
+      "lines": [
+        "Prayer is to God the soul's sure way;",
+        "So flows the grace he waits to give;",
+        "Long as they live should Christians pray;",
+        "They learn to pray when first they live."
+      ]
+    },
+    {
+      "lines": [
+        "If pain afflict, or wrongs oppress,",
+        "If cares distract, or fears dismay,",
+        "If guilt deject, if sin distress,",
+        "In every need, still watch and pray."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis prayer supports the soul that's weak,",
+        "Though poor and broken be its word;",
+        "Pray if thou canst, or canst not, speak;",
+        "The breathings of the soul are heard."
+      ]
+    },
+    {
+      "lines": [
+        "Depend on Him; thou shalt prevail;",
+        "Make all thy wants and wishes known;",
+        "Fear not, His mercy will not fail;",
+        "Ask but in faith, it shall be done."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Joseph Hart died in 1768.",
+  "credits": "Words by Joseph Hart (1712–1768), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:100"
+}

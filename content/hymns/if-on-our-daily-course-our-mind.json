@@ -1,0 +1,63 @@
+{
+  "title": "If on Our Daily Course Our Mind",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "John Keble",
+      "born": 1792,
+      "died": 1866,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "If on Our Daily Course Our Mind in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Keble wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 304, “Seeing God in All”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "If on our dail-y course our mind Be set, to hal-low all we find, New trea-sures still, of count-less price, God will pro-vide for sac-ri-fice.",
+  "verses": [
+    {
+      "lines": [
+        "If on our daily course our mind",
+        "Be set, to hallow all we find,",
+        "New treasures still, of countless price,",
+        "God will provide for sacrifice."
+      ]
+    },
+    {
+      "lines": [
+        "Old friends, old scenes, will lovelier be,",
+        "As more of heaven in each we see;",
+        "Some softening gleam of love and prayer",
+        "Shall dawn on every cross and care."
+      ]
+    },
+    {
+      "lines": [
+        "O could we learn that sacrifice,",
+        "What light would all around us rise!",
+        "How would our hearts with wisdom talk",
+        "Along life's dullest, dreariest walk!"
+      ]
+    },
+    {
+      "lines": [
+        "The trivial round, the common task,",
+        "Will furnish all we ought to ask;",
+        "Room to deny ourselves, a road",
+        "To bring us daily nearer God."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Keble died in 1866.",
+  "credits": "Words by John Keble (1792–1866), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:304"
+}

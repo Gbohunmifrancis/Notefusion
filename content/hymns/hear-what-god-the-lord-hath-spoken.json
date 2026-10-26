@@ -1,0 +1,55 @@
+{
+  "title": "Hear What God, the Lord, Hath Spoken",
+  "tune": "lux-eoi",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Hear What God, the Lord, Hath Spoken in Tonic Solfa to LUX EOI, doh is D: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 192, “The Kingdom of Heaven”.",
+    "The book printed the words without tunes, marked Eights and Sevens Double (8.7.8.7 D) (8.7.8.7.8.7.8.7), to be sung to any tune of that metre. This page sets them to LUX EOI; any other Eights and Sevens Double (8.7.8.7 D) tune fits them as well."
+  ],
+  "underlay": "Hear what God, the Lord, hath spo-ken; O my peo-ple, faint and few, Com-fort-less, a-fflic-ted, bro-ken, Fair a-bodes I build for you; Scenes of heart-felt tri-bu-la-tion Shall no more per-plex your ways; You shall name your walls sal-va-tion, And your gates shall all be praise.",
+  "verses": [
+    {
+      "lines": [
+        "Hear what God, the Lord, hath spoken;",
+        "O my people, faint and few,",
+        "Comfortless, afflicted, broken,",
+        "Fair abodes I build for you;",
+        "Scenes of heartfelt tribulation",
+        "Shall no more perplex your ways;",
+        "You shall name your walls salvation,",
+        "And your gates shall all be praise."
+      ]
+    },
+    {
+      "lines": [
+        "There, in undisturbed possession,",
+        "Peace and righteousness shall reign;",
+        "Never shall you feel oppression,",
+        "Never hear of war again;",
+        "God shall rise, and, shining o'er you,",
+        "Change to day the gloom of night;",
+        "He, the Lord, shall be your glory,",
+        "God your everlasting light."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to LUX EOI by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:192"
+}

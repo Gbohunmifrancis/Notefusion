@@ -1,0 +1,63 @@
+{
+  "title": "Author of Good, We Rest on Thee",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "James Merrick",
+      "born": 1720,
+      "died": 1769,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Author of Good, We Rest on Thee in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Merrick wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 260, “\"He Knoweth What Ye Have Need Of.\"”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Au-thor of good, we rest on Thee; Thine ev-er watch-ful eye A-lone our re-al wants can see, Thy hand a-lone sup-ply.",
+  "verses": [
+    {
+      "lines": [
+        "Author of good, we rest on Thee;",
+        "Thine ever watchful eye",
+        "Alone our real wants can see,",
+        "Thy hand alone supply."
+      ]
+    },
+    {
+      "lines": [
+        "In Thine all-gracious providence",
+        "Our cheerful hopes confide;",
+        "O, let Thy power be our defence,",
+        "Thy love our footsteps guide!"
+      ]
+    },
+    {
+      "lines": [
+        "And since, by passion's force subdued,",
+        "Too oft, with stubborn will,",
+        "We blindly shun the latent good,",
+        "And grasp the specious ill, —"
+      ]
+    },
+    {
+      "lines": [
+        "Not what we wish, but what we want,",
+        "Thy mercy still supply!",
+        "The good unasked, O Father, grant;",
+        "The ill, though asked, deny!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: James Merrick died in 1769.",
+  "credits": "Words by James Merrick (1720–1769), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:260"
+}

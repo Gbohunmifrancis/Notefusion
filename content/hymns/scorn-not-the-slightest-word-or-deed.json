@@ -1,0 +1,62 @@
+{
+  "title": "Scorn Not the Slightest Word or Deed",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Scorn Not the Slightest Word or Deed in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 307, “Effort”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Scorn not the slight-est word or deed, Nor deem it void of power; There's fruit in each wind waft-ed seed, That waits its na-tal hour.",
+  "verses": [
+    {
+      "lines": [
+        "Scorn not the slightest word or deed,",
+        "Nor deem it void of power;",
+        "There's fruit in each wind-wafted seed,",
+        "That waits its natal hour."
+      ]
+    },
+    {
+      "lines": [
+        "A whispered word may touch the heart,",
+        "And call it back to life;",
+        "A look of love bid sin depart,",
+        "And still unholy strife."
+      ]
+    },
+    {
+      "lines": [
+        "No act falls fruitless; none can tell",
+        "How vast its power may be,",
+        "Nor what results infolded dwell",
+        "Within it silently."
+      ]
+    },
+    {
+      "lines": [
+        "Work on, despair not; bring thy mite,",
+        "Nor care how small it be;",
+        "God is with all that serve the right,",
+        "The holy, true, and free."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:307"
+}

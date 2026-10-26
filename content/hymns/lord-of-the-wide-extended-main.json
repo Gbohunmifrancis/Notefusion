@@ -1,0 +1,71 @@
+{
+  "title": "Lord of the Wide-extended Main",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Lord of the Wide-extended Main in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 572, “The Sailor's Hymn”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Lord of the wide ex-tend-ed main! Whose power the winds and seas con-trols, Whose hand doth earth and heaven sus-tain, Whose Spir-it leads be-liev-ing souls;",
+  "verses": [
+    {
+      "lines": [
+        "Lord of the wide-extended main!",
+        "Whose power the winds and seas controls,",
+        "Whose hand doth earth and heaven sustain,",
+        "Whose Spirit leads believing souls;"
+      ]
+    },
+    {
+      "lines": [
+        "Throughout the deep Thy footsteps shine;",
+        "We own Thy way is in the sea,",
+        "O'erawed by majesty divine,",
+        "And lost in Thine immensity!"
+      ]
+    },
+    {
+      "lines": [
+        "Thy wisdom here we learn to adore,",
+        "Thine everlasting truth we prove,",
+        "The wondrous heights of boundless power,",
+        "The unfathomable depths of love."
+      ]
+    },
+    {
+      "lines": [
+        "Infinite God, Thy greatness spanned",
+        "These heavens, and meted out the skies;",
+        "Lo! in the hollow of Thy hand",
+        "The measured waters sink and rise."
+      ]
+    },
+    {
+      "lines": [
+        "And here Thine unknown paths we trace,",
+        "Which dark to human eyes appear:",
+        "While through the mighty waves we pass",
+        "Faith only sees that God is here."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:572"
+}

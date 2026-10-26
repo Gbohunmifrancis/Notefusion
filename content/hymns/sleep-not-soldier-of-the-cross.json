@@ -1,0 +1,55 @@
+{
+  "title": "Sleep Not, Soldier of the Cross",
+  "tune": "pleyels-hymn",
+  "text": [
+    {
+      "name": "William Gaskell",
+      "born": 1805,
+      "died": 1884,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Sleep Not, Soldier of the Cross in Tonic Solfa to PLEYEL'S HYMN, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "William Gaskell wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 314, “Sleep Not As Do Others”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7) (7.7.7.7), to be sung to any tune of that metre. This page sets them to PLEYEL'S HYMN; any other Sevens (7.7.7.7) tune fits them as well."
+  ],
+  "underlay": "Sleep not, sol-dier of the cross! Foes are lurk-ing all a-round; Look not here to find re-pose, This is but thy bat-tle ground.",
+  "verses": [
+    {
+      "lines": [
+        "Sleep not, soldier of the cross!",
+        "Foes are lurking all around;",
+        "Look not here to find repose,",
+        "This is but thy battle-ground."
+      ]
+    },
+    {
+      "lines": [
+        "Up! and take thy shield and sword;",
+        "Up! it is the call of Heaven;",
+        "Shrink not faithless from thy Lord,",
+        "Nobly strive as he hath striven."
+      ]
+    },
+    {
+      "lines": [
+        "Break through all the force of ill;",
+        "Tread the might of passion down;",
+        "Struggle onward, upward still,",
+        "To the conquering Saviour's crown!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Gaskell died in 1884.",
+  "credits": "Words by William Gaskell (1805–1884), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to PLEYEL'S HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:314"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "God Moves in a Mysterious Way",
+  "tune": "york",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "God Moves in a Mysterious Way in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 259, “The Mysteries of God's Providence”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "God moves in a mys-te-rious way, His won-ders to per-form; He plants His foot-steps in the sea, And rides up-on the storm.",
+  "verses": [
+    {
+      "lines": [
+        "God moves in a mysterious way,",
+        "His wonders to perform;",
+        "He plants His footsteps in the sea,",
+        "And rides upon the storm."
+      ]
+    },
+    {
+      "lines": [
+        "Deep in unfathomable mines",
+        "Of never-failing skill,",
+        "He treasures up His vast designs,",
+        "And works His sovereign will."
+      ]
+    },
+    {
+      "lines": [
+        "Ye fearful saints! fresh courage take;",
+        "The clouds ye so much dread",
+        "Are big with mercy, and will break",
+        "In blessings on your head."
+      ]
+    },
+    {
+      "lines": [
+        "Judge not the Lord by feeble sense,",
+        "But trust Him for His grace;",
+        "Behind a frowning providence",
+        "He hides a smiling face."
+      ]
+    },
+    {
+      "lines": [
+        "His purposes will ripen fast,",
+        "Unfolding every hour;",
+        "The bud may have a bitter taste,",
+        "But sweet will be the flower."
+      ]
+    },
+    {
+      "lines": [
+        "Blind unbelief is sure to err,",
+        "And scan his work in vain;",
+        "God is His own interpreter,",
+        "And He will make it plain."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:259"
+}

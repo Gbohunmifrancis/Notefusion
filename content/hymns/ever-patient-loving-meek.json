@@ -1,0 +1,60 @@
+{
+  "title": "Ever Patient, Loving, Meek",
+  "tune": "ratisbon-werner",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Ever Patient, Loving, Meek in Tonic Solfa to RATISBON (WERNER), doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 120, “The Mind Which Was in Christ Jesus”.",
+    "The book printed the words without tunes, marked Sevens, six lines (7.7.7.7.7.7) (7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to RATISBON (WERNER); any other Sevens, six lines (7.7.7.7.7.7) tune fits them as well."
+  ],
+  "underlay": "Ev-er pa-tient, lov-ing, meek, Ho-ly Sa-viour, was thy mind; Vain-ly in my-self I seek Like-ness to my Lord to find; Yet the mind that was in thee May be, must be, formed in me.",
+  "verses": [
+    {
+      "lines": [
+        "Ever patient, loving, meek,",
+        "Holy Saviour, was thy mind;",
+        "Vainly in myself I seek",
+        "Likeness to my Lord to find;",
+        "Yet the mind that was in thee",
+        "May be, must be, formed in me."
+      ]
+    },
+    {
+      "lines": [
+        "Since such griefs were thine to bear,",
+        "For each sufferer thou couldst feel,",
+        "Every mourner's burden share,",
+        "Every wounded spirit heal.",
+        "Saviour, let thy grace in me",
+        "Form that mind which was in thee."
+      ]
+    },
+    {
+      "lines": [
+        "When my pain is most intense,",
+        "Let thy cross my lesson prove;",
+        "Let me hear thee even thence;",
+        "Breathing words of peace and love;",
+        "Thus thy grace shall form in me",
+        "The same mind which was in thee."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to RATISBON (WERNER) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:120"
+}

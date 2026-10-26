@@ -1,0 +1,71 @@
+{
+  "title": "Our Father! Through the Coming Year",
+  "tune": "york",
+  "text": [
+    {
+      "name": "William Gaskell",
+      "born": 1805,
+      "died": 1884,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Our Father! Through the Coming Year in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Gaskell wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 390, “A New Year”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Our Fa-ther! through the com-ing year We know not what shall be, But we would leave with-out a fear Its or-dering all to Thee.",
+  "verses": [
+    {
+      "lines": [
+        "Our Father! through the coming year",
+        "We know not what shall be,",
+        "But we would leave without a fear",
+        "Its ordering all to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "It may be we shall toil in vain",
+        "For what the world holds fair,",
+        "And all its good we thought to gain",
+        "Deceive, and prove but care."
+      ]
+    },
+    {
+      "lines": [
+        "It may be it shall darkly blend",
+        "Our love with anxious fears,",
+        "And snatch away the valued friend,",
+        "The tried of many years."
+      ]
+    },
+    {
+      "lines": [
+        "It may be it shall bring us days",
+        "And nights of lingering pain,",
+        "And bid us take our farewell gaze",
+        "Of these loved haunts of men."
+      ]
+    },
+    {
+      "lines": [
+        "But calmly, Lord, on Thee we rest;",
+        "No fears our trust shall move;",
+        "Thou knowest what for each is best,",
+        "And Thou art perfect love."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Gaskell died in 1884.",
+  "credits": "Words by William Gaskell (1805–1884), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:390"
+}

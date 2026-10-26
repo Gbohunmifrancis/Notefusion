@@ -1,0 +1,79 @@
+{
+  "title": "Heralds of Creation! Cry",
+  "tune": "pleyels-hymn",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Heralds of Creation! Cry in Tonic Solfa to PLEYEL'S HYMN, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 465, “Praise Ye the Lord”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7) (7.7.7.7), to be sung to any tune of that metre. This page sets them to PLEYEL'S HYMN; any other Sevens (7.7.7.7) tune fits them as well."
+  ],
+  "underlay": "Her-alds of cre-a-tion! cry, Praise the Lord, the Lord most high! Heaven and earth! o-bey the call; Praise the Lord, the Lord of all.",
+  "verses": [
+    {
+      "lines": [
+        "Heralds of creation! cry, —",
+        "Praise the Lord, the Lord most high!",
+        "Heaven and earth! obey the call;",
+        "Praise the Lord, the Lord of all."
+      ]
+    },
+    {
+      "lines": [
+        "For He spake, and forth from night",
+        "Sprang the universe to light;",
+        "He commanded, — nature heard,",
+        "And stood fast upon His word."
+      ]
+    },
+    {
+      "lines": [
+        "Praise Him, all ye hosts above;",
+        "Spirits perfected in love!",
+        "Sun and moon! your voices raise;",
+        "Sing, ye stars! your Maker's praise."
+      ]
+    },
+    {
+      "lines": [
+        "Earth! from all thy depths below,",
+        "Ocean's hallelujahs flow;",
+        "Lightning, vapor, wind, and storm,",
+        "Hail and snow! His will perform."
+      ]
+    },
+    {
+      "lines": [
+        "Birds! on wings of rapture soar,",
+        "Warble at His temple's door;",
+        "Joyful sounds from herds and flocks,",
+        "Echo back, ye caves and rocks!"
+      ]
+    },
+    {
+      "lines": [
+        "High above all height His throne;",
+        "Excellent His name alone;",
+        "Him let all His works confess!",
+        "Him let all His children bless!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to PLEYEL'S HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:465"
+}

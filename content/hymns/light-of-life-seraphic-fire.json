@@ -1,0 +1,54 @@
+{
+  "title": "Light of Life, Seraphic Fire",
+  "tune": "martyn",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Light of Life, Seraphic Fire in Tonic Solfa to MARTYN, doh is F: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 21, “The Light of Life”, where the book credits them to Wesleyan.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7 D) (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to MARTYN; any other Sevens Double (7.7.7.7 D) tune fits them as well."
+  ],
+  "underlay": "Light of life, se-raph-ic fire! Love di-vine, Thy-self im-part: Ev-ery faint-ing soul in-spire; En-ter ev-ery droop-ing heart: Ev-ery mourn-ful spi-rit cheer, Scat-ter all our doubt and gloom; Fa-ther, in Thy grace ap-pear, To Thy hu-man tem-ples come!",
+  "verses": [
+    {
+      "lines": [
+        "Light of life, seraphic fire!",
+        "Love divine, Thyself impart:",
+        "Every fainting soul inspire;",
+        "Enter every drooping heart:",
+        "Every mournful spirit cheer,",
+        "Scatter all our doubt and gloom;",
+        "Father, in Thy grace appear,",
+        "To Thy human temples come!"
+      ]
+    },
+    {
+      "lines": [
+        "Come in this accepted hour,",
+        "Bring Thy heavenly kingdom in;",
+        "Fill us with Thy glorious power,",
+        "Rooting out the seeds of sin:",
+        "Nothing more can we require,",
+        "We can rest in nothing less:",
+        "Be Thou all our heart's desire,",
+        "All our joy and all our peace."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MARTYN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:21"
+}

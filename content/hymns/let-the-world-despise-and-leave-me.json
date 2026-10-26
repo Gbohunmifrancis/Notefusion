@@ -1,0 +1,66 @@
+{
+  "title": "Let the World Despise and Leave Me",
+  "tune": "lux-eoi",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Let the World Despise and Leave Me in Tonic Solfa to LUX EOI, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 536, “Faith”.",
+    "The book printed the words without tunes, marked Eights and Sevens Double (8.7.8.7 D) (8.7.8.7.8.7.8.7), to be sung to any tune of that metre. This page sets them to LUX EOI; any other Eights and Sevens Double (8.7.8.7 D) tune fits them as well."
+  ],
+  "underlay": "Let the world de-spise and leave me, Once they left my Sa-viour too; Let all hu-man hopes de-ceive me, Thou wilt nev-er be un-true; And whilst Thou shalt smile up-on me, God of wis-dom, love and might! Foes may hate and friends dis-own me, Yet the dark-ness shall be light.",
+  "verses": [
+    {
+      "lines": [
+        "Let the world despise and leave me, —",
+        "Once they left my Saviour too;",
+        "Let all human hopes deceive me,",
+        "Thou wilt never be untrue;",
+        "And whilst Thou shalt smile upon me,",
+        "God of wisdom, love and might!",
+        "Foes may hate and friends disown me,",
+        "Yet the darkness shall be light."
+      ]
+    },
+    {
+      "lines": [
+        "Go, then, earthly fame and treasure;",
+        "Come, disaster, scorn and pain!",
+        "In Thy service pain is pleasure,",
+        "With Thy favor loss is gain.",
+        "I have learned to call Thee Father,",
+        "I have fixed my heart on Thee;",
+        "Storms may howl and clouds may gather,",
+        "All must work for good to me."
+      ]
+    },
+    {
+      "lines": [
+        "Man may trouble and distress me,",
+        "'Twill but drive me to Thy breast;",
+        "Life with trials hard may press me,",
+        "Thou canst give me sweetest rest.",
+        "O, 'tis not in grief to harm me,",
+        "While Thy love is left to me;",
+        "O, 'twere not in joy to charm me,",
+        "Were that joy unmixed with Thee!"
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to LUX EOI by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:536"
+}

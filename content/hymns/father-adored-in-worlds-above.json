@@ -1,0 +1,54 @@
+{
+  "title": "Father, Adored in Worlds Above",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Father, Adored in Worlds Above in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 490, “The Lord's Prayer”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther, a-dored in worlds a-bove! Thy glo-rious name be hal-lowed still; Thy king-dom come in truth and love; And earth, like heaven, o-bey Thy will.",
+  "verses": [
+    {
+      "lines": [
+        "Father, adored in worlds above!",
+        "Thy glorious name be hallowed still;",
+        "Thy kingdom come in truth and love;",
+        "And earth, like heaven, obey Thy will."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, make our daily wants Thy care;",
+        "Forgive the sins which we forsake;",
+        "In Thy compassion let us share,",
+        "As fellow-men of ours partake."
+      ]
+    },
+    {
+      "lines": [
+        "Evils beset us every hour;",
+        "Thy kind protection we implore,",
+        "Thine is the kingdom, Thine the power,",
+        "The glory Thine forever more."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:490"
+}

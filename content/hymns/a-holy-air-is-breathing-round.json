@@ -1,0 +1,54 @@
+{
+  "title": "A Holy Air Is Breathing Round",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "A Holy Air Is Breathing Round in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 157, “One in Christ”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "A Ho-ly air is breath-ing round, A fra-grance from a-bove; Be ev-ery soul from sense un-bound, Be ev-ery spi-rit love.",
+  "verses": [
+    {
+      "lines": [
+        "A Holy air is breathing round,",
+        "A fragrance from above;",
+        "Be every soul from sense unbound,",
+        "Be every spirit love."
+      ]
+    },
+    {
+      "lines": [
+        "O God, unite us heart to heart,",
+        "In sympathy divine,",
+        "That we be never drawn apart,",
+        "And love not Thee nor Thine;"
+      ]
+    },
+    {
+      "lines": [
+        "But, by the cross of Jesus taught,",
+        "And all Thy gracious word,",
+        "Be nearer to each other brought,",
+        "And nearer to the Lord."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:157"
+}

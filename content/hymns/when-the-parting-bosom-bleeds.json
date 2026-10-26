@@ -1,0 +1,71 @@
+{
+  "title": "When the Parting Bosom Bleeds",
+  "tune": "ratisbon-werner",
+  "text": [
+    {
+      "name": "Lydia Sigourney",
+      "born": 1791,
+      "died": 1865,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "When the Parting Bosom Bleeds in Tonic Solfa to RATISBON (WERNER), doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Lydia Sigourney wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 571, “Prayer for the Sailor”.",
+    "The book printed the words without tunes, marked Sevens, six lines (7.7.7.7.7.7) (7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to RATISBON (WERNER); any other Sevens, six lines (7.7.7.7.7.7) tune fits them as well."
+  ],
+  "underlay": "When the part-ing bo-som bleeds, When their na-tive shore re-cedes, When the wild and faith-less main Takes them to her trust a-gain, Fa-ther! view the sai-lor's woe Guide them whe-re-soe'er they go.",
+  "verses": [
+    {
+      "lines": [
+        "When the parting bosom bleeds,",
+        "When their native shore recedes,",
+        "When the wild and faithless main",
+        "Takes them to her trust again,",
+        "Father! view the sailor's woe —",
+        "Guide them wheresoe'er they go."
+      ]
+    },
+    {
+      "lines": [
+        "When the lonely watch they keep,",
+        "Silent on the mighty deep,",
+        "While the boisterous surges hoarse",
+        "Bear them daily on their course,",
+        "Eye that never slumbers! shed",
+        "Holy influence on their head."
+      ]
+    },
+    {
+      "lines": [
+        "When the Sabbath's peaceful ray",
+        "O'er the ocean's breast doth play,",
+        "Though no throngs assemble there,",
+        "No sweet church-bell warns to prayer,",
+        "Spirit! let thy presence be",
+        "Sabbath to the unresting sea."
+      ]
+    },
+    {
+      "lines": [
+        "When the raging billows dark",
+        "Thunder round the storm-tossed bark,",
+        "Thou who on the whelming wave",
+        "Didst the loved disciples save,",
+        "Thou canst hear them when they pray, —",
+        "Jesus, Saviour, be their stay!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Lydia Sigourney died in 1865.",
+  "credits": "Words by Lydia Sigourney (1791–1865), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to RATISBON (WERNER) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:571"
+}

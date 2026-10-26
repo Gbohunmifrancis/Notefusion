@@ -1,0 +1,63 @@
+{
+  "title": "\"Thy Kingdom Come!\" the Heathen Lands",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Emily Taylor",
+      "born": 1795,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "\"Thy Kingdom Come!\" the Heathen Lands in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Emily Taylor wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 171, “Thy Kingdom Come!”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "\"Thy king-dom come!\" The hea-then lands, In er-ror sunk, Thy pre-sence crave; And vic-tims bound by ty-rant hands Im-plore Thee, Fa-ther, come and save!",
+  "verses": [
+    {
+      "lines": [
+        "\"Thy kingdom come!\" The heathen lands,",
+        "In error sunk, Thy presence crave;",
+        "And victims bound by tyrant hands",
+        "Implore Thee, Father, come and save!"
+      ]
+    },
+    {
+      "lines": [
+        "\"Thy kingdom come!\" Each troubled mind",
+        "In doubt and darkness calls for Thee;",
+        "For Thou hast eyes to give the blind,",
+        "And strength to set the captive free."
+      ]
+    },
+    {
+      "lines": [
+        "Thy reign of peace and love begin!",
+        "Too oft the Christian's sacred name",
+        "Is stained by wrath and shamed by sin;",
+        "O, come, assert the gospel's claim!"
+      ]
+    },
+    {
+      "lines": [
+        "O, never in that righteous cause",
+        "Our hearts be slow, our voices dumb;",
+        "Upon the glorious theme we pause,",
+        "And fervent pray, \"Thy kingdom come!\""
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Emily Taylor died in 1872.",
+  "credits": "Words by Emily Taylor (1795–1872), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:171"
+}

@@ -1,0 +1,55 @@
+{
+  "title": "Through All This Life's Eventful Road",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "William Gaskell",
+      "born": 1805,
+      "died": 1884,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Through All This Life's Eventful Road in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "William Gaskell wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 66, “Walking with God”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Through all this life's e-vent-ful road, Fain would I walk with Thee, my God, And make Thy pre-sence light a-round, And ev-ery step on ho-ly ground.",
+  "verses": [
+    {
+      "lines": [
+        "Through all this life's eventful road,",
+        "Fain would I walk with Thee, my God,",
+        "And make Thy presence light around,",
+        "And every step on holy ground."
+      ]
+    },
+    {
+      "lines": [
+        "Each blessing would I trace to Thee,",
+        "In every grief Thy mercy see;",
+        "And through the paths of duty move,",
+        "Conscious of Thine encircling love."
+      ]
+    },
+    {
+      "lines": [
+        "And when the angel Death stands by,",
+        "Be this my strength, that Thou art nigh;",
+        "And this my joy, that I shall be",
+        "With those who dwell in light with Thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Gaskell died in 1884.",
+  "credits": "Words by William Gaskell (1805–1884), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:66"
+}

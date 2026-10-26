@@ -434,6 +434,29 @@ and a line that cannot be fitted honestly refuses the hymn (listed in `watts-rep
 already have (first line, title or other title) is left alone. The pages carry `"setByMetre": true`, which keeps them out
 of hymn recognition (a hummed ST ANNE is offered "O God, Our Help", not every text sung to it) and out of the app's pack.
 
+### Words set by metre: Longfellow and Johnson's Book of Hymns (1848)
+
+`tools/blog/import/hymns-1848.mjs` does the same for *A Book of Hymns for Public and Private Devotion* (Samuel Longfellow and
+Samuel Johnson, Boston 1848; Project Gutenberg eBook #33180, the fifteenth edition of 1866 with its supplement):
+
+```bash
+mkdir -p /tmp/hymns-1848 && curl -L -o /tmp/hymns-1848/book.txt https://www.gutenberg.org/cache/epub/33180/pg33180.txt
+node tools/blog/import/hymns-1848.mjs --src /tmp/hymns-1848/book.txt --date 2026-10-26 [--publish] [--dry-run]
+```
+
+This book prints each hymn's metre and author. The metre is its label read with the verse's length ("8 & 7s" in eight
+lines is 8.7.8.7 D; "P. M.", a particular metre, gives none), set to a tune of that metre from `METRES` in the importer
+(Common, Long and Short Metre share Watts' tunes; 7s, 8.7s, 7.6 D, 10s, 11.10s, 6.6.4.6.6.6.4, H.M. and the doubles have
+their own). The book names most authors by surname: `AUTHORS` names those we can place, in full with their dates, matching
+the people already on our pages; a surname that could be more than one writer, and a hymn translated by someone the book
+does not name (Breviary, German, Luther, Neale…), is left out. "Anonymous" and the collections the book cites stand as
+`Anonymous`, and the page says which collection. The book gives only the year of its printing, so the pages carry
+`"textPublishedBy": true`: their public-domain answer says the words were "in print by" 1848 (hymns 1–479) or 1866 (the
+supplement), never a made-up first publication. Skipped hymns and why are in `hymns-1848-report.json`.
+
+*The Christian Hymn Book* (Campbell, 1865) prints no authors and the *St. Gregory Hymnal* (1920) gives each hymn its own
+tune, so neither is imported this way.
+
 ### Status of the seeded hymns
 
 Every hymn is `"reviewed": false` until you have checked the melody against a hymn book you trust;

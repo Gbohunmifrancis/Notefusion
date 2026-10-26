@@ -1,0 +1,60 @@
+{
+  "title": "To the Father's Love We Trust",
+  "tune": "spanish-hymn",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "To the Father's Love We Trust in Tonic Solfa to SPANISH HYMN, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 412, “Funeral Hymn of a Child”.",
+    "The book printed the words without tunes, marked Sevens, six lines (7.7.7.7.7.7) (7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to SPANISH HYMN; any other Sevens, six lines (7.7.7.7.7.7) tune fits them as well."
+  ],
+  "underlay": "To the Fa-ther's love we trust That which was en-shrined in dust; While we give the earth to earth, Finds the soul its heav-enly birth. An-gels wait the an-gel child, Gen-tle, young, and un-de-filed.",
+  "verses": [
+    {
+      "lines": [
+        "To the Father's love we trust",
+        "That which was enshrined in dust;",
+        "While we give the earth to earth,",
+        "Finds the soul its heavenly birth.",
+        "Angels wait the angel child,",
+        "Gentle, young, and undefiled."
+      ]
+    },
+    {
+      "lines": [
+        "Said not oft those pleading eyes",
+        "That they longed for purer skies?",
+        "Did not oft the falling tear",
+        "Speak of roughening billows here?",
+        "Prayed we not that she might rest",
+        "On her Heavenly Father's breast?"
+      ]
+    },
+    {
+      "lines": [
+        "Give the spirit, then, to God,",
+        "And its vesture to the sod;",
+        "Life, henceforth, shall have a ray",
+        "Kindled ne'er to pass away,",
+        "And a light from angel eyes",
+        "Draw us upward to the skies."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to SPANISH HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:412"
+}

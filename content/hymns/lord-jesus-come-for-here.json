@@ -1,0 +1,71 @@
+{
+  "title": "Lord Jesus, Come! for Here",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Harriet Martineau",
+      "born": 1802,
+      "died": 1876,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Lord Jesus, Come! for Here in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Harriet Martineau wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 173, “The Coming of Christ in Power”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Lord Je-sus, come! for here Our path through wilds is laid; We watch, as for the day-spring near, A-mid the break-ing shade.",
+  "verses": [
+    {
+      "lines": [
+        "Lord Jesus, come! for here",
+        "Our path through wilds is laid;",
+        "We watch, as for the dayspring near,",
+        "Amid the breaking shade."
+      ]
+    },
+    {
+      "lines": [
+        "Lord Jesus, come! for hosts",
+        "Meet on the battle-plain;",
+        "Our holiest hopes seem vainest boasts,",
+        "And tears are shed like rain."
+      ]
+    },
+    {
+      "lines": [
+        "Lord Jesus, come! the slave",
+        "Still bears his heavy chains;",
+        "Their daily bread the hungry crave,",
+        "While teem the fruitful plains."
+      ]
+    },
+    {
+      "lines": [
+        "Hark! herald voices near",
+        "Lead on thy happier day;",
+        "Come, Lord, and our hosannas hear!",
+        "We wait to strew thy way."
+      ]
+    },
+    {
+      "lines": [
+        "Come, as in days of old,",
+        "With words of grace and power;",
+        "Gather us all within thy fold,",
+        "And let us stray no more!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Harriet Martineau died in 1876.",
+  "credits": "Words by Harriet Martineau (1802–1876), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:173"
+}

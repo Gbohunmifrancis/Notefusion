@@ -1,0 +1,63 @@
+{
+  "title": "Oh God, That Mad'st the Earth and Sky",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Reginald Heber",
+      "born": 1783,
+      "died": 1826,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Oh God, That Mad'st the Earth and Sky in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Reginald Heber wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 545, “In the Day of Distress”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Oh God, that mad'st the earth and sky, The dark-ness and the day, Oh lis-ten to Thy chil-dren's cry, And help us when we pray!",
+  "verses": [
+    {
+      "lines": [
+        "Oh God, that mad'st the earth and sky,",
+        "The darkness and the day,",
+        "Oh listen to Thy children's cry,",
+        "And help us when we pray!"
+      ]
+    },
+    {
+      "lines": [
+        "For wide the waves of bitterness",
+        "Around our vessel roar,",
+        "And heavy grows the burdened heart,",
+        "To view the rocky shore."
+      ]
+    },
+    {
+      "lines": [
+        "The cross our Master bore for us,",
+        "For him we fain would bear;",
+        "But mortal strength to weakness turns,",
+        "And courage to despair!"
+      ]
+    },
+    {
+      "lines": [
+        "Have mercy on our failings, Lord!",
+        "Our sinking faith renew!",
+        "And when his sorrows visit us,",
+        "O send his patience too."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Reginald Heber died in 1826.",
+  "credits": "Words by Reginald Heber (1783–1826), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:545"
+}

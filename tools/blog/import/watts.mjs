@@ -57,7 +57,7 @@ export function dohOf(key) {
 /** The book's hymns: [{book, number, heading, verses: [[lines]]}]. */
 export function parseWatts(text) {
   // The transcription types a dash as "--"; an underlay reads every "-" as a syllable break.
-  const lines = String(text).replace(/\r/g, "").replace(/\s*--\s*/g, " — ").split("\n");
+  const lines = String(text).replace(/\r/g, "").replace(/[ \t]*--[ \t]*/g, " — ").split("\n");
   const hymns = [];
   let cur = null, stanza = null, inHeading = false;
   const close = () => { if (stanza && stanza.length) cur.verses.push(stanza); stanza = null; };

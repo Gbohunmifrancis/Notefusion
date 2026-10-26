@@ -1,0 +1,63 @@
+{
+  "title": "Come, Ye Who Love the Lord",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Come, Ye Who Love the Lord in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 3, “Cheerful Worship”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Come, ye who love the Lord! And let your joys be known; Join in a song with sweet ac-cord, And thus sur-round His throne.",
+  "verses": [
+    {
+      "lines": [
+        "Come, ye who love the Lord!",
+        "And let your joys be known;",
+        "Join in a song with sweet accord,",
+        "And thus surround His throne."
+      ]
+    },
+    {
+      "lines": [
+        "The sorrows of the mind",
+        "Be banished from this place!",
+        "Religion never was designed",
+        "To make our pleasures less."
+      ]
+    },
+    {
+      "lines": [
+        "The sons of God have found",
+        "That heaven begins below:",
+        "Celestial fruits, on earthly ground,",
+        "From faith and hope may grow."
+      ]
+    },
+    {
+      "lines": [
+        "Then let our sorrows cease,",
+        "And every tear be dry;",
+        "We're travelling through the paths of peace",
+        "To fairer worlds on high."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:3"
+}
