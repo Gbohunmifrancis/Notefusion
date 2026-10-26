@@ -1,0 +1,76 @@
+{
+  "title": "Thou, Blest Creator of the Light",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "Thou, Blest Creator of the Light in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), where he gives them as “By Gregory”, headed “Lucis Creator Optime”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thou, blest Cre-a-tor of the light, From whom the day its splen-dour brings, Thy word the earth to beau-ty woke, When light came forth on glow-ing wings.",
+  "verses": [
+    {
+      "lines": [
+        "Thou, blest Creator of the light,",
+        "From whom the day its splendour brings,",
+        "Thy word the earth to beauty woke,",
+        "When light came forth on glowing wings."
+      ]
+    },
+    {
+      "lines": [
+        "The circle of the day is Thine,",
+        "The morn, and night in one are bound;—",
+        "O hear our earnest prayer as now",
+        "The gloomy shades are gathering round;"
+      ]
+    },
+    {
+      "lines": [
+        "O free our souls from guilty stains,",
+        "That we Thy favour still may know;",
+        "And let no thought the mind possess,",
+        "To bind the heart to earth below."
+      ]
+    },
+    {
+      "lines": [
+        "That we may beat at heaven’s fair gate,",
+        "Where safely stored our treasure lies,",
+        "Purge us from every filthy stain,",
+        "Teach us all evil to despise."
+      ]
+    },
+    {
+      "lines": [
+        "Hear us, O Holy Father, hear,",
+        "And Thou the Everlasting Son,",
+        "Who with the Holy Spirit reign’st",
+        "While the eternal ages run."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:6"
+}

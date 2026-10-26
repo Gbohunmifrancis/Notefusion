@@ -1,0 +1,68 @@
+{
+  "title": "Thy Love Hath Sweetened Me",
+  "tune": "st-bride",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "Thy Love Hath Sweetened Me in Tonic Solfa to ST. BRIDE, doh is Bb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904).",
+    "The book printed the words without tunes. They are in Short Metre (6.6.8.6), and this page sets them to ST. BRIDE; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Thy love hath sweet-ened me, Thy love, O Christ, di-vine, And by Thy fa-vour Thou hast changed This wil-ful heart of mine.",
+  "verses": [
+    {
+      "lines": [
+        "Thy love hath sweetened me, —",
+        "Thy love, O Christ, divine,",
+        "And by Thy favour Thou hast changed",
+        "This wilful heart of mine."
+      ]
+    },
+    {
+      "lines": [
+        "Now by Thy Spirit's fire,",
+        "Consume my sins, I pray,",
+        "And in my heart a love instil,",
+        "That shall abide for aye."
+      ]
+    },
+    {
+      "lines": [
+        "Then shall my heart rejoice,",
+        "Because Thou dost abide,",
+        "For ever, O Thou Blessed One,",
+        "Close to Thy servant's side."
+      ]
+    },
+    {
+      "lines": [
+        "And love and joy shall be",
+        "My strength while here I stay;",
+        "And love, the spring of all my joy,",
+        "Shall live and love alway."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to ST. BRIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:24"
+}

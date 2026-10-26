@@ -1,0 +1,71 @@
+{
+  "title": "When Israel Through the Desert Passed",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Benjamin Beddome",
+      "born": 1717,
+      "died": 1795,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "When Israel Through the Desert Passed in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Benjamin Beddome wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 118.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When Is-rael through the des-ert passed, A fie-ry pil-lar went be-fore To guide them through the drea-ry waste And les-sen the fa-tigues they bore.",
+  "verses": [
+    {
+      "lines": [
+        "When Israel through the desert passed,",
+        "A fiery pillar went before",
+        "To guide them through the dreary waste",
+        "And lessen the fatigues they bore."
+      ]
+    },
+    {
+      "lines": [
+        "Such is Thy glorious Word, O God!",
+        "’Tis for our light and guidance giv’n;",
+        "It sheds its luster all abroad",
+        "And points the path to bliss and heav’n."
+      ]
+    },
+    {
+      "lines": [
+        "It fills the soul with sweet delight",
+        "And quickens its inactive powers;",
+        "It sets our wand’ring footsteps right,",
+        "Displays Thy love, and kindles ours."
+      ]
+    },
+    {
+      "lines": [
+        "Its promises rejoice our hearts,",
+        "Its doctrines are divinely true;",
+        "While highest wisdom it imparts,",
+        "It comforts and instructs us too."
+      ]
+    },
+    {
+      "lines": [
+        "Ye favored lands, that have this Word,",
+        "Ye saints, who feel its saving power,",
+        "Unite your tongues to praise the Lord",
+        "And His distinguished grace adore!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Benjamin Beddome died in 1795.",
+  "credits": "Words by Benjamin Beddome (1717–1795), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:118"
+}

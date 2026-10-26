@@ -1,0 +1,72 @@
+{
+  "title": "O Son of God, Afflicted",
+  "tune": "angels-story",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "O Son of God, Afflicted in Tonic Solfa to ANGEL'S STORY, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Sevens and Sixes Double (7.6.7.6.7.6.7.6), and this page sets them to ANGEL'S STORY; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "O Son of God, a-fflic-ted, And slain for sin-ful men, My soul hath oft' de-pict-ed What Thou didst suf-fer then, The pain, the grief, the sigh-ing, The bur-den of Thy woe, The cross, the shame, the dy-ing That filled Thy life be-low.",
+  "verses": [
+    {
+      "lines": [
+        "O Son of God, afflicted,",
+        "And slain for sinful men,",
+        "My soul hath oft' depicted",
+        "What Thou didst suffer then, —",
+        "The pain, the grief, the sighing,",
+        "The burden of Thy woe,",
+        "The cross, the shame, the dying",
+        "That filled Thy life below."
+      ]
+    },
+    {
+      "lines": [
+        "Ah, why from heavenly blessing",
+        "Didst Thou to earth descend,",
+        "And share the woes distressing,",
+        "To be the sinner's Friend?",
+        "The angels looked amazéd,",
+        "While men untouched beheld",
+        "The Christ to souls debaséd,",
+        "By love divine impelled."
+      ]
+    },
+    {
+      "lines": [
+        "'Twas love, 'twas love unbounded,",
+        "As high as heaven ascends,",
+        "As deep as depths unsounded,",
+        "And broad as earth extends;",
+        "Yea, 'twas a love undying,",
+        "That suffered for my sake; —",
+        "Lord, may a love replying,",
+        "Within my soul awake."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to ANGEL'S STORY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:17"
+}

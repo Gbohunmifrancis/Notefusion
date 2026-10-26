@@ -1,0 +1,76 @@
+{
+  "title": "The Christ on Olive's Mount in Prayer",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "The Christ on Olive's Mount in Prayer in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The Christ on Ol-ive's mount in prayer His heart to God ex-prest; And as they held sweet con-verse there, His soul with peace was blest.",
+  "verses": [
+    {
+      "lines": [
+        "The Christ on Olive's mount in prayer",
+        "His heart to God exprest;",
+        "And as they held sweet converse there,",
+        "His soul with peace was blest."
+      ]
+    },
+    {
+      "lines": [
+        "Far from the din of troubled life,",
+        "The tumult, and the swell,",
+        "A silence, stilling earthly strife,",
+        "Upon His spirit fell."
+      ]
+    },
+    {
+      "lines": [
+        "And there a voice whose soothing tone",
+        "The trusting spirit filled,",
+        "Came with that grace by which alone",
+        "Our great unrest is stilled."
+      ]
+    },
+    {
+      "lines": [
+        "O may the blessed thought, divine,",
+        "That moved the Christ to prayer,",
+        "Our weary, anxious souls incline",
+        "Like peace and joy to share;"
+      ]
+    },
+    {
+      "lines": [
+        "And on the mount where God is met,",
+        "May we the solace know,",
+        "That found His soul on Olivet,",
+        "Who shared our life below."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:71"
+}

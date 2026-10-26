@@ -1,0 +1,86 @@
+{
+  "title": "Hark! Through the Waking Earth",
+  "tune": "quam-dilecta",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Hark! Through the Waking Earth in Tonic Solfa to QUAM DILECTA, doh is F: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 188, “Behold, He Cometh”.",
+    "The book printed the words without tunes, marked Sixes (6.6.6.6), to be sung to any tune of that metre. This page sets them to QUAM DILECTA; any other Sixes tune fits them as well."
+  ],
+  "underlay": "Hark! through the wa-king earth, Hark! through the e-choing sky, Her-ald of free-dom's birth, There comes a glo-rious cry.",
+  "verses": [
+    {
+      "lines": [
+        "Hark! through the waking earth,",
+        "Hark! through the echoing sky,",
+        "Herald of freedom's birth,",
+        "There comes a glorious cry."
+      ]
+    },
+    {
+      "lines": [
+        "The triple chains that bind",
+        "Fall from the weary limb,",
+        "And from the down-crushed mind,",
+        "As soundeth that high hymn."
+      ]
+    },
+    {
+      "lines": [
+        "Unto man's waiting heart",
+        "It saith, — \"Arise, be strong!",
+        "Bear thou an earnest part",
+        "Against all forms of wrong."
+      ]
+    },
+    {
+      "lines": [
+        "\"Wouldst live in earth as lives",
+        "The glorious One above?",
+        "He for thy model gives",
+        "Himself, and he is Love."
+      ]
+    },
+    {
+      "lines": [
+        "\"Love in each brother man",
+        "The God who loveth him;",
+        "Revere the stamp of heaven,",
+        "However marred and dim."
+      ]
+    },
+    {
+      "lines": [
+        "\"Bid fear give place to love;",
+        "Bid doubt and passion cease;",
+        "Be every word of hate",
+        "Forever hushed in peace.\""
+      ]
+    },
+    {
+      "lines": [
+        "Sound, sound through all the earth!",
+        "Sound through the echoing sky!",
+        "Proclaim the world's new birth;",
+        "Proclaim the Lord is nigh!"
+      ]
+    }
+  ],
+  "metre": "6 6 6 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to QUAM DILECTA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:188"
+}

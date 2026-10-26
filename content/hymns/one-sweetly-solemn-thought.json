@@ -1,0 +1,79 @@
+{
+  "title": "One Sweetly Solemn Thought",
+  "tune": "st-bride",
+  "text": [
+    {
+      "name": "Phoebe Cary",
+      "born": 1824,
+      "died": 1871,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "One Sweetly Solemn Thought in Tonic Solfa to ST. BRIDE, doh is Bb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Phoebe Cary wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 531.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to ST. BRIDE; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "One sweet-ly sol-emn thought Comes to me o’er and o’er,— Near-er my home to day am I Than e’er I’ve been be-fore;",
+  "verses": [
+    {
+      "lines": [
+        "One sweetly solemn thought",
+        "Comes to me o’er and o’er,—",
+        "Nearer my home to-day am I",
+        "Than e’er I’ve been before;"
+      ]
+    },
+    {
+      "lines": [
+        "Nearer my Father’s house,",
+        "Where many mansions be;",
+        "Nearer to-day the great white throne;",
+        "Nearer the crystal sea;"
+      ]
+    },
+    {
+      "lines": [
+        "Nearer the bound of life",
+        "Where burdens are laid down;",
+        "Nearer to leave the heavy cross;",
+        "Nearer to gain the crown."
+      ]
+    },
+    {
+      "lines": [
+        "But, lying dark between,",
+        "Winding down through the night,",
+        "There rolls the silent, unknown stream",
+        "That leads at last to light."
+      ]
+    },
+    {
+      "lines": [
+        "E’en now, perchance, my feet",
+        "Are slipping on the brink,",
+        "And I to-day am nearer home,",
+        "Nearer than now I think."
+      ]
+    },
+    {
+      "lines": [
+        "Father, perfect my trust;",
+        "Strengthen my spirit’s faith;",
+        "Nor let me stand at last alone",
+        "Upon the shore of death."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Phoebe Cary died in 1871.",
+  "credits": "Words by Phoebe Cary (1824–1871), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ST. BRIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:531"
+}

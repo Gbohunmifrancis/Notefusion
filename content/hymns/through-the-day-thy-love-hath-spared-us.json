@@ -1,0 +1,61 @@
+{
+  "title": "Through the Day Thy Love Hath Spared Us",
+  "tune": "kalmar",
+  "text": [
+    {
+      "name": "Thomas Kelly",
+      "born": 1769,
+      "died": 1855,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Through the Day Thy Love Hath Spared Us in Tonic Solfa to KALMAR, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Thomas Kelly wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 43.",
+    "The book printed the words without tunes, marked 8.7.8.7.7.7, to be sung to any tune of that metre. This page sets them to KALMAR; any other 8.7.8.7.7.7 tune fits them as well."
+  ],
+  "underlay": "Through the day Thy love hath spared us, Now we lay us down to rest; Through the si-lent watch-es guard us, Let no foe our peace mo-lest: Je-sus, Thou our Guar-dian be; Sweet it is to trust in Thee.",
+  "verses": [
+    {
+      "lines": [
+        "Through the day Thy love hath spared us,",
+        "Now we lay us down to rest;",
+        "Through the silent watches guard us,",
+        "Let no foe our peace molest:",
+        "Jesus, Thou our Guardian be;",
+        "Sweet it is to trust in Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Pilgrims here on earth and strangers,",
+        "Dwelling in the midst of foes,",
+        "Us and ours preserve from dangers;",
+        "In Thine arms may we repose",
+        "And, when life’s sad day is past,",
+        "Rest with Thee in heaven at last."
+      ]
+    },
+    {
+      "lines": [
+        "Triune God, let all adore Thee,",
+        "Saints on earth and saints in heav’n;",
+        "Every creature bow before Thee,",
+        "Who hast all their being giv’n,",
+        "Who dost seek and save the lost:",
+        "Father, Son, and Holy Ghost."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 7 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Thomas Kelly died in 1855.",
+  "credits": "Words by Thomas Kelly (1769–1855), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to KALMAR by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:43"
+}

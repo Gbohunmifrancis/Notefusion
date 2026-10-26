@@ -1,0 +1,84 @@
+{
+  "title": "A Crown of Gold Surpassing Rare",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "A Crown of Gold Surpassing Rare in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911), headed “His stars shine rare”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "A crown of gold sur-pass-ing rare, The west-ern hills, in beau-ty, wear; And earth and sea re-flect the light, That fades be-fore th'ap-proach of night.",
+  "verses": [
+    {
+      "lines": [
+        "A crown of gold surpassing rare,",
+        "The western hills, in beauty, wear;",
+        "And earth and sea reflect the light,",
+        "That fades before th' approach of night."
+      ]
+    },
+    {
+      "lines": [
+        "O Glorious Sun! whose peerless ray",
+        "Illumes the realm of endless day,",
+        "Shine on a world where darkness dwells,",
+        "And all the joy of day dispels."
+      ]
+    },
+    {
+      "lines": [
+        "Soft o'er the land the twilight creeps;",
+        "Night falls apace, and nature sleeps;",
+        "O let not night my life control,",
+        "And plunge in sleep my drowsy soul."
+      ]
+    },
+    {
+      "lines": [
+        "Sleep to the weary pilgrim give,",
+        "But let the soul through slumber live;",
+        "Wake when the first faint gleam of morn",
+        "Tells that another day is born."
+      ]
+    },
+    {
+      "lines": [
+        "Light of my life! bid night depart,",
+        "Sing to my soul, and cheer my heart;",
+        "That morn, and noon, and night may be",
+        "One beauteous day of joy to me."
+      ]
+    },
+    {
+      "lines": [
+        "And when the brightest morn shall break,",
+        "And bid the eternal day awake,",
+        "O Glorious Sun! in radiance shine,",
+        "To guard from night the realm divine."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:6"
+}

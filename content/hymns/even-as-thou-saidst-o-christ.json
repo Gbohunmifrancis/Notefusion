@@ -1,0 +1,68 @@
+{
+  "title": "Even as Thou Said'st, O Christ",
+  "tune": "quam-dilecta",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "Even as Thou Said'st, O Christ in Tonic Solfa to QUAM DILECTA, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904), headed “Ode VI. of Cosmas The Monk”.",
+    "The book printed the words without tunes. They are in Sixes (6.6.6.6), and this page sets them to QUAM DILECTA; any other Sixes tune fits them as well."
+  ],
+  "underlay": "Even as thou said'st, O Christ, The Ho-ly Spir-it came, And now our hearts pos-sess The knowl-edge of Thy name.",
+  "verses": [
+    {
+      "lines": [
+        "Even as thou said'st, O Christ,",
+        "The Holy Spirit came,",
+        "And now our hearts possess",
+        "The knowledge of Thy name."
+      ]
+    },
+    {
+      "lines": [
+        "For Thou hast richly poured",
+        "Thy Spirit on our race,",
+        "To teach the Father's will,",
+        "And magnify Thy grace."
+      ]
+    },
+    {
+      "lines": [
+        "Forth from the Father, Thou",
+        "Cam'st to our human needs,",
+        "And from that Source of Life",
+        "The Holy Ghost proceeds."
+      ]
+    },
+    {
+      "lines": [
+        "All glory to our God,",
+        "And to the Christ, His Son,",
+        "And to the Holy Ghost,",
+        "Eternal Three in One."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to QUAM DILECTA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:17"
+}

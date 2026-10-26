@@ -1,0 +1,71 @@
+{
+  "title": "The Year Begins with Thee",
+  "tune": "franconia",
+  "text": [
+    {
+      "name": "John Keble",
+      "born": 1792,
+      "died": 1866,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "The Year Begins with Thee in Tonic Solfa to FRANCONIA, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Keble wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 175.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to FRANCONIA; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "The year be-gins with Thee, And Thou be-gin’st with woe To let the world of sin-ners see That blood for sin must flow.",
+  "verses": [
+    {
+      "lines": [
+        "The year begins with Thee,",
+        "And Thou begin’st with woe",
+        "To let the world of sinners see",
+        "That blood for sin must flow."
+      ]
+    },
+    {
+      "lines": [
+        "Thine infant cries, O Lord,",
+        "Thy tears upon the breast",
+        "Are not enough; the legal sword",
+        "Must do its stern behest."
+      ]
+    },
+    {
+      "lines": [
+        "Seemeth it strange to me",
+        "My own will to deny?",
+        "Seemeth it sad, my soul, to thee",
+        "Under the yoke to lie?"
+      ]
+    },
+    {
+      "lines": [
+        "I look, and hold my peace:",
+        "The Giver of all good",
+        "E’en from His birth takes no release",
+        "From suffering, tears, and blood."
+      ]
+    },
+    {
+      "lines": [
+        "That I may reap in love,",
+        "Help me to sow in fear;",
+        "So life a winter’s morn may prove",
+        "To a bright endless year."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: John Keble died in 1866.",
+  "credits": "Words by John Keble (1792–1866), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to FRANCONIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:175"
+}

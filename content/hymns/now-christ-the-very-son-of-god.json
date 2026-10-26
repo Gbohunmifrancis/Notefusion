@@ -1,0 +1,85 @@
+{
+  "title": "Now Christ, the Very Son of God",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Nikolaus Selnecker",
+      "born": 1530,
+      "died": 1592,
+      "role": "Words"
+    },
+    {
+      "name": "Conrad Herman Louis Schuette",
+      "born": 1843,
+      "died": 1926,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Now Christ, the Very Son of God in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Nikolaus Selnecker wrote these words in German. Conrad Herman Louis Schuette's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 403.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Now Christ, the ve-ry Son of God, On sin-ners sends an-oth-er flood; It is the wa-ter which the Lord Has com-pre-hend-ed in the Word.",
+  "verses": [
+    {
+      "lines": [
+        "Now Christ, the very Son of God,",
+        "On sinners sends another flood;",
+        "It is the water which the Lord",
+        "Has comprehended in the Word."
+      ]
+    },
+    {
+      "lines": [
+        "This flood, to cleanse sin’s leprosy,",
+        "Mere earthly water cannot be;",
+        "But water and God’s gracious Word",
+        "Conjoined, this saving bath afford."
+      ]
+    },
+    {
+      "lines": [
+        "“Go ye,” says Christ, “My Word proclaim,",
+        "Baptize the nations in God’s name;",
+        "All who are baptized and believe",
+        "My full salvation shall receive.”"
+      ]
+    },
+    {
+      "lines": [
+        "God, Father, Son, and Holy Ghost,",
+        "To be baptized invites the host;",
+        "He will be present, though unseen,",
+        "From all their sins to wash them clean."
+      ]
+    },
+    {
+      "lines": [
+        "So, too, by our repentance, must",
+        "The old man, with his sins and lust,",
+        "Be daily drowned and then arise",
+        "A new man, righteous, pure, and wise."
+      ]
+    },
+    {
+      "lines": [
+        "That by the water and the Word",
+        "We’re born again, we thank Thee, Lord.",
+        "In life and death Thine let us be",
+        "And Thine in all eternity."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Nikolaus Selnecker died in 1592; Conrad Herman Louis Schuette died in 1926.",
+  "credits": "Words by Nikolaus Selnecker (1530–1592), translated by Conrad Herman Louis Schuette (1843–1926), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:403"
+}

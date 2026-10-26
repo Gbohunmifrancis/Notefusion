@@ -1,0 +1,92 @@
+{
+  "title": "Think on Me, Lord, for Thou Art Kind",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Think on Me, Lord, for Thou Art Kind in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Think on me, Lord, for Thou art kind, And I am nee-dy, poor, and blind, And let the gifts Thou hast in store, En-rich me dail-y, more and more.",
+  "verses": [
+    {
+      "lines": [
+        "Think on me, Lord, for Thou art kind,",
+        "And I am needy, poor, and blind,",
+        "And let the gifts Thou hast in store,",
+        "Enrich me daily, more and more."
+      ]
+    },
+    {
+      "lines": [
+        "I have no food my soul to feed,",
+        "Be Thou my Bread of Life indeed;",
+        "My parchèd spirit sighs, O give",
+        "The stream of Life that I may live."
+      ]
+    },
+    {
+      "lines": [
+        "My filthy raiment I disown,",
+        "Clothe with Thy righteousness alone,",
+        "And I shall walk approved by Thee,",
+        "Clad in Thy robe of purity."
+      ]
+    },
+    {
+      "lines": [
+        "I have no strength; in evil hour",
+        "I fall beneath temptation's power;",
+        "Be Thou my strength, and I shall stand",
+        "Upheld by Thine outstretched hand."
+      ]
+    },
+    {
+      "lines": [
+        "I cannot see the path to tread,",
+        "And blindly by my sins am led;",
+        "Come to my blindness, give me sight",
+        "That I may shape my course aright."
+      ]
+    },
+    {
+      "lines": [
+        "I cannot live if Thou deny",
+        "The prayer uplifted with my cry;",
+        "I cannot die, — in mercy give",
+        "Thy grace, that I may die or live."
+      ]
+    },
+    {
+      "lines": [
+        "Think on me, Lord, for Thou art kind,",
+        "And I am needy, poor, and blind;",
+        "And let the gifts Thou hast in store,",
+        "Enrich me daily, more and more."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:41"
+}

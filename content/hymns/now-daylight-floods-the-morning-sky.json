@@ -1,0 +1,68 @@
+{
+  "title": "Now Daylight Floods the Morning Sky",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "Now Daylight Floods the Morning Sky in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), headed “Monday Morning”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Now day-light floods the morn-ing sky, And earth-ward glides th'ap-proach-ing day, The danc-ing rays of sun-light chase The ga-thered fears of night a-way.",
+  "verses": [
+    {
+      "lines": [
+        "Now daylight floods the morning sky,",
+        "And earthward glides the approaching day,",
+        "The dancing rays of sunlight chase",
+        "The gathered fears of night away."
+      ]
+    },
+    {
+      "lines": [
+        "Hence dreams that cloud the soul! away,",
+        "Ye terrors grim of midnight born!",
+        "Whate’er the dark of night hath bred,",
+        "Die in the light that greets the morn!"
+      ]
+    },
+    {
+      "lines": [
+        "So when the day eternal breaks,—",
+        "That day for which our spirits long,—",
+        "Its light may fall to bless our souls,",
+        "E’en while we raise our morning song."
+      ]
+    },
+    {
+      "lines": [
+        "To God the Father throned in heaven,",
+        "To Christ the one begotten Son,",
+        "And to the Holy Ghost be praise,",
+        "Now, and while endless ages run."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:7"
+}

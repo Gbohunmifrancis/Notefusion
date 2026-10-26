@@ -1,0 +1,77 @@
+{
+  "title": "Thy Soul, O Jesus, Hallow Me",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Johann Scheffler",
+      "born": 1624,
+      "died": 1677,
+      "role": "Words"
+    },
+    {
+      "name": "Matthias Loy",
+      "born": 1828,
+      "died": 1915,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Thy Soul, O Jesus, Hallow Me in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Johann Scheffler wrote these words in German. Matthias Loy's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 206.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thy soul, O Je-sus, hal-low me, Thy Spir-it steep me all in Thee, Thy bo-dy, pierced by ruth-less steel, My wret-ched soul and bo-dy heal.",
+  "verses": [
+    {
+      "lines": [
+        "Thy soul, O Jesus, hallow me,",
+        "Thy Spirit steep me all in Thee,",
+        "Thy body, pierced by ruthless steel,",
+        "My wretched soul and body heal."
+      ]
+    },
+    {
+      "lines": [
+        "The water from Thy side that poured",
+        "For me a cleansing bath afford,",
+        "And all Thy blood, with life divine,",
+        "Revive this weakened heart of mine."
+      ]
+    },
+    {
+      "lines": [
+        "The sweat of death upon Thy face",
+        "Deliver me from death’s embrace,",
+        "And all Thy Passion, cross, and pain,",
+        "With strength my feebleness sustain."
+      ]
+    },
+    {
+      "lines": [
+        "O Christ, turn not away from me,",
+        "Receive and hide me all in Thee,",
+        "Within Thy holy wounds inclose,",
+        "And keep me safe from all my foes."
+      ]
+    },
+    {
+      "lines": [
+        "In death’s dark hour with me abide",
+        "And place me, Savior, at Thy side,",
+        "Where with Thy saints I shall adore",
+        "And praise Thee, Lord, forevermore."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Johann Scheffler died in 1677; Matthias Loy died in 1915.",
+  "credits": "Words by Johann Scheffler (1624–1677), translated by Matthias Loy (1828–1915), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:206"
+}

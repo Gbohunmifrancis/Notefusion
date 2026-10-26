@@ -1,0 +1,76 @@
+{
+  "title": "Lo, in Its Brightness the Morning Arising",
+  "tune": "wesley-mason",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Lo, in Its Brightness the Morning Arising in Tonic Solfa to WESLEY (MASON), doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911), headed “Have mercy, Lord”.",
+    "The book printed the words without tunes. They are in Elevens and Tens (11.10.11.10), and this page sets them to WESLEY (MASON); any other Elevens and Tens tune fits them as well."
+  ],
+  "underlay": "Lo, in its bright-ness the morn-ing a-ris-ing, Gold on the hill-tops in rich-ness is spread; Hea-ven decks th'earth with a beau-ty sur-pris-ing, Light is the vic-tor, and dark-ness hath fled.",
+  "verses": [
+    {
+      "lines": [
+        "Lo, in its brightness the morning arising,",
+        "Gold on the hilltops in richness is spread;",
+        "Heaven decks the earth with a beauty surprising,",
+        "Light is the victor, and darkness hath fled."
+      ]
+    },
+    {
+      "lines": [
+        "Lord of the morning, our souls are awaking,",
+        "Flood them with beauty, and free them from gloom;",
+        "Morn speaks of joy, for when morning was breaking,",
+        "Free from death's bands Thou did'st rise from the tomb."
+      ]
+    },
+    {
+      "lines": [
+        "Souls that in slumber behold not the beauty,",
+        "See not the Master arise in His might;",
+        "Hear not the call to the doing of duty,",
+        "Know not the rapture that thrills in the light."
+      ]
+    },
+    {
+      "lines": [
+        "Morn speaks of life, — let us rise to new living,",
+        "Rise with the Lord to the freedom He gives,",
+        "Give to the world what the morning is giving,",
+        "Hope that was born in the darkness, and lives."
+      ]
+    },
+    {
+      "lines": [
+        "Lo, in its brightness the morning arising, —",
+        "Lord of the morning, our darkness dispel;",
+        "Shine in our souls, till, the sordid despising,",
+        "Rise we from earth in Thy presence to dwell."
+      ]
+    }
+  ],
+  "metre": "11 10 11 10",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to WESLEY (MASON) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:19"
+}

@@ -1,0 +1,63 @@
+{
+  "title": "O Lord of Hosts, Whose Glory Fills",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "John Mason Neale",
+      "born": 1818,
+      "died": 1866,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "O Lord of Hosts, Whose Glory Fills in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Mason Neale wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 450.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Lord of hosts, whose glo-ry fills The bounds of the e-ter-nal hills And yet vouch-saf’st, in Chris-tian lands, To dwell in tem-ples made with hands;",
+  "verses": [
+    {
+      "lines": [
+        "O Lord of hosts, whose glory fills",
+        "The bounds of the eternal hills",
+        "And yet vouchsaf’st, in Christian lands,",
+        "To dwell in temples made with hands;"
+      ]
+    },
+    {
+      "lines": [
+        "Grant that all we who here to-day",
+        "Rejoicing this foundation lay",
+        "May be in very deed Thine own,",
+        "Built on the precious Corner-stone."
+      ]
+    },
+    {
+      "lines": [
+        "The heads that guide endue with skill,",
+        "The hands that work preserve from ill,",
+        "That we, who these foundations lay",
+        "May raise the top-stone in its day."
+      ]
+    },
+    {
+      "lines": [
+        "But now and ever, Lord, protect",
+        "The temple of Thine own elect;",
+        "Be Thou in them and they in Thee,",
+        "O ever-blessed Trinity!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: John Mason Neale died in 1866.",
+  "credits": "Words by John Mason Neale (1818–1866), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:450"
+}

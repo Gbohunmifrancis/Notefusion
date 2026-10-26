@@ -1,0 +1,334 @@
+{
+  "source": "John Brownlie, Hymns from the East (Paisley)",
+  "date": "2026-10-26",
+  "written": [
+    {
+      "ref": "1",
+      "slug": "now-god-of-light-the-morn-appears",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "2",
+      "slug": "up-up-my-soul-with-gladness-rise",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "3",
+      "slug": "the-saffron-tints-appear",
+      "metre": "6 6 6 6",
+      "tune": "quam-dilecta",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "4",
+      "slug": "now-glows-the-morn-in-beauty-rare",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "6",
+      "slug": "a-crown-of-gold-surpassing-rare",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "7",
+      "slug": "the-lord-of-life-to-earth-came-down",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "8",
+      "slug": "jerusalem-rejoice",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "9",
+      "slug": "the-best-that-heaven-could-bring",
+      "metre": "6 6 8 6",
+      "tune": "aylesbury",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "11",
+      "slug": "o-woeful-hour-when-from-the-night",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "13",
+      "slug": "o-christ-when-on-the-shameful-tree",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "14",
+      "slug": "o-god-of-love-whose-mercy-came",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "16",
+      "slug": "when-thou-o-christ-upon-the-tree",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "17",
+      "slug": "to-thy-cross-and-resurrection",
+      "metre": "8 7 8 7",
+      "tune": "st-oswald",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "18",
+      "slug": "light-is-dawning-mong-the-hills",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "20",
+      "slug": "we-worship-lord-before-thee-now",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "24",
+      "slug": "when-adam-heard-the-voice-of-sin",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "26",
+      "slug": "even-as-thou-saidst-the-spirit-came",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "29",
+      "slug": "o-lord-of-bounty-let-this-bread",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "30",
+      "slug": "when-in-the-clouds-the-lord-appears",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "33",
+      "slug": "i-brought-my-merits-to-the-throne",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "35",
+      "slug": "i-sought-the-lord-at-early-morn",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "36",
+      "slug": "o-touch-my-heart-and-bring-to-mind",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "37",
+      "slug": "the-wealth-of-high-estate",
+      "metre": "6 6 6 6 8 8",
+      "tune": "st-john-parish-choir",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "38",
+      "slug": "i-lift-my-hands-and-with-my-heart",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "39",
+      "slug": "arise-my-soul-and-gaily-sing",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "41",
+      "slug": "think-on-me-lord-for-thou-art-kind",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "42",
+      "slug": "because-thy-mercy-is-so-great",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "44",
+      "slug": "when-at-thy-feet-oppressed",
+      "metre": "6 6 6 6 8 8",
+      "tune": "st-john-parish-choir",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "45",
+      "slug": "because-i-was-brought-low",
+      "metre": "6 6 6 6",
+      "tune": "quam-dilecta",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "47",
+      "slug": "by-thine-own-hand-the-gift-was-given",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "51",
+      "slug": "god-sent-me-to-the-desert-wild",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Traditional Greek and John Brownlie"
+    }
+  ],
+  "alreadyOurs": [
+    {
+      "ref": "40",
+      "first": "The King shall come when morning dawns,",
+      "page": "the-king-shall-come"
+    }
+  ],
+  "skipped": [
+    {
+      "ref": "5",
+      "first": "When night her sable curtain spreads,",
+      "why": "no tune we hold for “unmarked” in 3-line verses"
+    },
+    {
+      "ref": "10",
+      "first": "Out from the rising of the sun,",
+      "why": "words in iambs; the Eights and Sevens, six lines tunes we hold are in trochees"
+    },
+    {
+      "ref": "12",
+      "first": "Crown the Lord of glory,",
+      "why": "only 8 of 24 lines sing as 6.6.6.6.8.8"
+    },
+    {
+      "ref": "15",
+      "first": "When Hades held the Lord of Life,",
+      "why": "only 14 of 20 lines sing as 8.8.8.8"
+    },
+    {
+      "ref": "19",
+      "first": "Hail rising morn! for He hath risen;",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "21",
+      "first": "Heavy laden with thy grief,",
+      "why": "no tune we hold for “unmarked” in 3-line verses"
+    },
+    {
+      "ref": "22",
+      "first": "To Thee, O Christ, our God,",
+      "why": "its first verse cannot be sung as 6.6.6.6"
+    },
+    {
+      "ref": "23",
+      "first": "Glory shone within the gloom,",
+      "why": "its first verse cannot be sung as 7.7.7.7"
+    },
+    {
+      "ref": "25",
+      "first": "Within the garden's sombre shade,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "27",
+      "first": "O may the Spirit of all grace",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "28",
+      "first": "Let Thy Blood in mercy poured,",
+      "why": "only 17 of 24 lines sing as 7.7.7.7.7.7"
+    },
+    {
+      "ref": "31",
+      "first": "The Bridegroom comes! My soul, awake,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "32",
+      "first": "O Judge of all, when sinful men",
+      "why": "no tune we hold for “unmarked” in 3-line verses"
+    },
+    {
+      "ref": "34",
+      "first": "The time is drawing nigh,",
+      "why": "only 16 of 24 lines sing as 6.6.6.6.8.8"
+    },
+    {
+      "ref": "43",
+      "first": "I cannot lift mine eyes,",
+      "why": "only 16 of 24 lines sing as 6.6.6.6.8.8"
+    },
+    {
+      "ref": "46",
+      "first": "O God of life, in whom we live,",
+      "why": "only 19 of 30 lines sing as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "48",
+      "first": "Lord, Thou art good and kind,",
+      "why": "its first verse cannot be sung as 6.6.6.6"
+    },
+    {
+      "ref": "49",
+      "first": "O Lord of Life, when mortals call,",
+      "why": "no tune we hold for “unmarked” in 3-line verses"
+    },
+    {
+      "ref": "50",
+      "first": "I wandered sore distressed,",
+      "why": "only 12 of 18 lines sing as 6.6.6.6.8.8"
+    }
+  ],
+  "counts": {
+    "hymns": 51,
+    "written": 31,
+    "alreadyOurs": 1,
+    "skipped": 19,
+    "removed": 0
+  }
+}

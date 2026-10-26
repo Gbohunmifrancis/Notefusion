@@ -1,0 +1,60 @@
+{
+  "title": "O God of Light and Glory",
+  "tune": "st-alphege",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "O God of Light and Glory in Tonic Solfa to ST. ALPHEGE, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904).",
+    "The book printed the words without tunes. They are in Sevens and Sixes (7.6.7.6), and this page sets them to ST. ALPHEGE; any other Sevens and Sixes tune fits them as well."
+  ],
+  "underlay": "O God of light and glo-ry, Thy ser-vants look to see The light that shines ef-ful-gent Up-on their souls from Thee.",
+  "verses": [
+    {
+      "lines": [
+        "O God of light and glory,",
+        "Thy servants look to see",
+        "The light that shines effulgent",
+        "Upon their souls from Thee."
+      ]
+    },
+    {
+      "lines": [
+        "And lo! the heavens are open,",
+        "And from the throne of God,",
+        "The Christ, the Light eternal,",
+        "That glory sheds abroad."
+      ]
+    },
+    {
+      "lines": [
+        "And eyes reflect the beauty,",
+        "And hearts responding glow;",
+        "For only they who see Thee",
+        "Can in Thy likeness grow."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to ST. ALPHEGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:22"
+}

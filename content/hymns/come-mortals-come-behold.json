@@ -1,0 +1,68 @@
+{
+  "title": "Come, Mortals, Come Behold",
+  "tune": "quam-dilecta",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "Come, Mortals, Come Behold in Tonic Solfa to QUAM DILECTA, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904), headed “Antiphon”.",
+    "The book printed the words without tunes. They are in Sixes (6.6.6.6), and this page sets them to QUAM DILECTA; any other Sixes tune fits them as well."
+  ],
+  "underlay": "Come, mor-tals, come be-hold! He hangs up-on the tree, Who made the roll-ing sea The new formed earth up-hold.",
+  "verses": [
+    {
+      "lines": [
+        "Come, mortals, come behold!",
+        "He hangs upon the tree,",
+        "Who made the rolling sea",
+        "The new formed earth uphold."
+      ]
+    },
+    {
+      "lines": [
+        "See! He is crowned with thorns,",
+        "The King of angels great,",
+        "Who in His high estate",
+        "A glorious crown adorns."
+      ]
+    },
+    {
+      "lines": [
+        "Derided, see Him wear",
+        "A robe of purple dye,",
+        "Who robes the noon-day sky",
+        "With clouds that float on air."
+      ]
+    },
+    {
+      "lines": [
+        "The Bridegroom of the Bride,",
+        "The Son of Virgin born —",
+        "With nails His hands are torn,",
+        "With cruel spear His side."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to QUAM DILECTA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:12"
+}

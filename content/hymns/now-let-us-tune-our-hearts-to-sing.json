@@ -1,0 +1,84 @@
+{
+  "title": "Now Let Us Tune Our Hearts to Sing",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "Now Let Us Tune Our Hearts to Sing in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), where he gives them as “By C. Coffin”, headed “Ei Canamus Gloriam”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Now let us tune our hearts to sing The glo-ry of th'Al-might-y King; His hand un-rolled the spa-cious skies, Whose beau-ty lures our won-dering eyes.",
+  "verses": [
+    {
+      "lines": [
+        "Now let us tune our hearts to sing",
+        "The glory of the Almighty King;",
+        "His hand unrolled the spacious skies,",
+        "Whose beauty lures our wondering eyes."
+      ]
+    },
+    {
+      "lines": [
+        "There are the clouds with treasure rare,",
+        "Slow floating in the higher air,",
+        "Whence come the soft refreshing showers,",
+        "To bless the springing of the flowers."
+      ]
+    },
+    {
+      "lines": [
+        "Rich is the treasure of Thy grace,",
+        "Prepared for us who seek Thy face;",
+        "It falls from clouds that earthward roll,",
+        "And penetrates the inmost soul."
+      ]
+    },
+    {
+      "lines": [
+        "And faithful hearts that thirsting pine,",
+        "Drink deeply of the draught divine,",
+        "And with an heavenly impulse rise,",
+        "To greet the sunlight in the skies."
+      ]
+    },
+    {
+      "lines": [
+        "O happy souls that evermore",
+        "Drink of the bliss Thou hast in store;",
+        "May grateful love responsive flow",
+        "To all the love Thou dost bestow."
+      ]
+    },
+    {
+      "lines": [
+        "Now, glory to the Three in One,",
+        "To God the Father, God the Son,",
+        "And to the Spirit, one in Three,",
+        "From age to age eternally."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:27"
+}

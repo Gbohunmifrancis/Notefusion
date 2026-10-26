@@ -1,0 +1,68 @@
+{
+  "title": "Wake to the Songs That Lips Unsullied Sing",
+  "tune": "penitentia",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Wake to the Songs That Lips Unsullied Sing in Tonic Solfa to PENITENTIA, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Tens (10.10.10.10), and this page sets them to PENITENTIA; any other Tens tune fits them as well."
+  ],
+  "underlay": "Wake to the songs that lips un-sul-lied sing, And let their tones re-spon-sive ech-oes call, There's more to cheer us than our sens-es bring, And sweet-er an-thems than from mor-tals fall.",
+  "verses": [
+    {
+      "lines": [
+        "Wake to the songs that lips unsullied sing,",
+        "And let their tones responsive echoes call, —",
+        "There's more to cheer us than our senses bring,",
+        "And sweeter anthems than from mortals fall."
+      ]
+    },
+    {
+      "lines": [
+        "Saints in the land where sin is all unknown,",
+        "Where care nor sorrow can the light subdue,",
+        "Dwell in the glory of the heavenly throne,",
+        "And voice new praise, for wonders ever new."
+      ]
+    },
+    {
+      "lines": [
+        "Wake to their praise, and let us blend with theirs",
+        "Songs that shall travel to a fairer clime;",
+        "Glad as the morn, and hallowed by our prayers,",
+        "Offerings of duty from the realm of time."
+      ]
+    },
+    {
+      "lines": [
+        "One, we are one with victors gone before;",
+        "Songs that are ours, were theirs when in the strife;",
+        "Theirs shall be ours when, all our striving o'er,",
+        "Christ gives us entrance to immortal life."
+      ]
+    }
+  ],
+  "metre": "10 10 10 10",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to PENITENTIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:63"
+}

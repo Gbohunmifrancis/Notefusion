@@ -1,0 +1,76 @@
+{
+  "title": "Christ, for Thee a Wreath Adorning",
+  "tune": "omni-die",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "Christ, for Thee a Wreath Adorning in Tonic Solfa to OMNI DIE, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900).",
+    "The book printed the words without tunes. They are in Eights and Sevens (8.7.8.7), and this page sets them to OMNI DIE; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Christ, for Thee a wreath a-dorn-ing Weaves my rap-tured soul with glee, For from death this glo-rious morn-ing Thou hast ri-sen tri-umphant-ly.",
+  "verses": [
+    {
+      "lines": [
+        "Christ, for Thee a wreath adorning",
+        "Weaves my raptured soul with glee,",
+        "For from death this glorious morning",
+        "Thou hast risen triumphantly."
+      ]
+    },
+    {
+      "lines": [
+        "From the tomb behold Him rising,",
+        "Christ our Lord whose praise is sung.",
+        "Death is slain; O power surprising!",
+        "Hades' gates are open flung."
+      ]
+    },
+    {
+      "lines": [
+        "Thou for man to earth in meekness",
+        "Cam'st that he new born might be;",
+        "Thou upon the cross in weakness",
+        "Diedst that he might die with Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Thou didst rise — we hail Thee, Jesus!",
+        "And we leave the tomb with Thee.",
+        "Victor, by the power that frees us,",
+        "Where Thou art, there we would be."
+      ]
+    },
+    {
+      "lines": [
+        "Hark! the highest heavens are ringing,",
+        "Choirs angelic lead the strain,",
+        "And my opened lips in singing",
+        "Tell the praises forth again."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to OMNI DIE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:30"
+}

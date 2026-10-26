@@ -1,0 +1,86 @@
+{
+  "title": "I Sought the Lord at Early Morn",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "I Sought the Lord at Early Morn in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911), headed “Aspirations”.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "I sought the Lord at ear-ly morn, When earth a-woke to see the light; And to my soul a light was borne That quelled the dark-ness of my night; He heard my prayer at ear-ly morn, And light in-to my heart was borne.",
+  "verses": [
+    {
+      "lines": [
+        "I sought the Lord at early morn,",
+        "When earth awoke to see the light;",
+        "And to my soul a light was borne",
+        "That quelled the darkness of my night;",
+        "He heard my prayer at early morn,",
+        "And light into my heart was borne."
+      ]
+    },
+    {
+      "lines": [
+        "I sought the Lord when noontide shone,",
+        "And head and hand earth's duties shared;",
+        "\"I am Thy servant, Lord, alone,\"",
+        "I said, and told Him how I fared;",
+        "He heard my prayer as I drew near,",
+        "And kept me at my task, sincere."
+      ]
+    },
+    {
+      "lines": [
+        "I sought the Lord when evening fell,",
+        "And night came gliding on apace;",
+        "For I had sins my Lord to tell,",
+        "And He is full of pardoning grace;",
+        "He heard my prayer, and bade me rest,",
+        "And in His love my soul was blest."
+      ]
+    },
+    {
+      "lines": [
+        "At morn, at noon, at night I'll pray,",
+        "And Thou, O Lord, my prayer wilt hear,",
+        "For Thou art near my path alway,",
+        "To aid, to comfort, or to cheer;",
+        "No hour too early, none too late,",
+        "To knock imploring at Thy gate."
+      ]
+    },
+    {
+      "lines": [
+        "O Jesus Christ, to Thee be praise,",
+        "'Tis Thou hast taught my soul to pray,",
+        "For Thou didst speak with God always,",
+        "At morn, at noon, at close of day;",
+        "And Thou hast said He hears the prayer,",
+        "The longing soul breathes everywhere."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:35"
+}

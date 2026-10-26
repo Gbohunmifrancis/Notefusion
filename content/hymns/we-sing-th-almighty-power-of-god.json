@@ -1,0 +1,79 @@
+{
+  "title": "We Sing Th’ Almighty Power of God",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "We Sing Th’ Almighty Power of God in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 293.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "We sing th’al-migh-ty power of God, Who bade the moun-tains rise, Who spread the flow-ing seas a-broad, And built the lof-ty skies.",
+  "verses": [
+    {
+      "lines": [
+        "We sing th’ almighty power of God,",
+        "Who bade the mountains rise,",
+        "Who spread the flowing seas abroad,",
+        "And built the lofty skies."
+      ]
+    },
+    {
+      "lines": [
+        "We sing the wisdom that ordained",
+        "The sun to rule the day;",
+        "The moon shines, too, at His command,",
+        "And all the stars obey."
+      ]
+    },
+    {
+      "lines": [
+        "We sing the goodness of the Lord,",
+        "Who fills the earth with food;",
+        "Who formed His creatures by a word",
+        "And then pronounced them good."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, how Thy wonders are displayed",
+        "Where’er we turn our eyes,",
+        "Whene’er we view the ground we tread",
+        "Or gaze upon the skies!"
+      ]
+    },
+    {
+      "lines": [
+        "There’s not a plant nor flower below",
+        "But makes Thy glories known;",
+        "And clouds arise and tempests blow",
+        "By order from Thy throne."
+      ]
+    },
+    {
+      "lines": [
+        "On Thee each moment we depend;",
+        "If Thou withdraw, we die.",
+        "Oh, may we ne’er that God offend",
+        "Who is forever nigh!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:293"
+}

@@ -1,0 +1,73 @@
+{
+  "title": "Let Me Be Thine Forever",
+  "tune": "ewing",
+  "text": [
+    {
+      "name": "Nikolaus Selnecker",
+      "born": 1530,
+      "died": 1592,
+      "role": "Words"
+    },
+    {
+      "name": "Matthias Loy",
+      "born": 1828,
+      "died": 1915,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Let Me Be Thine Forever in Tonic Solfa to EWING, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Nikolaus Selnecker wrote these words in German. Matthias Loy's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 408.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to EWING; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "Let me be Thine for-ev-er, Thou faith-ful God and Lord; Let me for-sake Thee nev-er Nor wan-der from Thy Word; Lord, do not let me wa-ver, But give me stead-fast-ness, And for such grace for-ev-er Thy ho-ly name I’ll bless.",
+  "verses": [
+    {
+      "lines": [
+        "Let me be Thine forever,",
+        "Thou faithful God and Lord;",
+        "Let me forsake Thee never",
+        "Nor wander from Thy Word;",
+        "Lord, do not let me waver,",
+        "But give me steadfastness,",
+        "And for such grace forever",
+        "Thy holy name I’ll bless."
+      ]
+    },
+    {
+      "lines": [
+        "Lord Jesus, my Salvation,",
+        "My Light, my Life divine,",
+        "My only Consolation,",
+        "O make me wholly Thine!",
+        "For Thou hast dearly bought me",
+        "With blood and bitter pain;",
+        "Let me, since Thou hast sought me,",
+        "Eternal life obtain."
+      ]
+    },
+    {
+      "lines": [
+        "And Thou, O Holy Spirit,",
+        "My Comforter and Guide,",
+        "Grant that in Jesus’ merit",
+        "I always may confide,",
+        "Him to the end confessing,",
+        "Whom I have known by faith.",
+        "Give me Thy constant blessing",
+        "And grant a Christian death."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Nikolaus Selnecker died in 1592; Matthias Loy died in 1915.",
+  "credits": "Words by Nikolaus Selnecker (1530–1592), translated by Matthias Loy (1828–1915), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to EWING by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:408"
+}

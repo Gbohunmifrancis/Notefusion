@@ -1,0 +1,68 @@
+{
+  "title": "Dark Night Has Drawn Her Curtain Round",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "Dark Night Has Drawn Her Curtain Round in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), headed “Friday Evening”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Dark night has drawn her cur-tain round, And hid earth’s hues in gloom pro-found; Now con-trite at Thy feet we fall, And make re-quest, Thou Judge of all,",
+  "verses": [
+    {
+      "lines": [
+        "Dark night has drawn her curtain round,",
+        "And hid earth’s hues in gloom profound;",
+        "Now contrite at Thy feet we fall,",
+        "And make request, Thou Judge of all,"
+      ]
+    },
+    {
+      "lines": [
+        "That Thou wouldst hide the guilt of sin,",
+        "And throughly purge our hearts within—",
+        "O Christ, dispense Thy grace, we pray,",
+        "To keep us guiltless day by day."
+      ]
+    },
+    {
+      "lines": [
+        "The awakened conscience, sore oppressed",
+        "By thought of sin all unconfessed,",
+        "Yearns in the gloom, to cast her load",
+        "At Thy blest feet, Redeemer, God."
+      ]
+    },
+    {
+      "lines": [
+        "Dispel the darkness, Lord, we pray,",
+        "That in our mind holds dismal sway;",
+        "Send forth Thy light, and bid us rest",
+        "In Thy calm peace, for ever blest."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:16"
+}

@@ -1,0 +1,60 @@
+{
+  "title": "Bethlehem Rejoices",
+  "tune": "bemerton",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "Bethlehem Rejoices in Tonic Solfa to BEMERTON, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900), where he gives them as “By St. John of Damascus, 780 A.D”.",
+    "The book printed the words without tunes. They are in Sixes and Fives (6.5.6.5), and this page sets them to BEMERTON; any other Sixes and Fives tune fits them as well."
+  ],
+  "underlay": "Beth-le-hem re-joi-ces, Hark the voi-ces clear, Sing-ing in the star-light Near-er and more near.",
+  "verses": [
+    {
+      "lines": [
+        "Bethlehem rejoices,",
+        "Hark the voices clear,",
+        "Singing in the starlight",
+        "Nearer and more near."
+      ]
+    },
+    {
+      "lines": [
+        "Heaven can not contain Him,",
+        "Nor the bounds of earth,",
+        "Yet, O Glorious Mystery!",
+        "Virgin gives Him birth."
+      ]
+    },
+    {
+      "lines": [
+        "Now the light ariseth",
+        "In the darkened skies,",
+        "Now the proud are humbled",
+        "And the lowly rise."
+      ]
+    }
+  ],
+  "metre": "6 5 6 5",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to BEMERTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:8"
+}

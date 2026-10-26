@@ -1,0 +1,76 @@
+{
+  "title": "May Thy Bright Spirit, as of Old",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "May Thy Bright Spirit, as of Old in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "May Thy bright Spir-it, as of old, The love of Christ the Son un-fold, And as He hangs up-on the Cross, Re-veal to men their sin and loss.",
+  "verses": [
+    {
+      "lines": [
+        "May Thy bright Spirit, as of old,",
+        "The love of Christ the Son unfold,",
+        "And as He hangs upon the Cross,",
+        "Reveal to men their sin and loss."
+      ]
+    },
+    {
+      "lines": [
+        "O Holy Spirit, one with God,",
+        "From God sent down to our abode",
+        "With us abide in joy and woe,",
+        "And share our sojourn here below."
+      ]
+    },
+    {
+      "lines": [
+        "And give us comfort in our pain,",
+        "Be in our loss our surest gain;",
+        "The Christ reveal in all His love,",
+        "And fit us for our home above."
+      ]
+    },
+    {
+      "lines": [
+        "That we may serve the Christ our Lord,",
+        "Teach us to know His blessed Word;",
+        "Our wills renew; our hearts allure,",
+        "In love and service to endure."
+      ]
+    },
+    {
+      "lines": [
+        "Thine be the glory, God the Lord;",
+        "Glory to Thee, Incarnate Word;",
+        "To Thee, blest Spirit, praises be,",
+        "From age to age eternally."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:35"
+}

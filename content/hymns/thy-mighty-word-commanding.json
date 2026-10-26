@@ -1,0 +1,76 @@
+{
+  "title": "Thy Mighty Word Commanding",
+  "tune": "st-alphege",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "Thy Mighty Word Commanding in Tonic Solfa to ST. ALPHEGE, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904), headed “Ode VIII of Metrophanes”.",
+    "The book printed the words without tunes. They are in Sevens and Sixes (7.6.7.6), and this page sets them to ST. ALPHEGE; any other Sevens and Sixes tune fits them as well."
+  ],
+  "underlay": "Thy might-y word com-mand-ing, The hea-vens were settled high, And earth to Thee re-spond-ing Was spread be-neath the sky.",
+  "verses": [
+    {
+      "lines": [
+        "Thy mighty word commanding,",
+        "The heavens were settled high,",
+        "And earth to Thee responding",
+        "Was spread beneath the sky."
+      ]
+    },
+    {
+      "lines": [
+        "O God of power, Thy servants",
+        "Would seek Thy power divine,",
+        "That they their hearts to love Thee",
+        "May evermore incline."
+      ]
+    },
+    {
+      "lines": [
+        "And gazing on the glory",
+        "That shines in triple ray,",
+        "Our souls shall feast with gladness",
+        "On Thy sweet light alway."
+      ]
+    },
+    {
+      "lines": [
+        "And of Thy glory shining,",
+        "And of Thy ruling light,",
+        "From age to age Thy servants",
+        "Shall hymn both day and night."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee be lasting praises,",
+        "Immortal Three in One, —",
+        "Thou Father, Son, and Spirit, —",
+        "Now, and while ages run."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to ST. ALPHEGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:7"
+}

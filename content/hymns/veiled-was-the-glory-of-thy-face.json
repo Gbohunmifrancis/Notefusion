@@ -1,0 +1,140 @@
+{
+  "title": "Veiled Was the Glory of Thy Face",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "Veiled Was the Glory of Thy Face in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 13 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), headed “Horæ De Passione D. N. Jesu Christi”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Veiled was the glo-ry of Thy face, O Je-sus, Lord of heav-enly grace, When mock-ing knees were bent in scorn, And bit-ter stripes were meek-ly borne.",
+  "verses": [
+    {
+      "lines": [
+        "Veiled was the glory of Thy face,",
+        "O Jesus, Lord of heavenly grace,",
+        "When mocking knees were bent in scorn,",
+        "And bitter stripes were meekly borne."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee the prayer of faith we send,",
+        "In Thee we hope: O Lord, attend,",
+        "And in Thy mercy lead the way",
+        "To where Thy glory shines as day."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee be highest honours paid,",
+        "O Christ, who wast by man betrayed,",
+        "Who on the cross of anguish sore",
+        "Didst die, that we might die no more."
+      ]
+    },
+    {
+      "lines": [
+        "O Christ, who in that hour of dread",
+        "Forth as a sacrifice wast led;",
+        "Who, to retrieve our grievous loss,",
+        "Didst bear the burden of the cross."
+      ]
+    },
+    {
+      "lines": [
+        "O may Thy Love our hearts inflame;",
+        "Be Thy pure life our constant aim;",
+        "That we may win the heavenly rest,",
+        "And share the glories of the blest."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee be highest honours paid,",
+        "O Christ, who wast by man betrayed;",
+        "Who on the cross of anguish sore",
+        "Didst die, that we might die no more."
+      ]
+    },
+    {
+      "lines": [
+        "For us the cruel cross He bare,",
+        "Endured the thirst while hanging there—",
+        "O Jesus! Thou hast anguish borne,",
+        "Thy hands and feet with nails were torn."
+      ]
+    },
+    {
+      "lines": [
+        "Honour and blessing be to Thee,",
+        "O Christ, who hung upon the tree,",
+        "Who, by the offering of Thy grace,",
+        "Didst save from death our fallen race."
+      ]
+    },
+    {
+      "lines": [
+        "Thy blessed Passion, Christ, be ours,",
+        "To set us free from Satan’s powers;",
+        "To aid our fainting souls to rise",
+        "To joys prepared in Paradise."
+      ]
+    },
+    {
+      "lines": [
+        "To Christ the Lord all glory be,",
+        "Who, hanging on the shameful tree,",
+        "Gave up His life with bitter cry,",
+        "And saved a world prepared to die."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee be highest honours paid,",
+        "O Christ, who wast by man betrayed,",
+        "Who, on the cross of anguish sore,",
+        "Didst die, that we might die no more."
+      ]
+    },
+    {
+      "lines": [
+        "O spotless King, who shared its gloom,",
+        "And lay at peace within the tomb,",
+        "Teach us to find our rest in Thee,",
+        "And sing Thy praise eternally."
+      ]
+    },
+    {
+      "lines": [
+        "Come to our help, O Lord, who gave",
+        "Thy precious blood our souls to save;",
+        "Lead us to Thine eternal peace,",
+        "Whose sweetest joys shall never cease."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:33"
+}

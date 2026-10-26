@@ -1,0 +1,68 @@
+{
+  "title": "When Thou, O Christ, upon the Tree",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "When Thou, O Christ, upon the Tree in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When Thou, O Christ, up-on the tree, Wert bear-ing pain for sin-ful men, The sun, la-ment-ing, hid his face, And clothed him-self with dark-ness then;",
+  "verses": [
+    {
+      "lines": [
+        "When Thou, O Christ, upon the tree,",
+        "Wert bearing pain for sinful men,",
+        "The sun, lamenting, hid his face,",
+        "And clothed himself with darkness then;"
+      ]
+    },
+    {
+      "lines": [
+        "And o'er the world, when noontide came,",
+        "The light grew faint and faded soon;",
+        "And men in wonder saw the dark",
+        "Bring in the night at hour of noon."
+      ]
+    },
+    {
+      "lines": [
+        "But, low in Hades' depths there shone",
+        "Such light as never shone before;",
+        "And prisoners saw the Light of lights,",
+        "And joyed to feel their bondage o'er."
+      ]
+    },
+    {
+      "lines": [
+        "O blessed art Thou, Christ, our Lord,",
+        "For all the pain so meekly borne;",
+        "The dark that hid Thee in Thy woe,",
+        "Has ushered in a glorious morn."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:16"
+}

@@ -1,0 +1,66 @@
+{
+  "title": "Come to the Christ in Tears",
+  "tune": "st-john-parish-choir",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Come to the Christ in Tears in Tonic Solfa to ST. JOHN (PARISH CHOIR), doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Hallelujah Metre (6.6.6.6.8.8), and this page sets them to ST. JOHN (PARISH CHOIR); any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "Come to the Christ in tears, And in His hear-ing tell Thy sins, and griefs, and fears, The wants He kno-weth well; Fear not to bring a large re-quest, He gives, and gi-veth of His best.",
+  "verses": [
+    {
+      "lines": [
+        "Come to the Christ in tears,",
+        "And in His hearing tell",
+        "Thy sins, and griefs, and fears,",
+        "The wants He knoweth well;",
+        "Fear not to bring a large request,",
+        "He gives, and giveth of His best."
+      ]
+    },
+    {
+      "lines": [
+        "Come to the Christ in tears:",
+        "The contrite heart He wills;",
+        "And every prayer He hears,",
+        "And every vessel fills; —",
+        "We never ask, and sigh unblest,",
+        "He gives, and giveth of His best."
+      ]
+    },
+    {
+      "lines": [
+        "Come to the Christ in tears; —",
+        "As when the clouds depart",
+        "A glorious light appears —",
+        "So joy shall flood the heart;",
+        "They cannot weep who share His grace,",
+        "And see the smiling of His face."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to ST. JOHN (PARISH CHOIR) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:49"
+}

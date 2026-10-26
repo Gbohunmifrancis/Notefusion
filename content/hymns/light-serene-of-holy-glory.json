@@ -1,0 +1,60 @@
+{
+  "title": "Light Serene of Holy Glory",
+  "tune": "all-for-jesus",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "Light Serene of Holy Glory in Tonic Solfa to ALL FOR JESUS, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900), where he gives them as “By Athenogenes, 296 A.D”.",
+    "The book printed the words without tunes. They are in Eights and Sevens (8.7.8.7), and this page sets them to ALL FOR JESUS; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Light se-rene of ho-ly glo-ry From th'Im-mor-tal Fa-ther poured, Ho-ly Thou, O Bless-ed Je-sus, Ho-ly, Bless-ed, Christ the Lord.",
+  "verses": [
+    {
+      "lines": [
+        "Light serene of holy glory",
+        "From the Immortal Father poured,",
+        "Holy Thou, O Blessed Jesus,",
+        "Holy, Blessed, Christ the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "Now we see the sun descending,",
+        "Now declines the evening light,",
+        "And in hymns we praise the Father,",
+        "Son and Spirit, God of Might."
+      ]
+    },
+    {
+      "lines": [
+        "Worthy of unending praises,",
+        "Christ the Son of God art Thou;",
+        "For Thy gift of life eternal,",
+        "See the world adores Thee now."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to ALL FOR JESUS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:17"
+}

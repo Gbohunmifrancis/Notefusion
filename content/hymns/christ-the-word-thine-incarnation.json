@@ -1,0 +1,96 @@
+{
+  "title": "Christ the Word! Thine Incarnation",
+  "tune": "lux-eoi",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Christ the Word! Thine Incarnation in Tonic Solfa to LUX EOI, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911), headed “Modern Greek Hymns”.",
+    "The book printed the words without tunes. They are in Eights and Sevens Double (8.7.8.7.8.7.8.7), and this page sets them to LUX EOI; any other Eights and Sevens Double tune fits them as well."
+  ],
+  "underlay": "Christ The Word! Thine In-car-na-tion Links my na-ture to Thine own; By Thy sore Hu-mil-i-a-tion, I am lift-ed to Thy throne; By Thy suf-fering Thou hast fired me With a zeal to sac-ri-fice, And to no-ble life in-spired me, Hence my grate-ful songs a-rise.",
+  "verses": [
+    {
+      "lines": [
+        "Christ The Word! Thine Incarnation",
+        "Links my nature to Thine own;",
+        "By Thy sore Humiliation,",
+        "I am lifted to Thy throne;",
+        "By Thy suffering Thou hast fired me",
+        "With a zeal to sacrifice,",
+        "And to noble life inspired me, —",
+        "Hence my grateful songs arise."
+      ]
+    },
+    {
+      "lines": [
+        "Word of God! Thy Crucifixion",
+        "Hath upraised me from the earth;",
+        "By Thy death and dereliction,",
+        "Thou hast given me nobler birth;",
+        "By Thy Resurrection glorious,",
+        "Life immortal now I own, —",
+        "Hence ascend my songs victorious",
+        "To Thy praise, O Christ the Son."
+      ]
+    },
+    {
+      "lines": [
+        "By Thy hand at the creation,",
+        "Thou didst form me from the ground,",
+        "And, to mark my kingly station,",
+        "With Thine image I was crowned;",
+        "And that hand, when pierced and bleeding,",
+        "Raised me from corruption's mire,",
+        "And, though all this love unheeding,",
+        "Decked me with divine attire."
+      ]
+    },
+    {
+      "lines": [
+        "Thou who gav'st my soul its being,",
+        "Breathing in me life divine,",
+        "Didst, by Thine all-wise decreeing,",
+        "Unto death Thy life resign;",
+        "And from death my soul defending,",
+        "Thou didst sojourn with the dead,",
+        "That Thou mightst, my fetters rending,",
+        "Raise me up, Thou Glorious Head!"
+      ]
+    },
+    {
+      "lines": [
+        "Shame be on your heads abiding,",
+        "Disobedient people now,",
+        "Who to death, and vile deriding,",
+        "Caused the Word of God to bow!",
+        "Shame! for death, nor powers infernal,",
+        "Nor the dark of hades' gloom,",
+        "Could retain the King Eternal",
+        "In the bondage of the tomb."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to LUX EOI by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:76"
+}

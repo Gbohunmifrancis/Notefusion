@@ -1,0 +1,76 @@
+{
+  "title": "O Christ, to Thy Disciples Then",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "O Christ, to Thy Disciples Then in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Christ, to Thy dis-ci-ples then, When eyes were sad, and hearts were sore, Thy lips the cheer-ing pro-mise made, To com-fort them for ev-er-more.",
+  "verses": [
+    {
+      "lines": [
+        "O Christ, to Thy disciples then,",
+        "When eyes were sad, and hearts were sore,",
+        "Thy lips the cheering promise made,",
+        "To comfort them for evermore."
+      ]
+    },
+    {
+      "lines": [
+        "And now what law and prophets spake",
+        "To waiting hearts in days of old,",
+        "Has been fulfilled: the Spirit seeks",
+        "The human heart, as long foretold."
+      ]
+    },
+    {
+      "lines": [
+        "O Christ, to us the promise speak,",
+        "And send Thy Spirit in our need,",
+        "That He may bless our longing hearts,",
+        "And ever in Thy precepts lead."
+      ]
+    },
+    {
+      "lines": [
+        "And light the darkness of our night,",
+        "Till clear the path before us lies;",
+        "And comfort us in sore distress,",
+        "And wipe the sorrow from our eyes."
+      ]
+    },
+    {
+      "lines": [
+        "And songs of praise to Thee we'll give,",
+        "O God the Father, Christ the Son,",
+        "And Holy Spirit, while we live,",
+        "And in the ages yet to run."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:34"
+}

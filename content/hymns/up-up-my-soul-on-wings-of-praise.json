@@ -1,0 +1,60 @@
+{
+  "title": "Up, Up, My Soul, on Wings of Praise",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "Up, Up, My Soul, on Wings of Praise in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900).",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Up, up, my soul, on wings of praise, No oth-er ser-vice know; In ho-ly strains the love ex-press That fires the heart be-low.",
+  "verses": [
+    {
+      "lines": [
+        "Up, up, my soul, on wings of praise,",
+        "No other service know;",
+        "In holy strains the love express",
+        "That fires the heart below."
+      ]
+    },
+    {
+      "lines": [
+        "Burn, burn, my soul, and ever be",
+        "With holy ardour fired,",
+        "And, strongly armed with firm resolve,",
+        "Be evermore inspired."
+      ]
+    },
+    {
+      "lines": [
+        "Pour forth a bloodless offering",
+        "Of hymns and holy lauds,",
+        "And weave a garland rich and fair",
+        "To crown the King of gods."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:36"
+}

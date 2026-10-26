@@ -1,0 +1,71 @@
+{
+  "title": "We Give Thee but Thine Own",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "William Walsham How",
+      "born": 1823,
+      "died": 1897,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "We Give Thee but Thine Own in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Walsham How wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 361.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "We give Thee but Thine own, What-e’er the gift may be; All that we have is Thine a-lone, A trust, O Lord, from Thee.",
+  "verses": [
+    {
+      "lines": [
+        "We give Thee but Thine own,",
+        "Whate’er the gift may be;",
+        "All that we have is Thine alone,",
+        "A trust, O Lord, from Thee."
+      ]
+    },
+    {
+      "lines": [
+        "May we Thy bounties thus",
+        "As stewards true receive",
+        "And gladly, as Thou blessest us,",
+        "To Thee our first-fruits give!"
+      ]
+    },
+    {
+      "lines": [
+        "To comfort and to bless,",
+        "To find a balm for woe,",
+        "To tend the lone and fatherless—",
+        "Is angels’ work below."
+      ]
+    },
+    {
+      "lines": [
+        "The captive to release,",
+        "To God the lost to bring,",
+        "To teach the way of life and peace—",
+        "It is a Christlike thing."
+      ]
+    },
+    {
+      "lines": [
+        "And we believe Thy Word,",
+        "Though dim our faith may be.",
+        "Whate’er for Thine we do, O Lord,",
+        "We do it unto Thee."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: William Walsham How died in 1897.",
+  "credits": "Words by William Walsham How (1823–1897), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:361"
+}

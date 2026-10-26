@@ -1,0 +1,91 @@
+{
+  "title": "Let Us Love, and Sing, and Wonder",
+  "tune": "kalmar",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Let Us Love, and Sing, and Wonder in Tonic Solfa to KALMAR, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 82, “Praise for redeeming love”.",
+    "The book printed the words without tunes, marked 8.7.8.7.7.7, to be sung to any tune of that metre. This page sets them to KALMAR; any other 8.7.8.7.7.7 tune fits them as well."
+  ],
+  "underlay": "Let us love, and sing, and won-der, Let us praise the Sa-vior's name! He has hushed the Law's loud thun-der, He has quenched mount Si-nai's flame: He has washed us with his blood, He has brought us nigh to God.",
+  "verses": [
+    {
+      "lines": [
+        "Let us love, and sing, and wonder,",
+        "Let us praise the Savior's name!",
+        "He has hushed the Law's loud thunder,",
+        "He has quenched mount Sinai's flame:",
+        "He has washed us with his blood,",
+        "He has brought us nigh to God."
+      ]
+    },
+    {
+      "lines": [
+        "Let us love the Lord who bought us,",
+        "Pitied us when enemies;",
+        "Called us by his grace, and taught us,",
+        "Gave us ears, and gave us eyes:",
+        "He has washed us with his blood,",
+        "He presents our souls to God."
+      ]
+    },
+    {
+      "lines": [
+        "Let us sing though fierce temptations",
+        "Threaten hard to hear us down",
+        "For the Lord, our strong salvation,",
+        "Holds in view the conqu'rors crown:",
+        "He who washed us with his blood,",
+        "Soon will bring us home to God."
+      ]
+    },
+    {
+      "lines": [
+        "Let us wonder, grace and justice,",
+        "Join and point to mercy's store;",
+        "When through grace in Christ our trust is,",
+        "Justice smiles; and asks no more:",
+        "He who washed us with his blood,",
+        "Has secured our way to God."
+      ]
+    },
+    {
+      "lines": [
+        "Let us praise, and join the chorus",
+        "Of the saints, enthroned on high;",
+        "Here they trusted him before us,",
+        "Now their praises fill the sky:",
+        "\"Thou hast washed us with thy blood,",
+        "Thou art worthy, Lamb of God!\""
+      ]
+    },
+    {
+      "lines": [
+        "Hark! the name of Jesus, sounded",
+        "Loud, from golden harps above!",
+        "Lord, we blush, and are confounded,",
+        "Faint our praises, cold our love!",
+        "Wash our souls and songs with blood,",
+        "For by thee we come to God."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to KALMAR by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:82"
+}

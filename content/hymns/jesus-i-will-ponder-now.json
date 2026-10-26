@@ -1,0 +1,109 @@
+{
+  "title": "Jesus, I Will Ponder Now",
+  "tune": "aurelia",
+  "text": [
+    {
+      "name": "Sigmund von Birken",
+      "born": 1626,
+      "died": 1681,
+      "role": "Words"
+    },
+    {
+      "name": "August Crull",
+      "born": 1845,
+      "died": 1923,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Jesus, I Will Ponder Now in Tonic Solfa to AURELIA, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Sigmund von Birken wrote these words in German. August Crull's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 192.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to AURELIA; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "Je-sus, I will pon-der now On Thy ho-ly Pas-sion; With Thy Spir-it me en-dow For such med-i-ta-tion. Grant that I in love and faith May the i-mage cher-ish Of Thy suf-fering, pain, and death, That I may not per-ish.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, I will ponder now",
+        "On Thy holy Passion;",
+        "With Thy Spirit me endow",
+        "For such meditation.",
+        "Grant that I in love and faith",
+        "May the image cherish",
+        "Of Thy suffering, pain, and death,",
+        "That I may not perish."
+      ]
+    },
+    {
+      "lines": [
+        "Make me see Thy great distress,",
+        "Anguish, and affliction,",
+        "Bonds and stripes and wretchedness",
+        "And Thy crucifixion;",
+        "Make me see how scourge and rod,",
+        "Spear and nails did wound Thee,",
+        "How for man Thou diedst, O God,",
+        "Who with thorns had crowned Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Yet, O Lord, not thus alone",
+        "Make me see Thy Passion,",
+        "But its cause to me make known",
+        "And its termination.",
+        "Ah! I also and my sin",
+        "Wrought Thy deep affliction;",
+        "This the cause alone hath been",
+        "Of Thy crucifixion."
+      ]
+    },
+    {
+      "lines": [
+        "Grant that I Thy Passion view",
+        "With repentant grieving",
+        "Nor Thee crucify anew",
+        "By unholy living.",
+        "How could I refuse to shun",
+        "Every sinful pleasure",
+        "Since for me God’s only Son",
+        "Suffered without measure?"
+      ]
+    },
+    {
+      "lines": [
+        "If my sins give me alarm",
+        "And my conscience grieve me,",
+        "Let Thy cross my fear disarm,",
+        "Peace of conscience give me.",
+        "Grant that I may trust in Thee",
+        "And Thy holy Passion.",
+        "If His Son so loveth me,",
+        "God must have compassion."
+      ]
+    },
+    {
+      "lines": [
+        "Grant that I may willingly",
+        "Bear with Thee my crosses,",
+        "Learning humbleness of Thee,",
+        "Peace mid pain and losses.",
+        "May I give Thee love for love.",
+        "Hear me, O my Savior,",
+        "That I may in heaven above",
+        "Sing Thy praise forever."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Sigmund von Birken died in 1681; August Crull died in 1923.",
+  "credits": "Words by Sigmund von Birken (1626–1681), translated by August Crull (1845–1923), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to AURELIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:192"
+}

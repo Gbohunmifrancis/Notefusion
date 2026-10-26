@@ -1,0 +1,245 @@
+{
+  "source": "John Brownlie, Hymns of the Greek Church (Edinburgh and London, 1900)",
+  "date": "2026-10-26",
+  "written": [
+    {
+      "ref": "5",
+      "slug": "christ-is-born-go-forth-to-meet-him",
+      "metre": "8 7 8 7 7 7",
+      "tune": "kalmar",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "7",
+      "slug": "in-the-bliss-of-old-predicted",
+      "metre": "8 7 8 7 7 7",
+      "tune": "kalmar",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "8",
+      "slug": "bethlehem-rejoices",
+      "metre": "6 5 6 5",
+      "tune": "bemerton",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "10",
+      "slug": "no-longer-now-at-edens-gate",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "11",
+      "slug": "thou-one-begotten-son",
+      "metre": "6 6 8 6",
+      "tune": "aylesbury",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "12",
+      "slug": "when-on-the-cruel-cross",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "14",
+      "slug": "o-thou-who-clothst-thyself-complete",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "15",
+      "slug": "when-thou-wert-crucified-by-men",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "17",
+      "slug": "light-serene-of-holy-glory",
+      "metre": "8 7 8 7",
+      "tune": "all-for-jesus",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "18",
+      "slug": "we-have-heard-the-wondrous-story",
+      "metre": "8 7 8 7",
+      "tune": "omni-die",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "22",
+      "slug": "o-jesus-to-thy-servants-give",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "23",
+      "slug": "it-is-a-comely-thing",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "24",
+      "slug": "come-ye-people-come-adore-him",
+      "metre": "8 7 8 7",
+      "tune": "all-for-jesus",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "25",
+      "slug": "when-thou-shalt-come-o-lord",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "29",
+      "slug": "o-light-that-knew-no-dawn",
+      "metre": "6 6 6 6 8 8",
+      "tune": "st-john-parish-choir",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "30",
+      "slug": "christ-for-thee-a-wreath-adorning",
+      "metre": "8 7 8 7",
+      "tune": "omni-die",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "31",
+      "slug": "now-at-this-evening-hour",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "32",
+      "slug": "the-morning-breaks-i-place-my-hand-in-thine",
+      "metre": "10 10 10 10",
+      "tune": "song-twenty-two",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "33",
+      "slug": "o-word-of-truth-in-devious-paths",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "34",
+      "slug": "when-darkness-falls-and-night-is-here",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "35",
+      "slug": "o-may-my-soul-uncrushed-by-care",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "36",
+      "slug": "up-up-my-soul-on-wings-of-praise",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Traditional Greek and John Brownlie"
+    }
+  ],
+  "alreadyOurs": [],
+  "skipped": [
+    {
+      "ref": "1",
+      "first": "Far from Thy heavenly care,",
+      "why": "only 9 of 12 lines sing as 6.6.8.6"
+    },
+    {
+      "ref": "2",
+      "first": "O King enthroned on high,",
+      "why": "only 11 of 16 lines sing as 6.6.8.6"
+    },
+    {
+      "ref": "3",
+      "first": "To Thy blest Cross, O Christ, we come,",
+      "why": "words in iambs; the Eights and Sevens tunes we hold are in trochees"
+    },
+    {
+      "ref": "4",
+      "first": "O come let us adore",
+      "why": "its first verse cannot be sung as 6.6.8.6"
+    },
+    {
+      "ref": "6",
+      "first": "What shall we bring to Thee?",
+      "why": "only 16 of 24 lines sing as 6.6.6.6.8.8"
+    },
+    {
+      "ref": "9",
+      "first": "To-day the groans of Hades rise, —",
+      "why": "its first verse cannot be sung as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "13",
+      "first": "The wily Judas watches near",
+      "why": "only 12 of 18 lines sing as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "16",
+      "first": "Our evening prayers attend,",
+      "why": "only 19 of 24 lines sing as 6.6.6.6.8.8"
+    },
+    {
+      "ref": "19",
+      "first": "When, O King Immortal,",
+      "why": "only 12 of 24 lines sing as 6.6.6.6.8.8"
+    },
+    {
+      "ref": "20",
+      "first": "Behold the Bridegroom cometh",
+      "why": "only 14 of 24 lines sing as 8.7.8.7.8.7"
+    },
+    {
+      "ref": "21",
+      "first": "O Jesus, Lover of our race,",
+      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+    },
+    {
+      "ref": "26",
+      "first": "Lord, to our humble prayers attend,",
+      "why": "no tune we hold for “unmarked” in 3-line verses"
+    },
+    {
+      "ref": "27",
+      "first": "God of all Grace, Thy mercy send;",
+      "why": "no tune we hold for “unmarked” in 3-line verses"
+    },
+    {
+      "ref": "28",
+      "first": "Behold the Bridegroom! Hark the cry,",
+      "why": "only 14 of 32 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "37",
+      "first": "In the Father's glory shining,",
+      "why": "its first verse cannot be sung as 8.7.8.7"
+    }
+  ],
+  "counts": {
+    "hymns": 37,
+    "written": 22,
+    "alreadyOurs": 0,
+    "skipped": 15,
+    "removed": 1
+  }
+}

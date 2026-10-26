@@ -1,0 +1,103 @@
+{
+  "title": "Jesus, I My Cross Have Taken",
+  "tune": "lux-eoi",
+  "text": [
+    {
+      "name": "Henry Francis Lyte",
+      "born": 1793,
+      "died": 1847,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Jesus, I My Cross Have Taken in Tonic Solfa to LUX EOI, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Henry Francis Lyte wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 335.",
+    "The book printed the words without tunes, marked Eights and Sevens Double (8.7.8.7.8.7.8.7), to be sung to any tune of that metre. This page sets them to LUX EOI; any other Eights and Sevens Double tune fits them as well."
+  ],
+  "underlay": "Je-sus, I my cross have ta-ken, All to leave and fol-low Thee; Des-ti-tute, des-pised, for-sa-ken, Thou from hence my All shalt be. Per-ish ev-ery fond am-bi-tion, All I’ve sought or hoped or known; Yet how rich is my con-di-tion! God and heaven are still my own.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, I my cross have taken,",
+        "All to leave and follow Thee;",
+        "Destitute, despised, forsaken,",
+        "Thou from hence my All shalt be.",
+        "Perish every fond ambition,",
+        "All I’ve sought or hoped or known;",
+        "Yet how rich is my condition!",
+        "God and heaven are still my own."
+      ]
+    },
+    {
+      "lines": [
+        "Let the world despise and leave me,",
+        "They have left my Savior too;",
+        "Human hearts and looks deceive me,",
+        "Thou art not, like them, untrue.",
+        "And while Thou shalt smile upon me,",
+        "God of wisdom, love, and might,",
+        "Foes may hate and friends may shun me;",
+        "Show Thy face, and all is bright."
+      ]
+    },
+    {
+      "lines": [
+        "Go, then, earthly fame and treasure!",
+        "Come, disaster, scorn, and pain!",
+        "In Thy service, pain is pleasure;",
+        "With Thy favor, loss is gain.",
+        "I have called Thee Abba, Father!",
+        "I have stayed my heart on Thee;",
+        "Storms may howl, and clouds may gather,",
+        "All must work for good to me."
+      ]
+    },
+    {
+      "lines": [
+        "Man may trouble and distress me,",
+        "’Twill but drive me to Thy breast;",
+        "Life with trials hard may press me,",
+        "Heaven will bring me sweeter rest.",
+        "Oh, ’tis not in grief to harm me",
+        "While Thy love is left to me!",
+        "Oh, ’twere not in joy to charm me",
+        "Were that joy unmixed with Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Take, my soul, thy full salvation;",
+        "Rise o’er sin and fear and care,",
+        "Joy to find in every station,",
+        "Something still to do or bear.",
+        "Think what Spirit dwells within thee,",
+        "What a Father’s smile is thine,",
+        "What a Savior died to win thee,—",
+        "Child of heaven, shouldst thou repine?"
+      ]
+    },
+    {
+      "lines": [
+        "Haste, then, on from grace to glory,",
+        "Armed by faith and winged by prayer;",
+        "Heaven’s eternal day’s before thee,",
+        "God’s own hand shall guide thee there.",
+        "Soon shall close thy earthly mission,",
+        "Swift shall pass thy pilgrim days,",
+        "Hope soon change to glad fruition,",
+        "Faith to sight and prayer to praise."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Henry Francis Lyte died in 1847.",
+  "credits": "Words by Henry Francis Lyte (1793–1847), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to LUX EOI by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:335"
+}

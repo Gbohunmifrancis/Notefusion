@@ -1,0 +1,86 @@
+{
+  "title": "The Wealth of High Estate",
+  "tune": "st-john-parish-choir",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "The Wealth of High Estate in Tonic Solfa to ST. JOHN (PARISH CHOIR), doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911).",
+    "The book printed the words without tunes. They are in Hallelujah Metre (6.6.6.6.8.8), and this page sets them to ST. JOHN (PARISH CHOIR); any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "The wealth of high es-tate, The sil-ver and the gold, The glo-ry of the great, The wis-dom of the old, Death sei-zes all, they pass a-way, For all on earth is van-i-ty.",
+  "verses": [
+    {
+      "lines": [
+        "The wealth of high estate,",
+        "The silver and the gold,",
+        "The glory of the great,",
+        "The wisdom of the old, —",
+        "Death seizes all, they pass away,",
+        "For all on earth is vanity."
+      ]
+    },
+    {
+      "lines": [
+        "Why seek the vain that dies?",
+        "The life begirt by death?",
+        "The fame, the power that flies",
+        "With the expiring breath?",
+        "The good that carries ill besides,",
+        "And for a fleeting hour abides?"
+      ]
+    },
+    {
+      "lines": [
+        "Are there no gains that last,",
+        "To bless the soul for aye,",
+        "When passing things are past,",
+        "And things of earth decay?",
+        "Are there no joys that linger long",
+        "In sweetness, like a heavenly song?"
+      ]
+    },
+    {
+      "lines": [
+        "Arise, my soul, arise!",
+        "The husks of time disdain,",
+        "And wing thee to the skies,",
+        "Where there is lasting gain;",
+        "Where moth nor rust can mock thy toil,",
+        "Nor subtle thief break through to spoil."
+      ]
+    },
+    {
+      "lines": [
+        "O Christ, for Thee we long,",
+        "'Tis Thee our spirits need;",
+        "They only life prolong",
+        "Who on Thy bounties feed;",
+        "And they have wealth, and high estate,",
+        "And endless bliss who on Thee wait."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to ST. JOHN (PARISH CHOIR) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:37"
+}

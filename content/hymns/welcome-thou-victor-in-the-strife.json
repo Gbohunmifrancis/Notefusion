@@ -1,0 +1,85 @@
+{
+  "title": "Welcome, Thou Victor in the Strife",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Benjamin Schmolck",
+      "born": 1672,
+      "died": 1737,
+      "role": "Words"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Welcome, Thou Victor in the Strife in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Benjamin Schmolck wrote these words in German. Catherine Winkworth's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 228.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Wel-come, Thou Vic-tor in the strife, Wel-come from out the cave! To day we tri-umph in Thy life A-round Thine emp-ty grave.",
+  "verses": [
+    {
+      "lines": [
+        "Welcome, Thou Victor in the strife,",
+        "Welcome from out the cave!",
+        "To-day we triumph in Thy life",
+        "Around Thine empty grave."
+      ]
+    },
+    {
+      "lines": [
+        "Our enemy is put to shame,",
+        "His short-lived triumph o’er;",
+        "Our God is with us, we exclaim;",
+        "We fear our foe no more."
+      ]
+    },
+    {
+      "lines": [
+        "The dwellings of the just resound",
+        "With songs of victory;",
+        "For in their midst Thou, Lord, art found",
+        "And bringest peace with Thee."
+      ]
+    },
+    {
+      "lines": [
+        "O let Thy conquering banner wave",
+        "O’er hearts Thou makest free;",
+        "And point the path that from the grave",
+        "Leads heavenward up to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "We bury all our sin and crime",
+        "Deep in our Savior’s tomb",
+        "And seek the treasure there that time",
+        "And change can ne’er consume."
+      ]
+    },
+    {
+      "lines": [
+        "Fearless we lay us in the tomb",
+        "And sleep the night away;",
+        "For Thou art there to break the gloom",
+        "And call us back to-day."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Benjamin Schmolck died in 1737; Catherine Winkworth died in 1878.",
+  "credits": "Words by Benjamin Schmolck (1672–1737), translated by Catherine Winkworth (1827–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:228"
+}

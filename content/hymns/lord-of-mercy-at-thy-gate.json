@@ -1,0 +1,76 @@
+{
+  "title": "Lord of Mercy, at Thy Gate",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Lord of Mercy, at Thy Gate in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Sevens (7.7.7.7), and this page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Lord of mer-cy, at Thy gate, Nee-dy souls im-plor-ing pray; Have we come, Good Lord, too late? Must we turn in grief a-way?",
+  "verses": [
+    {
+      "lines": [
+        "Lord of mercy, at Thy gate,",
+        "Needy souls imploring pray;",
+        "Have we come, Good Lord, too late?",
+        "Must we turn in grief away?"
+      ]
+    },
+    {
+      "lines": [
+        "Young and old Thy mercy claim, —",
+        "Some are early at the gate,",
+        "Some are late to own Thy name,",
+        "Surely none, though late, too late!"
+      ]
+    },
+    {
+      "lines": [
+        "Blessed, who with morning sun,",
+        "Hopeful at Thy portals wait;",
+        "Yea, and when the day is done,",
+        "Blessed they who find the gate."
+      ]
+    },
+    {
+      "lines": [
+        "Ah, Good Lord, when Thou wert here,",
+        "Homeless, in our world of sin,",
+        "Few, to give Thee warmth and cheer,",
+        "Called their weary Lord within."
+      ]
+    },
+    {
+      "lines": [
+        "Sad, repenting, full of fear,",
+        "Hoping, doubting, still we wait;",
+        "As we call, in mercy hear; —",
+        "Open, Lord, to us the gate."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:52"
+}

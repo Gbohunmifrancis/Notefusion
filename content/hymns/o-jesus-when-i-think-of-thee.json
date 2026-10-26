@@ -1,0 +1,100 @@
+{
+  "title": "O Jesus, When I Think of Thee",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "O Jesus, When I Think of Thee in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), headed “Monday Evening”.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O Je-sus, when I think of Thee, True glad-ness fills my heart; But joy un-speak-a-ble ’twill be To see Thee as Thou art.",
+  "verses": [
+    {
+      "lines": [
+        "O Jesus, when I think of Thee,",
+        "True gladness fills my heart;",
+        "But joy unspeakable ’twill be",
+        "To see Thee as Thou art."
+      ]
+    },
+    {
+      "lines": [
+        "O blessed name! No note more sweet,",
+        "No music so divine;",
+        "Its charms the dearest fancies greet",
+        "That with my memory twine."
+      ]
+    },
+    {
+      "lines": [
+        "To those who come with sin confessed,",
+        "Thy name their hope inspires;",
+        "And every needy soul is blessed,",
+        "And granted all desires."
+      ]
+    },
+    {
+      "lines": [
+        "To those who seek, ah! Thou art found",
+        "Far more than all desire—",
+        "A living fount whose streams abound,",
+        "A flame of heavenly fire."
+      ]
+    },
+    {
+      "lines": [
+        "What tongue can e’er the charm express?",
+        "What words its beauty show?",
+        "For Thy dear name’s sweet loveliness",
+        "No heart can ever know."
+      ]
+    },
+    {
+      "lines": [
+        "Who only taste the heavenly bread,",
+        "They hunger for the feast;",
+        "Who drink of Christ, the Fountainhead,",
+        "But find their thirst increase."
+      ]
+    },
+    {
+      "lines": [
+        "O Jesus, to my fainting heart",
+        "When wilt Thou come to speak?",
+        "O, when to me Thy bliss impart,",
+        "And more than I can seek?"
+      ]
+    },
+    {
+      "lines": [
+        "O I will feed and hunger still,",
+        "O I will drink and pine",
+        "Till Thou my famished spirit fill",
+        "With that blest name of Thine."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:8"
+}

@@ -1,0 +1,60 @@
+{
+  "title": "O Lord, Whose Bounteous Hand Again",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "O Lord, Whose Bounteous Hand Again in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 291.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "O Lord, whose boun-teous hand a-gain Hath poured Thy gifts in plen-ty down, Who all cre-a-tion dost sus-tain And all the earth with good-ness crown: Lord of the har-vest, here we own Our joy Thy gift, and Thine a-lone.",
+  "verses": [
+    {
+      "lines": [
+        "O Lord, whose bounteous hand again",
+        "Hath poured Thy gifts in plenty down,",
+        "Who all creation dost sustain",
+        "And all the earth with goodness crown:",
+        "Lord of the harvest, here we own",
+        "Our joy Thy gift, and Thine alone."
+      ]
+    },
+    {
+      "lines": [
+        "O may we ne’er with thankless heart",
+        "Forget from whom our blessings flow.",
+        "Still, Lord, Thy heavenly grace impart;",
+        "Still teach us what to Thee we owe.",
+        "Lord, may our lives with fruit divine",
+        "Return Thy care and prove us Thine."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, grant that each may sow to Thee;",
+        "Grant us in endless life to reap.",
+        "Of every heart the Guardian be;",
+        "By day and night Thy servants keep",
+        "That all to Thee may joy afford",
+        "On Thy great harvest-day, O Lord."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: anonymous words in print by 1927.",
+  "credits": "Words anonymous, public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:291"
+}

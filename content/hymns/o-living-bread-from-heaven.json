@@ -1,0 +1,85 @@
+{
+  "title": "O Living Bread from Heaven",
+  "tune": "ewing",
+  "text": [
+    {
+      "name": "Johann Rist",
+      "born": 1607,
+      "died": 1667,
+      "role": "Words"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "O Living Bread from Heaven in Tonic Solfa to EWING, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Johann Rist wrote these words in German. Catherine Winkworth's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 435.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to EWING; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "O liv-ing Bread from hea-ven, How hast Thou fed Thy guest! The gifts Thou now hast giv-en Have filled my heart with rest. O won-drous Food of bless-ing! O Cup that heals our woes! My heart, this gift pos-sess-ing, In thank-ful song o’er-flows.",
+  "verses": [
+    {
+      "lines": [
+        "O living Bread from heaven,",
+        "How hast Thou fed Thy guest!",
+        "The gifts Thou now hast given",
+        "Have filled my heart with rest.",
+        "O wondrous Food of blessing!",
+        "O Cup that heals our woes!",
+        "My heart, this gift possessing,",
+        "In thankful song o’erflows."
+      ]
+    },
+    {
+      "lines": [
+        "My Lord, Thou here hast led me",
+        "Within Thy holiest place",
+        "And there Thyself hast fed me",
+        "With treasures of Thy grace;",
+        "And Thou hast freely given",
+        "What earth could never buy,",
+        "The Bread of life from heaven,",
+        "That now I shall not die."
+      ]
+    },
+    {
+      "lines": [
+        "Thou givest all I wanted.",
+        "The food can death destroy,",
+        "And Thou hast freely granted",
+        "The cup of endless joy.",
+        "Ah, Lord, I do not merit",
+        "The favor Thou hast shown,",
+        "And all my soul and spirit",
+        "Bow down before Thy throne."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, grant me that, thus strengthened",
+        "With heavenly food, while here",
+        "My course on earth is lengthened,",
+        "I serve with holy fear;",
+        "And when Thou call’st my spirit",
+        "To leave this world below,",
+        "I enter, through Thy merit,",
+        "Where joys unmingled flow."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Johann Rist died in 1667; Catherine Winkworth died in 1878.",
+  "credits": "Words by Johann Rist (1607–1667), translated by Catherine Winkworth (1827–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to EWING by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:435"
+}

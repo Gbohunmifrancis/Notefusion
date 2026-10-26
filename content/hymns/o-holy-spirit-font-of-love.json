@@ -1,0 +1,60 @@
+{
+  "title": "O Holy Spirit, Font of Love",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "O Holy Spirit, Font of Love in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), where he gives them as “By Charles Coffin”, headed “O Fons Amoris, Spiritus”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Ho-ly Spir-it, font of love, Thou source of life, and joy, and peace, With ho-ly fire come from a-bove, And bid our hearts their warmth in-crease.",
+  "verses": [
+    {
+      "lines": [
+        "O Holy Spirit, font of love,",
+        "Thou source of life, and joy, and peace,",
+        "With holy fire come from above,",
+        "And bid our hearts their warmth increase."
+      ]
+    },
+    {
+      "lines": [
+        "O Thou who didst with love’s strong cord",
+        "Unite the Father and the Son,",
+        "May we who love a common Lord,",
+        "In mutual love be bound in one."
+      ]
+    },
+    {
+      "lines": [
+        "Now to the Father throned on high,",
+        "And unto Christ His only Son,",
+        "And to the Spirit, glory be,",
+        "Now, and while endless ages run."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:44"
+}

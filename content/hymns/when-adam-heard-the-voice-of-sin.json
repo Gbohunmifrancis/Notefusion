@@ -1,0 +1,84 @@
+{
+  "title": "When Adam Heard the Voice of Sin",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "When Adam Heard the Voice of Sin in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911).",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When A-dam heard the voice of sin And fell be-fore its power, The flowers of Par-a-dise were shorn Of beau-ty in that hour.",
+  "verses": [
+    {
+      "lines": [
+        "When Adam heard the voice of sin",
+        "And fell before its power,",
+        "The flowers of Paradise were shorn",
+        "Of beauty in that hour."
+      ]
+    },
+    {
+      "lines": [
+        "And clouds obscured the heavenly light,",
+        "And e'en the stars were dim;",
+        "For O 'twas night, and only night,",
+        "Dark night 'twixt God and him."
+      ]
+    },
+    {
+      "lines": [
+        "\"O whence that flashing sword that gleams?",
+        "And whence those angels there?\"",
+        "Out from the garden of their bliss,",
+        "Was thrust the guilty pair."
+      ]
+    },
+    {
+      "lines": [
+        "Life is not theirs, the tree of Life",
+        "The Cherubim surround;",
+        "Death dogs our guilty parents' steps,",
+        "Curse blasts the fertile ground."
+      ]
+    },
+    {
+      "lines": [
+        "O dreary, dreary, dark and dread,",
+        "O misery of sin!",
+        "\"God make another garden fair,",
+        "And take Thy wanderers in.\""
+      ]
+    },
+    {
+      "lines": [
+        "All praise to Christ our glorious Lord,",
+        "For sin and death are slain;",
+        "The gates of heaven are open wide,",
+        "And life is ours again."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:24"
+}

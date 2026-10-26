@@ -1,0 +1,76 @@
+{
+  "title": "Jerusalem, Rejoice",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Jerusalem, Rejoice in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911), headed “_Refrain._”.",
+    "The book printed the words without tunes. They are in Short Metre (6.6.8.6), and this page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Je-ru-sa-lem, re-joice! Keep fes-ti-val and sing; All ye who dwell in Zi-on's courts, Bring forth an of-fer-ing.",
+  "verses": [
+    {
+      "lines": [
+        "Jerusalem, rejoice!",
+        "Keep festival and sing;",
+        "All ye who dwell in Zion's courts,",
+        "Bring forth an offering."
+      ]
+    },
+    {
+      "lines": [
+        "To-day the chain is loosed",
+        "That long hath bound our race,",
+        "The condemnation is removed",
+        "Through God's abounding grace."
+      ]
+    },
+    {
+      "lines": [
+        "The gates of heaven are wide,",
+        "And Satan's work undone;",
+        "For She[3] who fell beneath his power,",
+        "Now gives the world God's Son."
+      ]
+    },
+    {
+      "lines": [
+        "O depth of riches great!",
+        "O height of wisdom strong!",
+        "O knowledge of the Living God,",
+        "To right such grievous wrong!"
+      ]
+    },
+    {
+      "lines": [
+        "Now, let creation sing",
+        "And leap, nor brook control,",
+        "For Christ hath come to call it back,",
+        "And save each ruined soul."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:8"
+}

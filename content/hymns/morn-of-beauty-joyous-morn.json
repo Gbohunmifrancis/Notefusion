@@ -1,0 +1,76 @@
+{
+  "title": "Morn of Beauty, Joyous Morn",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "Morn of Beauty, Joyous Morn in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904).",
+    "The book printed the words without tunes. They are in Sevens (7.7.7.7), and this page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Morn of beau-ty, joy-ous morn, Hails the Re-sur-rec-tion Day, All our fears are borne a-way, Hope in-to our world is born.",
+  "verses": [
+    {
+      "lines": [
+        "Morn of beauty, joyous morn,",
+        "Hails the Resurrection Day,",
+        "All our fears are borne away,",
+        "Hope into our world is born."
+      ]
+    },
+    {
+      "lines": [
+        "See, the stone is rolled away;",
+        "Empty stands the silent tomb,",
+        "Death is dead, and gone the gloom",
+        "Where the risen Saviour lay."
+      ]
+    },
+    {
+      "lines": [
+        "Women bear the spices, sad,",
+        "In the early morning grey,",
+        "But they wiped their tears away,",
+        "For the angel made them glad."
+      ]
+    },
+    {
+      "lines": [
+        "Tell the tidings far abroad,",
+        "\"He is risen even as He said,\"",
+        "Life immortal from the dead",
+        "Is the gift of Christ our God."
+      ]
+    },
+    {
+      "lines": [
+        "Glory, glory evermore,",
+        "To the Christ who died to save,",
+        "Wresting victory from the grave,",
+        "To the Christ we now adore."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:37"
+}

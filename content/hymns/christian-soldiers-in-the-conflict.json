@@ -1,0 +1,76 @@
+{
+  "title": "Christian Soldiers in the Conflict",
+  "tune": "all-for-jesus",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "Christian Soldiers in the Conflict in Tonic Solfa to ALL FOR JESUS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), headed “_All Saints_”.",
+    "The book printed the words without tunes. They are in Eights and Sevens (8.7.8.7), and this page sets them to ALL FOR JESUS; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Chris-tian sol-diers in the con-flict! Bear the ban-ner of the cross; Rich re-ward shall crown the vic-tor, More than rec-om-pense for loss.",
+  "verses": [
+    {
+      "lines": [
+        "Christian soldiers in the conflict!",
+        "Bear the banner of the cross;",
+        "Rich reward shall crown the victor,",
+        "More than recompense for loss."
+      ]
+    },
+    {
+      "lines": [
+        "Not with paltry palms that wither",
+        "Shall the brow be gaily crowned,",
+        "But with light that shines eternal,",
+        "And with heavenly joy renowned."
+      ]
+    },
+    {
+      "lines": [
+        "Yours are mansions fair and comely—",
+        "There your souls in bliss shall rest;",
+        "Stars shall sparkle in their radiance,",
+        "On the pathway of the blest."
+      ]
+    },
+    {
+      "lines": [
+        "Earthly joys are faint and fleeting,",
+        "Earthly favours quickly fade;",
+        "Heavenwards lift your eyes, expecting",
+        "There your true reward is laid."
+      ]
+    },
+    {
+      "lines": [
+        "God be praised who crowns the victor,",
+        "Christ be praised who saves from sin;",
+        "Equal praise to God the Spirit,",
+        "By whose aid we fight and win."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to ALL FOR JESUS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:48"
+}

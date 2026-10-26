@@ -1,0 +1,76 @@
+{
+  "title": "O God, I Love Thee, Not Alone",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "O God, I Love Thee, Not Alone in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), where he gives them as “Attributed to Francis Xavier”, headed “O Deus, Ego Amo Te, Nec Amo Te, Ut Salves Me”.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O God, I love Thee, not a-lone Be-cause Thou sa-vest me, And those who love not in re-turn Are lost e-ter-nal-ly.",
+  "verses": [
+    {
+      "lines": [
+        "O God, I love Thee, not alone",
+        "Because Thou savest me,",
+        "And those who love not in return",
+        "Are lost eternally."
+      ]
+    },
+    {
+      "lines": [
+        "Thou art mine own, O Christ; Thine arms",
+        "Embraced me on the Cross;",
+        "Thou didst endure the nails, the spear,",
+        "The bitter shame and loss."
+      ]
+    },
+    {
+      "lines": [
+        "O sorrows numberless were Thine,",
+        "And all were borne for me—",
+        "The bloody sweat, the cruel death",
+        "Of bitter agony."
+      ]
+    },
+    {
+      "lines": [
+        "Why, therefore, should I love Thee now,",
+        "O Jesus, ever blest?",
+        "Not lest in hell my soul be cast,",
+        "Not that in heaven it rest."
+      ]
+    },
+    {
+      "lines": [
+        "No other hope my love inspires,",
+        "And wins my heart for Thee—",
+        "I only love Thee, Christ, my King,",
+        "Because Thou lovest me."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:5"
+}

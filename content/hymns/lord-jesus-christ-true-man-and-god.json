@@ -1,0 +1,133 @@
+{
+  "title": "Lord Jesus Christ, True Man and God",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Paul Eber",
+      "born": 1511,
+      "died": 1569,
+      "role": "Words"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Lord Jesus Christ, True Man and God in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 12 verses and a piano.",
+  "about": [
+    "Paul Eber wrote these words in German. Catherine Winkworth's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 527.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Lord Je-sus Christ, true man and God, Who bor-est an-guish, scorn, the rod, And diedst at last up-on the tree To gain Thy Fa-ther’s grace for me:",
+  "verses": [
+    {
+      "lines": [
+        "Lord Jesus Christ, true man and God,",
+        "Who borest anguish, scorn, the rod,",
+        "And diedst at last upon the tree",
+        "To gain Thy Father’s grace for me:"
+      ]
+    },
+    {
+      "lines": [
+        "I pray Thee, through that bitter woe,",
+        "Let me, a sinner, mercy know",
+        "When comes the hour of failing breath",
+        "And I must wrestle, Lord, with death;"
+      ]
+    },
+    {
+      "lines": [
+        "When from my sight all fades away,",
+        "And when my tongue no more can say,",
+        "And when mine ears no more can hear,",
+        "And when my heart is racked with fear;"
+      ]
+    },
+    {
+      "lines": [
+        "When all my mind is darkened o’er,",
+        "And human help can do no more;—",
+        "Then come, Lord Jesus, come with speed,",
+        "And help me in the hour of need."
+      ]
+    },
+    {
+      "lines": [
+        "Lead me from this dark vale beneath",
+        "And shorten then the pangs of death;",
+        "All evil spirits drive away,",
+        "But let Thy Spirit with me stay,"
+      ]
+    },
+    {
+      "lines": [
+        "Until my soul the body leave;",
+        "Then in Thy hands my soul receive",
+        "And let the earth the body keep",
+        "Till the Last Day shall break its sleep."
+      ]
+    },
+    {
+      "lines": [
+        "Joyful my resurrection be,",
+        "Thou in the Judgment plead for me",
+        "And hide my sins, Lord, from Thy face",
+        "And give me life, of Thy dear grace!"
+      ]
+    },
+    {
+      "lines": [
+        "Implicitly I trust Thee, Lord,",
+        "For Thou hast promised in Thy Word:",
+        "“In truth I tell you, who receives",
+        "My Word, and keeps it, and believes,"
+      ]
+    },
+    {
+      "lines": [
+        "“Shall never fall God’s wrath beneath,",
+        "Shall never taste eternal death;",
+        "Though here he must return to dust,",
+        "He still is noways therefore lost;"
+      ]
+    },
+    {
+      "lines": [
+        "“For I will with a mighty hand",
+        "Deliver him from death’s strong band",
+        "And lift him hence that he shall be",
+        "Forever in My realm with Me,"
+      ]
+    },
+    {
+      "lines": [
+        "“Forever living there in bliss.”",
+        "Oh, let us not that glory miss!",
+        "Dear Lord, forgive us all our guilt,",
+        "Help us to wait until Thou wilt"
+      ]
+    },
+    {
+      "lines": [
+        "That we depart; and let our faith",
+        "Be brave and conquer e’en in death,",
+        "Firm resting in Thy sacred Word",
+        "Until we sleep in Thee, our Lord."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Paul Eber died in 1569; Catherine Winkworth died in 1878.",
+  "credits": "Words by Paul Eber (1511–1569), translated by Catherine Winkworth (1827–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:527"
+}

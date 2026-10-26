@@ -1,0 +1,100 @@
+{
+  "title": "Praise God the Lord, Ye Sons of Men",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Nikolaus Herman",
+      "died": 1561,
+      "role": "Words"
+    },
+    {
+      "name": "August Crull",
+      "born": 1845,
+      "died": 1923,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Praise God the Lord, Ye Sons of Men in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Nikolaus Herman wrote these words in German. August Crull's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 157.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Praise God the Lord, ye sons of men, Be-fore His high-est throne, To day He o-pens heaven a-gain And gives us His own Son.",
+  "verses": [
+    {
+      "lines": [
+        "Praise God the Lord, ye sons of men,",
+        "Before His highest throne,",
+        "To-day He opens heaven again",
+        "And gives us His own Son."
+      ]
+    },
+    {
+      "lines": [
+        "He leaves His heavenly Father’s throne,",
+        "Is born an infant small,",
+        "And in a manger, poor and lone,",
+        "Lies in a humble stall."
+      ]
+    },
+    {
+      "lines": [
+        "He lays aside His power divine,",
+        "A servant’s form doth take;",
+        "In want and lowness He doth pine",
+        "Who heaven and earth did make."
+      ]
+    },
+    {
+      "lines": [
+        "He nestles at His mother’s breast,",
+        "Her milk His food must be;",
+        "Whom saints and angels call the Blest,",
+        "Of David’s house is He."
+      ]
+    },
+    {
+      "lines": [
+        "’Tis He who in these latter days",
+        "From Judah’s tribe should come,",
+        "By whom the Lord again would raise",
+        "His Church, His Christendom."
+      ]
+    },
+    {
+      "lines": [
+        "A wondrous change which He doth make!",
+        "He takes our flesh and blood",
+        "And lays aside for sinners’ sake",
+        "His majesty of God."
+      ]
+    },
+    {
+      "lines": [
+        "He serves that I a lord may be;",
+        "A great exchange, indeed!",
+        "Could Jesus’ love do more for me",
+        "To help me in my need?"
+      ]
+    },
+    {
+      "lines": [
+        "He opens us again the door",
+        "Of Paradise to-day;",
+        "The cherub guards the gate no more.",
+        "To God our thanks we pay."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Nikolaus Herman died in 1561; August Crull died in 1923.",
+  "credits": "Words by Nikolaus Herman (died 1561), translated by August Crull (1845–1923), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:157"
+}

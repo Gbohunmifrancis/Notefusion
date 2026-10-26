@@ -1,0 +1,71 @@
+{
+  "title": "Stand, Soldier of the Cross",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "Edward Henry Bickersteth",
+      "born": 1825,
+      "died": 1906,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Stand, Soldier of the Cross in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Edward Henry Bickersteth wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 407.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Stand, sol-dier of the Cross, Thy high al-le-giance claim And vow to hold the world but loss For Thy Re-deem-er’s name.",
+  "verses": [
+    {
+      "lines": [
+        "Stand, soldier of the Cross,",
+        "Thy high allegiance claim",
+        "And vow to hold the world but loss",
+        "For Thy Redeemer’s name."
+      ]
+    },
+    {
+      "lines": [
+        "Arise and be baptized",
+        "And wash thy sins away;",
+        "Thy league with God be solemnized,",
+        "Thy faith confessed to-day."
+      ]
+    },
+    {
+      "lines": [
+        "No more thine own, but Christ’s;",
+        "With all the saints of old,",
+        "Apostles, seers, evangelists,",
+        "And martyr-throngs enrolled:"
+      ]
+    },
+    {
+      "lines": [
+        "In God’s whole armor strong,",
+        "Front hell’s embattled powers.",
+        "The warfare may be sharp and long,",
+        "The victory must be ours."
+      ]
+    },
+    {
+      "lines": [
+        "O bright the conqueror’s crown,",
+        "The song of triumph sweet.",
+        "When faith casts every trophy down",
+        "At our great Captain’s feet!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Edward Henry Bickersteth died in 1906.",
+  "credits": "Words by Edward Henry Bickersteth (1825–1906), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:407"
+}

@@ -1,0 +1,76 @@
+{
+  "title": "Glory to God! the Morn Appointed Breaks",
+  "tune": "song-twenty-two",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Glory to God! the Morn Appointed Breaks in Tonic Solfa to SONG TWENTY-TWO, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Tens (10.10.10.10), and this page sets them to SONG TWENTY-TWO; any other Tens tune fits them as well."
+  ],
+  "underlay": "Glo-ry to God! The morn ap-point-ed breaks, And earth a-wakes from all the woe-ful past, For, with the morn, the Lord of Life a-wakes, And sin and death in-to the grave are cast.",
+  "verses": [
+    {
+      "lines": [
+        "Glory to God! The morn appointed breaks,",
+        "And earth awakes from all the woeful past,",
+        "For, with the morn, the Lord of Life awakes,",
+        "And sin and death into the grave are cast."
+      ]
+    },
+    {
+      "lines": [
+        "Glory to God! The cross with all its shame,",
+        "Now sheds its glory o'er a ransomed world;",
+        "For He Who bore the burden of our blame,",
+        "With pierced hands the foe to hell hath hurled."
+      ]
+    },
+    {
+      "lines": [
+        "Glory to God! Sing ransomed souls again, —",
+        "And let your songs our glorious Victor laud,",
+        "Who by His might hath snapped the tyrant's chain,",
+        "And set us free to rise with Him to God."
+      ]
+    },
+    {
+      "lines": [
+        "Darkness and night farewell! the morn is here;",
+        "Welcome! the light that ushers in the day;",
+        "Visions of joy before our sight appear,",
+        "And like the clouds, our sorrows melt away."
+      ]
+    },
+    {
+      "lines": [
+        "Great Son of God, Immortal, and renowned!",
+        "Brighter than morn the glory on Thy brow;",
+        "Crowns must be won, and Thou art nobly crowned,",
+        "For death is dead, and sin is vanquished now."
+      ]
+    }
+  ],
+  "metre": "10 10 10 10",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to SONG TWENTY-TWO by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:21"
+}

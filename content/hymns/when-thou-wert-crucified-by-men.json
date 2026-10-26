@@ -1,0 +1,46 @@
+{
+  "title": "When Thou Wert Crucified by Men",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "When Thou Wert Crucified by Men in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 1 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900).",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "When Thou wert cru-ci-fied by men, O Christ, for Thy com-pan-ion then Thou didst ac-cept the base and vile, Whose hand was stained with blood the while; O, num-ber us with him, we pray! Thou who art good and kind al-way.",
+  "verses": [
+    {
+      "lines": [
+        "When Thou wert crucified by men,",
+        "O Christ, for Thy companion then",
+        "Thou didst accept the base and vile,",
+        "Whose hand was stained with blood the while;",
+        "O, number us with him, we pray!",
+        "Thou who art good and kind alway."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:15"
+}

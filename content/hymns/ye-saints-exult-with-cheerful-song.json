@@ -1,0 +1,84 @@
+{
+  "title": "Ye Saints Exult with Cheerful Song",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Ye Saints Exult with Cheerful Song in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911), headed “Hail to the King!”.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Ye saints ex-ult with cheer-ful song, Ye heavens be glad this morn, And let the moun-tains leap for joy, For Christ on earth is born.",
+  "verses": [
+    {
+      "lines": [
+        "Ye saints exult with cheerful song,",
+        "Ye heavens be glad this morn,",
+        "And let the mountains leap for joy,",
+        "For Christ on earth is born."
+      ]
+    },
+    {
+      "lines": [
+        "Behold the Virgin Mother holds",
+        "The Child in warm embrace, —",
+        "The One-begotten Son of God,",
+        "Incarnate Word of grace."
+      ]
+    },
+    {
+      "lines": [
+        "And shepherds from their lonely watch,",
+        "By angel guidance given,",
+        "At Bethlehem found the Promised Child,",
+        "And praised the God of heaven."
+      ]
+    },
+    {
+      "lines": [
+        "And heavenly choirs their music poured,",
+        "Upon the stillness, then,",
+        "Ascribing glory unto God,",
+        "And peace on earth to men."
+      ]
+    },
+    {
+      "lines": [
+        "Lo, wise men from the Morningland,",
+        "Their costly treasures bear,",
+        "And at the manger worshipped low,",
+        "And laid their offerings there."
+      ]
+    },
+    {
+      "lines": [
+        "Now, with the angel host who sang,",
+        "We join our thankful praise,",
+        "To God the Father, God the Son,",
+        "And Holy Ghost, always."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:5"
+}

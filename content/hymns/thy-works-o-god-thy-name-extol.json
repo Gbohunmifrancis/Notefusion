@@ -1,0 +1,92 @@
+{
+  "title": "Thy Works, O God, Thy Name Extol",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "Thy Works, O God, Thy Name Extol in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), where he gives them as “By St. Ambrose”, headed “Sunday Evening”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thy works, O God, Thy name ex-tol, Thou Ru-ler of the worlds that roll; The day is clad in gar-ments bright, And grate-ful sleep per-vades the night,",
+  "verses": [
+    {
+      "lines": [
+        "Thy works, O God, Thy name extol,",
+        "Thou Ruler of the worlds that roll;",
+        "The day is clad in garments bright,",
+        "And grateful sleep pervades the night,"
+      ]
+    },
+    {
+      "lines": [
+        "That weary limbs from labour free,",
+        "By rest for toil prepared may be;",
+        "And jaded minds awhile forget",
+        "The anxious thoughts that pain and fret."
+      ]
+    },
+    {
+      "lines": [
+        "Fast fades the sunlight in the west;",
+        "Thy hand we own our day hath blessed;",
+        "Now from the accuser’s power we flee,",
+        "And lift our prayers in song to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "O Thou hast stirred our hearts to sing,",
+        "Hast tuned the praise our voices bring;",
+        "From earth’s vain loves our love hast won,",
+        "Hast lured our thoughts that heavenward run."
+      ]
+    },
+    {
+      "lines": [
+        "So, when the rayless gloom of night",
+        "Hath quenched in dark the expiring light,",
+        "Faith waves the ebon clouds away,",
+        "And dark is light, and night is day."
+      ]
+    },
+    {
+      "lines": [
+        "That sin may ne’er an entrance make,",
+        "May slumber ne’er our souls o’ertake;",
+        "Faith, wakeful, keeps the soul secure,",
+        "And sleep is sweet, and deep, and pure."
+      ]
+    },
+    {
+      "lines": [
+        "The mind from sin’s enticements free,",
+        "O let our dreams be thoughts of Thee;",
+        "And by no envious foe oppressed,",
+        "Vouchsafe to Thy beloved rest."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:4"
+}

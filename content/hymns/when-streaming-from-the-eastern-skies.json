@@ -1,0 +1,71 @@
+{
+  "title": "When Streaming from the Eastern Skies",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "William Shrubsole",
+      "born": 1759,
+      "died": 1829,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "When Streaming from the Eastern Skies in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Shrubsole wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 19.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "When stream-ing from the east-ern skies, The morn-ing light sa-lutes my eyes, O Sun of right-eous-ness di-vine, On me with beams of mer-cy shine, Chase the dark clouds of sin a-way, And turn my dark-ness in-to day.",
+  "verses": [
+    {
+      "lines": [
+        "When streaming from the eastern skies,",
+        "The morning light salutes my eyes,",
+        "O Sun of righteousness divine,",
+        "On me with beams of mercy shine,",
+        "Chase the dark clouds of sin away,",
+        "And turn my darkness into day."
+      ]
+    },
+    {
+      "lines": [
+        "When to heaven’s great and glorious King",
+        "My morning sacrifice I bring,",
+        "And, grieving o’er my guilt and shame,",
+        "Ask mercy, Savior, in Thy name,",
+        "My conscience sprinkle with Thy blood",
+        "And be my advocate with God."
+      ]
+    },
+    {
+      "lines": [
+        "When each day’s scenes and labors close,",
+        "And wearied nature seeks repose,",
+        "With pardoning mercy, richly blest,",
+        "Guard me, my Savior, while I rest;",
+        "And as each morning’s sun shall rise,",
+        "O lead me onward to the skies."
+      ]
+    },
+    {
+      "lines": [
+        "And at my life’s last setting sun,",
+        "My conflict o’er, my labors done,",
+        "Jesus, Thy heavenly radiance shed,",
+        "To cheer and bless my dying bed;",
+        "And from death’s gloom my spirit raise",
+        "To see Thy face and sing Thy praise."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: William Shrubsole died in 1829.",
+  "credits": "Words by William Shrubsole (1759–1829), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:19"
+}

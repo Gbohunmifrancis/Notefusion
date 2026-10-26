@@ -1,0 +1,76 @@
+{
+  "title": "All Hail, Life-bearing Cross",
+  "tune": "st-bride",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "All Hail, Life-bearing Cross in Tonic Solfa to ST. BRIDE, doh is Bb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904), headed “Stichera”.",
+    "The book printed the words without tunes. They are in Short Metre (6.6.8.6), and this page sets them to ST. BRIDE; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "All hail, life bear-ing Cross, The tro-phy of the good, Thy bloom is fra-grance on our way, Thy fruit our heav-enly food.",
+  "verses": [
+    {
+      "lines": [
+        "All hail, life-bearing Cross,",
+        "The trophy of the good,",
+        "Thy bloom is fragrance on our way,",
+        "Thy fruit our heavenly food."
+      ]
+    },
+    {
+      "lines": [
+        "Entrance to paradise,",
+        "Strength of all faithful souls;",
+        "The Church's fortress when the foe",
+        "His banner grim unrolls."
+      ]
+    },
+    {
+      "lines": [
+        "By thee the curse is gone,",
+        "And death no terror brings;",
+        "We cast his power beneath our feet,",
+        "And rise to heavenly things."
+      ]
+    },
+    {
+      "lines": [
+        "O shield of our defence,",
+        "And foe of all our foes;",
+        "The glory of the saints of God,",
+        "Their crown for all their woes."
+      ]
+    },
+    {
+      "lines": [
+        "Who follow Christ the Lord,",
+        "Their beauty find in thee;",
+        "Their harbour of salvation thou,",
+        "Now and eternally."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to ST. BRIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:11"
+}

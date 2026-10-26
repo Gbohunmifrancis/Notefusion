@@ -1,0 +1,71 @@
+{
+  "title": "When All Thy Mercies, O My God",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Joseph Addison",
+      "born": 1672,
+      "died": 1719,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "When All Thy Mercies, O My God in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Joseph Addison wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 72.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When all Thy mer-cies, O my God, My ris-ing soul sur-veys, Trans-port-ed with the view, I’m lost In won-der, love, and praise.",
+  "verses": [
+    {
+      "lines": [
+        "When all Thy mercies, O my God,",
+        "My rising soul surveys,",
+        "Transported with the view, I’m lost",
+        "In wonder, love, and praise."
+      ]
+    },
+    {
+      "lines": [
+        "Ten thousand thousand precious gifts",
+        "My daily thanks employ;",
+        "Nor is the least a cheerful heart,",
+        "That tastes those gifts with joy."
+      ]
+    },
+    {
+      "lines": [
+        "Through every period of my life",
+        "Thy goodness I’ll pursue;",
+        "And after death, in distant worlds,",
+        "The glorious theme renew."
+      ]
+    },
+    {
+      "lines": [
+        "When nature fails, and day and night",
+        "Divide Thy works no more,",
+        "My ever grateful heart, O Lord,",
+        "Thy mercies shall adore."
+      ]
+    },
+    {
+      "lines": [
+        "Through all eternity to Thee",
+        "A joyful song I’ll raise;",
+        "But oh! eternity’s too short",
+        "To utter all Thy praise."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Joseph Addison died in 1719.",
+  "credits": "Words by Joseph Addison (1672–1719), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:72"
+}

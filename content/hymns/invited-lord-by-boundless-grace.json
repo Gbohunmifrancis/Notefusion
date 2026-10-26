@@ -1,0 +1,63 @@
+{
+  "title": "Invited, Lord, by Boundless Grace",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Emanuel Cronenwett",
+      "born": 1841,
+      "died": 1931,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Invited, Lord, by Boundless Grace in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Emanuel Cronenwett wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 438.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "In-vit-ed, Lord, by bound-less grace, I stood a guest be-fore Thy face; As host Thou spread’st no com-mon food; Here is Thy bo-dy and Thy blood!",
+  "verses": [
+    {
+      "lines": [
+        "Invited, Lord, by boundless grace,",
+        "I stood a guest before Thy face;",
+        "As host Thou spread’st no common food;",
+        "Here is Thy body and Thy blood!"
+      ]
+    },
+    {
+      "lines": [
+        "How holy is this Sacrament,",
+        "Where pardon, peace, and life are spent!",
+        "This bread and cup my lips have pressed;",
+        "Thou blessedst, and my soul is blessed."
+      ]
+    },
+    {
+      "lines": [
+        "Now lettest Thou Thy guest depart",
+        "With full assurance in his heart;",
+        "For such communion, Lord, with Thee",
+        "May a new life my offering be!"
+      ]
+    },
+    {
+      "lines": [
+        "When Thou shalt in Thy glory come",
+        "To gather all Thy people home,",
+        "Then let me, as Thy heavenly guest,",
+        "In anthems praise Thee with the blest!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Emanuel Cronenwett died in 1931.",
+  "credits": "Words by Emanuel Cronenwett (1841–1931), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:438"
+}

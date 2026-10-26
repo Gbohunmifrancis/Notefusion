@@ -1,0 +1,77 @@
+{
+  "title": "Thine Honor Rescue, Christ, Our Lord",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Johann Heermann",
+      "born": 1585,
+      "died": 1647,
+      "role": "Words"
+    },
+    {
+      "name": "Matthias Loy",
+      "born": 1828,
+      "died": 1915,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Thine Honor Rescue, Christ, Our Lord in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Johann Heermann wrote these words in German. Matthias Loy's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 275.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thine hon-or res-cue, Christ, our Lord! Hear Zi-on’s sighs and help af-ford; De-stroy the wiles of might-y foes, Who now Thy Word and truth op-pose.",
+  "verses": [
+    {
+      "lines": [
+        "Thine honor rescue, Christ, our Lord!",
+        "Hear Zion’s sighs and help afford;",
+        "Destroy the wiles of mighty foes,",
+        "Who now Thy Word and truth oppose."
+      ]
+    },
+    {
+      "lines": [
+        "Their craft and vaunting pomp is great;",
+        "High beat their hearts, with power elate;",
+        "Our dearest hopes they but deride,",
+        "They deem us nothing in their pride."
+      ]
+    },
+    {
+      "lines": [
+        "Forgive, O Lord, our sins forgive,",
+        "Grant us Thy grace and let us live;",
+        "Convince Thy foes throughout the land",
+        "That godless counsels shall not stand."
+      ]
+    },
+    {
+      "lines": [
+        "Preserve Thy little flock in peace,",
+        "Nor let Thy boundless mercy cease;",
+        "Let it to all the world appear",
+        "That Thy true Church indeed is here."
+      ]
+    },
+    {
+      "lines": [
+        "That Thou art with us loud proclaim,",
+        "Who put’st our enemies to shame,",
+        "Dost all their haughtiness suppress",
+        "And help Thine own in their distress."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Johann Heermann died in 1647; Matthias Loy died in 1915.",
+  "credits": "Words by Johann Heermann (1585–1647), translated by Matthias Loy (1828–1915), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:275"
+}

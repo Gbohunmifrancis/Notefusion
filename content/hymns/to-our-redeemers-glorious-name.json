@@ -1,0 +1,71 @@
+{
+  "title": "To Our Redeemer’s Glorious Name",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Anne Steele",
+      "born": 1717,
+      "died": 1778,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "To Our Redeemer’s Glorious Name in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Anne Steele wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 101.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "To our Re-deem-er’s glo-rious name A-wake the sa-cred song! O may His love, im-mor-tal flame, Tune ev-ery heart and tongue!",
+  "verses": [
+    {
+      "lines": [
+        "To our Redeemer’s glorious name",
+        "Awake the sacred song!",
+        "O may His love, immortal flame,",
+        "Tune every heart and tongue!"
+      ]
+    },
+    {
+      "lines": [
+        "His love, what mortal thought can reach!",
+        "What mortal tongue display!",
+        "Imagination’s utmost stretch",
+        "In wonder dies away."
+      ]
+    },
+    {
+      "lines": [
+        "He left His radiant throne on high,",
+        "Left the bright realms of bliss,",
+        "And came to earth to bleed and die,—",
+        "Was ever love like this?"
+      ]
+    },
+    {
+      "lines": [
+        "Dear Lord, while we adoring pay",
+        "Our humble thanks to Thee,",
+        "May every heart with rapture say,",
+        "“The Savior died for me!”"
+      ]
+    },
+    {
+      "lines": [
+        "O may the sweet, the blissful theme",
+        "Fill every heart and tongue",
+        "Till strangers love the charming name",
+        "And join the sacred song!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Anne Steele died in 1778.",
+  "credits": "Words by Anne Steele (1717–1778), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:101"
+}

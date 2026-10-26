@@ -1,0 +1,71 @@
+{
+  "title": "Yea, I Will Extol Thee",
+  "tune": "bemerton",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Yea, I Will Extol Thee in Tonic Solfa to BEMERTON, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 549, “I Will Extol Thee, O Lord!”.",
+    "The book printed the words without tunes, marked Sixes and Fives (6.5.6.5), to be sung to any tune of that metre. This page sets them to BEMERTON; any other Sixes and Fives tune fits them as well."
+  ],
+  "underlay": "Yea, I will ex-tol Thee, Lord of Life and light! For Thine arm up-held me, Turned my foes to flight.",
+  "verses": [
+    {
+      "lines": [
+        "Yea, I will extol Thee,",
+        "Lord of Life and light!",
+        "For Thine arm upheld me,",
+        "Turned my foes to flight."
+      ]
+    },
+    {
+      "lines": [
+        "I implored Thy succor,",
+        "Thou wast swift to save,",
+        "To heal my wounded spirit,",
+        "And bring me from the grave."
+      ]
+    },
+    {
+      "lines": [
+        "Grief may, like the pilgrim,",
+        "Through the night sojourn,",
+        "Yet shall joy, to-morrow,",
+        "With the sun return."
+      ]
+    },
+    {
+      "lines": [
+        "Thou hast turned my mourning",
+        "Into minstrelsy;",
+        "Girded me with gladness,",
+        "Set from thraldom free."
+      ]
+    },
+    {
+      "lines": [
+        "Thee my ransomed powers",
+        "Henceforth shall adore;",
+        "Thee, my great Deliverer,",
+        "Bless forevermore!"
+      ]
+    }
+  ],
+  "metre": "6 5 6 5",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to BEMERTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:549"
+}

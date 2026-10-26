@@ -1,0 +1,69 @@
+{
+  "title": "Lord, Grant That We E’er Pure Retain",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Ludwig Helmbold",
+      "born": 1532,
+      "died": 1598,
+      "role": "Words"
+    },
+    {
+      "name": "Matthias Loy",
+      "born": 1828,
+      "died": 1915,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Lord, Grant That We E’er Pure Retain in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Ludwig Helmbold wrote these words in German. Matthias Loy's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 390.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Lord, grant that we e’er pure re-tain The cat-e-chis-mal doc-trine plain As Lu-ther taught the heav-enly truth In sim-ple words to ten-der youth.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, grant that we e’er pure retain",
+        "The catechismal doctrine plain",
+        "As Luther taught the heavenly truth",
+        "In simple words to tender youth."
+      ]
+    },
+    {
+      "lines": [
+        "That we Thy holy Law may know",
+        "And mourn our sin and all its woe",
+        "And yet believe in Father, Son,",
+        "And Holy Spirit, Three in One."
+      ]
+    },
+    {
+      "lines": [
+        "That we on Thee, our Father, call,",
+        "Who canst and wilt give help to all;",
+        "That as Thy children we may live,",
+        "Whom Thou in Baptism didst receive."
+      ]
+    },
+    {
+      "lines": [
+        "That, if we fall, we rise again,",
+        "Repentingly confess our sin,",
+        "And take the Sacrament in faith.—",
+        "Amen. God grant a happy death!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Ludwig Helmbold died in 1598; Matthias Loy died in 1915.",
+  "credits": "Words by Ludwig Helmbold (1532–1598), translated by Matthias Loy (1828–1915), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:390"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "Sinners, Turn; Why Will Ye Die",
+  "tune": "innocents",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Sinners, Turn; Why Will Ye Die in Tonic Solfa to INNOCENTS, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 48.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to INNOCENTS; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Sin-ners, turn; why will ye die? God, your Mak-er, asks you—-Why? God, who did your be-ing give, Made you with Him-self to live.",
+  "verses": [
+    {
+      "lines": [
+        "Sinners, turn; why will ye die?",
+        "God, your Maker, asks you—Why?",
+        "God, who did your being give,",
+        "Made you with Himself to live."
+      ]
+    },
+    {
+      "lines": [
+        "He the fatal cause demands,",
+        "Asks the work of His own hands,",
+        "Why, ye thankless creatures, why",
+        "Will ye cross His love and die?"
+      ]
+    },
+    {
+      "lines": [
+        "Sinners, turn; why will ye die?",
+        "God, your Savior, asks you—Why?",
+        "He, who did your souls retrieve,",
+        "Died Himself that you might live."
+      ]
+    },
+    {
+      "lines": [
+        "Will ye let Him die in vain,",
+        "Crucify your Lord again?",
+        "Why, ye ransomed sinners, why",
+        "Will ye slight His grace and die?"
+      ]
+    },
+    {
+      "lines": [
+        "Sinners, turn; why will ye die?",
+        "God the Spirit asks you—Why?",
+        "He, who all your lifetime strove,",
+        "Wooed you to embrace His love."
+      ]
+    },
+    {
+      "lines": [
+        "Will ye not His grace receive?",
+        "Will ye still refuse to live?",
+        "O ye long-sought sinners, why",
+        "Will ye grieve your God and die?"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to INNOCENTS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:48"
+}

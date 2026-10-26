@@ -1,0 +1,63 @@
+{
+  "title": "In Vain Would Boasting Reason Find",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Anne Steele",
+      "born": 1717,
+      "died": 1778,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "In Vain Would Boasting Reason Find in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Anne Steele wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 122.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "In vain would boast-ing rea-son find The path to happ-i-ness and God; Her weak di-rec-tions leave the mind Be-wil-dered in a doubt-ful road.",
+  "verses": [
+    {
+      "lines": [
+        "In vain would boasting reason find",
+        "The path to happiness and God;",
+        "Her weak directions leave the mind",
+        "Bewildered in a doubtful road."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, Thy words alone impart",
+        "Eternal life; on these I live;",
+        "Here sweeter comforts cheer my heart",
+        "Than all the powers of nature give."
+      ]
+    },
+    {
+      "lines": [
+        "Here let my constant feet abide;",
+        "Thou art the true, the living Way.",
+        "Let Thy good Spirit be my guide",
+        "To the bright realms of endless day."
+      ]
+    },
+    {
+      "lines": [
+        "The various forms that men devise",
+        "To shake my faith with treacherous art",
+        "I scorn as vanity and lies",
+        "And bind Thy Gospel to my heart."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Anne Steele died in 1778.",
+  "credits": "Words by Anne Steele (1717–1778), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:122"
+}

@@ -1,0 +1,68 @@
+{
+  "title": "Christ, the Light That Shines Eternal",
+  "tune": "galilee-jude",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "Christ, the Light That Shines Eternal in Tonic Solfa to GALILEE (JUDE), doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), where he gives them as “By Magnus Felix Ennodius”, headed “Friday Morning”.",
+    "The book printed the words without tunes. They are in Eights and Sevens (8.7.8.7), and this page sets them to GALILEE (JUDE); any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Christ, the light that shines e-ter-nal,— Light that gilds the roll-ing spheres, Dawn up-on our night, and keep us Pure as light when day ap-pears.",
+  "verses": [
+    {
+      "lines": [
+        "Christ, the light that shines eternal,—",
+        "Light that gilds the rolling spheres,",
+        "Dawn upon our night, and keep us",
+        "Pure as light when day appears."
+      ]
+    },
+    {
+      "lines": [
+        "Let no gin of Satan snare us,",
+        "Let no enemy oppress;",
+        "Wakeful aye with garments spotless,",
+        "May we walk life’s wilderness."
+      ]
+    },
+    {
+      "lines": [
+        "Keep our hearts in Thy safe keeping,",
+        "Be Thy flock Thy special care;",
+        "In Thy fold in mercy tend them,",
+        "Guard their footsteps everywhere."
+      ]
+    },
+    {
+      "lines": [
+        "And our souls shall sing triumphant",
+        "When Thy light our eyes shall see,",
+        "And the vows we owe are rendered,",
+        "God, the great Triune, to Thee."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to GALILEE (JUDE) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:15"
+}

@@ -1,0 +1,87 @@
+{
+  "title": "In Time of Tribulation",
+  "tune": "st-alphege",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "In Time of Tribulation in Tonic Solfa to ST. ALPHEGE, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 548, “In Time of Tribulation”.",
+    "The book printed the words without tunes, marked Sevens and Sixes (7.6.7.6), to be sung to any tune of that metre. This page sets them to ST. ALPHEGE; any other Sevens and Sixes tune fits them as well."
+  ],
+  "underlay": "In time of tri-bu-la-tion, Hear, Lord, our ear-nest cries; With hum-ble sup-pli-ca-tion To Thee the spir-it flies.",
+  "verses": [
+    {
+      "lines": [
+        "In time of tribulation,",
+        "Hear, Lord, our earnest cries;",
+        "With humble supplication",
+        "To Thee the spirit flies."
+      ]
+    },
+    {
+      "lines": [
+        "Remembered songs of gladness,",
+        "Through night's lone silence brought,",
+        "Strike notes of deepest sadness,",
+        "And stir desponding thought."
+      ]
+    },
+    {
+      "lines": [
+        "Hath God cast off forever?",
+        "Can time His truth impair?",
+        "His tender mercy never",
+        "Shall we presume to share?"
+      ]
+    },
+    {
+      "lines": [
+        "Hath He His loving-kindness",
+        "Shut up in bitter wrath?",
+        "No! it is human blindness,",
+        "That cannot see His path."
+      ]
+    },
+    {
+      "lines": [
+        "We'll call to recollection",
+        "The years of Thy right hand,",
+        "And, strong in Thy protection,",
+        "Again through Faith we stand."
+      ]
+    },
+    {
+      "lines": [
+        "Thy way is in great waters,",
+        "Thy footsteps are not known;",
+        "But let earth's sons and daughters",
+        "Confide in Thee alone!"
+      ]
+    },
+    {
+      "lines": [
+        "Through the wild sea Thou leddest",
+        "Thy chosen flock of yore;",
+        "Still on the wave thou treadest,",
+        "And Thy redeemed pass o'er."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to ST. ALPHEGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:548"
+}

@@ -1,0 +1,372 @@
+{
+  "source": "John Brownlie, Hymns of the Early Church (London, 1896)",
+  "date": "2026-10-26",
+  "written": [
+    {
+      "ref": "1",
+      "slug": "o-day-the-chief-of-days-whose-light",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "2",
+      "slug": "o-light-that-from-the-light-wast-born",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "3",
+      "slug": "o-thou-eternal-one-in-three",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "4",
+      "slug": "thy-works-o-god-thy-name-extol",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "5",
+      "slug": "o-god-i-love-thee-not-alone",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "6",
+      "slug": "thou-blest-creator-of-the-light",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "7",
+      "slug": "now-daylight-floods-the-morning-sky",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "8",
+      "slug": "o-jesus-when-i-think-of-thee",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "11",
+      "slug": "gone-are-the-shades-of-night",
+      "metre": "6 6 6 6",
+      "tune": "quam-dilecta",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "12",
+      "slug": "now-sinks-the-glowing-orb-of-day",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "13",
+      "slug": "from-the-fathers-throne-descending",
+      "metre": "8 7 8 7",
+      "tune": "stuttgart",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "14",
+      "slug": "thou-who-hast-led-our-steps-this-day",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "15",
+      "slug": "christ-the-light-that-shines-eternal",
+      "metre": "8 7 8 7",
+      "tune": "galilee-jude",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "16",
+      "slug": "dark-night-has-drawn-her-curtain-round",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "18",
+      "slug": "now-sinks-the-fiery-orb-of-day",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "20",
+      "slug": "when-evening-shades-around-us-close",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "22",
+      "slug": "let-us-tune-our-hearts-and-voices",
+      "metre": "8 8 7 8 8 7",
+      "tune": "stabat-mater-mainz",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "26",
+      "slug": "thou-our-redeemer-art-o-christ",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "27",
+      "slug": "now-let-us-tune-our-hearts-to-sing",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "31",
+      "slug": "thirty-years-by-god-appointed",
+      "metre": "8 7 8 7 8 7",
+      "tune": "mannheim",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "32",
+      "slug": "hail-thou-blessed-cross-all-hail",
+      "metre": "7 7 7 7",
+      "tune": "innocents",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "33",
+      "slug": "veiled-was-the-glory-of-thy-face",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "37",
+      "slug": "alleluia-hymn-of-sweetness",
+      "metre": "8 7 8 7 8 7",
+      "tune": "mannheim",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "39",
+      "slug": "broken-are-the-bands-that-bound-us",
+      "metre": "8 8 7 8 8 7",
+      "tune": "stabat-mater-mainz",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "41",
+      "slug": "o-christ-who-art-ascended-now",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "42",
+      "slug": "come-thou-creator-spirit-blest",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "43",
+      "slug": "holy-spirit-come-with-power",
+      "metre": "7 7 7 7 7 7",
+      "tune": "ratisbon-werner",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "44",
+      "slug": "o-holy-spirit-font-of-love",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "48",
+      "slug": "christian-soldiers-in-the-conflict",
+      "metre": "8 7 8 7",
+      "tune": "all-for-jesus",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "52",
+      "slug": "jesu-delight-of-every-heart",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "53",
+      "slug": "the-word-proceeding-from-above",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "54",
+      "slug": "terror-grim-the-soul-oppresses",
+      "metre": "8 7 8 7 8 7",
+      "tune": "mannheim",
+      "author": "Traditional Latin and John Brownlie"
+    },
+    {
+      "ref": "55",
+      "slug": "lo-the-day-the-day-approacheth",
+      "metre": "8 7 8 7",
+      "tune": "galilee-jude",
+      "author": "Traditional Latin and John Brownlie"
+    }
+  ],
+  "alreadyOurs": [
+    {
+      "ref": "34",
+      "first": "Alleluia! Alleluia!",
+      "page": "alleluia-alleluia-hearts-to-heaven-and-voices-raise"
+    }
+  ],
+  "skipped": [
+    {
+      "ref": "9",
+      "first": "My heart goes forth in love to Thee,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "10",
+      "first": "Maker of the world, we pray,",
+      "why": "only 6 of 12 lines sing as 8.8.8.8"
+    },
+    {
+      "ref": "17",
+      "first": "See in the east the morn arise;",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "19",
+      "first": "To Thee, O Christ, our prayers shall rise,",
+      "why": "words in iambs; the Eights and Sevens tunes we hold are in trochees"
+    },
+    {
+      "ref": "21",
+      "first": "Emmanuel, come! we call for Thee;",
+      "why": "verses of different lengths"
+    },
+    {
+      "ref": "23",
+      "first": "Zion is glad this glorious morn:",
+      "why": "no tune we hold for “unmarked” in 2-line verses"
+    },
+    {
+      "ref": "24",
+      "why": "no verses"
+    },
+    {
+      "ref": "25",
+      "first": "O ye who seek the Lord, come nigh,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "28",
+      "first": "King of heaven, our nature wearing,",
+      "why": "only 19 of 24 lines sing as 8.8.7.8.8.7"
+    },
+    {
+      "ref": "29",
+      "first": "See the Royal banners",
+      "why": "only 22 of 30 lines sing as 6.6.6.6.8.8"
+    },
+    {
+      "ref": "30",
+      "first": "Tell, my tongue, the glorious conflict,",
+      "why": "its first verse cannot be sung as 8.7.8.7.8.7"
+    },
+    {
+      "ref": "35",
+      "first": "Shout praises, ye heavens,",
+      "why": "only 24 of 32 lines sing as 6.5.6.5.6.6.6.5"
+    },
+    {
+      "ref": "36",
+      "first": "Burst are the iron gates of death—",
+      "why": "verses of different lengths"
+    },
+    {
+      "ref": "38",
+      "first": "Eternal King, enthroned on high,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "40",
+      "first": "To-day the lingering clouds are riven,",
+      "why": "no tune we hold for “unmarked” in 1-line verses"
+    },
+    {
+      "ref": "45",
+      "first": "O Thou Eternal One in Three,",
+      "why": "the page o-thou-eternal-one-in-three is taken"
+    },
+    {
+      "ref": "46",
+      "first": "O Holy Father, gracious Thou and tender;",
+      "why": "only 11 of 16 lines sing as 11.10.11.10"
+    },
+    {
+      "ref": "47",
+      "first": "Be present, Holy Trinity,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "49",
+      "first": "Hear us, O Christ, our King;",
+      "why": "no tune we hold for “unmarked” in 3-line verses"
+    },
+    {
+      "ref": "50",
+      "first": "See, sweet soul, my sister dear,",
+      "why": "its first verse cannot be sung as 7.6.7.6"
+    },
+    {
+      "ref": "51",
+      "first": "O Food for pilgrims pining!",
+      "why": "only 12 of 18 lines sing as 7.7.7.7.7.7"
+    },
+    {
+      "ref": "56",
+      "first": "O city girt with glory!",
+      "why": "only 38 of 60 lines sing as 6.6.6.6.8.8"
+    },
+    {
+      "ref": "57",
+      "first": "O vision bright of heavenly peace,",
+      "why": "only 15 of 24 lines sing as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "58",
+      "first": "Most firm the sure foundation stands,",
+      "why": "verses of different lengths"
+    }
+  ],
+  "counts": {
+    "hymns": 58,
+    "written": 33,
+    "alreadyOurs": 1,
+    "skipped": 24,
+    "removed": 1
+  }
+}

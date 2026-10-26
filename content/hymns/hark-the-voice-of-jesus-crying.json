@@ -1,0 +1,79 @@
+{
+  "title": "Hark! the Voice of Jesus Crying",
+  "tune": "rustington",
+  "text": [
+    {
+      "name": "Daniel March",
+      "born": 1816,
+      "died": 1909,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Hark! the Voice of Jesus Crying in Tonic Solfa to RUSTINGTON, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Daniel March wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 476.",
+    "The book printed the words without tunes, marked Eights and Sevens Double (8.7.8.7.8.7.8.7), to be sung to any tune of that metre. This page sets them to RUSTINGTON; any other Eights and Sevens Double tune fits them as well."
+  ],
+  "underlay": "Hark! the voice of Je-sus cry-ing, “Who will go and work to day? Fields are white and har-vests wait-ing, Who will bear the sheaves a-way?” Loud and long the Mas-ter cal-leth, Rich re-ward He of-fers thee; Who will an-swer, glad-ly say-ing, “Here am I, send me, send me”?",
+  "verses": [
+    {
+      "lines": [
+        "Hark! the voice of Jesus crying,",
+        "“Who will go and work to-day?",
+        "Fields are white and harvests waiting,",
+        "Who will bear the sheaves away?”",
+        "Loud and long the Master calleth,",
+        "Rich reward He offers thee;",
+        "Who will answer, gladly saying,",
+        "“Here am I, send me, send me”?"
+      ]
+    },
+    {
+      "lines": [
+        "If you cannot cross the ocean",
+        "And the heathen lands explore,",
+        "You can find the heathen nearer,",
+        "You can help them at your door;",
+        "If you cannot give your thousands,",
+        "You can give the widow’s mite;",
+        "And the least you give for Jesus",
+        "Will be precious in His sight."
+      ]
+    },
+    {
+      "lines": [
+        "If you cannot speak like angels,",
+        "If you cannot preach like Paul,",
+        "You can tell the love of Jesus,",
+        "You can say He died for all.",
+        "If you cannot rouse the wicked",
+        "With the Judgment’s dread alarms,",
+        "You can lead the little children",
+        "To the Savior’s waiting arms."
+      ]
+    },
+    {
+      "lines": [
+        "Let none hear you idly saying,",
+        "“There is nothing I can do,”",
+        "While the souls of men are dying",
+        "And the Master calls for you.",
+        "Take the task He gives you gladly,",
+        "Let His work your pleasure be;",
+        "Answer quickly when He calleth,",
+        "“Here am I, send me, send me!”"
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Daniel March died in 1909.",
+  "credits": "Words by Daniel March (1816–1909), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to RUSTINGTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:476"
+}

@@ -1,0 +1,109 @@
+{
+  "title": "Let the Earth Now Praise the Lord",
+  "tune": "st-bees",
+  "text": [
+    {
+      "name": "Heinrich Held",
+      "born": 1620,
+      "died": 1659,
+      "role": "Words"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Let the Earth Now Praise the Lord in Tonic Solfa to ST. BEES, doh is Ab: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "Heinrich Held wrote these words in German. Catherine Winkworth's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 146.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to ST. BEES; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Let the earth now praise the Lord, Who hath tru-ly kept His word And the sin-ners’ Help and Friend Now at last to us doth send.",
+  "verses": [
+    {
+      "lines": [
+        "Let the earth now praise the Lord,",
+        "Who hath truly kept His word",
+        "And the sinners’ Help and Friend",
+        "Now at last to us doth send."
+      ]
+    },
+    {
+      "lines": [
+        "What the fathers most desired,",
+        "What the prophets’ heart inspired,",
+        "What they longed for many a year,",
+        "Stands fulfilled in glory here."
+      ]
+    },
+    {
+      "lines": [
+        "Abram’s promised great Reward,",
+        "Zion’s Helper, Jacob’s Lord,",
+        "Him of twofold race behold,",
+        "Truly came, as long foretold."
+      ]
+    },
+    {
+      "lines": [
+        "Welcome, O my Savior, now!",
+        "Hail! my Portion, Lord, art Thou!",
+        "Here, too, in my heart, I pray,",
+        "O prepare Thyself a way."
+      ]
+    },
+    {
+      "lines": [
+        "King of Glory, enter in!",
+        "Cleanse it from the filth of sin,",
+        "As Thou hast so often done;",
+        "It belongs to Thee alone."
+      ]
+    },
+    {
+      "lines": [
+        "As Thy coming was in peace,",
+        "Noiseless, full of gentleness,",
+        "Let the same mind dwell in me",
+        "That was ever found in Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Comfort my desponding heart;",
+        "Thou my Strength and Refuge art.",
+        "I am weak, and cunningly",
+        "Satan lays his snares for me."
+      ]
+    },
+    {
+      "lines": [
+        "Bruise for me the Serpent’s head,",
+        "That, set free from doubt and dread,",
+        "I may cleave to Thee in faith,",
+        "Safely kept through life and death;"
+      ]
+    },
+    {
+      "lines": [
+        "And when Thou dost come again",
+        "As a glorious King to reign,",
+        "I with joy may see Thy face,",
+        "Truly ransomed by Thy grace."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Heinrich Held died in 1659; Catherine Winkworth died in 1878.",
+  "credits": "Words by Heinrich Held (1620–1659), translated by Catherine Winkworth (1827–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ST. BEES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:146"
+}

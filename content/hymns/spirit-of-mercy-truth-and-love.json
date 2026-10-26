@@ -1,0 +1,54 @@
+{
+  "title": "Spirit of Mercy, Truth, and Love",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Spirit of Mercy, Truth, and Love in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 250.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Spir-it of mer-cy, truth, and love, O shed Thine in-fluence from a-bove And still from age to age con-vey The won-ders of this sa-cred day.",
+  "verses": [
+    {
+      "lines": [
+        "Spirit of mercy, truth, and love,",
+        "O shed Thine influence from above",
+        "And still from age to age convey",
+        "The wonders of this sacred day."
+      ]
+    },
+    {
+      "lines": [
+        "In every clime, by every tongue,",
+        "Be God’s surpassing glory sung;",
+        "Let all the listening earth be taught",
+        "The wonders by our Savior wrought."
+      ]
+    },
+    {
+      "lines": [
+        "Unfailing Comfort, heavenly Guide,",
+        "Still o’er Thy holy Church preside;",
+        "Still let mankind Thy blessings prove,",
+        "Spirit of mercy, truth, and love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: anonymous words in print by 1927.",
+  "credits": "Words anonymous, public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:250"
+}

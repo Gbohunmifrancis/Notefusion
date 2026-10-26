@@ -1,0 +1,84 @@
+{
+  "title": "He Came Because the Father Willed",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "He Came Because the Father Willed in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911), headed “Stichera Idiomela. Christmas”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "He came be-cause the Fa-ther willed, And from the midst of heaven's re-nown, The pro-mise to our world ful-filled, And won a king-dom for His crown.",
+  "verses": [
+    {
+      "lines": [
+        "He came because the Father willed,",
+        "And from the midst of heaven's renown,",
+        "The promise to our world fulfilled,",
+        "And won a kingdom for His crown."
+      ]
+    },
+    {
+      "lines": [
+        "He came because He willed to bear",
+        "The burden that His love imposed;",
+        "And all our lot of sorrow share,",
+        "Until the day in darkness closed."
+      ]
+    },
+    {
+      "lines": [
+        "Ah! angels hailed that morning bright,",
+        "And in the heavens their carols sung;",
+        "But God Himself was hid in night,",
+        "When sin and death their arrows flung."
+      ]
+    },
+    {
+      "lines": [
+        "But not to sink beneath their power,",
+        "The God-man girt Him for the fray;",
+        "And from the darkness of that hour,",
+        "There sprang the light of endless day."
+      ]
+    },
+    {
+      "lines": [
+        "And wounded souls the triumph knew;",
+        "Fresh courage to the faint was given;",
+        "And e'en the dead to life anew,",
+        "Rose in the glorious might of heaven."
+      ]
+    },
+    {
+      "lines": [
+        "For sin was crushed, and death was slain; —",
+        "All hail, the great victorious Son,",
+        "Who mounts the throne of heaven again,",
+        "To rule the kingdom He has won."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:6"
+}

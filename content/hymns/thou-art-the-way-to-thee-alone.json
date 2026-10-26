@@ -1,0 +1,63 @@
+{
+  "title": "Thou Art the Way; to Thee Alone",
+  "tune": "york",
+  "text": [
+    {
+      "name": "George Washington Doane",
+      "born": 1799,
+      "died": 1859,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Thou Art the Way; to Thee Alone in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "George Washington Doane wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 94.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Thou art the Way; to Thee a-lone From sin and death we flee; And he who would the Fa-ther seek, Must seek Him, Lord, by Thee.",
+  "verses": [
+    {
+      "lines": [
+        "Thou art the Way; to Thee alone",
+        "From sin and death we flee;",
+        "And he who would the Father seek,",
+        "Must seek Him, Lord, by Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Thou art the Truth; Thy Word alone",
+        "True wisdom can impart;",
+        "Thou only canst inform the mind",
+        "And purify the heart."
+      ]
+    },
+    {
+      "lines": [
+        "Thou art the Life; the rending tomb",
+        "Proclaims Thy conquering arm;",
+        "And those who put their trust in Thee",
+        "Nor death nor hell shall harm."
+      ]
+    },
+    {
+      "lines": [
+        "Thou art the Way, the Truth, the Life;",
+        "Grant us that Way to know,",
+        "That Truth to keep, that Life to win,",
+        "Whose joys eternal flow."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: George Washington Doane died in 1859.",
+  "credits": "Words by George Washington Doane (1799–1859), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:94"
+}

@@ -3,7 +3,8 @@
 // two books print given to the first, and the committed pages one syllable to a note of their tune.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseBook, parseOlney, patternFor, authorOf, fitHymn, pickTune, METRES, BOOKS } from "../import/words-books.mjs";
+import { parseLutheran, lutheranLabel, creditLutheran } from "../import/lutheran-1927.mjs";
+import { parseBook, parseOlney, parseNumbered, inferPattern, iambsOnTrochees, patternFor, authorOf, fitHymn, pickTune, METRES, BOOKS } from "../import/words-books.mjs";
 import { fromLaterBook } from "../import/watts.mjs";
 import { loadAll } from "../lib/content.mjs";
 import { loadEngine } from "../lib/solfa.mjs";
@@ -188,5 +189,119 @@ test("the committed pages: set by metre, in print by the book's year, each under
     assert.equal(N.syllabify(h.underlay).length, h.tuneData.parsed.notes.length, h.slug);
     assert.doesNotMatch(h.underlay, /_/, h.slug);
     for (const p of h.text) assert.ok(p.traditional || p.died < 1955, `${h.slug}: ${p.name}`);
+  }
+});
+
+test("John Brownlie's books: verses numbered I, II on lines of their own, the heading and whom the book names, the metre read off the lines", () => {
+  const text = `*** START OF THE PROJECT GUTENBERG EBOOK X ***
+
+                           HYMNS OF THE EARLY CHURCH
+
+
+
+
+             O DEUS, EGO AMO TE
+
+Attributed to Francis Xavier. Born at the Castle Xavier, near
+Pampeluna, Spain, in 1506; died in 1552.
+
+
+                                  I
+
+  O God, I love Thee, not alone
+    Because Thou savest me,
+  And those who love not in return
+    Are lost eternally.
+
+                               {troparion}
+
+                                  II
+
+  Thou art mine own, O Christ; Thine arms
+    Embraced me on the Cross;
+  Thou didst endure the nails, the spear,
+    The bitter shame and loss--
+*** END OF THE PROJECT GUTENBERG EBOOK X ***
+`;
+  const [h] = parseNumbered(text);
+  assert.deepEqual(h.heading, ["O Deus, Ego Amo Te"]);
+  assert.equal(h.attribution, "Attributed to Francis Xavier");
+  assert.equal(h.verses.length, 2);
+  assert.equal(h.verses[1][3], "The bitter shame and loss —");
+  assert.deepEqual(inferPattern(h.verses, {}), [8, 6, 8, 6]);
+});
+
+test("the committed Brownlie pages: traditional words translated by John Brownlie, the metre the lines sing", () => {
+  const { allHymns } = loadAll({ includeDrafts: true });
+  const pages = allHymns.filter((h) => /^brownlie-/.test(h.importedFrom || ""));
+  assert.ok(pages.length >= 150);
+  const N = loadEngine();
+  for (const h of pages) {
+    assert.deepEqual(h.text.map((p) => p.name), [h.text[0].name, "John Brownlie"], h.slug);
+    assert.match(h.text[0].name, /^Traditional (Greek|Latin)$/, h.slug);
+    assert.match(h.text[1].role, /^Translated/, h.slug);
+    assert.match(h.about[1], /^The book printed the words without tunes\. They are in /, h.slug);
+    assert.equal(N.syllabify(h.underlay).length, h.tuneData.parsed.notes.length, h.slug);
+  }
+});
+
+test("the 1927 Lutheran book: number, metre, verses and who wrote it; a translation only with its translator", () => {
+  const text = `*** START OF THE PROJECT GUTENBERG EBOOK X ***
+INVITATION.
+
+
+46
+
+                                                                 C. M. 8 l
+
+    I heard the voice of Jesus say,
+      “Come unto Me and rest;
+    Lay down, thou weary one, lay down
+      Thy head upon My breast!”
+
+    2. I heard the voice of Jesus say,
+      “Behold, I freely give
+    The living water; thirsty one,
+      Stoop down and drink and live!”
+
+                                                      H. Bonar, 1846.
+
+
+47
+
+                                                                 8, 7, 8, 7
+
+    Alas, my God! my sins are great,
+                              Nikolaus Herman, 1560; A. Crull, tr., a.
+*** END OF THE PROJECT GUTENBERG EBOOK X ***`;
+  const [a, b] = parseLutheran(text.replace("\n46\n", "\n1\n").replace("\n47\n", "\n2\n"));
+  assert.deepEqual([a.label, a.author, a.verses.length, a.verses[1][0]], ["C. M. 8 l", "H. Bonar, 1846.", 2, "I heard the voice of Jesus say,"]);
+  assert.deepEqual(lutheranLabel(a.label), { label: "C. M.", lines: "8" });
+  assert.deepEqual(lutheranLabel("7, 6, 8 l"), { label: "7,6", lines: "8" });
+  assert.deepEqual(lutheranLabel("6, 6, 6, 6, 8, 8 (H. M.)"), { label: "6,6,6,6,8,8", lines: undefined });
+  assert.deepEqual(creditLutheran(a).people, [{ name: "Horatius Bonar", born: 1808, died: 1889, role: "Words" }]);
+  assert.deepEqual(creditLutheran(b).people.map((p) => [p.name, p.role]), [["Nikolaus Herman", "Words"], ["August Crull", "Translated"]]);
+  assert.match(creditLutheran({ author: "From the Latin of Bernard of Clairvaux; Paul Gerhardt, 1652." }).why, /cannot name|translator/);
+  assert.match(creditLutheran({ author: "Paul Gerhardt, 1653." }).why, /translator/);
+});
+
+test("iambic words are never set to the trochaic 8.7 tunes", () => {
+  const iambic = [["Alas, my God! my sins are great,", "My conscience doth upbraid me;", "And now I find that in my strait", "No man hath power to aid me."]];
+  const trochaic = [["Love divine, all loves excelling,", "Joy of heaven to earth come down;", "Holy Father, thou hast taught me", "All thy faithful mercies crown."]];
+  assert.equal(iambsOnTrochees(iambic, [8, 7, 8, 7]), true);
+  assert.equal(iambsOnTrochees(trochaic, [8, 7, 8, 7]), false);
+  assert.equal(iambsOnTrochees(iambic, [8, 6, 8, 6]), false);   // Common Metre's tunes are iambic
+});
+
+test("the committed Lutheran pages: everyone named in full and dated, a translator for every translation", () => {
+  const { allHymns } = loadAll({ includeDrafts: true });
+  const pages = allHymns.filter((h) => /^lutheran-1927:/.test(h.importedFrom || ""));
+  assert.ok(pages.length >= 100);
+  const N = loadEngine();
+  for (const h of pages) {
+    assert.equal(h.textPublished, 1927, h.slug);
+    for (const p of h.text) assert.ok(p.traditional || p.died < 1955, `${h.slug}: ${p.name}`);
+    if (/in (German|Latin|Norwegian|Swedish)\./.test(h.about[0])) assert.ok(h.text.some((p) => p.role === "Translated"), h.slug);
+    assert.equal(N.syllabify(h.underlay).length, h.tuneData.parsed.notes.length, h.slug);
   }
 });

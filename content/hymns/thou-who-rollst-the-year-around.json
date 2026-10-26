@@ -1,0 +1,79 @@
+{
+  "title": "Thou Who Roll’st the Year Around",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "Ray Palmer",
+      "born": 1808,
+      "died": 1887,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Thou Who Roll’st the Year Around in Tonic Solfa to HEINLEIN, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Ray Palmer wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 165.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to HEINLEIN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Thou who roll’st the year a-round, Crowned with mer-cies large and free, Rich Thy gifts to us a-bound, Warm our praise shall rise to Thee.",
+  "verses": [
+    {
+      "lines": [
+        "Thou who roll’st the year around,",
+        "Crowned with mercies large and free,",
+        "Rich Thy gifts to us abound,",
+        "Warm our praise shall rise to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Kindly to our worship bow,",
+        "While our grateful thanks we tell,",
+        "That, sustained by Thee, we now",
+        "Bid the parting year farewell!"
+      ]
+    },
+    {
+      "lines": [
+        "All its numbered days are sped,",
+        "All its busy scenes are o’er,",
+        "All its joys forever fled,",
+        "All its sorrows felt no more."
+      ]
+    },
+    {
+      "lines": [
+        "Mingled with th’ eternal past,",
+        "Its remembrance shall decay,",
+        "Yet to be revived at last",
+        "At the solemn Judgment Day."
+      ]
+    },
+    {
+      "lines": [
+        "All our follies, Lord, forgive!",
+        "Cleanse us from each guilty stain;",
+        "Let Thy grace within us live",
+        "That we spend not years in vain."
+      ]
+    },
+    {
+      "lines": [
+        "Then, when life’s last eve shall come,",
+        "Happy spirits, may we fly",
+        "To our everlasting home,",
+        "To our Father’s house on high!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Ray Palmer died in 1887.",
+  "credits": "Words by Ray Palmer (1808–1887), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to HEINLEIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:165"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "Almighty Father, Heav’n and Earth",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Edward Arthur Dayman",
+      "born": 1807,
+      "died": 1890,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Almighty Father, Heav’n and Earth in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Edward Arthur Dayman wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 360.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Al-might-y Fa-ther, heav’n and earth With lav-ish wealth be-fore Thee bow; Those trea-sures owe to Thee their birth, Cre-a-tor, Ru-ler, Giv-er, Thou.",
+  "verses": [
+    {
+      "lines": [
+        "Almighty Father, heav’n and earth",
+        "With lavish wealth before Thee bow;",
+        "Those treasures owe to Thee their birth,",
+        "Creator, Ruler, Giver, Thou."
+      ]
+    },
+    {
+      "lines": [
+        "The wealth of earth, of sky, of sea,",
+        "The gold, the silver, sparkling gem,",
+        "The waving corn, the bending tree,",
+        "Are Thine; to us Thou lendest them."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee, as early morning’s dew,",
+        "Our praises, alms, and prayer shall rise,",
+        "As rose, when joyous earth was new,",
+        "Faith’s patriarchal sacrifice."
+      ]
+    },
+    {
+      "lines": [
+        "We, Lord, would lay, at Thy behest,",
+        "The costliest offerings on Thy shrine;",
+        "But when we give, and give our best,",
+        "We only give Thee what is Thine."
+      ]
+    },
+    {
+      "lines": [
+        "O Father, whence all blessings come,",
+        "O Son, Dispenser of God’s store,",
+        "O Spirit, bear our offerings home;",
+        "Lord, make them Thine forevermore."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Edward Arthur Dayman died in 1890.",
+  "credits": "Words by Edward Arthur Dayman (1807–1890), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:360"
+}

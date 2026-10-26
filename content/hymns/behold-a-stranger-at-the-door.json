@@ -1,0 +1,63 @@
+{
+  "title": "Behold a Stranger at the Door",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Joseph Grigg",
+      "born": 1720,
+      "died": 1768,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Behold a Stranger at the Door in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Joseph Grigg wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 51.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Be-hold a Stran-ger at the door! He gen-tly knocks, has knocked be-fore, Has wait-ed long, is wait-ing still; You treat no oth-er friend so ill.",
+  "verses": [
+    {
+      "lines": [
+        "Behold a Stranger at the door!",
+        "He gently knocks, has knocked before,",
+        "Has waited long, is waiting still;",
+        "You treat no other friend so ill."
+      ]
+    },
+    {
+      "lines": [
+        "But will He prove a friend indeed?",
+        "He will; the very Friend you need;",
+        "The Friend of sinners—yes, ’tis He,",
+        "With garments dyed on Calvary."
+      ]
+    },
+    {
+      "lines": [
+        "O lovely attitude! He stands",
+        "With melting heart and laden hands;",
+        "O matchless kindness! and He shows",
+        "This matchless kindness to His foes."
+      ]
+    },
+    {
+      "lines": [
+        "Admit Him lest His anger burn",
+        "And He, departing, ne’er return;",
+        "Admit Him, or the hour’s at hand",
+        "When at His door denied you’ll stand."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Joseph Grigg died in 1768.",
+  "credits": "Words by Joseph Grigg (1720–1768), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:51"
+}

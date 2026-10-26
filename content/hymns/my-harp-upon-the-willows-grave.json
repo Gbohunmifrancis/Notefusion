@@ -1,0 +1,92 @@
+{
+  "title": "My Harp upon the Willows, Grave",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "My Harp upon the Willows, Grave in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "My harp up-on the wil-lows, grave, In weep-ing days is sad-ly hung, For, Lord, the joy Thy pre-sence gave, Is from my soul in an-guish wrung.",
+  "verses": [
+    {
+      "lines": [
+        "My harp upon the willows, grave,",
+        "In weeping days is sadly hung,",
+        "For, Lord, the joy Thy presence gave,",
+        "Is from my soul in anguish wrung."
+      ]
+    },
+    {
+      "lines": [
+        "I think upon the peaceful hours,",
+        "With Thy companionship to please;",
+        "But now the world is shorn of flowers,",
+        "And birds are mute among the trees."
+      ]
+    },
+    {
+      "lines": [
+        "Wilt Thou not come as morning light?",
+        "As spring that wakes the sleeping earth?",
+        "As zephyrs on the tuneless night,",
+        "To stir my soul to holy mirth?"
+      ]
+    },
+    {
+      "lines": [
+        "O matchless Love! for me expressed,",
+        "O gift of Love surpassing great!",
+        "Wake love responsive in my breast,",
+        "And make my drooping soul elate."
+      ]
+    },
+    {
+      "lines": [
+        "My heart is strung; up heart, proclaim",
+        "In joyful strains the Love divine,",
+        "That stooped from highest heaven, and came",
+        "To earth to save this soul of mine;"
+      ]
+    },
+    {
+      "lines": [
+        "To free my heart from carking cares,",
+        "From trusting aught to fleshly aid;",
+        "To shew me sin's seductive snares,",
+        "That for unwary feet are laid."
+      ]
+    },
+    {
+      "lines": [
+        "Blest Spirit of my God, return,",
+        "And o'er my life resume Thy sway,",
+        "That love within my soul may burn,",
+        "And quicken joy from day to day."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:74"
+}

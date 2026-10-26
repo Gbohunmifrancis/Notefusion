@@ -1,0 +1,71 @@
+{
+  "title": "Lord, When We Bend Before Thy Throne",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Joseph Dacre Carlyle",
+      "born": 1758,
+      "died": 1804,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Lord, When We Bend Before Thy Throne in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Joseph Dacre Carlyle wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 6.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Lord, when we bend be-fore Thy throne And our con-fes-sions pour, Teach us to feel the sins we own And hate what we de-plore.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, when we bend before Thy throne",
+        "And our confessions pour,",
+        "Teach us to feel the sins we own",
+        "And hate what we deplore."
+      ]
+    },
+    {
+      "lines": [
+        "Our broken spirit pitying see,",
+        "True penitence impart;",
+        "Then let a kindling glance from Thee",
+        "Beam hope upon the heart."
+      ]
+    },
+    {
+      "lines": [
+        "When our responsive tongues essay",
+        "Their grateful hymns to raise,",
+        "Grant that our souls may join the lay",
+        "And mount to Thee in praise."
+      ]
+    },
+    {
+      "lines": [
+        "When we disclose our wants in prayer,",
+        "May we our wills resign",
+        "And not a thought our bosom share",
+        "That is not wholly Thine."
+      ]
+    },
+    {
+      "lines": [
+        "May faith each meek petition fill",
+        "And waft it to the skies",
+        "And teach our hearts ’tis goodness still",
+        "That grants it or denies."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Joseph Dacre Carlyle died in 1804.",
+  "credits": "Words by Joseph Dacre Carlyle (1758–1804), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:6"
+}

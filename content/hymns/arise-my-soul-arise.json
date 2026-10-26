@@ -1,0 +1,81 @@
+{
+  "title": "Arise, My Soul, Arise",
+  "tune": "st-john-parish-choir",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Arise, My Soul, Arise in Tonic Solfa to ST. JOHN (PARISH CHOIR), doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 240.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.8.8), to be sung to any tune of that metre. This page sets them to ST. JOHN (PARISH CHOIR); any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "A-rise, my soul, a-rise, Shake off thy guilt-y fears, The bleed-ing Sac-ri-fice In my be-half ap-pears; Be-fore the throne my Sure-ty stands, My name is writ-ten on His hands.",
+  "verses": [
+    {
+      "lines": [
+        "Arise, my soul, arise,",
+        "Shake off thy guilty fears,",
+        "The bleeding Sacrifice",
+        "In my behalf appears;",
+        "Before the throne my Surety stands,",
+        "My name is written on His hands."
+      ]
+    },
+    {
+      "lines": [
+        "He ever lives above",
+        "For me to intercede,",
+        "His all-redeeming love,",
+        "His precious blood to plead;",
+        "His blood atoned for all our race",
+        "And sprinkles now the throne of grace."
+      ]
+    },
+    {
+      "lines": [
+        "Five bleeding wounds He bears,",
+        "Received on Calvary;",
+        "They pour effectual prayers,",
+        "They strongly speak for me;",
+        "Forgive him, O forgive, they cry,",
+        "Nor let that ransomed sinner die!"
+      ]
+    },
+    {
+      "lines": [
+        "The Father hears Him pray,",
+        "His dear Anointed One;",
+        "He cannot turn away,",
+        "Cannot refuse His Son;",
+        "His Spirit answers to the blood",
+        "And tells me I am born of God."
+      ]
+    },
+    {
+      "lines": [
+        "My God is reconciled,",
+        "His pardoning voice I hear;",
+        "He owns me for His child,",
+        "I can no longer fear;",
+        "With confidence I now draw nigh",
+        "And “Father, Abba, Father!” cry."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ST. JOHN (PARISH CHOIR) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:240"
+}

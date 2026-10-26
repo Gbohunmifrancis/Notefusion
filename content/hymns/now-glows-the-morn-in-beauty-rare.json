@@ -1,0 +1,76 @@
+{
+  "title": "Now Glows the Morn in Beauty Rare",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Now Glows the Morn in Beauty Rare in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Now glows the morn in beau-ty rare, O haste my soul to fer-vent prayer, And let the wings of morn-ing raise To God the tri-bute of thy praise.",
+  "verses": [
+    {
+      "lines": [
+        "Now glows the morn in beauty rare,",
+        "O haste my soul to fervent prayer,",
+        "And let the wings of morning raise",
+        "To God the tribute of thy praise."
+      ]
+    },
+    {
+      "lines": [
+        "The night is gone; now disappear",
+        "The clouds that hung in threatening near;",
+        "Day comes apace, and terrors flee,",
+        "For light illumes the earth and sea."
+      ]
+    },
+    {
+      "lines": [
+        "O soul dismayed! when darkness fills",
+        "The dismal days with darkling ills,",
+        "Rest in the calm the promise gives,",
+        "That Christ, thy Light and Glory, lives."
+      ]
+    },
+    {
+      "lines": [
+        "Morn shall appear and scatter night;",
+        "Light shall appear in noonday might.",
+        "Strong in the joy the daylight brings,",
+        "Soul, thou shalt rise on glowing wings."
+      ]
+    },
+    {
+      "lines": [
+        "Morn of my soul, O Christ, Thou art;",
+        "Light of my life; my drooping heart",
+        "Sings, when Thy countenance benign",
+        "Shines as the joys of noonday shine."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:4"
+}

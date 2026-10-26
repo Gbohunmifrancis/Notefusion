@@ -1,0 +1,60 @@
+{
+  "title": "O Word of Truth! in Devious Paths",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "O Word of Truth! in Devious Paths in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900), headed “An Evening Hymn”.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O Word of Truth! in de-vious paths My way-ward feet have trod, I have not kept the day se-rene I gave at morn to God.",
+  "verses": [
+    {
+      "lines": [
+        "O Word of Truth! in devious paths",
+        "My wayward feet have trod,",
+        "I have not kept the day serene",
+        "I gave at morn to God."
+      ]
+    },
+    {
+      "lines": [
+        "And now 'tis night, and night within,",
+        "O God, the light hath fled!",
+        "I have not kept the vow I made",
+        "When morn its glories shed."
+      ]
+    },
+    {
+      "lines": [
+        "For clouds of gloom from nether world",
+        "Obscured my upward way;",
+        "O Christ the Light, Thy light bestow",
+        "And turn my night to day!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:33"
+}

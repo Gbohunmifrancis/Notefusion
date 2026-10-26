@@ -1,0 +1,71 @@
+{
+  "title": "Jesus, Thy Church with Longing Eyes",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "William Hiley Bathurst",
+      "born": 1796,
+      "died": 1877,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Jesus, Thy Church with Longing Eyes in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Hiley Bathurst wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 144.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus, Thy Church with long-ing eyes For Thine ex-pect-ed com-ing waits: When will the pro-mised light a-rise, And glo-ry beam from Zi-on’s gates?",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, Thy Church with longing eyes",
+        "For Thine expected coming waits:",
+        "When will the promised light arise,",
+        "And glory beam from Zion’s gates?"
+      ]
+    },
+    {
+      "lines": [
+        "E’en now, when tempests round us fall",
+        "And wintry clouds o’ercast the sky,",
+        "Thy words with pleasure we recall",
+        "And deem that our redemption’s nigh."
+      ]
+    },
+    {
+      "lines": [
+        "Come, gracious Lord, our hearts renew,",
+        "Our foes repel, our wrongs redress,",
+        "Man’s rooted enmity subdue,",
+        "And crown Thy Gospel with success."
+      ]
+    },
+    {
+      "lines": [
+        "O come and reign o’er every land;",
+        "Let Satan from his throne be hurled,",
+        "All nations bow to Thy command,",
+        "And grace revive a dying world."
+      ]
+    },
+    {
+      "lines": [
+        "Teach us in watchfulness and prayer",
+        "To wait for the appointed hour",
+        "And fit us by Thy grace to share",
+        "The triumphs of Thy conquering power."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: William Hiley Bathurst died in 1877.",
+  "credits": "Words by William Hiley Bathurst (1796–1877), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:144"
+}

@@ -1,0 +1,76 @@
+{
+  "title": "O, Touch My Heart, and Bring to Mind",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "O, Touch My Heart, and Bring to Mind in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911).",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O, touch my heart, and bring to mind The sin I should de-plore; And give me grace, Thou God most kind, That I may sin no more.",
+  "verses": [
+    {
+      "lines": [
+        "O, touch my heart, and bring to mind",
+        "The sin I should deplore;",
+        "And give me grace, Thou God most kind,",
+        "That I may sin no more."
+      ]
+    },
+    {
+      "lines": [
+        "O, touch my heart till tears run fast,",
+        "In penitence sincere;",
+        "And may the memories of the past",
+        "Teach me to walk in fear."
+      ]
+    },
+    {
+      "lines": [
+        "For I have strayed, and Thou hast sought,",
+        "And I have strayed again;",
+        "O, may the wanderer Thou hast brought",
+        "Within Thy fold remain."
+      ]
+    },
+    {
+      "lines": [
+        "O, touch my heart, till love arise,",
+        "And claim me for Thine own;",
+        "Then shall I learn with glad surprise,",
+        "That I am Thine alone."
+      ]
+    },
+    {
+      "lines": [
+        "For love knows no divided heart,",
+        "Nor grudges service given;",
+        "But gives the life in every part,",
+        "And serves in earth and heaven."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:36"
+}

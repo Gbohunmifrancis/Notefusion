@@ -1,0 +1,76 @@
+{
+  "title": "Come Ye People, Come Adore Him",
+  "tune": "all-for-jesus",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "Come Ye People, Come Adore Him in Tonic Solfa to ALL FOR JESUS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900), where he gives them as “By the Emperor Leo VI., died 911 A.D”.",
+    "The book printed the words without tunes. They are in Eights and Sevens (8.7.8.7), and this page sets them to ALL FOR JESUS; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Come ye peo-ple, come a-dore Him, God in Ho-ly Trin-i-ty; God the Fa-ther, Son, and Spir-it, Ev-er Bless-ed U-ni-ty.",
+  "verses": [
+    {
+      "lines": [
+        "Come ye people, come adore Him,",
+        "God in Holy Trinity;",
+        "God the Father, Son, and Spirit,",
+        "Ever Blessed Unity."
+      ]
+    },
+    {
+      "lines": [
+        "Thine the glory, God Almighty,",
+        "To the Son and Spirit given,",
+        "Ere upon the world's creation",
+        "Dawned the new-born light of heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Holy, holy, we adore Thee,",
+        "One in power, in nature one;",
+        "God the Father, God the Spirit,",
+        "God the Co-Eternal Son."
+      ]
+    },
+    {
+      "lines": [
+        "By the Son the wide creation",
+        "Rose where chaos held its sway;",
+        "By the Spirit, God Almighty",
+        "Swept eternal night away."
+      ]
+    },
+    {
+      "lines": [
+        "Son, the Father's love revealing,",
+        "Son, through whom the Spirit came,",
+        "Blessed Godhead! endless glory",
+        "Be to Thine exalted name."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to ALL FOR JESUS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:24"
+}

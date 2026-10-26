@@ -1,0 +1,71 @@
+{
+  "title": "Who Is This That Comes from Edom",
+  "tune": "kalmar",
+  "text": [
+    {
+      "name": "Thomas Kelly",
+      "born": 1769,
+      "died": 1855,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Who Is This That Comes from Edom in Tonic Solfa to KALMAR, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Thomas Kelly wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 223.",
+    "The book printed the words without tunes, marked 8.7.8.7.7.7, to be sung to any tune of that metre. This page sets them to KALMAR; any other 8.7.8.7.7.7 tune fits them as well."
+  ],
+  "underlay": "Who is this that comes from E-dom, All His rai-ment stained with blood; To the cap-tive speak-ing free-dom, Bring-ing and be-stow-ing good; Glo-rious in the garb He wears, Glo-rious in the spoil He bears?",
+  "verses": [
+    {
+      "lines": [
+        "Who is this that comes from Edom,",
+        "All His raiment stained with blood;",
+        "To the captive speaking freedom,",
+        "Bringing and bestowing good;",
+        "Glorious in the garb He wears,",
+        "Glorious in the spoil He bears?"
+      ]
+    },
+    {
+      "lines": [
+        "’Tis the Savior, now victorious,",
+        "Traveling onward in His might;",
+        "’Tis the Savior; O how glorious",
+        "To His people is the sight!",
+        "Satan conquered and the grave,",
+        "Jesus now is strong to save."
+      ]
+    },
+    {
+      "lines": [
+        "Why that blood His raiment staining?",
+        "’Tis the blood of many slain;",
+        "Of His foes there’s none remaining,",
+        "None the contest to maintain.",
+        "Fall’n they are, no more to rise;",
+        "All their glory prostrate lies."
+      ]
+    },
+    {
+      "lines": [
+        "Mighty Victor, reign forever,",
+        "Wear the crown so dearly won;",
+        "Never shall Thy people, never,",
+        "Cease to sing what Thou hast done.",
+        "Thou hast fought Thy people’s foes;",
+        "Thou hast healed Thy people’s woes."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 7 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Thomas Kelly died in 1855.",
+  "credits": "Words by Thomas Kelly (1769–1855), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to KALMAR by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:223"
+}

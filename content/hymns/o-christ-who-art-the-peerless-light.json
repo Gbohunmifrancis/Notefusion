@@ -1,0 +1,76 @@
+{
+  "title": "O Christ, Who Art the Peerless Light",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "O Christ, Who Art the Peerless Light in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904), headed “Ode V”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Christ, Who art the peer-less Light, Come with Thy pre-sence ev-er bright, And from the Fa-ther's throne a-bove De-scend to hearts that own Thy love.",
+  "verses": [
+    {
+      "lines": [
+        "O Christ, Who art the peerless Light,",
+        "Come with Thy presence ever bright,",
+        "And from the Father's throne above",
+        "Descend to hearts that own Thy love."
+      ]
+    },
+    {
+      "lines": [
+        "Thy Cross no shame to mortals brings;",
+        "The world with joy its glory sings;",
+        "And men, O Christ, before Thee bow —",
+        "All hail! Thy Resurrection now."
+      ]
+    },
+    {
+      "lines": [
+        "Ah Thou, our Lord, the Shepherd good,",
+        "Upon that Cross poured forth Thy blood,",
+        "And with Thy last expiring breath",
+        "Didst save Thy flock from endless death."
+      ]
+    },
+    {
+      "lines": [
+        "And death of all his power is shorn,",
+        "And men to joy and peace are born,",
+        "For from their sins' oppressive sway",
+        "Forgiveness bears their souls away."
+      ]
+    },
+    {
+      "lines": [
+        "Glory to Thee, O God, we bring,",
+        "And to the Son, our Heavenly King,",
+        "And to the Holy Ghost always,",
+        "Now, and throughout the endless days."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:10"
+}

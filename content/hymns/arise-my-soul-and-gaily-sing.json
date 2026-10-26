@@ -1,0 +1,92 @@
+{
+  "title": "Arise, My Soul, and Gaily Sing",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Arise, My Soul, and Gaily Sing in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "A-rise, my soul, and gai-ly sing The praise of thine Im-mor-tal King; The heavens His match-less power a-dore, A-wake, and sing for ev-er-more.",
+  "verses": [
+    {
+      "lines": [
+        "Arise, my soul, and gaily sing",
+        "The praise of thine Immortal King;",
+        "The heavens His matchless power adore, —",
+        "Awake, and sing for evermore."
+      ]
+    },
+    {
+      "lines": [
+        "The morning dawns at His command,",
+        "And lights the world o'er sea and land;",
+        "And upwards, see the sun arise,",
+        "To shed its glories from the skies."
+      ]
+    },
+    {
+      "lines": [
+        "But falls the twilight o'er our heads,",
+        "And night its sable curtain spreads;",
+        "For all His kingly words obey, —",
+        "The dark of night, the light of day."
+      ]
+    },
+    {
+      "lines": [
+        "O heavenly King, in every soul,",
+        "The darkness of our night control;",
+        "And 'mid the blackness of that night,",
+        "Speak Thou the word, \"Let there be light.\""
+      ]
+    },
+    {
+      "lines": [
+        "And as the morn from darkness springs,",
+        "To speed to earth on silent wings,",
+        "A dawn more glorious shall awake,",
+        "And bright upon our spirits break."
+      ]
+    },
+    {
+      "lines": [
+        "O Sun of Righteousness, arise,",
+        "And fill our souls with glad surprise;",
+        "Nor into dark of night decline,",
+        "But aye at noontide brightly shine."
+      ]
+    },
+    {
+      "lines": [
+        "All glory to the God of Might,",
+        "And to the Son, the Light of light;",
+        "And to the Spirit, Three in One,",
+        "Eternal while the ages run."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:39"
+}

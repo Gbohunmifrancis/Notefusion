@@ -1,0 +1,84 @@
+{
+  "title": "Glory to God! the Christ Hath Left the Tomb",
+  "tune": "penitentia",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Glory to God! the Christ Hath Left the Tomb in Tonic Solfa to PENITENTIA, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Tens (10.10.10.10), and this page sets them to PENITENTIA; any other Tens tune fits them as well."
+  ],
+  "underlay": "Glo-ry to God! the Christ hath left the tomb, And ere the dawn up-on the earth had broke, The Light of lights had burst up-on its gloom, When He, our Light, from death's dark sleep a-woke.",
+  "verses": [
+    {
+      "lines": [
+        "Glory to God! the Christ hath left the tomb,",
+        "And ere the dawn upon the earth had broke,",
+        "The Light of lights had burst upon its gloom,",
+        "When He, our Light, from death's dark sleep awoke."
+      ]
+    },
+    {
+      "lines": [
+        "Were there no eyes to gaze upon the sight?",
+        "No hearts to sing, when sundered was the prison?",
+        "Watchers there were, who lingered through the night,",
+        "Angels who said, \"The Master hath arisen.\""
+      ]
+    },
+    {
+      "lines": [
+        "Where now its sting, since death itself is dead?",
+        "Where now the power that held the captive bound?",
+        "Weave laurels gay to crown the Victor's head,",
+        "Sing carols loud till earth and heaven resound."
+      ]
+    },
+    {
+      "lines": [
+        "Break, happy morn! and let the world be glad,",
+        "Night is no more, and all our fears are gone;",
+        "Joy fills the souls that erstwhile had been sad,",
+        "Hope fills the tomb, where hope had never shone."
+      ]
+    },
+    {
+      "lines": [
+        "Sleepers, awake! The Christ from death awoke,",
+        "Break into song, and let the silence sing,",
+        "Speak to the world what language never spoke,",
+        "Bring from a tomb what mourners cannot bring."
+      ]
+    },
+    {
+      "lines": [
+        "Glory to God! The Christ hath left the tomb,",
+        "Hope in our souls is shining as the sun;",
+        "Clouds bring no fear, for in the deepest gloom,",
+        "Rest we in faith, — the Victory is won."
+      ]
+    }
+  ],
+  "metre": "10 10 10 10",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to PENITENTIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:22"
+}

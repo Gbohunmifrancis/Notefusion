@@ -1,0 +1,60 @@
+{
+  "title": "The Morning Breaks, I Place My Hand in Thine",
+  "tune": "song-twenty-two",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "The Morning Breaks, I Place My Hand in Thine in Tonic Solfa to SONG TWENTY-TWO, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900), headed “A Morning Hymn”.",
+    "The book printed the words without tunes. They are in Tens (10.10.10.10), and this page sets them to SONG TWENTY-TWO; any other Tens tune fits them as well."
+  ],
+  "underlay": "The morn-ing breaks, I place my hand in Thine, My God, 'tis Thine to lead, to fol-low mine; No word de-ceit-ful shall I speak the while, Nor shall I stain my hand with ac-tion vile.",
+  "verses": [
+    {
+      "lines": [
+        "The morning breaks, I place my hand in Thine,",
+        "My God, 'tis Thine to lead, to follow mine;",
+        "No word deceitful shall I speak the while,",
+        "Nor shall I stain my hand with action vile."
+      ]
+    },
+    {
+      "lines": [
+        "Thine be the day with worthy labour filled,",
+        "Strong would I stand to do the duty willed;",
+        "Nor swayed by restless passion let me be,",
+        "That I may give the offering pure to Thee;"
+      ]
+    },
+    {
+      "lines": [
+        "Else were I 'shamed when hoary age I see,",
+        "Shamed were this board that bears Thy gifts to me:",
+        "Mine is the impulse; O my Christ, I pray,",
+        "Be Thou Thyself to me the Blessed Way!"
+      ]
+    }
+  ],
+  "metre": "10 10 10 10",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to SONG TWENTY-TWO by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:32"
+}

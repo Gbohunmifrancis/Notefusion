@@ -1,0 +1,60 @@
+{
+  "title": "Now Sinks the Fiery Orb of Day",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "Now Sinks the Fiery Orb of Day in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), headed “Saturday Evening”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Now sinks the fie-ry orb of day— O One in Three, E-ter-nal Light, O Three in One, for ev-er bright, Shine in our dark-ened minds, we pray.",
+  "verses": [
+    {
+      "lines": [
+        "Now sinks the fiery orb of day—",
+        "O One in Three, Eternal Light,",
+        "O Three in One, for ever bright,",
+        "Shine in our darkened minds, we pray."
+      ]
+    },
+    {
+      "lines": [
+        "When morning breaks, our songs we raise;",
+        "When evening falls, we still adore;",
+        "When morn and eve shall come no more,",
+        "In mercy grant us still to praise."
+      ]
+    },
+    {
+      "lines": [
+        "All praises to the Father be,",
+        "All praise to the Eternal Son,",
+        "And to the Spirit, Three in One,",
+        "From age to age eternally."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:18"
+}

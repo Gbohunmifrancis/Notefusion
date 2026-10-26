@@ -1,0 +1,84 @@
+{
+  "title": "O God of Love, Whose Mercy Came",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "O God of Love, Whose Mercy Came in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O God of love, whose mer-cy came To this dark world of sin and shame, And on a Cross of suf-fering sore, That sin and shame in meek-ness bore.",
+  "verses": [
+    {
+      "lines": [
+        "O God of love, whose mercy came",
+        "To this dark world of sin and shame,",
+        "And on a Cross of suffering sore,",
+        "That sin and shame in meekness bore."
+      ]
+    },
+    {
+      "lines": [
+        "Supreme the love the Christ displayed,",
+        "When He, True God, True Man was made;",
+        "When He was scorned, His patience then",
+        "Shone forth divine, with sinful men."
+      ]
+    },
+    {
+      "lines": [
+        "Did e'er such mercy lead the great",
+        "To stoop from high to low estate?",
+        "Did e'er such love incline the heart",
+        "To take the erring sinner's part?"
+      ]
+    },
+    {
+      "lines": [
+        "'Twas God who loved, 'twas God who gave",
+        "His Son our erring souls to save;",
+        "'Tis Christ that wins us by the love",
+        "From earth below to heaven above."
+      ]
+    },
+    {
+      "lines": [
+        "Win me, O Lord, whose mercy came",
+        "To this dark world of sin and shame,",
+        "To that bright world whose beauties shine",
+        "Forever in Thy love divine."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee, O Father, glory be,",
+        "And glory, Christ, God-Man, to Thee,",
+        "And to the Spirit, Three in One,",
+        "Now, and while countless ages run."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:14"
+}

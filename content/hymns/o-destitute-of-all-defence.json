@@ -1,0 +1,76 @@
+{
+  "title": "O Destitute of All Defence",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "O Destitute of All Defence in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904), headed “Hymns”.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O des-ti-tute of all de-fence, We bow be-fore Thee now; In mer-cy let Thy mer-cy come, For mer-ci-ful art Thou.",
+  "verses": [
+    {
+      "lines": [
+        "O destitute of all defence,",
+        "We bow before Thee now;",
+        "In mercy let Thy mercy come,",
+        "For merciful art Thou."
+      ]
+    },
+    {
+      "lines": [
+        "Our trusting souls in quiet repose",
+        "Would rest Thy love within; —",
+        "O be not angry with us, Lord,",
+        "Nor think upon our sin."
+      ]
+    },
+    {
+      "lines": [
+        "But from Thy high abode look down,",
+        "With tender love the while,",
+        "And save us from our foes who would",
+        "Our wayward hearts beguile."
+      ]
+    },
+    {
+      "lines": [
+        "For, verily Thou art our God,",
+        "And we Thy people all; —",
+        "Hear us, the creatures of Thy hand,",
+        "When on Thy name we call."
+      ]
+    },
+    {
+      "lines": [
+        "To God the Father, God the Son,",
+        "All praise and glory be;",
+        "And to the Spirit, Three in One,",
+        "To all eternity."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:1"
+}

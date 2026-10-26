@@ -1,0 +1,76 @@
+{
+  "title": "The Time Is Drawing Near",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "The Time Is Drawing Near in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Short Metre (6.6.8.6), and this page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "The time is draw-ing near, It can-not tar-ry long, When they who face the con-flict here, Shall join the glo-rious throng,",
+  "verses": [
+    {
+      "lines": [
+        "The time is drawing near,",
+        "It cannot tarry long,",
+        "When they who face the conflict here,",
+        "Shall join the glorious throng,"
+      ]
+    },
+    {
+      "lines": [
+        "Let no depressing thought",
+        "My brooding mind depress;",
+        "But let me hear, in winning tones,",
+        "What they who serve possess,"
+      ]
+    },
+    {
+      "lines": [
+        "Let sunshine flood the soul,",
+        "When threatening night descends,",
+        "That I may see the light serene",
+        "No sunset ever ends."
+      ]
+    },
+    {
+      "lines": [
+        "Let strength my spirit nerve,",
+        "That, with each labour done,",
+        "I may, like those who serve above,",
+        "See some new task begun;"
+      ]
+    },
+    {
+      "lines": [
+        "The time is drawing near, —",
+        "Till that bright morning break,",
+        "May I, with those who see Thy face,",
+        "Thy will, my pleasure make:"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:68"
+}

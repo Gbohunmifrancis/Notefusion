@@ -1,0 +1,68 @@
+{
+  "title": "Have Pity, Lord, for Thou Are Great",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "Have Pity, Lord, for Thou Are Great in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904).",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Have pi-ty, Lord, for Thou are great, And great-ness pi-ty knows; I mourn my poor and worth-less state, And all its wants and woes.",
+  "verses": [
+    {
+      "lines": [
+        "Have pity, Lord, for Thou are great,",
+        "And greatness pity knows;",
+        "I mourn my poor and worthless state,",
+        "And all its wants and woes."
+      ]
+    },
+    {
+      "lines": [
+        "Have pity, Lord, for Thou art great; —",
+        "I would from sin be free,",
+        "And seek Thy face, 'though coming late,",
+        "For Thou wilt welcome me."
+      ]
+    },
+    {
+      "lines": [
+        "Have pity, Lord, for Thou art great,",
+        "And give me strength to win;",
+        "That I may gain the heavenly gate",
+        "And freely enter in."
+      ]
+    },
+    {
+      "lines": [
+        "Have pity, Lord, for Thou art love,",
+        "And by Thy grace alone,",
+        "I hope in Thy pure house above",
+        "To serve before Thy throne."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:26"
+}

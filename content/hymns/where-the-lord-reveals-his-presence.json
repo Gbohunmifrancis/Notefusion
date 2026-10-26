@@ -1,0 +1,68 @@
+{
+  "title": "Where the Lord Reveals His Presence",
+  "tune": "omni-die",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Where the Lord Reveals His Presence in Tonic Solfa to OMNI DIE, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Eights and Sevens (8.7.8.7), and this page sets them to OMNI DIE; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Where the Lord re-veals His pre-sence, Glo-ry lights the sa-cred place, And the soul in a-dor-a-tion Falls be-fore the throne of grace.",
+  "verses": [
+    {
+      "lines": [
+        "Where the Lord reveals His presence,",
+        "Glory lights the sacred place,",
+        "And the soul in adoration",
+        "Falls before the throne of grace."
+      ]
+    },
+    {
+      "lines": [
+        "Seraphim, and saints in wonder,",
+        "Lift their songs where Christ is set,",
+        "And employ, in sacred homage,",
+        "Harp, and palm, and coronet."
+      ]
+    },
+    {
+      "lines": [
+        "Light of lights, no light approacheth, —",
+        "Sun, nor moon, nor stars of night,",
+        "Flood the noon-tide and the darkness",
+        "With such radiance of delight."
+      ]
+    },
+    {
+      "lines": [
+        "Beauty of the King Immortal!",
+        "Ere we rise to where Thou art,",
+        "Let the glory of Thy presence",
+        "Chase the darkness from our heart."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to OMNI DIE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:57"
+}

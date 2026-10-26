@@ -1,0 +1,67 @@
+{
+  "title": "O Lord, My God, I Cry to Thee",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Nikolaus Selnecker",
+      "born": 1530,
+      "died": 1592,
+      "role": "Words"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "O Lord, My God, I Cry to Thee in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Nikolaus Selnecker wrote these words in German. Catherine Winkworth's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 543.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "O Lord, my God, I cry to Thee, In my dis-tress Thou hel-pest me. My soul and bo-dy I com-mend In-to Thy hands; Thine an-gel send To guide me home and cheer my heart Since Thou dost call me to de-part.",
+  "verses": [
+    {
+      "lines": [
+        "O Lord, my God, I cry to Thee,",
+        "In my distress Thou helpest me.",
+        "My soul and body I commend",
+        "Into Thy hands; Thine angel send",
+        "To guide me home and cheer my heart",
+        "Since Thou dost call me to depart."
+      ]
+    },
+    {
+      "lines": [
+        "O Jesus Christ, Thou Lamb of God,",
+        "Once slain to take away our load,",
+        "Now let Thy cross, Thine agony,",
+        "Avail to save and solace me;",
+        "Thy death to open heaven and there",
+        "Bid me the joy of angels share."
+      ]
+    },
+    {
+      "lines": [
+        "O Holy Spirit, at the end,",
+        "Sweet Comforter, be Thou my Friend,",
+        "When death and hell assail me sore,",
+        "Leave me, O leave me nevermore,",
+        "But bear me safely through the strife,",
+        "As Thou hast promised, into life."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Nikolaus Selnecker died in 1592; Catherine Winkworth died in 1878.",
+  "credits": "Words by Nikolaus Selnecker (1530–1592), translated by Catherine Winkworth (1827–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:543"
+}

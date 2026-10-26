@@ -1,0 +1,76 @@
+{
+  "title": "It Is a Comely Thing",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "It Is a Comely Thing in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900).",
+    "The book printed the words without tunes. They are in Short Metre (6.6.8.6), and this page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "It is a come-ly thing To glo-ri-fy and praise Our God, the Ev-er-last-ing Word, And Lord of end-less days.",
+  "verses": [
+    {
+      "lines": [
+        "It is a comely thing",
+        "To glorify and praise",
+        "Our God, the Everlasting Word,",
+        "And Lord of endless days."
+      ]
+    },
+    {
+      "lines": [
+        "The trembling cherubim",
+        "Before Him fold their wings,",
+        "And all the heavenly hosts adore",
+        "The mighty King of kings."
+      ]
+    },
+    {
+      "lines": [
+        "We would our offering give, —",
+        "O Christ, to Thee we pray,",
+        "For Thou didst break the bands of death",
+        "When dawned the glorious day."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee, Thou Three in One,",
+        "Ascend our songs divine;",
+        "One power, one kingdom without end,",
+        "And one dominion Thine."
+      ]
+    },
+    {
+      "lines": [
+        "O Christ, the source of light,",
+        "With light my soul inspire;",
+        "Come, make my heart the bright abode",
+        "Of Thy celestial fire."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:23"
+}

@@ -1,0 +1,68 @@
+{
+  "title": "Because Thy Mercy Is So Great",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Because Thy Mercy Is So Great in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Be-cause Thy mer-cy is so great, Lord, think up-on my nee-dy state, And deign to give the help I need, The Bread of Life my soul to feed.",
+  "verses": [
+    {
+      "lines": [
+        "Because Thy mercy is so great,",
+        "Lord, think upon my needy state,",
+        "And deign to give the help I need, —",
+        "The Bread of Life my soul to feed."
+      ]
+    },
+    {
+      "lines": [
+        "They cannot live whose souls are fed",
+        "On what this foolish world calls bread;",
+        "For lack of food the spirit sighs,",
+        "And, weak and weary, faints and dies."
+      ]
+    },
+    {
+      "lines": [
+        "O may the hidden manna give",
+        "The strength I need that I may live;",
+        "And may that life be spent for Thee",
+        "Who came and lived on earth for me."
+      ]
+    },
+    {
+      "lines": [
+        "O Jesus Christ, the living Bread,",
+        "Now at the table Thou hast spread,",
+        "Think of me in my utmost need,",
+        "And let me on Thy bounties feed."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:42"
+}

@@ -1,0 +1,56 @@
+{
+  "title": "O Jesus, to Thy Servants Give",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "O Jesus, to Thy Servants Give in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900).",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "O Je-sus, to Thy ser-vants give The con-sol-a-tion they re-quire; And when the cloud of trou-ble falls, With heav-enly hope their souls in-spire. Be ev-er near us, Christ, to bless And help us in Thy faith-ful-ness.",
+  "verses": [
+    {
+      "lines": [
+        "O Jesus, to Thy servants give",
+        "The consolation they require;",
+        "And when the cloud of trouble falls,",
+        "With heavenly hope their souls inspire.",
+        "Be ever near us, Christ, to bless",
+        "And help us in Thy faithfulness."
+      ]
+    },
+    {
+      "lines": [
+        "As Thou wert with Thy saints of old,",
+        "Be with us, ever present, Lord;",
+        "Unite us to Thyself, we pray,",
+        "As Thou hast promised by Thy word;",
+        "Then we shall glorify and laud",
+        "The Holy Spirit sent by God."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:22"
+}

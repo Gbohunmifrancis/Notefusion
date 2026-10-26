@@ -1,0 +1,68 @@
+{
+  "title": "O Light of Light! When Other Lights Are Fading",
+  "tune": "perfect-love",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "O Light of Light! When Other Lights Are Fading in Tonic Solfa to PERFECT LOVE, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904).",
+    "The book printed the words without tunes. They are in Elevens and Tens (11.10.11.10), and this page sets them to PERFECT LOVE; any other Elevens and Tens tune fits them as well."
+  ],
+  "underlay": "O Light of light! when oth-er lights are fa-ding, Then in my soul with heav-enly bright-ness shine; \"Let there be light!\" the night and fear up-braid-ing, Speak Thou the word and send the Light Di-vine.",
+  "verses": [
+    {
+      "lines": [
+        "O Light of light! when other lights are fading,",
+        "Then in my soul with heavenly brightness shine;",
+        "\"Let there be light!\" the night and fear upbraiding,",
+        "Speak Thou the word and send the Light Divine."
+      ]
+    },
+    {
+      "lines": [
+        "O Joy of joy! when other joys are sighing,",
+        "Sing to my soul and bid its sadness flee;",
+        "And when the songs my bitter tears are drying,",
+        "Come with Thy gladness, and rejoice with me."
+      ]
+    },
+    {
+      "lines": [
+        "O Love of love! when other loves are dying,",
+        "And hearts grow cold, and eyes that lured me frown;",
+        "Come to my heart, Thou Love, all hate defying,",
+        "Full of all pity to our world come down."
+      ]
+    },
+    {
+      "lines": [
+        "O Bliss of bliss! when earth and all its treasures",
+        "Shrink from my grasp, and leave me poor and sad;",
+        "May I with Christ fill up my empty measures,",
+        "And in His presence reap the hopes I had."
+      ]
+    }
+  ],
+  "metre": "11 10 11 10",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to PERFECT LOVE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:30"
+}

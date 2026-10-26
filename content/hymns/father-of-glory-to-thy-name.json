@@ -1,0 +1,71 @@
+{
+  "title": "Father of Glory, to Thy Name",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Father of Glory, to Thy Name in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 267.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther of glo-ry, to Thy name Im-mor-tal praise we give, Who dost an act of grace pro-claim And bid us re-bels live.",
+  "verses": [
+    {
+      "lines": [
+        "Father of glory, to Thy name",
+        "Immortal praise we give,",
+        "Who dost an act of grace proclaim",
+        "And bid us rebels live."
+      ]
+    },
+    {
+      "lines": [
+        "Immortal honor to the Son,",
+        "Who makes Thine anger cease;",
+        "Our lives He ransomed with His own",
+        "And died to make our peace."
+      ]
+    },
+    {
+      "lines": [
+        "To Thine almighty Spirit be",
+        "Immortal glory given,",
+        "Whose teachings bring us near to Thee",
+        "And train us up for heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Let men with their united voice",
+        "Adore th’ eternal God",
+        "And spread His honors and their joys",
+        "Through nations far abroad."
+      ]
+    },
+    {
+      "lines": [
+        "Let faith and love and duty join",
+        "One grateful song to raise;",
+        "Let saints in earth and heaven combine",
+        "In harmony and praise."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:267"
+}

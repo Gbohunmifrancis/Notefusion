@@ -1,0 +1,79 @@
+{
+  "title": "The Head That Once Was Crowned with Thorns",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Thomas Kelly",
+      "born": 1769,
+      "died": 1855,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "The Head That Once Was Crowned with Thorns in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Thomas Kelly wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 237.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The Head that once was crowned with thorns Is crowned with glo-ry now; A roy-al di-a-dem a-dorns The might-y Vic-tor’s brow.",
+  "verses": [
+    {
+      "lines": [
+        "The Head that once was crowned with thorns",
+        "Is crowned with glory now;",
+        "A royal diadem adorns",
+        "The mighty Victor’s brow."
+      ]
+    },
+    {
+      "lines": [
+        "The highest place that heaven affords",
+        "Is His by sovereign right,",
+        "The King of kings and Lord of lords,",
+        "And heaven’s eternal Light;"
+      ]
+    },
+    {
+      "lines": [
+        "The Joy of all who dwell above,",
+        "The Joy of all below,",
+        "To whom He manifests His love",
+        "And grants His name to know."
+      ]
+    },
+    {
+      "lines": [
+        "To them the cross, with all its shame,",
+        "With all its grace, is given;",
+        "Their name an everlasting name,",
+        "Their joy the joy of heaven."
+      ]
+    },
+    {
+      "lines": [
+        "They suffer with their Lord below,",
+        "They reign with Him above,",
+        "Their profit and their joy to know",
+        "The mystery of His love."
+      ]
+    },
+    {
+      "lines": [
+        "The cross He bore is life and health,",
+        "Though shame and death to Him:",
+        "His people’s hope, His people’s wealth,",
+        "Their everlasting theme."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Thomas Kelly died in 1855.",
+  "credits": "Words by Thomas Kelly (1769–1855), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:237"
+}

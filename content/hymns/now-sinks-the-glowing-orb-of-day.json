@@ -1,0 +1,60 @@
+{
+  "title": "Now Sinks the Glowing Orb of Day",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "Now Sinks the Glowing Orb of Day in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), where he gives them as “By Charles Coffin”, headed “Wednesday Evening”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Now sinks the glow-ing orb of day, And si-lent night comes on a-pace; So gains our life th'ap-point-ed goal, That marks the lim-it of our race.",
+  "verses": [
+    {
+      "lines": [
+        "Now sinks the glowing orb of day,",
+        "And silent night comes on apace;",
+        "So gains our life the appointed goal,",
+        "That marks the limit of our race."
+      ]
+    },
+    {
+      "lines": [
+        "O Christ, uplifted on the Cross!",
+        "Thine arms were stretched towards the sky;",
+        "Grant us with love that Cross to seek,",
+        "And folded in those arms to die."
+      ]
+    },
+    {
+      "lines": [
+        "Now to the Father throned on high,",
+        "And unto Christ His only Son,",
+        "And to the Spirit, glory be,",
+        "Now, and while endless ages run."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:12"
+}

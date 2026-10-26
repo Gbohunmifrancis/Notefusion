@@ -1,0 +1,60 @@
+{
+  "title": "O Thou Who Cloth'st Thyself Complete",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "O Thou Who Cloth'st Thyself Complete in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Thou who cloth'st Thy-self com-plete With light as with a gar-ment fair, Thou bor'st the cru-el, vul-gar stare, Un-robed be-fore the judg-ment seat.",
+  "verses": [
+    {
+      "lines": [
+        "O Thou who cloth'st Thyself complete",
+        "With light as with a garment fair,",
+        "Thou bor'st the cruel, vulgar stare,",
+        "Unrobed before the judgment-seat."
+      ]
+    },
+    {
+      "lines": [
+        "Thou gav'st the hand its subtle power,",
+        "But with the hand, O Lord of grace,",
+        "Upon Thy pallid, careworn face,",
+        "They smote Thee in that evil hour."
+      ]
+    },
+    {
+      "lines": [
+        "They nailed the Lord of Glory high,",
+        "And while He hung in awful pain,",
+        "The temple veil was rent in twain,",
+        "The sun refused to see Him die."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:14"
+}

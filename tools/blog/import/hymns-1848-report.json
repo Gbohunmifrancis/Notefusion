@@ -724,6 +724,13 @@
       "author": "Henry Hart Milman"
     },
     {
+      "ref": "188",
+      "slug": "hark-through-the-waking-earth",
+      "metre": "6 6 6 6",
+      "tune": "quam-dilecta",
+      "author": "Anonymous"
+    },
+    {
       "ref": "189",
       "slug": "god-made-all-his-creatures-free",
       "metre": "7 7 7 7",
@@ -1760,6 +1767,13 @@
       "author": "Charles Wesley"
     },
     {
+      "ref": "458",
+      "slug": "the-light-pours-down-from-heaven",
+      "metre": "7 6 7 6",
+      "tune": "st-alphege",
+      "author": "Anonymous"
+    },
+    {
       "ref": "459",
       "slug": "beneath-thy-trees-to-day-we-met",
       "metre": "8 6 8 6",
@@ -2100,6 +2114,20 @@
       "slug": "out-of-the-depths-of-woe",
       "metre": "6 6 8 6",
       "tune": "boylston",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "548",
+      "slug": "in-time-of-tribulation",
+      "metre": "7 6 7 6",
+      "tune": "st-alphege",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "549",
+      "slug": "yea-i-will-extol-thee",
+      "metre": "6 5 6 5",
+      "tune": "bemerton",
       "author": "James Montgomery"
     },
     {
@@ -2753,11 +2781,6 @@
       "why": "an author we cannot name in full: “*”"
     },
     {
-      "ref": "188",
-      "first": "Hark! through the waking earth,",
-      "why": "no tune we hold for “6s. M.” in 4-line verses"
-    },
-    {
       "ref": "190",
       "first": "Oppression shall not always reign;",
       "why": "no tune we hold for “P. M.” in 8-line verses"
@@ -3309,17 +3332,12 @@
     {
       "ref": "456",
       "first": "Grows dark thy path before thee?",
-      "why": "no tune we hold for “7 & 6s. M.” in 4-line verses"
+      "why": "its first verse cannot be sung as 7.6.7.6"
     },
     {
       "ref": "457",
       "first": "When thirst for power or for gold",
       "why": "a translation (from German) whose translator the book does not name"
-    },
-    {
-      "ref": "458",
-      "first": "The light pours down from heaven,",
-      "why": "no tune we hold for “7 & 6s. M.” in 4-line verses"
     },
     {
       "ref": "460",
@@ -3510,16 +3528,6 @@
       "why": "an author we cannot name in full: “Neale”"
     },
     {
-      "ref": "548",
-      "first": "In time of tribulation,",
-      "why": "no tune we hold for “7 & 6s. M.” in 4-line verses"
-    },
-    {
-      "ref": "549",
-      "first": "Yea, I will extol Thee,",
-      "why": "no tune we hold for “6 & 5s. M.” in 4-line verses"
-    },
-    {
       "ref": "550",
       "first": "Behold, night's shadows fade,",
       "why": "a translation (from Breviary) whose translator the book does not name"
@@ -3652,9 +3660,9 @@
   ],
   "counts": {
     "hymns": 600,
-    "written": 324,
+    "written": 328,
     "alreadyOurs": 25,
-    "skipped": 251,
+    "skipped": 247,
     "removed": 0
   }
 }

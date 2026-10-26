@@ -1,0 +1,62 @@
+{
+  "title": "O Bless, Thou Heavenly Potentate",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "O Bless, Thou Heavenly Potentate in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 300.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O bless, Thou heav-enly Po-ten-tate, With wis-dom, strength, the powers of state, That wrong and vi-o-lence may cease And Church and home a-bide in peace.",
+  "verses": [
+    {
+      "lines": [
+        "O bless, Thou heavenly Potentate,",
+        "With wisdom, strength, the powers of state,",
+        "That wrong and violence may cease",
+        "And Church and home abide in peace."
+      ]
+    },
+    {
+      "lines": [
+        "Bless rich and poor, the great and small,",
+        "Both friend and foe; Lord, bless Thou all",
+        "The family on earth in love",
+        "And fit all for Thy home above."
+      ]
+    },
+    {
+      "lines": [
+        "Thus, with Thy blessing on each hand,",
+        "Will peace and plenty fill the land",
+        "And righteousness spring from the earth",
+        "And life below have higher worth."
+      ]
+    },
+    {
+      "lines": [
+        "All praise to Thee, O King of kings,",
+        "Whose grace to us such blessings brings;",
+        "Thee, with the Father, we adore,",
+        "And Holy Ghost, forevermore."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: anonymous words in print by 1927.",
+  "credits": "Words anonymous, public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:300"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "Jesus! Name of Wondrous Love",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "William Walsham How",
+      "born": 1823,
+      "died": 1897,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Jesus! Name of Wondrous Love in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Walsham How wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 178.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Je-sus! Name of won-drous love, Name all oth-er names a-bove, Un-to which must ev-ery knee Bow in deep hu-mil-i-ty.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus! Name of wondrous love,",
+        "Name all other names above,",
+        "Unto which must every knee",
+        "Bow in deep humility."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus! Name decreed of old,",
+        "To the maiden mother told,",
+        "Kneeling in her lowly cell,",
+        "By the angel Gabriel."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus! Name of priceless worth",
+        "To the fallen sons of earth,",
+        "For the promise that it gave,—",
+        "“Jesus shall His people save.”"
+      ]
+    },
+    {
+      "lines": [
+        "Jesus! Name of mercy mild,",
+        "Given to the holy Child",
+        "When the cup of human woe",
+        "First He tasted here below."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus! Only name that’s given",
+        "Under all the mighty heaven",
+        "Whereby man, to sin enslaved,",
+        "Bursts his fetters and is saved."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus! Name of wondrous love,",
+        "Human name of God above.",
+        "Pleading only this, we flee,",
+        "Helpless, O our God, to Thee."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: William Walsham How died in 1897.",
+  "credits": "Words by William Walsham How (1823–1897), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:178"
+}

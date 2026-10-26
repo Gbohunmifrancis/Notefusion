@@ -1,0 +1,62 @@
+{
+  "title": "The Mellow Eve Is Gliding",
+  "tune": "st-alphege",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "The Mellow Eve Is Gliding in Tonic Solfa to ST. ALPHEGE, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 944 of its twenty-second edition (1853), “Reflections at Sunset”, where the book credits them to the Sacred Songs.",
+    "The book printed the words without tunes, marked Sevens and Sixes (7.6.7.6), to be sung to any tune of that metre. This page sets them to ST. ALPHEGE; any other Sevens and Sixes tune fits them as well."
+  ],
+  "underlay": "The mel-low eve is glid-ing Se-rene-ly down the west; So, ev-ery care sub-sid-ing, My soul would sink to rest.",
+  "verses": [
+    {
+      "lines": [
+        "The mellow eve is gliding",
+        "Serenely down the west;",
+        "So, every care subsiding,",
+        "My soul would sink to rest."
+      ]
+    },
+    {
+      "lines": [
+        "The woodland hum is ringing",
+        "The daylight's gentle close;",
+        "May angels round me singing,",
+        "Thus hymn my last repose."
+      ]
+    },
+    {
+      "lines": [
+        "The evening star has lighted",
+        "Her crystal lamp on high;",
+        "So, when in death benighted,",
+        "May hope illume the sky."
+      ]
+    },
+    {
+      "lines": [
+        "In golden splendor dawning,",
+        "The morrow's light shall break;",
+        "O, on the last bright morning",
+        "May I in glory wake."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST. ALPHEGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:944"
+}

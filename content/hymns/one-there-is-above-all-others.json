@@ -1,0 +1,91 @@
+{
+  "title": "One There Is, Above All Others",
+  "tune": "kalmar",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "One There Is, Above All Others in Tonic Solfa to KALMAR, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 53, “A friend that sticketh closer than a brother. Pr 18:24”.",
+    "The book printed the words without tunes, marked 8.7.8.7.7.7, to be sung to any tune of that metre. This page sets them to KALMAR; any other 8.7.8.7.7.7 tune fits them as well."
+  ],
+  "underlay": "One there is, a-bove all o-thers, Well de-serves the name of friend; His is love be-yond a broth-er's, Cost-ly, free, and knows no end: They who once his kind-ness prove, Find it ev-er-last-ing love!",
+  "verses": [
+    {
+      "lines": [
+        "One there is, above all others,",
+        "Well deserves the name of friend;",
+        "His is love beyond a brother's,",
+        "Costly, free, and knows no end:",
+        "They who once his kindness prove,",
+        "Find it everlasting love!"
+      ]
+    },
+    {
+      "lines": [
+        "Which of all our friends to save us,",
+        "Could or would have shed their blood?",
+        "But our Jesus died to have us",
+        "Reconciled, in him to God:",
+        "This was boundless love indeed!",
+        "Jesus is a friend in need."
+      ]
+    },
+    {
+      "lines": [
+        "Men, when raised to lofty stations,",
+        "Often know their friends no more;",
+        "Slight and scorn their poor relations",
+        "Though they valued them before.",
+        "But our Savior always owns",
+        "Those whom he redeemed with groans."
+      ]
+    },
+    {
+      "lines": [
+        "When he lived on earth abased,",
+        "Friend of sinners was his name;",
+        "Now, above all glory raised,",
+        "He rejoices in the same:",
+        "Still he calls them brethren, friends,",
+        "And to all their wants attends."
+      ]
+    },
+    {
+      "lines": [
+        "Could we bear from one another,",
+        "What he daily bears from us?",
+        "Yet this glorious Friend and Brother,",
+        "Loves us though we treat him thus:",
+        "Though for good we render ill,",
+        "He accounts us brethren still."
+      ]
+    },
+    {
+      "lines": [
+        "O for grace our hearts to soften!",
+        "Teach us, Lord, at length to love;",
+        "We, alas! forget too often,",
+        "What a Friend we have above:",
+        "But when home our souls are brought,",
+        "We will love thee as we ought."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to KALMAR by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:53"
+}

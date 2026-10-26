@@ -1,0 +1,76 @@
+{
+  "title": "Thou Saviour of Our Sinful Race",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Thou Saviour of Our Sinful Race in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thou Sa-viour of our sin-ful race, We sing the ful-ness of Thy grace; Lord, as our songs in rap-ture soar, On us Thy lov-ing kind-ness pour.",
+  "verses": [
+    {
+      "lines": [
+        "Thou Saviour of our sinful race,",
+        "We sing the fulness of Thy grace;",
+        "Lord, as our songs in rapture soar,",
+        "On us Thy loving-kindness pour."
+      ]
+    },
+    {
+      "lines": [
+        "There is no merit of our own,",
+        "No plea to offer, save alone",
+        "That Thou hast died upon the tree,",
+        "To set our sin-bound spirits free."
+      ]
+    },
+    {
+      "lines": [
+        "O, when the world, in awful fear,",
+        "Beholds the Judge of all appear,",
+        "Be this our joy on that dread day,",
+        "That Christ hath borne our sins away."
+      ]
+    },
+    {
+      "lines": [
+        "When in the land of bliss divine,",
+        "Our souls in robes of beauty shine,",
+        "This be our song before the throne,",
+        "Not ours the beauty, Thine alone."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee, O God, be glory given,",
+        "And to the Christ, the King of heaven;",
+        "And to the Holy Spirit, blest,",
+        "Be praise for evermore exprest."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:56"
+}

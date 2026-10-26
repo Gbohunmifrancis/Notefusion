@@ -1,0 +1,60 @@
+{
+  "title": "Tossed on the Sea of Life",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "Tossed on the Sea of Life in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904), headed “Hirmos”.",
+    "The book printed the words without tunes. They are in Short Metre (6.6.8.6), and this page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Tossed on the sea of life, And sick and sore dis-tressed, I lift my cry to Thee, O Lord, Who giv'st the trou-bled rest.",
+  "verses": [
+    {
+      "lines": [
+        "Tossed on the sea of life,",
+        "And sick and sore distressed,",
+        "I lift my cry to Thee, O Lord,",
+        "Who giv'st the troubled rest."
+      ]
+    },
+    {
+      "lines": [
+        "There, where the waters yawn,",
+        "And cruel monsters grin,",
+        "My comrades sink to depths below,",
+        "All in a sea of sin."
+      ]
+    },
+    {
+      "lines": [
+        "My earnest cry I raise,",
+        "Hear Thou the prayer I make,",
+        "And from the dark abyss of death",
+        "My soul in mercy take."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:19"
+}

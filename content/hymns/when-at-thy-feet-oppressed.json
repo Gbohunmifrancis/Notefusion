@@ -1,0 +1,76 @@
+{
+  "title": "When at Thy Feet, Oppressed",
+  "tune": "st-john-parish-choir",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "When at Thy Feet, Oppressed in Tonic Solfa to ST. JOHN (PARISH CHOIR), doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911).",
+    "The book printed the words without tunes. They are in Hallelujah Metre (6.6.6.6.8.8), and this page sets them to ST. JOHN (PARISH CHOIR); any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "When at Thy feet, op-pressed, The bur-dened sin-ner falls, And, woe-ful and dis-tressed, Up-on Thy mer-cy calls, O hear the pen-i-ten-tial prayer, For-give the bur-dened sin-ner there.",
+  "verses": [
+    {
+      "lines": [
+        "When at Thy feet, oppressed,",
+        "The burdened sinner falls,",
+        "And, woeful and distressed,",
+        "Upon Thy mercy calls, —",
+        "O hear the penitential prayer,",
+        "Forgive the burdened sinner there."
+      ]
+    },
+    {
+      "lines": [
+        "Did'st Thou not send the Son,",
+        "To shew the Father's grace,",
+        "To bid a world undone",
+        "Arise and seek His face?",
+        "And wilt Thou not in mercy say,",
+        "\"Thy many sins I take away\"?"
+      ]
+    },
+    {
+      "lines": [
+        "Yea, Thou wilt not despise",
+        "The soul's uplifted prayer;",
+        "Nor when our hopes arise,",
+        "Plunge us in deep despair;",
+        "But wilt forgive the evil done,",
+        "Through Christ the Well Beloved Son."
+      ]
+    },
+    {
+      "lines": [
+        "O Jesus Christ, by Thee",
+        "The Father's grace is found,",
+        "And pardon full, and we",
+        "With every good abound, —",
+        "We see Thee nailed upon the tree,",
+        "And know all blessing comes from Thee."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to ST. JOHN (PARISH CHOIR) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:44"
+}

@@ -1,0 +1,85 @@
+{
+  "title": "Our God So Loved the World That He",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Johann Olearius",
+      "born": 1611,
+      "died": 1684,
+      "role": "Words"
+    },
+    {
+      "name": "August Crull",
+      "born": 1845,
+      "died": 1923,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Our God So Loved the World That He in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Johann Olearius wrote these words in German. August Crull's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 327.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Our God so loved the world that He Gave His own Son and did de-cree That all who would in Him be-lieve Should ev-er-last-ing life re-ceive.",
+  "verses": [
+    {
+      "lines": [
+        "Our God so loved the world that He",
+        "Gave His own Son and did decree",
+        "That all who would in Him believe",
+        "Should everlasting life receive."
+      ]
+    },
+    {
+      "lines": [
+        "Christ Jesus is the ground of faith,",
+        "Who was made flesh and suffered death;",
+        "All that confide in Him alone",
+        "Are built on this chief Corner-stone."
+      ]
+    },
+    {
+      "lines": [
+        "God would not have the sinner die;",
+        "His Son with saving grace is nigh,",
+        "His Spirit in the Word doth teach",
+        "How man the blessed goal may reach."
+      ]
+    },
+    {
+      "lines": [
+        "Be of good cheer, for God’s own Son",
+        "Forgives all sins which thou hast done;",
+        "Thou’rt justified by Jesus’ blood,",
+        "Thy Baptism grants the highest good."
+      ]
+    },
+    {
+      "lines": [
+        "If thou be sick, if death draw near,",
+        "This truth thy troubled heart can cheer:",
+        "Christ Jesus saves my soul from death;",
+        "That is the firmest ground of faith."
+      ]
+    },
+    {
+      "lines": [
+        "Glory to God the Father, Son,",
+        "And Holy Spirit, Three in One!",
+        "To Thee, O blessed Trinity,",
+        "Be praise now and eternally!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Johann Olearius died in 1684; August Crull died in 1923.",
+  "credits": "Words by Johann Olearius (1611–1684), translated by August Crull (1845–1923), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:327"
+}

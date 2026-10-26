@@ -1,0 +1,63 @@
+{
+  "title": "Father of Heav’n, Whose Love Profound",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Edward Cooper",
+      "born": 1770,
+      "died": 1833,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Father of Heav’n, Whose Love Profound in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Edward Cooper wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 269.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther of heav’n, whose love pro-found A ran-som for our souls has found, Be-fore Thy throne we sin-ners bend; To us Thy par-doning love ex-tend.",
+  "verses": [
+    {
+      "lines": [
+        "Father of heav’n, whose love profound",
+        "A ransom for our souls has found,",
+        "Before Thy throne we sinners bend;",
+        "To us Thy pardoning love extend."
+      ]
+    },
+    {
+      "lines": [
+        "Almighty Son, Incarnate Word,",
+        "Our Prophet, Priest, Redeemer, Lord,",
+        "Before Thy throne we sinners bend;",
+        "To us Thy saving grace extend."
+      ]
+    },
+    {
+      "lines": [
+        "Eternal Spirit, by whose breath",
+        "The soul is raised from sin and death,",
+        "Before Thy throne we sinners bend;",
+        "To us Thy quickening power extend."
+      ]
+    },
+    {
+      "lines": [
+        "Jehovah, Father, Spirit, Son,",
+        "Eternal Godhead, Three in One,",
+        "Before Thy throne we sinners bend;",
+        "Grace, pardon, life, to us extend."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Edward Cooper died in 1833.",
+  "credits": "Words by Edward Cooper (1770–1833), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:269"
+}

@@ -1,0 +1,61 @@
+{
+  "title": "God of Mercy, God of Grace",
+  "tune": "spanish-hymn",
+  "text": [
+    {
+      "name": "Henry Francis Lyte",
+      "born": 1793,
+      "died": 1847,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "God of Mercy, God of Grace in Tonic Solfa to SPANISH HYMN, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Henry Francis Lyte wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 71.",
+    "The book printed the words without tunes, marked Sevens, six lines (7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to SPANISH HYMN; any other Sevens, six lines tune fits them as well."
+  ],
+  "underlay": "God of mer-cy, God of grace, Show the bright-ness of Thy face! Shine up-on us, Sa-vior, shine, Fill Thy Church with light di-vine, And Thy sa-ving health ex-tend Un-to earth’s re-mo-test end.",
+  "verses": [
+    {
+      "lines": [
+        "God of mercy, God of grace,",
+        "Show the brightness of Thy face!",
+        "Shine upon us, Savior, shine,",
+        "Fill Thy Church with light divine,",
+        "And Thy saving health extend",
+        "Unto earth’s remotest end."
+      ]
+    },
+    {
+      "lines": [
+        "Let the people praise Thee, Lord!",
+        "Be by all that live adored;",
+        "Let the nations shout and sing",
+        "Glory to their Lord and King,",
+        "At Thy feet their tribute pay,",
+        "And Thy holy will obey."
+      ]
+    },
+    {
+      "lines": [
+        "Let the people praise Thee, Lord!",
+        "Earth shall then her fruits afford,",
+        "God to man His blessing give,",
+        "Man to God devoted live;",
+        "All below and all above",
+        "One in joy and light and love."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Henry Francis Lyte died in 1847.",
+  "credits": "Words by Henry Francis Lyte (1793–1847), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to SPANISH HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:71"
+}

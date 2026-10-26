@@ -1,0 +1,72 @@
+{
+  "title": "The Joy of Earth Is Fleeting",
+  "tune": "ewing",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "The Joy of Earth Is Fleeting in Tonic Solfa to EWING, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904).",
+    "The book printed the words without tunes. They are in Sevens and Sixes Double (7.6.7.6.7.6.7.6), and this page sets them to EWING; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "The joy of earth is fleet-ing, The bliss of heaven re-mains; More sweet than earth-ly mu-sic The an-gel's glad re-frains; And hearts of saints up-ris-ing Find vent in sweet-est song, And lips of saints and an-gels The praise of heaven pro-long.",
+  "verses": [
+    {
+      "lines": [
+        "The joy of earth is fleeting,",
+        "The bliss of heaven remains;",
+        "More sweet than earthly music",
+        "The angel's glad refrains;",
+        "And hearts of saints uprising",
+        "Find vent in sweetest song,",
+        "And lips of saints and angels",
+        "The praise of heaven prolong."
+      ]
+    },
+    {
+      "lines": [
+        "O Christ, who art for ever",
+        "With those whom Thou dost love,",
+        "Thou art the theme inspiring",
+        "The choirs who dwell above;",
+        "The love that brought Thee earthward,",
+        "The love that stooped and died,",
+        "The pardon won for sinners,",
+        "When Thou wast crucified."
+      ]
+    },
+    {
+      "lines": [
+        "Be Thee our theme who linger",
+        "Where Thou didst sorrowing dwell;",
+        "And teach our hearts to love Thee,",
+        "Our lips to praise Thee well;",
+        "And when we come adoring",
+        "To where Thou ever art,",
+        "One song shall rise exulting,",
+        "From one united heart."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to EWING by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:46"
+}

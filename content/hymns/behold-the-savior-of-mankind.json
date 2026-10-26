@@ -1,0 +1,63 @@
+{
+  "title": "Behold the Savior of Mankind",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Samuel Wesley",
+      "born": 1662,
+      "died": 1735,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Behold the Savior of Mankind in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Samuel Wesley wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 211.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Be-hold the Sa-vior of man-kind Nailed to the shame-ful tree! How vast the love that Him in-clined To bleed and die for thee!",
+  "verses": [
+    {
+      "lines": [
+        "Behold the Savior of mankind",
+        "Nailed to the shameful tree!",
+        "How vast the love that Him inclined",
+        "To bleed and die for thee!"
+      ]
+    },
+    {
+      "lines": [
+        "Hark how He groans while nature shakes",
+        "And earth’s strong pillars bend!",
+        "The Temple’s veil in sunder breaks,",
+        "The solid marbles rend."
+      ]
+    },
+    {
+      "lines": [
+        "’Tis done; the precious ransom’s paid;",
+        "“Receive my soul!” He cries:",
+        "See where He bows His sacred head!",
+        "He bows His head and dies."
+      ]
+    },
+    {
+      "lines": [
+        "But soon He’ll break death’s envious chain",
+        "And in full glory shine.",
+        "O Lamb of God, was ever pain,",
+        "Was ever love, like Thine?"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Samuel Wesley died in 1735.",
+  "credits": "Words by Samuel Wesley (1662–1735), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:211"
+}

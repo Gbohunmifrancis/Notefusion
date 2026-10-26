@@ -1,0 +1,63 @@
+{
+  "title": "In Weariness and Pain",
+  "tune": "st-bride",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "In Weariness and Pain in Tonic Solfa to ST. BRIDE, doh is Bb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 504.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to ST. BRIDE; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "In wea-ri-ness and pain, By sins and fears op-prest, I turn me to my Rest a-gain, My soul’s e-ter-nal Rest.",
+  "verses": [
+    {
+      "lines": [
+        "In weariness and pain,",
+        "By sins and fears opprest,",
+        "I turn me to my Rest again,",
+        "My soul’s eternal Rest."
+      ]
+    },
+    {
+      "lines": [
+        "The Lamb that died for me",
+        "And still my load doth bear;",
+        "To Jesus’ streaming wounds I flee",
+        "And find my quiet there."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, was ever grief,",
+        "Was ever love, like Thine?",
+        "Thy sorrow, Lord, is my relief,",
+        "Thy life hath ransomed mine."
+      ]
+    },
+    {
+      "lines": [
+        "O may I rise with Thee",
+        "And soar to things above",
+        "And spend a blest eternity",
+        "In praise of dying love!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ST. BRIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:504"
+}

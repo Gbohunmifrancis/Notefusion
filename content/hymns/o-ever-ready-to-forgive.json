@@ -1,0 +1,68 @@
+{
+  "title": "O Ever Ready to Forgive",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "O Ever Ready to Forgive in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904).",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O ev-er rea-dy to for-give, Thou mer-ci-ful and mild, I long be-fore Thy face to live As trust-ful as a child.",
+  "verses": [
+    {
+      "lines": [
+        "O ever ready to forgive,",
+        "Thou merciful and mild,",
+        "I long before Thy face to live",
+        "As trustful as a child."
+      ]
+    },
+    {
+      "lines": [
+        "Thy Spirit leads me to repent,",
+        "And cast my care on Thee;",
+        "I come to Him whom Thou hast sent,",
+        "And bring my guilt with me."
+      ]
+    },
+    {
+      "lines": [
+        "O ever ready to bestow",
+        "The help I daily need,",
+        "Be Thou my strength where'er I go,",
+        "My present Friend indeed."
+      ]
+    },
+    {
+      "lines": [
+        "Then shall I live for evermore",
+        "Rejoicing in Thy love,",
+        "And follow, if Thou goest before,",
+        "To better things above."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:38"
+}

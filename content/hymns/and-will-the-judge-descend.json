@@ -1,0 +1,79 @@
+{
+  "title": "And Will the Judge Descend",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "Philip Doddridge",
+      "born": 1702,
+      "died": 1751,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "And Will the Judge Descend in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Philip Doddridge wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 554.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "And will the Judge de-scend? And must the dead a-rise And not a sin-gle soul es-cape His all dis-cern-ing eyes?",
+  "verses": [
+    {
+      "lines": [
+        "And will the Judge descend?",
+        "And must the dead arise",
+        "And not a single soul escape",
+        "His all-discerning eyes?"
+      ]
+    },
+    {
+      "lines": [
+        "And from His righteous lips",
+        "Shall this dread sentence sound;",
+        "And, through the numerous guilty throng,",
+        "Spread black despair around?"
+      ]
+    },
+    {
+      "lines": [
+        "“Depart from Me, accursed,",
+        "To everlasting flame,",
+        "For rebel angels first prepared,",
+        "Where mercy never came.”"
+      ]
+    },
+    {
+      "lines": [
+        "How will my heart endure",
+        "The terrors of that day,",
+        "When earth and heaven before His face",
+        "Astonished shrink away?"
+      ]
+    },
+    {
+      "lines": [
+        "But ere that trumpet shakes",
+        "The mansions of the dead,",
+        "Hark, from the Gospel’s cheering sound",
+        "What joyful tidings spread!"
+      ]
+    },
+    {
+      "lines": [
+        "Ye sinners, seek His grace",
+        "Whose wrath ye cannot bear;",
+        "Fly to the shelter of His cross",
+        "And find salvation there."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Philip Doddridge died in 1751.",
+  "credits": "Words by Philip Doddridge (1702–1751), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:554"
+}

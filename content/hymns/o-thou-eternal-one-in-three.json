@@ -1,0 +1,84 @@
+{
+  "title": "O Thou Eternal One in Three",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "O Thou Eternal One in Three in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), headed “Tu Trinitatis Unitas”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Thou E-ter-nal One in Three, Dread Ru-ler of the earth and sky, Ac-cept the praise we yield to Thee, Who, wa-king, lift our songs on high.",
+  "verses": [
+    {
+      "lines": [
+        "O Thou Eternal One in Three,",
+        "Dread Ruler of the earth and sky,",
+        "Accept the praise we yield to Thee,",
+        "Who, waking, lift our songs on high."
+      ]
+    },
+    {
+      "lines": [
+        "Now from the couch of rest we rise,",
+        "While solemn night in silence reigns,",
+        "And lift to Thee our earnest cries,",
+        "To give Thy balm to heal our pains."
+      ]
+    },
+    {
+      "lines": [
+        "If in the night by Satan’s guile",
+        "Our souls were lured by thought of sin;",
+        "O bid Thy light celestial smile,",
+        "And chase away the night within."
+      ]
+    },
+    {
+      "lines": [
+        "Purge Thou our flesh from every stain,",
+        "Let not dull sloth our hearts depress;",
+        "Nor let the sense of guilt remain,",
+        "To chill the warmth our souls possess."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee, Redeemer blest, we pray,",
+        "That in our souls Thy light may shine;",
+        "So we shall walk from day to day,",
+        "Unerring in Thy way Divine."
+      ]
+    },
+    {
+      "lines": [
+        "Grant it, O Father, in Thy love,",
+        "Grant it, O One-begotten Son,",
+        "Who with the Spirit reign above,",
+        "Now, and while endless ages run."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:3"
+}

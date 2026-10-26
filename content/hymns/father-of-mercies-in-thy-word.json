@@ -1,0 +1,63 @@
+{
+  "title": "Father of Mercies, in Thy Word",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Anne Steele",
+      "born": 1717,
+      "died": 1778,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Father of Mercies, in Thy Word in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Anne Steele wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 117.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther of mer-cies, in Thy Word What end-less glo-ry shines! For-ev-er be Thy name a-dored For these ce-les-tial lines.",
+  "verses": [
+    {
+      "lines": [
+        "Father of mercies, in Thy Word",
+        "What endless glory shines!",
+        "Forever be Thy name adored",
+        "For these celestial lines."
+      ]
+    },
+    {
+      "lines": [
+        "Here the Redeemer’s welcome voice",
+        "Spreads heavenly peace around;",
+        "And life and everlasting joys",
+        "Attend the blissful sound."
+      ]
+    },
+    {
+      "lines": [
+        "Oh, may these heavenly pages be",
+        "My ever dear delight;",
+        "And still new beauties may I see",
+        "And still increasing light!"
+      ]
+    },
+    {
+      "lines": [
+        "Divine Instructor, gracious Lord!",
+        "Be Thou forever near;",
+        "Teach me to love Thy sacred Word",
+        "And view my Savior there."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Anne Steele died in 1778.",
+  "credits": "Words by Anne Steele (1717–1778), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:117"
+}

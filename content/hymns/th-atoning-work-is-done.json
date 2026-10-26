@@ -1,0 +1,71 @@
+{
+  "title": "Th’ Atoning Work Is Done",
+  "tune": "st-john-parish-choir",
+  "text": [
+    {
+      "name": "Thomas Kelly",
+      "born": 1769,
+      "died": 1855,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Th’ Atoning Work Is Done in Tonic Solfa to ST. JOHN (PARISH CHOIR), doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Thomas Kelly wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 241.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.8.8), to be sung to any tune of that metre. This page sets them to ST. JOHN (PARISH CHOIR); any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "Th’a-ton-ing work is done, The Vic-tim’s blood is shed, And Je-sus now is gone His peo-ple’s cause to plead: He stands in heaven their great High Priest And bears their names up-on His breast.",
+  "verses": [
+    {
+      "lines": [
+        "Th’ atoning work is done,",
+        "The Victim’s blood is shed,",
+        "And Jesus now is gone",
+        "His people’s cause to plead:",
+        "He stands in heaven their great High Priest",
+        "And bears their names upon His breast."
+      ]
+    },
+    {
+      "lines": [
+        "He sprinkled with His blood",
+        "The mercy-seat above;",
+        "For justice had withstood",
+        "The purposes of love;",
+        "But justice now withstands no more,",
+        "And mercy yields her boundless store."
+      ]
+    },
+    {
+      "lines": [
+        "No temple made with hands",
+        "His place of service is;",
+        "In heaven itself He stands,",
+        "A heavenly priesthood His.",
+        "In Him the shadows of the Law",
+        "Are all fulfilled and now withdraw."
+      ]
+    },
+    {
+      "lines": [
+        "And though awhile He be",
+        "Hid from the eyes of men,",
+        "His people look to see",
+        "Their great High Priest again;",
+        "In brightest glory He will come",
+        "And take His waiting people home."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Thomas Kelly died in 1855.",
+  "credits": "Words by Thomas Kelly (1769–1855), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ST. JOHN (PARISH CHOIR) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:241"
+}

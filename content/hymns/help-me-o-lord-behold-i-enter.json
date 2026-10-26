@@ -1,0 +1,87 @@
+{
+  "title": "Help Me, O Lord! Behold, I Enter",
+  "tune": "neumark",
+  "text": [
+    {
+      "name": "Johann Rist",
+      "born": 1607,
+      "died": 1667,
+      "role": "Words"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Help Me, O Lord! Behold, I Enter in Tonic Solfa to NEUMARK, doh is Bb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Johann Rist wrote these words in German. Catherine Winkworth's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 171.",
+    "The book printed the words without tunes, marked 9.8.9.8.8.8, to be sung to any tune of that metre. This page sets them to NEUMARK; any other 9.8.9.8.8.8 tune fits them as well."
+  ],
+  "underlay": "Help me, O Lord! Be-hold, I en-ter Up-on an-oth-er year to day; In Thee my hopes and thoughts now cen-ter, Re-new my cou-rage for the way: New life, new strength, new happ-i-ness I ask of Thee, O hear and bless!",
+  "verses": [
+    {
+      "lines": [
+        "Help me, O Lord! Behold, I enter",
+        "Upon another year to-day;",
+        "In Thee my hopes and thoughts now center,",
+        "Renew my courage for the way:",
+        "New life, new strength, new happiness",
+        "I ask of Thee, O hear and bless!"
+      ]
+    },
+    {
+      "lines": [
+        "May every plan and undertaking",
+        "This year be all begun with Thee;",
+        "When I am sleeping or am waking,",
+        "Still let me know Thou art with me;",
+        "Abroad do Thou my footsteps guide,",
+        "At home be ever at my side."
+      ]
+    },
+    {
+      "lines": [
+        "Be this a time of grace and pardon;",
+        "Thy rod I take with willing mind,",
+        "But suffer naught my heart to harden;",
+        "O let me now Thy mercy find;",
+        "In Thee alone, my God, I live,",
+        "Thou only canst my sins forgive."
+      ]
+    },
+    {
+      "lines": [
+        "And may this year to me be holy;",
+        "Thy grace so fill my every thought",
+        "That all my life be pure and lowly",
+        "And truthful as a Christian’s ought;",
+        "So make me, while yet dwelling here,",
+        "Pious and blest from year to year."
+      ]
+    },
+    {
+      "lines": [
+        "And grant, Lord, when the year is over,",
+        "That it for me in peace may close;",
+        "In all things care for me and cover",
+        "My head in time of fear and woes;",
+        "So may I, when my years are gone,",
+        "Appear with joy before Thy throne."
+      ]
+    }
+  ],
+  "metre": "9 8 9 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Johann Rist died in 1667; Catherine Winkworth died in 1878.",
+  "credits": "Words by Johann Rist (1607–1667), translated by Catherine Winkworth (1827–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to NEUMARK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:171"
+}

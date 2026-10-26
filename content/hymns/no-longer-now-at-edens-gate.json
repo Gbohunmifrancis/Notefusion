@@ -1,0 +1,60 @@
+{
+  "title": "No Longer Now at Eden's Gate",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "No Longer Now at Eden's Gate in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900), headed “Let glory now the Cross adorn,”.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "No lon-ger now at E-den's gate The fie-ry wea-pon gleams, But from the Cross that leads to life A light al-lur-ing streams.",
+  "verses": [
+    {
+      "lines": [
+        "No longer now at Eden's gate",
+        "The fiery weapon gleams,",
+        "But from the Cross that leads to life",
+        "A light alluring streams."
+      ]
+    },
+    {
+      "lines": [
+        "And now the power of Death is gone,",
+        "His sting is torn away;",
+        "Grim Hades can no longer claim",
+        "His silent victory."
+      ]
+    },
+    {
+      "lines": [
+        "For Thou, O Saviour, didst descend",
+        "Where darkness brooding lies,",
+        "And bad'st the souls in bondage held",
+        "Return to Paradise."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:10"
+}
