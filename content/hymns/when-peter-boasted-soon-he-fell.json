@@ -1,0 +1,103 @@
+{
+  "title": "When Peter Boasted, Soon He Fell",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "When Peter Boasted, Soon He Fell in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 91, “Peter sinning and repenting. Mt 26:73”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When Pe-ter boast-ed, soon he fell, Yet was by grace re-stored; His case should be re-gard-ed well By all who fear the Lord.",
+  "verses": [
+    {
+      "lines": [
+        "When Peter boasted, soon he fell,",
+        "Yet was by grace restored;",
+        "His case should be regarded well",
+        "By all who fear the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "A voice it has, and helping hand,",
+        "Backsliders to recall;",
+        "And cautions those who think they stand,",
+        "Lest suddenly they fall."
+      ]
+    },
+    {
+      "lines": [
+        "He said, \"Whatever others do,",
+        "With Jesus I'll abide;\"",
+        "Yet soon amidst a murd'rous crew",
+        "His suff'ring Lord denied."
+      ]
+    },
+    {
+      "lines": [
+        "He who had been so bold before,",
+        "Now trembled like a leaf;",
+        "Not only lied, but cursed and swore,",
+        "To gain the more belief."
+      ]
+    },
+    {
+      "lines": [
+        "While he blasphemed he heard the cock,",
+        "And Jesus looked in love;",
+        "At once, as if by lightning struck,",
+        "His tongue forbore to move."
+      ]
+    },
+    {
+      "lines": [
+        "Delivered thus from Satan's snare",
+        "He starts, as from a sleep;",
+        "His Savior's look he could not bear,",
+        "But hasted forth to weep."
+      ]
+    },
+    {
+      "lines": [
+        "But sure the faithful cock had crowed",
+        "A hundred times in vain;",
+        "Had not the Lord that look bestowed,",
+        "The meaning to explain."
+      ]
+    },
+    {
+      "lines": [
+        "As I, like Peter, vows have made,",
+        "Yet acted Peter's part;",
+        "So conscience, like the cock, upbraids",
+        "My base, ungrateful heart."
+      ]
+    },
+    {
+      "lines": [
+        "Lord Jesus, hear a sinner's cry,",
+        "My broken peace renew;",
+        "And grant one pitying look, that I",
+        "May weep with Peter too."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:91"
+}

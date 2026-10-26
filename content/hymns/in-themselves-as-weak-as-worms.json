@@ -1,0 +1,95 @@
+{
+  "title": "In Themselves, as Weak as Worms",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "In Themselves, as Weak as Worms in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 61, “Power of prayer”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "In them-selves, as weak as worms, How can poor be-liev-ers stand; When temp-ta-tions, foes, and storms, Press them close on ev-ery hand?",
+  "verses": [
+    {
+      "lines": [
+        "In themselves, as weak as worms,",
+        "How can poor believers stand;",
+        "When temptations, foes, and storms,",
+        "Press them close on every hand?"
+      ]
+    },
+    {
+      "lines": [
+        "Weak, indeed, they feel they are,",
+        "But they know the throne of grace;",
+        "And the God, who answers prayer,",
+        "Helps them when they seek his face."
+      ]
+    },
+    {
+      "lines": [
+        "Though the Lord awhile delay,",
+        "Succor they at length obtain;",
+        "He who taught their hearts to pray,",
+        "Will not let them cry in vain."
+      ]
+    },
+    {
+      "lines": [
+        "Wrestling prayer can wonders do,",
+        "Bring relief in deepest straits;",
+        "Prayer can force a passage through",
+        "Iron bars and brazen gates."
+      ]
+    },
+    {
+      "lines": [
+        "Hezekiah on his knees",
+        "Proud Assyria's host subdued;",
+        "And when smitten with disease,",
+        "Had his life by prayer renewed."
+      ]
+    },
+    {
+      "lines": [
+        "Peter, though confined and chained,",
+        "Prayer prevailed and brought him out;",
+        "When Elijah prayed, it rained,",
+        "After three long years of drought."
+      ]
+    },
+    {
+      "lines": [
+        "We can likewise witness bear,",
+        "That the Lord is still the same,",
+        "Though we feared he would not hear,",
+        "Suddenly deliverance came."
+      ]
+    },
+    {
+      "lines": [
+        "For the wonders he has wrought,",
+        "Let us now our praises give;",
+        "And, by sweet experience taught,",
+        "Call upon him while we live."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:61"
+}

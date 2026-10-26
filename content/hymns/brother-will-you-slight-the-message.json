@@ -1,0 +1,60 @@
+{
+  "title": "Brother, Will You Slight the Message",
+  "tune": "st-austin",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Brother, Will You Slight the Message in Tonic Solfa to ST. AUSTIN, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 511, “Calls of the Spirit”.",
+    "The book printed the words without tunes, marked 8.7.8.7.4.7, to be sung to any tune of that metre. This page sets them to ST. AUSTIN; any other 8.7.8.7.4.7 tune fits them as well."
+  ],
+  "underlay": "Bro-ther, will you slight the mes-sage Sent in mer-cy from a-bove? Ev-ery sen-tence, O how ten-der, Ev-ery line how full of love! Heav-enly ac-cents Full of strength and peace and love!",
+  "verses": [
+    {
+      "lines": [
+        "Brother, will you slight the message",
+        "Sent in mercy from above?",
+        "Every sentence, O how tender,",
+        "Every line how full of love!",
+        "Heavenly accents",
+        "Full of strength and peace and love!"
+      ]
+    },
+    {
+      "lines": [
+        "Tempted souls, they bring you succor;",
+        "Fearful hearts, they quell your fears;",
+        "And with deepest consolation",
+        "Chase away the falling tears;",
+        "Tender heralds,",
+        "Blessed he their word who hears!"
+      ]
+    },
+    {
+      "lines": [
+        "Holy angels, hovering round us!",
+        "Waiting spirits! speed your way,",
+        "Hasten to the court of heaven,",
+        "Tidings bear without delay,",
+        "That our spirits",
+        "Glad the message will obey."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 4 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to ST. AUSTIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:511"
+}

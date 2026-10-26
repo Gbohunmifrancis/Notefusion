@@ -1,0 +1,103 @@
+{
+  "title": "Bleak Winter Is Subdued at Length",
+  "tune": "york",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Bleak Winter Is Subdued at Length in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 32, “Spring”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Bleak win-ter is sub-dued at length, And forced to yield the day; The sun has wait-ed all his strength, And dri-ven him a-way.",
+  "verses": [
+    {
+      "lines": [
+        "Bleak winter is subdued at length,",
+        "And forced to yield the day;",
+        "The sun has waited all his strength,",
+        "And driven him away."
+      ]
+    },
+    {
+      "lines": [
+        "And now long wished for spring is come,",
+        "How altered is the scene!",
+        "The trees and shrubs are dressed in bloom,",
+        "The earth arrayed in green."
+      ]
+    },
+    {
+      "lines": [
+        "Where'er we tread, beneath our feet",
+        "The clust'ring flowers spring;",
+        "The artless birds, in concert sweet,",
+        "Invite our hearts to sing."
+      ]
+    },
+    {
+      "lines": [
+        "But ah! in vain I strive to join,",
+        "Oppressed with sin and doubt;",
+        "I feet 'tis winter still, within,",
+        "Though all is spring without."
+      ]
+    },
+    {
+      "lines": [
+        "O! would my Savior from on high,",
+        "Break through these clouds and shine!",
+        "No creature then, more blest than I,",
+        "No song more loud than mine."
+      ]
+    },
+    {
+      "lines": [
+        "Till then--no softly warbling thrush,",
+        "Nor cowslip's sweet perfume;",
+        "Nor beauties of each painted bush,",
+        "Can dissipate my gloom."
+      ]
+    },
+    {
+      "lines": [
+        "To Adam, soon as he transgressed,",
+        "Thus Eden bloomed in vain;",
+        "Not paradise could give him rest,",
+        "Or soothe his heart-felt pain."
+      ]
+    },
+    {
+      "lines": [
+        "Yet here an emblem I perceive",
+        "Of what the Lord can do;",
+        "Dear Savior, help me to believe",
+        "That I may flourish too."
+      ]
+    },
+    {
+      "lines": [
+        "Thy word can soon my hopes revive,",
+        "Can overcome my foes;",
+        "And make my languid graces thrive,",
+        "And blossom like the rose."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:32"
+}

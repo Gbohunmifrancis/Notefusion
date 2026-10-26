@@ -1,0 +1,62 @@
+{
+  "title": "Lord, I Esteem Thy Judgments Right",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Lord, I Esteem Thy Judgments Right in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 119, part 6, headed “Holiness and comfort from the word”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Lord, I es-teem thy judg-ments right, And all thy sta-tutes just; Thence I main-tain a con-stant fight With ev-ery flat-tering lust.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, I esteem thy judgments right,",
+        "And all thy statutes just;",
+        "Thence I maintain a constant fight",
+        "With every flattering lust."
+      ]
+    },
+    {
+      "lines": [
+        "Thy precepts often I survey;",
+        "I keep thy law in sight,",
+        "Thro' all the business of the day,",
+        "To form my actions right."
+      ]
+    },
+    {
+      "lines": [
+        "My heart in midnight silence cries,",
+        "\"How sweet thy comforts be!\"",
+        "My thoughts in holy wonder rise,",
+        "And bring their thanks to thee."
+      ]
+    },
+    {
+      "lines": [
+        "And when my spirit drinks her fill",
+        "At some good word of thine,",
+        "Not mighty men that share the spoil",
+        "Have joys compar'd to mine."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 119:6"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "The Shunemite, Oppressed with Grief",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Shunemite, Oppressed with Grief in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 13, “The Shunemite. 2Ki 4:31”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The Shu-ne-mite, op-pressed with grief, When she had lost the son she loved, Went to El-i-sha for re-lief, Nor vain her ap-pli-ca-tion proved.",
+  "verses": [
+    {
+      "lines": [
+        "The Shunemite, oppressed with grief,",
+        "When she had lost the son she loved,",
+        "Went to Elisha for relief,",
+        "Nor vain her application proved."
+      ]
+    },
+    {
+      "lines": [
+        "He sent his servant on before",
+        "To lay a staff upon his head;",
+        "This he could do, but do no more,",
+        "He left him, as he found him, dead."
+      ]
+    },
+    {
+      "lines": [
+        "But when the Lord'S almighty pow'r",
+        "Wrought with the prophet's prayer, and faith,",
+        "The mother saw a joyful hour,",
+        "She saw her child restored from death."
+      ]
+    },
+    {
+      "lines": [
+        "Thus, like the weeping Shunemite,",
+        "For many, dead in sin we grieve;",
+        "Now, Lord, display thine arm of might,",
+        "Cause them to hear thy voice and live."
+      ]
+    },
+    {
+      "lines": [
+        "Thy preachers bear the staff in vain,",
+        "Though at thine own command we go;",
+        "Lord, we have tried, and tried again,",
+        "We find them dead, and leave them so."
+      ]
+    },
+    {
+      "lines": [
+        "Come then thyself--to every heart",
+        "The glory of thy name make known;",
+        "The means are our appointed part,",
+        "The pow'r and grace are thine alone."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:13"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "All Hail! Ye Servants of the Lord",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Lydia Sigourney",
+      "born": 1791,
+      "died": 1865,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "All Hail! Ye Servants of the Lord in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Lydia Sigourney wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 770 of its twenty-second edition (1853), “The Sower and the Seed”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "All hail! ye ser-vants of the Lord! On mer-cy's mis-sion bound; Who, like the sow-er of the word, Strew pre-cious gifts a-round.",
+  "verses": [
+    {
+      "lines": [
+        "All hail! ye servants of the Lord!",
+        "On mercy's mission bound;",
+        "Who, like the sower of the word,",
+        "Strew precious gifts around."
+      ]
+    },
+    {
+      "lines": [
+        "What though your seed 'mid thorns be sown,",
+        "Where tares and brambles thrive,",
+        "Still One is able, One alone,",
+        "To save its germ alive."
+      ]
+    },
+    {
+      "lines": [
+        "Ye fear, what falls on stony earth",
+        "Will mock your prayerful toil;",
+        "But sometimes plants of holiest birth",
+        "Bear fruit in sterile soil."
+      ]
+    },
+    {
+      "lines": [
+        "The seed that by the way-side fell,",
+        "Perchance you counted dead;",
+        "Yet birds, that sing in heaven, may tell,",
+        "They on its sweetness fed."
+      ]
+    },
+    {
+      "lines": [
+        "And some a hundred fold shall bear,",
+        "To glorify the Lord;",
+        "How blessed, then, will be your care!",
+        "How glorious your reward!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Lydia Sigourney died in 1865.",
+  "credits": "Words by Lydia Sigourney (1791–1865), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:770"
+}

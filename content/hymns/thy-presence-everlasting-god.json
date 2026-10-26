@@ -1,0 +1,63 @@
+{
+  "title": "Thy Presence, Everlasting God",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Philip Doddridge",
+      "born": 1702,
+      "died": 1751,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Thy Presence, Everlasting God in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Philip Doddridge wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 923 of its twenty-second edition (1853), “The Christian Farewell”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thy pre-sence, ev-er-last-ing God! Wide o'er all na-ture spreads a-broad: Thy watch-ful eyes, which can-not sleep, In ev-ery place thy child-ren keep.",
+  "verses": [
+    {
+      "lines": [
+        "Thy presence, everlasting God!",
+        "Wide o'er all nature spreads abroad:",
+        "Thy watchful eyes, which cannot sleep,",
+        "In every place thy children keep."
+      ]
+    },
+    {
+      "lines": [
+        "While near each other we remain,",
+        "Thou dost our lives and souls sustain;",
+        "When sep'rate, happy if we share",
+        "Thy smiles, thy counsels, and thy care."
+      ]
+    },
+    {
+      "lines": [
+        "To thee we all our ways commit,",
+        "And seek our comforts near thy feet;",
+        "Still on our souls vouchsafe to shine,",
+        "And guard and guide us still as thine."
+      ]
+    },
+    {
+      "lines": [
+        "Give us in thy belovéd house,",
+        "Again to pay our grateful vows;",
+        "Or, if that joy no more be known,",
+        "Give us to meet around thy throne."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Philip Doddridge died in 1751.",
+  "credits": "Words by Philip Doddridge (1702–1751), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:923"
+}

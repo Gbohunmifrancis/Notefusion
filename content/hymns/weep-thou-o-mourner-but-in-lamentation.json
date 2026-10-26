@@ -1,0 +1,62 @@
+{
+  "title": "Weep Thou, O Mourner! but in Lamentation",
+  "tune": "perfect-love",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Weep Thou, O Mourner! but in Lamentation in Tonic Solfa to PERFECT LOVE, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 340, “The Mourner”.",
+    "The book printed the words without tunes, marked Elevens and Tens (11.10.11.10), to be sung to any tune of that metre. This page sets them to PERFECT LOVE; any other Elevens and Tens tune fits them as well."
+  ],
+  "underlay": "Weep thou, O mourn-er! but in la-men-ta-tion Let thy Re-deem-er still re-mem-bered be; Strong is His arm, the God of thy sal-va-tion, Strong is His love to cheer and com-fort thee.",
+  "verses": [
+    {
+      "lines": [
+        "Weep thou, O mourner! but in lamentation",
+        "Let thy Redeemer still remembered be;",
+        "Strong is His arm, the God of thy salvation,",
+        "Strong is His love to cheer and comfort thee."
+      ]
+    },
+    {
+      "lines": [
+        "Cold though the world be, in the way before thee",
+        "Wail not in sadness o'er the darkling tomb;",
+        "God in His love still watcheth kindly o'er thee,",
+        "Light shineth still above the clouds of gloom."
+      ]
+    },
+    {
+      "lines": [
+        "Dimmed though thine eyes be with the tears of sorrow",
+        "Night only known beneath the sky of time,",
+        "Faith can behold the dawning of a morrow",
+        "Glowing in smiles of life and joy sublime."
+      ]
+    },
+    {
+      "lines": [
+        "Change, then, O mourner, grief to exultation;",
+        "Firm and confiding should thy spirit be;",
+        "Strong is His arm, the God of thy salvation,",
+        "Strong is His love to cheer and comfort thee."
+      ]
+    }
+  ],
+  "metre": "11 10 11 10",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to PERFECT LOVE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:340"
+}

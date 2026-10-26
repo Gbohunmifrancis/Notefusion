@@ -1,0 +1,70 @@
+{
+  "title": "When Abrah'm, Full of Sacred Awe",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "When Abrah'm, Full of Sacred Awe in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 873 of its twenty-second edition (1853), “Public Supplication”, where the book credits them to Rippon's Collection.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When A-brah'm, full of sa-cred awe, Be-fore Je-ho-vah stood, And, with an hum-ble, fer-vent prayer, For guilt-y So-dom sued,",
+  "verses": [
+    {
+      "lines": [
+        "When Abrah'm, full of sacred awe,",
+        "Before Jehovah stood,",
+        "And, with an humble, fervent prayer,",
+        "For guilty Sodom sued, —"
+      ]
+    },
+    {
+      "lines": [
+        "With what success, what wondrous grace,",
+        "Was his petition crowned!",
+        "The Lord would spare, if in this place",
+        "Ten righteous men were found."
+      ]
+    },
+    {
+      "lines": [
+        "And could a single pious soul",
+        "So rich a boon obtain?",
+        "Great God, and shall a nation cry,",
+        "And plead with thee in vain?"
+      ]
+    },
+    {
+      "lines": [
+        "Are not the righteous dear to thee",
+        "Now, as in ancient times?",
+        "Or does this sinful land exceed",
+        "Gomorrah in her crimes?"
+      ]
+    },
+    {
+      "lines": [
+        "Still we are thine; we bear thy name;",
+        "Here yet is thine abode:",
+        "Long has thy presence blessed our land:",
+        "Forsake us not, O God."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:873"
+}

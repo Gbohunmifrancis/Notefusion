@@ -1,0 +1,70 @@
+{
+  "title": "God of the Prophets' Power",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "God of the Prophets' Power in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 168, “The Word of God”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "God of the pro-phets' power! God of the go-spel's sound! Move glo-rious on, send out Thy voice To all the na-tions round.",
+  "verses": [
+    {
+      "lines": [
+        "God of the prophets' power!",
+        "God of the gospel's sound!",
+        "Move glorious on, — send out Thy voice",
+        "To all the nations round."
+      ]
+    },
+    {
+      "lines": [
+        "With hearts and lips unfeigned,",
+        "We bless Thee for Thy word;",
+        "We praise Thee for the joyful news",
+        "Of our ascended Lord."
+      ]
+    },
+    {
+      "lines": [
+        "O, may we treasure well",
+        "The counsels that we hear,",
+        "Till righteousness and solemn joy",
+        "In all our hearts appear."
+      ]
+    },
+    {
+      "lines": [
+        "Water the sacred seed,",
+        "And give it large increase;",
+        "May neither fowls, nor rocks, nor thorns,",
+        "Prevent the fruits of peace."
+      ]
+    },
+    {
+      "lines": [
+        "And though we sow in tears,",
+        "Our souls at last shall come,",
+        "And gather in our sheaves with joy,",
+        "At heaven's great harvest-home."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:168"
+}

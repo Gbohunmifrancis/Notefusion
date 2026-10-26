@@ -1,0 +1,95 @@
+{
+  "title": "Afflictions, Though They Seem Severe",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Afflictions, Though They Seem Severe in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 104, “The prodigal son. Lk 15:11-24”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Af-flic-tions, though they seem se-vere; In mer-cy oft are sent; They stopped the pro-di-gal's ca-reer, And forced him to re-pent.",
+  "verses": [
+    {
+      "lines": [
+        "Afflictions, though they seem severe;",
+        "In mercy oft are sent;",
+        "They stopped the prodigal's career,",
+        "And forced him to repent."
+      ]
+    },
+    {
+      "lines": [
+        "Although he no relentings felt",
+        "Till he had spent his store;",
+        "His stubborn heart began to melt",
+        "When famine pinched him sore."
+      ]
+    },
+    {
+      "lines": [
+        "\"What have I gained by sin, he said,",
+        "But hunger, shame, and fear;",
+        "My father's house abounds with bread,",
+        "While I am starving here."
+      ]
+    },
+    {
+      "lines": [
+        "I'll go, and tell him all I've done,",
+        "And fall before his face",
+        "Unworthy to be called his son,",
+        "I'll seek a servant's place.\""
+      ]
+    },
+    {
+      "lines": [
+        "His father saw him coming back,",
+        "He saw, and ran, and smiled;",
+        "And threw his arms around the neck",
+        "Of his rebellious child."
+      ]
+    },
+    {
+      "lines": [
+        "\"Father, I've sinned--but O forgive!\"",
+        "I've heard enough, he said,",
+        "Rejoice my house, my son's alive,",
+        "For whom I mourned as dead."
+      ]
+    },
+    {
+      "lines": [
+        "Now let the fatted calf be slain,",
+        "And spread the news around;",
+        "My son was dead, but lives again,",
+        "Was lost, but now is found."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis thus the Lord his love reveals,",
+        "To call poor sinners home;",
+        "More than a father's love he feels,",
+        "And welcomes all that come."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:104"
+}

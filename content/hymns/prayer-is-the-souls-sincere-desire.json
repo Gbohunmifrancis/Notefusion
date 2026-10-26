@@ -1,0 +1,87 @@
+{
+  "title": "Prayer Is the Soul's Sincere Desire",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Prayer Is the Soul's Sincere Desire in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 99, “What is Prayer?”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Prayer is the soul's sin-cere de-sire, Un-ut-tered or ex-pressed, The mo-tion of a hid-den fire, That trem-bles in the breast.",
+  "verses": [
+    {
+      "lines": [
+        "Prayer is the soul's sincere desire,",
+        "Unuttered or expressed,",
+        "The motion of a hidden fire,",
+        "That trembles in the breast."
+      ]
+    },
+    {
+      "lines": [
+        "Prayer is the burden of a sigh,",
+        "The falling of a tear,",
+        "The upward glancing of an eye,",
+        "When none but God is near."
+      ]
+    },
+    {
+      "lines": [
+        "Prayer is the simplest form of speech",
+        "That infant lips can try;",
+        "Prayer, the sublimest strains that reach",
+        "The Majesty on high."
+      ]
+    },
+    {
+      "lines": [
+        "Prayer is the Christian's vital breath,",
+        "The Christian's native air,",
+        "His watchword at the gates of death;",
+        "He enters heaven with prayer."
+      ]
+    },
+    {
+      "lines": [
+        "Prayer is the contrite sinner's voice",
+        "Returning from his ways;",
+        "While angels in their songs rejoice,",
+        "And cry, \"Behold, he prays!\""
+      ]
+    },
+    {
+      "lines": [
+        "In prayer, on earth, the saints are one;",
+        "They're one in word and mind;",
+        "When with the Father and the Son",
+        "Sweet fellowship they find."
+      ]
+    },
+    {
+      "lines": [
+        "O Thou by whom we come to God,",
+        "The Life, the Truth, the Way,",
+        "The path of prayer thyself hast trod;",
+        "Lord, teach us how to pray!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:99"
+}

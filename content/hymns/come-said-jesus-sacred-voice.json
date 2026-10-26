@@ -1,0 +1,71 @@
+{
+  "title": "Come, Said Jesus' Sacred Voice",
+  "tune": "pleyels-hymn",
+  "text": [
+    {
+      "name": "Anna Laetitia Barbauld",
+      "born": 1743,
+      "died": 1825,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Come, Said Jesus' Sacred Voice in Tonic Solfa to PLEYEL'S HYMN, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Anna Laetitia Barbauld wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 121, “Christ's Invitations”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to PLEYEL'S HYMN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Come, said Je-sus' sa-cred voice, Come and make my paths your choice; I will guide you to your home; Wea-ry pil-grim! hith-er come.",
+  "verses": [
+    {
+      "lines": [
+        "Come, said Jesus' sacred voice,",
+        "Come and make my paths your choice;",
+        "I will guide you to your home;",
+        "Weary pilgrim! hither come."
+      ]
+    },
+    {
+      "lines": [
+        "Thou who, houseless, sole, forlorn,",
+        "Long hast borne the proud world's scorn,",
+        "Long hast roamed the barren waste,",
+        "Weary pilgrim! hither haste."
+      ]
+    },
+    {
+      "lines": [
+        "Ye who, tossed on beds of pain,",
+        "Seek for ease, and seek in vain;",
+        "Ye whose swoln and sleepless eyes",
+        "Watch to see the morning rise;"
+      ]
+    },
+    {
+      "lines": [
+        "Ye, by fiercer anguish torn,",
+        "In remorse for guilt who mourn,",
+        "Here repose your heavy care;",
+        "Who the stings of sin can bear?"
+      ]
+    },
+    {
+      "lines": [
+        "Sufferer! come, for here is found",
+        "Balm that flows for every wound;",
+        "Peace that ever shall endure,",
+        "Rest eternal, sacred, sure."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Anna Laetitia Barbauld died in 1825.",
+  "credits": "Words by Anna Laetitia Barbauld (1743–1825), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to PLEYEL'S HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:121"
+}

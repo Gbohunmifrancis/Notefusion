@@ -1,0 +1,95 @@
+{
+  "title": "Sin, When Viewed by Scripture Light",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Sin, When Viewed by Scripture Light in Tonic Solfa to HEINLEIN, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 76, “Sin's deceit”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to HEINLEIN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Sin, when viewed by scrip-ture light, Is a hor-rid, hate-ful sight; But when seen in Sa-tan's glass, Then it wears a pleas-ing face.",
+  "verses": [
+    {
+      "lines": [
+        "Sin, when viewed by scripture light,",
+        "Is a horrid, hateful sight;",
+        "But when seen in Satan's glass,",
+        "Then it wears a pleasing face."
+      ]
+    },
+    {
+      "lines": [
+        "When the gospel trumpet sounds,",
+        "When I think how grace abounds,",
+        "When I feel sweet peace within,",
+        "Then I'd rather die than sin."
+      ]
+    },
+    {
+      "lines": [
+        "When the cross I view by faith,",
+        "Sin is madness, poison, death;",
+        "Tempt me not, 'tis all in vain,",
+        "Sure I ne'er can yield again."
+      ]
+    },
+    {
+      "lines": [
+        "Satan, for awhile debarred,",
+        "When he finds me off my guard,",
+        "Puts his glass before my eyes,",
+        "Quickly other thoughts arise."
+      ]
+    },
+    {
+      "lines": [
+        "What before excited fears,",
+        "Rather pleasing now appears;",
+        "If a sin, it seems so small,",
+        "Or, perhaps, no sin at all."
+      ]
+    },
+    {
+      "lines": [
+        "Often thus, through sin's deceit,",
+        "Grief, and shame, and loss I meet,",
+        "Like a fish, my soul mistook,",
+        "Saw the bait, but not the hook."
+      ]
+    },
+    {
+      "lines": [
+        "O my Lord, what shall I say?",
+        "How can I presume to pray?",
+        "Not a word have I to plead,",
+        "Sins, like mine, are black indeed!"
+      ]
+    },
+    {
+      "lines": [
+        "Made, by past experience, wise,",
+        "Let me learn thy word to prize;",
+        "Taught by what I've felt before,",
+        "Let me Satan's glass abhor."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to HEINLEIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:76"
+}

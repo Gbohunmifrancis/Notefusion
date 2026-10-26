@@ -1,0 +1,71 @@
+{
+  "title": "As, When the Deluge-waves Were Gone",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Bowring",
+      "born": 1792,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "As, When the Deluge-waves Were Gone in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Bowring wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 968 of its twenty-second edition (1853), “Joy after Sorrow”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "As, when the del-uge waves were gone, Hills, plains, and vales in fresh-ness burst, And na-ture's ear-liest rain-bow shone On scenes more love-ly than the first,",
+  "verses": [
+    {
+      "lines": [
+        "As, when the deluge-waves were gone,",
+        "Hills, plains, and vales in freshness burst,",
+        "And nature's earliest rainbow shone",
+        "On scenes more lovely than the first,"
+      ]
+    },
+    {
+      "lines": [
+        "Loosed from the ark, a heavenly dove,",
+        "The promise-branch of olive bore, —",
+        "Pledge of returning peace and love",
+        "That beamed more brightly than before: —"
+      ]
+    },
+    {
+      "lines": [
+        "So when affliction's waters glide",
+        "From the enfranchised soul away,",
+        "More peaceful, pure, and sanctified,",
+        "The soul emerges into day."
+      ]
+    },
+    {
+      "lines": [
+        "And then, as with the olive bough",
+        "The heavenly dove of old drew near,",
+        "Some gentle words of truth will flow,",
+        "In holy music on the ear."
+      ]
+    },
+    {
+      "lines": [
+        "O'er all the transient things of time,",
+        "The oblivious foot of years hath trod;",
+        "But all that's sacred and sublime",
+        "Stands steadfast as the truth of God."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Bowring died in 1872.",
+  "credits": "Words by John Bowring (1792–1872), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:968"
+}

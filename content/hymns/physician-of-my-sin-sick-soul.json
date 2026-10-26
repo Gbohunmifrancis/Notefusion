@@ -1,0 +1,87 @@
+{
+  "title": "Physician of My Sin-sick Soul",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Physician of My Sin-sick Soul in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 83, “A sick soul Mt 9:12”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Phy-si-cian of my sin sick soul, To thee I bring my case; My rag-ing mal-a-dy con-trol, And heal me by thy grace.",
+  "verses": [
+    {
+      "lines": [
+        "Physician of my sin-sick soul,",
+        "To thee I bring my case;",
+        "My raging malady control,",
+        "And heal me by thy grace."
+      ]
+    },
+    {
+      "lines": [
+        "Pity the anguish I endure,",
+        "See how I mourn and pine;",
+        "For never can I hope a cure",
+        "From any hand but thine."
+      ]
+    },
+    {
+      "lines": [
+        "I would disclose my whole complaint,",
+        "But where shall I begin?",
+        "No words of mine can fully paint",
+        "That worst distemper, sin."
+      ]
+    },
+    {
+      "lines": [
+        "It lies not in a single part,",
+        "But through my frame is spread;",
+        "A burning fever in my heart,",
+        "A palsy in my head."
+      ]
+    },
+    {
+      "lines": [
+        "It makes me deaf, and dumb, and blind,",
+        "And impotent and lame;",
+        "And overclouds, and fills my mind,",
+        "With folly, fear, and shame."
+      ]
+    },
+    {
+      "lines": [
+        "A thousand evil thoughts intrude",
+        "Tumultuous in my breast;",
+        "Which indispose me for my food,",
+        "And rob me of my rest."
+      ]
+    },
+    {
+      "lines": [
+        "Lord I am sick, regard my cry,",
+        "And set my spirit free;",
+        "Say, canst thou let a sinner die,",
+        "Who longs to live to thee?"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:83"
+}

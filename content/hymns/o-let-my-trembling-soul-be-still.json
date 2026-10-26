@@ -1,0 +1,61 @@
+{
+  "title": "O Let My Trembling Soul Be Still",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "John Bowring",
+      "born": 1792,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O Let My Trembling Soul Be Still in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Bowring wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 252, “Resignation”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "O let my trem-bling soul be still, While dark-ness veils this mor-tal eye, And wait Thy wise and ho-ly will, Though wrapped in fears and mys-ter-y: I can-not, Lord, Thy pur-pose see; Yet all is well since ruled by Thee!",
+  "verses": [
+    {
+      "lines": [
+        "O let my trembling soul be still,",
+        "While darkness veils this mortal eye,",
+        "And wait Thy wise and holy will,",
+        "Though wrapped in fears and mystery:",
+        "I cannot, Lord, Thy purpose see;",
+        "Yet all is well since ruled by Thee!"
+      ]
+    },
+    {
+      "lines": [
+        "When, mounted on Thy clouded car,",
+        "Thou send'st Thy darker spirits down,",
+        "I can discern Thy light afar,",
+        "Thy light sweet beaming through their frown;",
+        "And, should I faint a moment, then",
+        "I think of Thee, and smile again."
+      ]
+    },
+    {
+      "lines": [
+        "So, trusting in Thy love, I tread",
+        "The narrow path of duty on;",
+        "What though some cherished joys are fled?",
+        "What though some flattering dreams are gone?",
+        "Yet purer, nobler joys remain,",
+        "And peace is won through conquered pain."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Bowring died in 1872.",
+  "credits": "Words by John Bowring (1792–1872), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:252"
+}

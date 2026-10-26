@@ -1,0 +1,63 @@
+{
+  "title": "Eternal Wisdom, Thee We Praise",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Eternal Wisdom, Thee We Praise in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 123 of its twenty-second edition (1853), “God the Creator”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "E-ter-nal Wis-dom, thee we praise; Thee all thy crea-tures sing: While with thy name, rocks, hills, and seas, And heaven's high pal-ace, ring.",
+  "verses": [
+    {
+      "lines": [
+        "Eternal Wisdom, thee we praise;",
+        "Thee all thy creatures sing:",
+        "While with thy name, rocks, hills, and seas,",
+        "And heaven's high palace, ring."
+      ]
+    },
+    {
+      "lines": [
+        "Thy hand, how wide it spread the sky!",
+        "How glorious to behold!",
+        "Tinged with a blue of heavenly dye,",
+        "And decked with sparkling gold."
+      ]
+    },
+    {
+      "lines": [
+        "Thy glories blaze all nature round,",
+        "And strike the gazing sight,",
+        "Through skies, and seas, and solid ground,",
+        "With terror and delight."
+      ]
+    },
+    {
+      "lines": [
+        "Almighty power, and equal skill,",
+        "Shine through the worlds abroad,",
+        "Our souls with vast amazement fill,",
+        "And speak the builder, God."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:123"
+}

@@ -1,0 +1,62 @@
+{
+  "title": "How Sweet to Bless the Lord",
+  "tune": "franconia",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "How Sweet to Bless the Lord in Tonic Solfa to FRANCONIA, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 30 of its twenty-second edition (1853), “Pleasures of Spiritual Worship”, where the book credits them to Urwick's Collection.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to FRANCONIA; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "How sweet to bless the Lord, And in his prais-es join, With saints his good-ness to re-cord, And sing his power di-vine!",
+  "verses": [
+    {
+      "lines": [
+        "How sweet to bless the Lord,",
+        "And in his praises join,",
+        "With saints his goodness to record,",
+        "And sing his power divine!"
+      ]
+    },
+    {
+      "lines": [
+        "These seasons of delight",
+        "The dawn of glory seem,",
+        "Like rays of pure, celestial light,",
+        "Which on our spirits beam."
+      ]
+    },
+    {
+      "lines": [
+        "O, blest assurance this;",
+        "Bright morn of heavenly day;",
+        "Sweet foretaste of eternal bliss,",
+        "That cheers the pilgrim's way."
+      ]
+    },
+    {
+      "lines": [
+        "Thus may our joys increase,",
+        "Our love more ardent grow,",
+        "While rich supplies of Jesus' grace",
+        "Refresh our souls below."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to FRANCONIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:30"
+}

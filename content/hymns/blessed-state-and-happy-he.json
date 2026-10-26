@@ -1,0 +1,63 @@
+{
+  "title": "Blessed State! and Happy He",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "Bernard Barton",
+      "born": 1784,
+      "died": 1849,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Blessed State! and Happy He in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Bernard Barton wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 964 of its twenty-second edition (1853), “\"He shall be like a tree planted in the rivers of water.\"”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Bless-ed state! and hap-py he Who is like that plant-ed tree; Liv-ing wa-ters lave his root, Bends his bough with gol-den fruit.",
+  "verses": [
+    {
+      "lines": [
+        "Blessed state! and happy he",
+        "Who is like that planted tree;",
+        "Living waters lave his root,",
+        "Bends his bough with golden fruit."
+      ]
+    },
+    {
+      "lines": [
+        "When the seedling from its bed",
+        "First lifts up its timid head,",
+        "Ministry of thine must give.",
+        "All on which its life can live."
+      ]
+    },
+    {
+      "lines": [
+        "Showers from thee must bid it thrive,",
+        "Breath of thine must oft revive;",
+        "Light from thee its bloom supplies, —",
+        "Left by thee it fades and dies."
+      ]
+    },
+    {
+      "lines": [
+        "Thine, O Lord! the power and praise",
+        "Which a sight like this displays;",
+        "Power of thine must plant it there,",
+        "Praise of thee it should declare."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Bernard Barton died in 1849.",
+  "credits": "Words by Bernard Barton (1784–1849), public domain, as printed in Hymns for Christian Devotion (1853); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:964"
+}

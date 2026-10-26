@@ -1,0 +1,94 @@
+{
+  "title": "Give to Our God Immortal Praise",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Give to Our God Immortal Praise in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 136, part 3, headed “God's wonders of creation, providence, redemption and salvation”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Give to our God im-mor-tal praise; Mer-cy and truth are all his ways: 'Won-ders of grace to God be-long, 'Re-peat his mer-cies in your song.'",
+  "verses": [
+    {
+      "lines": [
+        "Give to our God immortal praise;",
+        "Mercy and truth are all his ways:",
+        "'Wonders of grace to God belong,",
+        "'Repeat his mercies in your song.'"
+      ]
+    },
+    {
+      "lines": [
+        "Give to the Lord of lords renown,",
+        "The King of kings with glory crown:",
+        "'His mercies ever shall endure,",
+        "'When' lords and kings are known 'no more.'"
+      ]
+    },
+    {
+      "lines": [
+        "He built the earth, he spread the sky,",
+        "And fix'd the starry lights on high;",
+        "'Wonders of grace to God belong,",
+        "'Repeat his mercies in your song.'"
+      ]
+    },
+    {
+      "lines": [
+        "He fills the sun with morning light,",
+        "He bids the moon direct the night:",
+        "'His mercies ever shall endure,",
+        "'When' suns and moons shall shine 'no more.'"
+      ]
+    },
+    {
+      "lines": [
+        "The Jews he freed from Pharaoh's hand,",
+        "And brought them to the promis'd land;",
+        "'Wonders of grace to God belong,",
+        "'Repeat his mercies in your song.'"
+      ]
+    },
+    {
+      "lines": [
+        "He saw the Gentiles dead in sin,",
+        "And felt his pity work within:",
+        "'His mercies ever shall endure,",
+        "'When' death and sin shall reign 'no more.'"
+      ]
+    },
+    {
+      "lines": [
+        "He sent his Son with power to save",
+        "From guilt, and darkness, and the grave:",
+        "'Wonders of grace to God belong,",
+        "'Repeat his mercies in your song.'"
+      ]
+    },
+    {
+      "lines": [
+        "Thro' this vain world he guides our feet,",
+        "And leads us to his heavenly seat:",
+        "'His mercies ever shall endure,",
+        "'When' this vain world shall be 'no more.'"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 136:3"
+}

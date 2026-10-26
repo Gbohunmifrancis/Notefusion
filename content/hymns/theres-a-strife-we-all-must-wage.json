@@ -1,0 +1,71 @@
+{
+  "title": "There's a Strife We All Must Wage",
+  "tune": "st-bees",
+  "text": [
+    {
+      "name": "Stephen Greenleaf Bulfinch",
+      "born": 1809,
+      "died": 1870,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "There's a Strife We All Must Wage in Tonic Solfa to ST. BEES, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Stephen Greenleaf Bulfinch wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 319, “Struggle”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to ST. BEES; any other Sevens tune fits them as well."
+  ],
+  "underlay": "There's a strife we all must wage, From life's en-trance to its close; Blest the bold who dare en-gage! Woe for him who seeks re-pose!",
+  "verses": [
+    {
+      "lines": [
+        "There's a strife we all must wage,",
+        "From life's entrance to its close;",
+        "Blest the bold who dare engage!",
+        "Woe for him who seeks repose!"
+      ]
+    },
+    {
+      "lines": [
+        "Honored they who firmly stand,",
+        "While the conflict presses round;",
+        "God's own banner in their hand,",
+        "In his service faithful found."
+      ]
+    },
+    {
+      "lines": [
+        "What our foes? Each thought impure",
+        "Passions fierce, that tear the soul;",
+        "Every ill that we can cure;",
+        "Every crime we can control;"
+      ]
+    },
+    {
+      "lines": [
+        "Every suffering which our hand",
+        "Can with soothing care assuage;",
+        "Every evil of our land;",
+        "Every error of our age."
+      ]
+    },
+    {
+      "lines": [
+        "On, then, to the glorious field!",
+        "He who dies his life shall save;",
+        "God himself shall be our shield,",
+        "He shall bless and crown the brave."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Stephen Greenleaf Bulfinch died in 1870.",
+  "credits": "Words by Stephen Greenleaf Bulfinch (1809–1870), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. BEES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:319"
+}

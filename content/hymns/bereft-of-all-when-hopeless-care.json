@@ -1,0 +1,63 @@
+{
+  "title": "Bereft of All, When Hopeless Care",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "William Drummond of Hawthornden",
+      "born": 1585,
+      "died": 1649,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Bereft of All, When Hopeless Care in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Drummond of Hawthornden wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 633 of its twenty-second edition (1853), “\"God is our refuge and strength; a very present help in trouble.\"”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Be-reft of all, when hope-less care Would sink us to the tomb, O what can save us from de-spair? What dis-si-pate the gloom?",
+  "verses": [
+    {
+      "lines": [
+        "Bereft of all, when hopeless care",
+        "Would sink us to the tomb,",
+        "O what can save us from despair?",
+        "What dissipate the gloom?"
+      ]
+    },
+    {
+      "lines": [
+        "No balm that earthly plants distil",
+        "Can soothe the mourner's smart;",
+        "No mortal hand with lenient skill",
+        "Bind up the broken heart."
+      ]
+    },
+    {
+      "lines": [
+        "But One alone, who reigns above,",
+        "Our woe to peace can turn,",
+        "And light the lamp of joy and love",
+        "That long has ceased to burn."
+      ]
+    },
+    {
+      "lines": [
+        "Then, O my soul, to that One flee,",
+        "To God thy woes reveal;",
+        "His eye alone thy wounds can see,",
+        "His hand alone can heal."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: William Drummond of Hawthornden died in 1649.",
+  "credits": "Words by William Drummond of Hawthornden (1585–1649), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:633"
+}

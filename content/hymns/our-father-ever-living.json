@@ -1,0 +1,79 @@
+{
+  "title": "Our Father — Ever Living",
+  "tune": "ewing",
+  "text": [
+    {
+      "name": "John Greenleaf Adams",
+      "born": 1810,
+      "died": 1887,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Our Father — Ever Living in Tonic Solfa to EWING, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Greenleaf Adams wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 728 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to EWING; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "Our Fa-ther ev-er liv-ing! Once more thy child-ren come, In joy and true thanks-giv-ing, To this their gos-pel home. U-ni-ted from dis-sen-sion Kept by thy good-ness free A-gain in glad Con-ven-tion Our vows we pay to thee.",
+  "verses": [
+    {
+      "lines": [
+        "Our Father — ever living!",
+        "Once more thy children come,",
+        "In joy and true thanksgiving,",
+        "To this their gospel home.",
+        "United — from dissension",
+        "Kept by thy goodness free —",
+        "Again in glad Convention",
+        "Our vows we pay to thee."
+      ]
+    },
+    {
+      "lines": [
+        "The Past! Its ways are beaming",
+        "With thy sure mercies, Lord —",
+        "Thy truth and grace redeeming,",
+        "Sent o'er the earth abroad,",
+        "The hoary shrines of error",
+        "Have cast aside; and free",
+        "From darkness, doubt, and terror",
+        "Its children come to thee."
+      ]
+    },
+    {
+      "lines": [
+        "The Present! Loudly sounding,",
+        "Its cheering tones are heard;",
+        "Be our full hearts abounding",
+        "In its strong Hope and Word!",
+        "Be strength and wisdom, Father!",
+        "Bestowing what we need,",
+        "Truth's harvest-sheaves to gather —",
+        "Christ's kingdom here to speed."
+      ]
+    },
+    {
+      "lines": [
+        "The Future! Indications",
+        "Of mightier works are there: —",
+        "Truth's promised revelations;",
+        "Thine arm of power made bare;",
+        "From sin's dread reign exemption:",
+        "Man's life in Christ, divine;",
+        "The erring world's redemption;",
+        "The glory, Father, thine!"
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Greenleaf Adams died in 1887.",
+  "credits": "Words by John Greenleaf Adams (1810–1887), public domain, as printed in Hymns for Christian Devotion (1853); set to EWING by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:728"
+}

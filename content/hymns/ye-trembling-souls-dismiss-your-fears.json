@@ -1,0 +1,63 @@
+{
+  "title": "Ye Trembling Souls, Dismiss Your Fears",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Benjamin Beddome",
+      "born": 1717,
+      "died": 1795,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Ye Trembling Souls, Dismiss Your Fears in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Benjamin Beddome wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 643 of its twenty-second edition (1853), “Fear not”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Ye trem-bling souls, dis-miss your fears; Be mer-cy all your theme; For mer-cy like a riv-er flows, In one per-pet-ual stream.",
+  "verses": [
+    {
+      "lines": [
+        "Ye trembling souls, dismiss your fears;",
+        "Be mercy all your theme;",
+        "For mercy like a river flows,",
+        "In one perpetual stream."
+      ]
+    },
+    {
+      "lines": [
+        "Fear not the powers of earth and hell;",
+        "God will those powers restrain;",
+        "His arm will all their rage repel,",
+        "And make their efforts vain."
+      ]
+    },
+    {
+      "lines": [
+        "Fear not the want of outward good;",
+        "For his he will provide,",
+        "Grant them supplies of daily food,",
+        "And give them heaven beside."
+      ]
+    },
+    {
+      "lines": [
+        "Fear not that he will e'er forsake,",
+        "Or leave his work undone;",
+        "He's faithful to his promises,",
+        "And faithful to his Son."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Benjamin Beddome died in 1795.",
+  "credits": "Words by Benjamin Beddome (1717–1795), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:643"
+}

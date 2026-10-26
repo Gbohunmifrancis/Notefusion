@@ -1,0 +1,95 @@
+{
+  "title": "When Israel Was from Egypt Freed",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "When Israel Was from Egypt Freed in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 49, “He led them by a right way. Ps 107:7”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When Is-rael was from E-gypt freed, The Lord, who brought them out, Helped them in ev-ery time of need, But led them round a-bout.",
+  "verses": [
+    {
+      "lines": [
+        "When Israel was from Egypt freed,",
+        "The Lord, who brought them out,",
+        "Helped them in every time of need,",
+        "But led them round about."
+      ]
+    },
+    {
+      "lines": [
+        "To enter Canaan soon they hoped,",
+        "But quickly changed their mind;",
+        "When the Red Sea their passage stopped,",
+        "And Pharaoh marched behind."
+      ]
+    },
+    {
+      "lines": [
+        "The desert filled them with alarms,",
+        "For water and for food;",
+        "And Amalek, by force of arms,",
+        "To check their progress stood."
+      ]
+    },
+    {
+      "lines": [
+        "They often murmured by the way,",
+        "Because they judged by sight;",
+        "But were at length constrained to say,",
+        "The Lord had led them right."
+      ]
+    },
+    {
+      "lines": [
+        "In the Red Sea that stopped them first,",
+        "Their enemies were drowned;",
+        "The rocks gave water for their thirst,",
+        "And Manna spread the ground."
+      ]
+    },
+    {
+      "lines": [
+        "By fire and cloud their way was shown,",
+        "Across the pathless sands;",
+        "And Amalek was overthrown,",
+        "By Moses' lifted hands."
+      ]
+    },
+    {
+      "lines": [
+        "The way was right their hearts to prove,",
+        "To make God'S glory known;",
+        "And show his wisdom, pow'r and love,",
+        "Engaged to save his own."
+      ]
+    },
+    {
+      "lines": [
+        "Just so the true believer's path",
+        "Through many dangers lies;",
+        "Though dark to sense, 'tis right to faith,",
+        "And leads us to the skies."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:49"
+}

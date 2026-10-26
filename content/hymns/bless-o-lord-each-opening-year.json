@@ -1,0 +1,55 @@
+{
+  "title": "Bless, O Lord, Each Opening Year",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Bless, O Lord, Each Opening Year in Tonic Solfa to HEINLEIN, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 566, “New Year”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to HEINLEIN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Bless, O Lord, each open-ing year To the souls as-sem-bling here: Clothe Thy word with power di-vine, Make us will-ing to be Thine.",
+  "verses": [
+    {
+      "lines": [
+        "Bless, O Lord, each opening year",
+        "To the souls assembling here:",
+        "Clothe Thy word with power divine,",
+        "Make us willing to be Thine."
+      ]
+    },
+    {
+      "lines": [
+        "Where Thou hast Thy work begun,",
+        "Give new strength the race to run;",
+        "Scatter darkness, doubts, and fears,",
+        "Wipe away the mourner's tears."
+      ]
+    },
+    {
+      "lines": [
+        "Bless us all, both old and young;",
+        "Call forth praise from every tongue:",
+        "Let our whole assembly prove",
+        "All Thy power and all Thy love!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to HEINLEIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:566"
+}

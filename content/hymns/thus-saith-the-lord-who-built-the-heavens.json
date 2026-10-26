@@ -1,0 +1,62 @@
+{
+  "title": "Thus Saith the Lord Who Built the Heavens",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Thus Saith the Lord Who Built the Heavens in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 252 of its twenty-second edition (1853), “God's Servant”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Thus saith the Lord who built the heavens, And bade the plan-ets roll, Who peo-pled all the climes of earth, And formed the hu-man soul:",
+  "verses": [
+    {
+      "lines": [
+        "Thus saith the Lord who built the heavens,",
+        "And bade the planets roll,",
+        "Who peopled all the climes of earth,",
+        "And formed the human soul: —"
+      ]
+    },
+    {
+      "lines": [
+        "\"Behold my Servant; see him rise",
+        "Exalted in my might;",
+        "Him have I chosen, and in him",
+        "I place supreme delight."
+      ]
+    },
+    {
+      "lines": [
+        "\"On him, in rich effusion poured,",
+        "My spirit shall descend;",
+        "My truth and judgment he shall show",
+        "To earth's remotest end."
+      ]
+    },
+    {
+      "lines": [
+        "\"The progress of his zeal and power",
+        "Shall never know decline,",
+        "Till foreign lands and distant isles",
+        "Receive the law divine.\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:252"
+}

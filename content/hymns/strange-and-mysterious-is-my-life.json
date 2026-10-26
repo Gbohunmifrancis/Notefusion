@@ -1,0 +1,91 @@
+{
+  "title": "Strange and Mysterious Is My Life",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Strange and Mysterious Is My Life in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 130, “The inward warfare. Gal 5:17”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Strange and mys-te-rious is my life, What op-po-sites I feel with-in! A sta-ble peace, a con-stant strife, The rule of grace, the pow'r of sin: Too of-ten I am cap-tive led, Yet dail-y tri-umph in my Head.",
+  "verses": [
+    {
+      "lines": [
+        "Strange and mysterious is my life,",
+        "What opposites I feel within!",
+        "A stable peace, a constant strife,",
+        "The rule of grace, the pow'r of sin:",
+        "Too often I am captive led,",
+        "Yet daily triumph in my Head."
+      ]
+    },
+    {
+      "lines": [
+        "I prize the privilege of prayer,",
+        "But o! what backwardness to pray!",
+        "Though on the Lord I cast my care,",
+        "I feel its burden every day:",
+        "I seek his will in all I do,",
+        "Yet find my own is working too."
+      ]
+    },
+    {
+      "lines": [
+        "I call the promises my own,",
+        "And prize them more than mines of gold;",
+        "Yet though their sweetness I have known,",
+        "They leave me unimpressed and cold",
+        "One hour upon the truth I feed,",
+        "The next I know not what I read."
+      ]
+    },
+    {
+      "lines": [
+        "I love the holy day of rest,",
+        "When Jesus meets his gathered saints;",
+        "Sweet day, of all the week the best!",
+        "For its return my spirit pants:",
+        "Yet often, through my unbelief,",
+        "It proves a day of guilt and grief."
+      ]
+    },
+    {
+      "lines": [
+        "While on my Savior I rely,",
+        "I know my foes shall loose their aim;",
+        "And therefore dare their pow'r defy,",
+        "Assured of conquest through his name:",
+        "But soon my confidence is slain,",
+        "And all my fears return again."
+      ]
+    },
+    {
+      "lines": [
+        "Thus different pow'rs within me strive,",
+        "And grace, and sin, by turns prevail;",
+        "I grieve, rejoice, decline, revive,",
+        "And vict'ry hangs in doubtful scale:",
+        "But Jesus has his promise passed,",
+        "That grace shall overcome at last."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:130"
+}

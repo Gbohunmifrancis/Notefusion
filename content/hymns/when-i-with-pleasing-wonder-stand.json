@@ -1,0 +1,70 @@
+{
+  "title": "When I with Pleasing Wonder Stand",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "When I with Pleasing Wonder Stand in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 139, part 5, headed “The wisdom of God in the formation of man”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When I with pleas-ing won-der stand, And all my frame sur-vey, Lord, 'tis thy work; I own thy hand Thus built my hum-ble clay.",
+  "verses": [
+    {
+      "lines": [
+        "When I with pleasing wonder stand,",
+        "And all my frame survey,",
+        "Lord, 'tis thy work; I own thy hand",
+        "Thus built my humble clay."
+      ]
+    },
+    {
+      "lines": [
+        "Thy hand my heart and reins possest",
+        "Where unborn nature grew,",
+        "Thy wisdom all my features trac'd,",
+        "And all my members drew."
+      ]
+    },
+    {
+      "lines": [
+        "Thine eye with nicest care survey'd",
+        "The growth of every part;",
+        "Till the whole scheme thy thoughts had laid",
+        "Was copied by thy art."
+      ]
+    },
+    {
+      "lines": [
+        "Heaven, earth, and sea, and fire, and wind,",
+        "Shew me thy wondrous skill;",
+        "But I review myself, and find",
+        "Diviner wonders still."
+      ]
+    },
+    {
+      "lines": [
+        "Thy awful glories round me shine,",
+        "My flesh proclaims thy praise;",
+        "Lord, to thy works of nature join",
+        "Thy miracles of grace."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 139:5"
+}

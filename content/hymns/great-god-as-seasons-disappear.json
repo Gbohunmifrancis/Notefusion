@@ -1,0 +1,70 @@
+{
+  "title": "Great God! as Seasons Disappear",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Great God! as Seasons Disappear in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 878 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Great God! as sea-sons dis-ap-pear, And chan-ges mark the roll-ing year, Thy fa-vor still has crowned our days, And we would cel-e-brate thy praise.",
+  "verses": [
+    {
+      "lines": [
+        "Great God! as seasons disappear,",
+        "And changes mark the rolling year,",
+        "Thy favor still has crowned our days,",
+        "And we would celebrate thy praise."
+      ]
+    },
+    {
+      "lines": [
+        "The harvest song we would repeat;",
+        "\"Thou givest us the finest wheat;\"",
+        "\"The joy of harvest\" we have known;",
+        "The praise, O Lord! is all thine own."
+      ]
+    },
+    {
+      "lines": [
+        "Our tables spread, our garners stored,",
+        "O give us hearts to bless thee, Lord!",
+        "Forbid it, Source of light and love,",
+        "That hearts and lives should barren prove."
+      ]
+    },
+    {
+      "lines": [
+        "Another harvest comes apace;",
+        "Ripen our spirits by thy grace,",
+        "That we may calmly meet the blow",
+        "The sickle gives to lay us low."
+      ]
+    },
+    {
+      "lines": [
+        "That so, when angel reapers come",
+        "To gather sheaves to thy blest home,",
+        "Our spirits may be borne on high",
+        "To thy safe garner in the sky."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:878"
+}

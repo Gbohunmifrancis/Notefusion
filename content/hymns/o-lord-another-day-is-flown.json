@@ -1,0 +1,71 @@
+{
+  "title": "O Lord, Another Day Is Flown",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Henry Kirke White",
+      "born": 1785,
+      "died": 1806,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O Lord, Another Day Is Flown in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Henry Kirke White wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 933 of its twenty-second edition (1853), “A Family Evening Prayer”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O Lord, an-oth-er day is flown, And we, a lone-ly band, Are met once more be-fore thy throne, To bless thy fos-tering hand.",
+  "verses": [
+    {
+      "lines": [
+        "O Lord, another day is flown,",
+        "And we, a lonely band,",
+        "Are met once more before thy throne,",
+        "To bless thy fostering hand."
+      ]
+    },
+    {
+      "lines": [
+        "And wilt thou lend a listening ear",
+        "To praises low as ours!",
+        "Thou wilt; for thou dost love to hear",
+        "The song which meekness pours."
+      ]
+    },
+    {
+      "lines": [
+        "O, let thy grace perform its part,",
+        "And let contention cease;",
+        "And shed abroad in every heart",
+        "Thine everlasting peace."
+      ]
+    },
+    {
+      "lines": [
+        "Thus chastened, cleansed, entirely thine,",
+        "A flock by Jesus led,",
+        "The Sun of holiness shall shine",
+        "In glory on our head."
+      ]
+    },
+    {
+      "lines": [
+        "And thou wilt turn our wandering feet,",
+        "And thou wilt bless our way,",
+        "Till worlds shall fade, and faith shall greet",
+        "The dawn of lasting day."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Henry Kirke White died in 1806.",
+  "credits": "Words by Henry Kirke White (1785–1806), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:933"
+}

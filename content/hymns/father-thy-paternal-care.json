@@ -1,0 +1,67 @@
+{
+  "title": "Father! Thy Paternal Care",
+  "tune": "watchman",
+  "text": [
+    {
+      "name": "John Bowring",
+      "born": 1792,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Father! Thy Paternal Care in Tonic Solfa to WATCHMAN, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Bowring wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 22, “Every Good Gift from the Father”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to WATCHMAN; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Fa-ther! Thy pa-ter-nal care Has my guar-dian been, my guide: Ev-ery hal-lowed wish and prayer Has Thy hand of love sup-plied: Thine is ev-ery thought of bliss, Left by hours and days gone by; Ev-ery hope Thine off-spring is, Beam-ing from fu-tu-ri-ty.",
+  "verses": [
+    {
+      "lines": [
+        "Father! Thy paternal care",
+        "Has my guardian been, my guide:",
+        "Every hallowed wish and prayer",
+        "Has Thy hand of love supplied:",
+        "Thine is every thought of bliss,",
+        "Left by hours and days gone by;",
+        "Every hope Thine offspring is,",
+        "Beaming from futurity."
+      ]
+    },
+    {
+      "lines": [
+        "Every sun of splendid ray;",
+        "Every moon that shines serene;",
+        "Every morn that welcomes day;",
+        "Every evening's twilight scene;",
+        "Every hour which wisdom brings;",
+        "Every incense at Thy shrine;",
+        "These, — and all life's holiest things,",
+        "And its fairest, — all are Thine."
+      ]
+    },
+    {
+      "lines": [
+        "And for all, my hymns shall rise",
+        "Daily to Thy gracious throne:",
+        "Thither let my asking eyes",
+        "Turn unwearied, righteous One!",
+        "Through life's strange vicissitude",
+        "There reposing all my care;",
+        "Trusting still, through ill and good,",
+        "Fixed, and cheered, and counselled there."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Bowring died in 1872.",
+  "credits": "Words by John Bowring (1792–1872), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WATCHMAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:22"
+}

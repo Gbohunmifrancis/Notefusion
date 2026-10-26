@@ -1,0 +1,63 @@
+{
+  "title": "Father in Heaven, to Thee My Heart",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Henry Ware Jr.",
+      "born": 1794,
+      "died": 1843,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Father in Heaven, to Thee My Heart in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Henry Ware Jr. wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 11 of its twenty-second edition (1853), “Invoking God's Aid”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther in heaven, to thee my heart Would lift it-self in prayer; Drive from my soul each earth-ly thought And show thy pre-sence there.",
+  "verses": [
+    {
+      "lines": [
+        "Father in heaven, to thee my heart",
+        "Would lift itself in prayer;",
+        "Drive from my soul each earthly thought",
+        "And show thy presence there."
+      ]
+    },
+    {
+      "lines": [
+        "Each moment of my life renews",
+        "The mercies of my Lord,",
+        "Each moment is itself a gift",
+        "To bear me on to God."
+      ]
+    },
+    {
+      "lines": [
+        "O, help me break the galling chains,",
+        "This world has round me thrown,",
+        "Each passion of my heart subdue,",
+        "Each darling sin disown."
+      ]
+    },
+    {
+      "lines": [
+        "O Father, kindle in my breast",
+        "A never dying flame",
+        "Of holy love, of grateful trust",
+        "In thine almighty name."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Henry Ware Jr. died in 1843.",
+  "credits": "Words by Henry Ware Jr. (1794–1843), public domain, as printed in Hymns for Christian Devotion (1853); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:11"
+}

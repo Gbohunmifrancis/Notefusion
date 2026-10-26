@@ -1,0 +1,95 @@
+{
+  "title": "The Prophets Sons, in Time of Old",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Prophets Sons, in Time of Old in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 39, “The borrowed axe. 2Ki 6:5,6”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The pro-phets sons, in time of old, Though to ap-pear-ance poor; Were rich with-out pos-sess-ing gold, And hon-ored, though ob-scure.",
+  "verses": [
+    {
+      "lines": [
+        "The prophets sons, in time of old,",
+        "Though to appearance poor;",
+        "Were rich without possessing gold,",
+        "And honored, though obscure."
+      ]
+    },
+    {
+      "lines": [
+        "In peace their daily bread they eat,",
+        "By honest labor earned;",
+        "While daily at Elisha's feet,",
+        "They grace and wisdom learned."
+      ]
+    },
+    {
+      "lines": [
+        "The prophet's presence cheered their toil,",
+        "They watched the words he spoke;",
+        "Whether they turned the furrowed soil,",
+        "Or felled the spreading oak."
+      ]
+    },
+    {
+      "lines": [
+        "Once as they listened to his theme,",
+        "Their conference was stopped;",
+        "For one beneath the yielding stream,",
+        "A borrowed axe had dropped."
+      ]
+    },
+    {
+      "lines": [
+        "\"Alas! it was not mine, he said,",
+        "How shall I make it good?\"",
+        "Elisha heard, and when he prayed,",
+        "The iron swam like wood."
+      ]
+    },
+    {
+      "lines": [
+        "If God, in such a small affair,",
+        "A miracle performs;",
+        "It shows his condescending care",
+        "Of poor unworthy worms."
+      ]
+    },
+    {
+      "lines": [
+        "Though kings and nations in his view",
+        "Are but as motes and dust;",
+        "His eye and ear are fixed on you,",
+        "Who in his mercy trust."
+      ]
+    },
+    {
+      "lines": [
+        "Not one concern of ours is small,",
+        "If we belong to him;",
+        "To teach us this, the Lord of all,",
+        "Once made the iron swim."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:39"
+}

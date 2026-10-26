@@ -1,0 +1,87 @@
+{
+  "title": "The Message First to Smyrna Sent",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Message First to Smyrna Sent in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 137, “Smyrna. Rev 2:11”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The mes-sage first to Smyr-na sent, A mes-sage full of grace; To all the Sa-vior's flock is meant, In ev-ery age and place.",
+  "verses": [
+    {
+      "lines": [
+        "The message first to Smyrna sent,",
+        "A message full of grace;",
+        "To all the Savior's flock is meant,",
+        "In every age and place."
+      ]
+    },
+    {
+      "lines": [
+        "Thus to his church, his chosen bride,",
+        "Saith the great First and Last;",
+        "\"Who ever lives, though once he died,",
+        "Hold thy profession fast."
+      ]
+    },
+    {
+      "lines": [
+        "Thy works and sorrows well I know,.",
+        "Performed and borne for me;",
+        "Poor though thou art, despised and low,",
+        "Yet who is rich like thee?"
+      ]
+    },
+    {
+      "lines": [
+        "I know thy foes, and what they say,",
+        "How long they have blasphemed;",
+        "The synagogue of Satan, they,",
+        "Though they would Jews be deemed."
+      ]
+    },
+    {
+      "lines": [
+        "Though Satan for a season rage,",
+        "And prisons be your lot;",
+        "l am your friend, and I engage",
+        "You shall not be forgot."
+      ]
+    },
+    {
+      "lines": [
+        "Be faithful unto death, nor fear",
+        "A few short days of strife;",
+        "Behold! the prize you soon shall wear,",
+        "A crown of endless life!\""
+      ]
+    },
+    {
+      "lines": [
+        "Hear what the holy Spirit saith",
+        "Of all who overcome;",
+        "\"They shall escape the second death,",
+        "The sinner's aweful doom!\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:137"
+}

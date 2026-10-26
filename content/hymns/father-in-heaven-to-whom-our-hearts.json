@@ -1,0 +1,63 @@
+{
+  "title": "Father in Heaven, to Whom Our Hearts",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Henry Ware Jr.",
+      "born": 1794,
+      "died": 1843,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Father in Heaven, to Whom Our Hearts in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Henry Ware Jr. wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 41, “For God's Presence”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther in heaven, to whom our hearts Would lift them-selves in prayer, Drive from our souls each earth-ly thought, And show Thy pre-sence there.",
+  "verses": [
+    {
+      "lines": [
+        "Father in heaven, to whom our hearts",
+        "Would lift themselves in prayer,",
+        "Drive from our souls each earthly thought,",
+        "And show Thy presence there."
+      ]
+    },
+    {
+      "lines": [
+        "Each moment of our lives renews",
+        "The mercies of the Lord;",
+        "Each moment is itself a gift",
+        "To bear us on to God."
+      ]
+    },
+    {
+      "lines": [
+        "Help us to break the galling chains",
+        "This world has round us thrown;",
+        "Each passion of our hearts subdue,",
+        "Each cherished sin disown."
+      ]
+    },
+    {
+      "lines": [
+        "O Father! kindle in our souls",
+        "A never-dying flame",
+        "Of holy love, of grateful trust,",
+        "In Thine almighty name."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Henry Ware Jr. died in 1843.",
+  "credits": "Words by Henry Ware Jr. (1794–1843), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:41"
+}

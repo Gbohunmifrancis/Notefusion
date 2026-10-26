@@ -1,0 +1,64 @@
+{
+  "title": "Loud Raise the Notes of Joy",
+  "tune": "dort",
+  "text": [
+    {
+      "name": "John Greenleaf Adams",
+      "born": 1810,
+      "died": 1887,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Loud Raise the Notes of Joy in Tonic Solfa to DORT, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Greenleaf Adams wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 847 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Sixes and Fours (6.6.4.6.6.6.4), to be sung to any tune of that metre. This page sets them to DORT; any other Sixes and Fours tune fits them as well."
+  ],
+  "underlay": "Loud raise the notes of joy; Free-men, your songs em-ploy, As well ye may; Let your full hearts go out In the ex-ult-ing shout, And with your praise de-vout, Greet this glad day!",
+  "verses": [
+    {
+      "lines": [
+        "Loud raise the notes of joy;",
+        "Freemen, your songs employ,",
+        "As well ye may; —",
+        "Let your full hearts go out",
+        "In the exulting shout,",
+        "And with your praise devout,",
+        "Greet this glad day!"
+      ]
+    },
+    {
+      "lines": [
+        "Children of lisping tongue,",
+        "Those whose full hearts are young",
+        "Lift up the song!",
+        "Manhood and hoary age,",
+        "Let naught your joy assuage,",
+        "In the high theme engage,",
+        "Praises prolong!"
+      ]
+    },
+    {
+      "lines": [
+        "God of our fathers' land!",
+        "Long may our temples stand",
+        "Sacred to thee!",
+        "Let thy bright light divine",
+        "On all the people shine,",
+        "Make us forever thine,",
+        "From sin set free!"
+      ]
+    }
+  ],
+  "metre": "6 6 4 6 6 6 4",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Greenleaf Adams died in 1887.",
+  "credits": "Words by John Greenleaf Adams (1810–1887), public domain, as printed in Hymns for Christian Devotion (1853); set to DORT by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:847"
+}

@@ -1,0 +1,63 @@
+{
+  "title": "Come, Kingdom of Our God",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "John Johns",
+      "born": 1801,
+      "died": 1847,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Come, Kingdom of Our God in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Johns wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 584, “The Kingdom of Love”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Come, king-dom of our God, Sweet reign of light and love! Shed peace, and hope, and joy a-broad, And wis-dom from a-bove.",
+  "verses": [
+    {
+      "lines": [
+        "Come, kingdom of our God,",
+        "Sweet reign of light and love!",
+        "Shed peace, and hope, and joy abroad,",
+        "And wisdom from above."
+      ]
+    },
+    {
+      "lines": [
+        "Over our spirits first",
+        "Extend thy healing reign;",
+        "There raise and quench the sacred thirst,",
+        "That never pains again."
+      ]
+    },
+    {
+      "lines": [
+        "Come, kingdom of our God!",
+        "And make the broad earth thine;",
+        "Stretch o'er her lands and isles the rod",
+        "That flowers with grace divine."
+      ]
+    },
+    {
+      "lines": [
+        "Soon may all tribes be blest",
+        "With fruit from life's glad tree;",
+        "And in its shade like brothers rest,",
+        "Sons of one family."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Johns died in 1847.",
+  "credits": "Words by John Johns (1801–1847), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:584"
+}

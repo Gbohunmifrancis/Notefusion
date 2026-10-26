@@ -1,0 +1,55 @@
+{
+  "title": "Who Shall Behold the Glorious Day",
+  "tune": "materna",
+  "text": [
+    {
+      "name": "Thomas Moore",
+      "born": 1779,
+      "died": 1852,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Who Shall Behold the Glorious Day in Tonic Solfa to MATERNA, doh is C: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Thomas Moore wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 175, “The Latter Day”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to MATERNA; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "Who shall be-hold the glo-rious day, When, throned on Zi-on's brow, The Lord shall rend the veil a-way Which hides the na-tions now! When earth no more be-neath the fear Of His re-buke shall lie; When pain shall cease, and ev-ery tear Be wiped from ev-ery eye.",
+  "verses": [
+    {
+      "lines": [
+        "Who shall behold the glorious day,",
+        "When, throned on Zion's brow,",
+        "The Lord shall rend the veil away",
+        "Which hides the nations now!",
+        "When earth no more beneath the fear",
+        "Of His rebuke shall lie;",
+        "When pain shall cease, and every tear",
+        "Be wiped from every eye."
+      ]
+    },
+    {
+      "lines": [
+        "Then shall the world no longer mourn",
+        "Beneath oppression's chain;",
+        "The days of splendor shall return,",
+        "And all be new again.",
+        "The fount of life shall then be quaffed",
+        "In peace by all who come,",
+        "And every wind that blows shall waft",
+        "Some long-lost exile home."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Thomas Moore died in 1852.",
+  "credits": "Words by Thomas Moore (1779–1852), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MATERNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:175"
+}

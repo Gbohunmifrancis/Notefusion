@@ -1,0 +1,79 @@
+{
+  "title": "How Blest Thy Creature Is, O God",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "How Blest Thy Creature Is, O God in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 44, “The happy change”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How blest thy crea-ture is, O God, When with a sin-gle eye, He views the lus-tre of thy word, The day spring from on high!",
+  "verses": [
+    {
+      "lines": [
+        "How blest thy creature is, O God,",
+        "When with a single eye,",
+        "He views the lustre of thy word,",
+        "The day-spring from on high!"
+      ]
+    },
+    {
+      "lines": [
+        "Through all the storms that veil the skies,",
+        "And frown on earthly things;",
+        "The Sun of righteousness he eyes,",
+        "With healing on his wings."
+      ]
+    },
+    {
+      "lines": [
+        "Struck by that light, the human heart,",
+        "A barren soil no more;",
+        "Sends the sweet smell of grace abroad,",
+        "Where serpents lurked before."
+      ]
+    },
+    {
+      "lines": [
+        "The soul, a dreary province once",
+        "Of Satan's dark domain;",
+        "Feels a new empire formed within,",
+        "And owns a heav'nly reign."
+      ]
+    },
+    {
+      "lines": [
+        "The glorious orb, whose golden beams,",
+        "The fruitful year control",
+        "Since first obedient to thy word,",
+        "He started from the goal;"
+      ]
+    },
+    {
+      "lines": [
+        "Has cheered the nations, with the joys",
+        "His orient rays impart",
+        "But Jesus, 'tis thy light alone,",
+        "Can shine upon the heart."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:44"
+}

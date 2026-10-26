@@ -1,0 +1,66 @@
+{
+  "title": "Ye Joyous Ones! upon Whose Brow",
+  "tune": "materna",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Ye Joyous Ones! upon Whose Brow in Tonic Solfa to MATERNA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 446, “Remember Thy Creator in the Days of Thy Youth”, where the book credits them to Briggs' Collection.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to MATERNA; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "Ye joy-ous ones! up-on whose brow The light of youth is shed, O'er whose glad path life's ear-ly flowers In glow-ing beau-ty spread; For-get not Him whose love hath poured A-round that gol-den light, And tinged those open-ing buds of hope With hues so soft-ly bright.",
+  "verses": [
+    {
+      "lines": [
+        "Ye joyous ones! upon whose brow",
+        "The light of youth is shed,",
+        "O'er whose glad path life's early flowers",
+        "In glowing beauty spread;",
+        "Forget not Him whose love hath poured",
+        "Around that golden light,",
+        "And tinged those opening buds of hope",
+        "With hues so softly bright."
+      ]
+    },
+    {
+      "lines": [
+        "Thou tempted one! just entering",
+        "Upon enchanted ground,",
+        "Ten thousand snares are spread for thee,",
+        "Ten thousand foes surround:",
+        "A dark and a deceitful band,",
+        "Upon thy path they lower;",
+        "Trust not thine own unaided strength",
+        "To save thee from their power."
+      ]
+    },
+    {
+      "lines": [
+        "Thou whose yet bright and joyous eye",
+        "May soon be dimmed with tears,",
+        "To whom the hours of bitterness",
+        "Must come in coming years;",
+        "Teach early thy confiding eye",
+        "To pierce the cloudy screen,",
+        "To look above the storms of life,",
+        "Eternally serene."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MATERNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:446"
+}

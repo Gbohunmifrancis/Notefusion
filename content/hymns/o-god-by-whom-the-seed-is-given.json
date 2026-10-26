@@ -1,0 +1,55 @@
+{
+  "title": "O God, by Whom the Seed Is Given",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Reginald Heber",
+      "born": 1783,
+      "died": 1826,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O God, by Whom the Seed Is Given in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Reginald Heber wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 65, “The Seed of the Word”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O God, by whom the seed is given, By whom the har-vest blest; Whose word, like man-na showered from heaven, Is plant-ed in our breast;",
+  "verses": [
+    {
+      "lines": [
+        "O God, by whom the seed is given,",
+        "By whom the harvest blest;",
+        "Whose word, like manna showered from heaven,",
+        "Is planted in our breast;"
+      ]
+    },
+    {
+      "lines": [
+        "Preserve it from the passing feet,",
+        "And plunderers of the air;",
+        "The sultry sun's intenser heat,",
+        "And weeds of worldly care!"
+      ]
+    },
+    {
+      "lines": [
+        "Though buried deep, or thinly strewn,",
+        "Do Thou Thy grace supply;",
+        "The hope, in earthly furrows sown,",
+        "Shall ripen in the sky."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Reginald Heber died in 1826.",
+  "credits": "Words by Reginald Heber (1783–1826), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:65"
+}

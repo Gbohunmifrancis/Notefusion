@@ -75,6 +75,12 @@
       "tune": "old-hundredth"
     },
     {
+      "ref": "1:15",
+      "slug": "let-me-but-hear-my-saviour-say",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
       "ref": "1:16",
       "slug": "hosanna-to-the-royal-son",
       "metre": "CM",
@@ -135,6 +141,18 @@
       "tune": "melcombe"
     },
     {
+      "ref": "1:26",
+      "slug": "blessd-be-the-everlasting-god",
+      "metre": "CM",
+      "tune": "st-agnes"
+    },
+    {
+      "ref": "1:27",
+      "slug": "death-may-dissolve-my-body-now",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
       "ref": "1:29",
       "slug": "i-lift-my-banners-saith-the-lord",
       "metre": "CM",
@@ -151,6 +169,12 @@
       "slug": "whence-do-our-mournful-thoughts-arise",
       "metre": "CM",
       "tune": "st-flavian"
+    },
+    {
+      "ref": "1:33",
+      "slug": "what-shall-the-dying-sinner-do",
+      "metre": "LM",
+      "tune": "winchester-new"
     },
     {
       "ref": "1:34",
@@ -591,6 +615,12 @@
       "tune": "st-anne"
     },
     {
+      "ref": "1:121",
+      "slug": "thus-saith-the-mercy-of-the-lord",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
       "ref": "1:122",
       "slug": "do-we-not-know-that-solemn-word",
       "metre": "LM",
@@ -607,6 +637,12 @@
       "slug": "deep-in-the-dust-before-thy-throne",
       "metre": "LM",
       "tune": "winchester-new"
+    },
+    {
+      "ref": "1:125",
+      "slug": "with-joy-we-meditate-the-grace",
+      "metre": "CM",
+      "tune": "winchester-old"
     },
     {
       "ref": "1:127",
@@ -1575,6 +1611,12 @@
       "tune": "winchester-new"
     },
     {
+      "ref": "3:2",
+      "slug": "jesus-invites-his-saints",
+      "metre": "SM",
+      "tune": "aylesbury"
+    },
+    {
       "ref": "3:3",
       "slug": "the-promise-of-my-fathers-love",
       "metre": "CM",
@@ -1742,6 +1784,11 @@
       "page": "were-marching-to-zion"
     },
     {
+      "ref": "3:1",
+      "first": "'Twas on that dark, that doleful night",
+      "page": "twas-on-that-dark-that-doleful-night"
+    },
+    {
       "ref": "3:7",
       "first": "When I survey the wondrous cross",
       "page": "when-i-survey-the-wondrous-cross"
@@ -1759,21 +1806,6 @@
       "why": "no metre fits: at best 12 of 16 lines as Common Metre"
     },
     {
-      "ref": "1:15",
-      "first": "Cor. 12. 7 9 10.",
-      "why": "verses that are not four lines"
-    },
-    {
-      "ref": "1:26",
-      "first": "Peter 1. 3-5.",
-      "why": "verses that are not four lines"
-    },
-    {
-      "ref": "1:27",
-      "first": "Tim. 4. 6 7 8 18.",
-      "why": "verses that are not four lines"
-    },
-    {
       "ref": "1:28",
       "first": "What mighty man, or mighty God,",
       "why": "its first verse cannot be sung as Common Metre"
@@ -1782,11 +1814,6 @@
       "ref": "1:31",
       "first": "O happy soul that lives on high;",
       "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "1:33",
-      "first": "Cor. 1. 18 24.",
-      "why": "verses that are not four lines"
     },
     {
       "ref": "1:35",
@@ -1850,23 +1877,13 @@
     },
     {
       "ref": "1:119",
-      "first": "Cor. 2. 16. 1 Cor. 3. 6 7.",
-      "why": "verses that are not four lines"
-    },
-    {
-      "ref": "1:121",
-      "first": "15 33. (For those who practise infant Baptism.)",
-      "why": "verses that are not four lines"
-    },
-    {
-      "ref": "1:125",
-      "first": "16. and 5. 7. Matt. 12. 20.",
-      "why": "verses that are not four lines"
+      "first": "Christ and his cross is all our theme;",
+      "why": "its first verse cannot be sung as Common Metre"
     },
     {
       "ref": "1:126",
-      "first": "Cor. 10. 32.",
-      "why": "verses that are not four lines"
+      "first": "Not different food, or different dress",
+      "why": "its first verse cannot be sung as Long Metre"
     },
     {
       "ref": "1:140",
@@ -1999,16 +2016,6 @@
       "why": "verses that are not four lines"
     },
     {
-      "ref": "3:1",
-      "first": "Corinthians 11:23 &c.",
-      "why": "verses that are not four lines"
-    },
-    {
-      "ref": "3:2",
-      "first": "Cor. 10. 16 17.",
-      "why": "verses that are not four lines"
-    },
-    {
       "ref": "3:4",
       "first": "How condescending and how kind",
       "why": "its first verse cannot be sung as Common Metre"
@@ -2088,9 +2095,9 @@
   ],
   "counts": {
     "hymns": 360,
-    "written": 287,
-    "alreadyOurs": 4,
-    "skipped": 69,
+    "written": 294,
+    "alreadyOurs": 5,
+    "skipped": 61,
     "removed": 0
   }
 }

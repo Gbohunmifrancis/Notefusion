@@ -1,0 +1,55 @@
+{
+  "title": "Lord! That I May Learn of Thee",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Lord! That I May Learn of Thee in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 505 of its twenty-second edition (1853), “The Simplicity of Christ”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Lord! that I may learn of thee, Give me true sim-plic-i-ty; Wean my soul, and keep it low, Will-ing thee a-lone to know.",
+  "verses": [
+    {
+      "lines": [
+        "Lord! that I may learn of thee,",
+        "Give me true simplicity;",
+        "Wean my soul, and keep it low,",
+        "Willing thee alone to know."
+      ]
+    },
+    {
+      "lines": [
+        "Of my boasted wisdom spoiled,",
+        "Docile, helpless as a child;",
+        "Only seeing in thy light,",
+        "Only walking in thy might."
+      ]
+    },
+    {
+      "lines": [
+        "Then infuse the living grace,",
+        "Truthful soul of righteousness;",
+        "Knowledge, love divine, impart, —",
+        "Life eternal to my heart."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in Hymns for Christian Devotion (1853); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:505"
+}

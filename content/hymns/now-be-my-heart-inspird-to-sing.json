@@ -1,0 +1,78 @@
+{
+  "title": "Now Be My Heart Inspir'd to Sing",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Now Be My Heart Inspir'd to Sing in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 45, part 3, headed “The glory of Christ, and power of his gospel”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Now be my heart in-spir'd to sing The glo-ries of my Sa-viour king, Je-sus the Lord; how heav-enly fair His form! how 'bright his beau-ties are!",
+  "verses": [
+    {
+      "lines": [
+        "Now be my heart inspir'd to sing",
+        "The glories of my Saviour-king,",
+        "Jesus the Lord; how heavenly fair",
+        "His form! how 'bright his beauties are!"
+      ]
+    },
+    {
+      "lines": [
+        "O'er all the sons of human race",
+        "He shines with a superior grace,",
+        "Love from his lips divinely flows,",
+        "And blessings all his state compose."
+      ]
+    },
+    {
+      "lines": [
+        "Dress thee in arms, most mighty Lord,",
+        "Gird on the terror of thy sword,",
+        "In majesty and glory ride",
+        "With truth and meekness at thy side."
+      ]
+    },
+    {
+      "lines": [
+        "Thine anger, like a pointed dart,",
+        "Shall pierce the foes of stubborn heart;",
+        "Or words of mercy kind and sweet",
+        "Shall melt the rebels at thy feet."
+      ]
+    },
+    {
+      "lines": [
+        "Thy throne, O God, for ever stands,",
+        "Grace is the sceptre in thy hands;",
+        "Thy laws and works are just and right,",
+        "Justice and grace are thy delight."
+      ]
+    },
+    {
+      "lines": [
+        "God, thine own God, has richly shed",
+        "His oil of gladness on thy head,",
+        "And with his sacred Spirit blest",
+        "His first-born Son above the rest."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 45:3"
+}

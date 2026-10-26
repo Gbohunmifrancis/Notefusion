@@ -1,0 +1,81 @@
+{
+  "title": "Father! at This Altar Bending",
+  "tune": "st-raphael",
+  "text": [
+    {
+      "name": "Edwin Hubbell Chapin",
+      "born": 1814,
+      "died": 1880,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Father! at This Altar Bending in Tonic Solfa to ST. RAPHAEL, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Edwin Hubbell Chapin wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 717 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked 8.7.8.7.4.7, to be sung to any tune of that metre. This page sets them to ST. RAPHAEL; any other 8.7.8.7.4.7 tune fits them as well."
+  ],
+  "underlay": "Fa-ther! at this al-tar bend-ing, Set our hearts from world thoughts free; Prayer and praise their in-cense blend-ing, May our rites ac-cept-ed be: Fa-ther, hear us, Gen-tly draw our souls to thee.",
+  "verses": [
+    {
+      "lines": [
+        "Father! at this altar bending,",
+        "Set our hearts from world-thoughts free;",
+        "Prayer and praise their incense blending,",
+        "May our rites accepted be:",
+        "Father, hear us,",
+        "Gently draw our souls to thee."
+      ]
+    },
+    {
+      "lines": [
+        "Deign to smile upon this union",
+        "Of a pastor and a flock;",
+        "Sweet and blest be their communion:",
+        "May he sacred truths unlock —",
+        "And this people",
+        "Plant their feet on Christ the Rock."
+      ]
+    },
+    {
+      "lines": [
+        "Be his life a living sermon,",
+        "Be his thoughts one ceaseless prayer:",
+        "Like the dews that fell on Hermon,",
+        "Making green the foliage there,",
+        "May his teachings",
+        "Drop on souls beneath his care."
+      ]
+    },
+    {
+      "lines": [
+        "Here may Sin repent its straying,",
+        "Here may Grief forget to weep,",
+        "Here may Hope its light displaying,",
+        "And blest Faith, their vigils keep,",
+        "And the dying",
+        "Pass from hence in Christ to sleep."
+      ]
+    },
+    {
+      "lines": [
+        "When his heart shall cease its motion,",
+        "All its toils and conflicts o'er;",
+        "When they for an unseen ocean,",
+        "One by one, shall leave the shore;",
+        "Pastor, people, there — in heaven,",
+        "May they meet to part no more."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 4 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Edwin Hubbell Chapin died in 1880.",
+  "credits": "Words by Edwin Hubbell Chapin (1814–1880), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. RAPHAEL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:717"
+}

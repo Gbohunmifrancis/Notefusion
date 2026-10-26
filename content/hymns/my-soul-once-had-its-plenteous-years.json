@@ -1,0 +1,87 @@
+{
+  "title": "My Soul Once Had Its Plenteous Years",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "My Soul Once Had Its Plenteous Years in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 11, “Plenty in a time of dearth. Gen 41:56”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "My soul once had its plen-teous years, And throve, with peace and com-fort filled, Like the fat kine and ri-pened ears, Which Pha-raoh in his dream be-held.",
+  "verses": [
+    {
+      "lines": [
+        "My soul once had its plenteous years,",
+        "And throve, with peace and comfort filled,",
+        "Like the fat kine and ripened ears,",
+        "Which Pharaoh in his dream beheld."
+      ]
+    },
+    {
+      "lines": [
+        "With pleasing frames and grace received,",
+        "With means and ordinances fed;",
+        "How happy for a while I lived,",
+        "And little feared the want of bread."
+      ]
+    },
+    {
+      "lines": [
+        "But famine came and left no sign,",
+        "Of all the plenty I had seen;",
+        "Like the dry ears and half-starved kine,",
+        "I then looked withered, faint and lean."
+      ]
+    },
+    {
+      "lines": [
+        "To Joseph the Egyptians went,",
+        "To Jesus I made known my case;",
+        "He, when my little stock was spent,",
+        "Opened his magazine of grace."
+      ]
+    },
+    {
+      "lines": [
+        "For he the time of dearth foresaw,",
+        "And made provision long before;",
+        "That famished souls, like me, might draw",
+        "Supplies from his unbounded store."
+      ]
+    },
+    {
+      "lines": [
+        "Now on his bounty I depend,",
+        "And live from fear of dearth secure,",
+        "Maintained by such a mighty friend,",
+        "I cannot want till he is poor."
+      ]
+    },
+    {
+      "lines": [
+        "O sinners hear his gracious call!",
+        "His mercy's door stands open wide,",
+        "He has enough to feed you all,",
+        "And none who come shall be denied."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:11"
+}

@@ -1,0 +1,54 @@
+{
+  "title": "Is There Ambition in My Heart",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Is There Ambition in My Heart in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 131, headed “Humility and submission”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Is there am-bi-tion in my heart? Search, gra-cious God, and see; Or do I act a haugh-ty part? Lord, I ap-peal to thee.",
+  "verses": [
+    {
+      "lines": [
+        "Is there ambition in my heart?",
+        "Search, gracious God, and see;",
+        "Or do I act a haughty part?",
+        "Lord, I appeal to thee."
+      ]
+    },
+    {
+      "lines": [
+        "I charge my thoughts, be humble still,",
+        "And all my carriage mild,",
+        "Content, my Father, with thy will,",
+        "And quiet as a child."
+      ]
+    },
+    {
+      "lines": [
+        "The patient soul, the lowly mind",
+        "Shall have a large reward:",
+        "Let saints in sorrow lie resign'd,",
+        "And trust a faithful Lord."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 131"
+}

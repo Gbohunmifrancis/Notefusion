@@ -1,0 +1,63 @@
+{
+  "title": "Pillows, Wet with Tears of Anguish",
+  "tune": "stuttgart",
+  "text": [
+    {
+      "name": "John Pierpont",
+      "born": 1785,
+      "died": 1866,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Pillows, Wet with Tears of Anguish in Tonic Solfa to STUTTGART, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Pierpont wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 794 of its twenty-second edition (1853), “Morning Hymn for Family Worship”.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to STUTTGART; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Pil-lows, wet with tears of an-guish, Couch-es, pressed in sleep-less woe, Where the sons of Be-lial lan-guish, Fa-ther, may we nev-er know!",
+  "verses": [
+    {
+      "lines": [
+        "Pillows, wet with tears of anguish,",
+        "Couches, pressed in sleepless woe,",
+        "Where the sons of Belial languish,",
+        "Father, may we never know!"
+      ]
+    },
+    {
+      "lines": [
+        "For, the maddening cup shall never",
+        "To our thirsting lips be pressed,",
+        "But, our draft shall be, forever,",
+        "The cold water thou hast blessed."
+      ]
+    },
+    {
+      "lines": [
+        "This shall give us strength to labor,",
+        "This, make all our stores increase;",
+        "This, with thee and with our neighbor,",
+        "Bind us in the bonds of peace."
+      ]
+    },
+    {
+      "lines": [
+        "For the lake, the well, the river,",
+        "Water-brook and crystal spring,",
+        "Do we now, to thee, the Giver,",
+        "Thanks, our daily tribute, bring."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Pierpont died in 1866.",
+  "credits": "Words by John Pierpont (1785–1866), public domain, as printed in Hymns for Christian Devotion (1853); set to STUTTGART by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:794"
+}

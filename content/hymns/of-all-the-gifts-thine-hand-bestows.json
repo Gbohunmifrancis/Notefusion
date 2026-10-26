@@ -1,0 +1,71 @@
+{
+  "title": "Of All the Gifts Thine Hand Bestows",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Of All the Gifts Thine Hand Bestows in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 80, “Praise for faith”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Of all the gifts thine hand be-stows, Thou Giv-er of all good! Not heav'n it-self a rich-er knows, Than my Re-deem-er's blood.",
+  "verses": [
+    {
+      "lines": [
+        "Of all the gifts thine hand bestows,",
+        "Thou Giver of all good!",
+        "Not heav'n itself a richer knows,",
+        "Than my Redeemer's blood."
+      ]
+    },
+    {
+      "lines": [
+        "Faith too, the blood receiving grace,",
+        "From the same hand we gain",
+        "Else, sweetly as it suits our case,",
+        "That gift had been in vain."
+      ]
+    },
+    {
+      "lines": [
+        "Till thou thy teaching pow'r apply,",
+        "Our hearts refuse to see;",
+        "And weak, as a distempered eye,",
+        "Shut out the view of thee."
+      ]
+    },
+    {
+      "lines": [
+        "Blind to the merits of thy Son,",
+        "What misery we endure!",
+        "Yet fly that hand, from which alone,",
+        "We could expect a cure."
+      ]
+    },
+    {
+      "lines": [
+        "We praise thee, and would praise thee more,",
+        "To thee our all we owe;",
+        "The precious Savior, and the pow'r",
+        "That makes him precious too."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:80"
+}

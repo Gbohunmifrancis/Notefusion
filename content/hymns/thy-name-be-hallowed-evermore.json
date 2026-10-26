@@ -1,0 +1,46 @@
+{
+  "title": "Thy Name Be Hallowed Evermore",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Thy Name Be Hallowed Evermore in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 100 of its twenty-second edition (1853), “The Lord's Prayer”, where the book credits them to a Moravian source.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thy name be hal-lowed ev-er-more; O God! thy king-dom come with power! Thy will be done, and day by day, Give us our dail-y bread, we pray:",
+  "verses": [
+    {
+      "lines": [
+        "Thy name be hallowed evermore;",
+        "O God! thy kingdom come with power!",
+        "Thy will be done, and day by day,",
+        "Give us our daily bread, we pray:"
+      ]
+    },
+    {
+      "lines": [
+        "Lord! evermore to us be given",
+        "The living bread that came from heaven:",
+        "Water of life on us bestow,",
+        "Thou art the Source, the Fountain thou."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:100"
+}

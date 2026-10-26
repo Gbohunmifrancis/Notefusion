@@ -1,0 +1,55 @@
+{
+  "title": "O God, That Madest Earth and Sky",
+  "tune": "materna",
+  "text": [
+    {
+      "name": "Reginald Heber",
+      "born": 1783,
+      "died": 1826,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O God, That Madest Earth and Sky in Tonic Solfa to MATERNA, doh is C: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Reginald Heber wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 931 of its twenty-second edition (1853), “In Times of Domestic Distress”.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to MATERNA; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "O God, that ma-dest earth and sky! The dark-ness and the day! Give ear to this thy fa-mi-ly, And help us when we pray! For wide the waves of bit-ter-ness A-round our ves-sel roar, And hea-vy grows the pi-lot's heart To view the roc-ky shore!",
+  "verses": [
+    {
+      "lines": [
+        "O God, that madest earth and sky!",
+        "The darkness and the day!",
+        "Give ear to this thy family,",
+        "And help us when we pray!",
+        "For wide the waves of bitterness",
+        "Around our vessel roar,",
+        "And heavy grows the pilot's heart",
+        "To view the rocky shore!"
+      ]
+    },
+    {
+      "lines": [
+        "The cross our Master bore for us,",
+        "For him we fain would bear,",
+        "But mortal strength to weakness turns,",
+        "And courage to despair!",
+        "Then mercy on our failings, Lord!",
+        "Our sinking faith renew!",
+        "And when thy sorrows visit us,",
+        "O send thy patience too."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Reginald Heber died in 1826.",
+  "credits": "Words by Reginald Heber (1783–1826), public domain, as printed in Hymns for Christian Devotion (1853); set to MATERNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:931"
+}

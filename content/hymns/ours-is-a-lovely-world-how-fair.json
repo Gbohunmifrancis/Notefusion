@@ -1,0 +1,60 @@
+{
+  "title": "Ours Is a Lovely World, How Fair",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Ours Is a Lovely World, How Fair in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 173 of its twenty-second edition (1853), “The Beauties of Creation”, where the book credits them to Montgomery's Collection.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Ours is a love-ly world, how fair Thy beau-ties e'en on earth ap-pear! The sea-sons in their cours-es fall, And bring suc-ces-sive joys. The sea, The earth, the sky, are full of thee, Be-nig-nant, glo-rious Lord of all!",
+  "verses": [
+    {
+      "lines": [
+        "Ours is a lovely world, how fair",
+        "Thy beauties e'en on earth appear!",
+        "The seasons in their courses fall,",
+        "And bring successive joys. The sea,",
+        "The earth, the sky, are full of thee,",
+        "Benignant, glorious Lord of all!"
+      ]
+    },
+    {
+      "lines": [
+        "There's beauty in the heat of day;",
+        "There's glory in the noon-tide ray;",
+        "There's sweetness in the twilight shades —",
+        "Magnificence in night. Thy love",
+        "Arch'd the grand heaven of blue above,",
+        "And all our smiling earth pervades."
+      ]
+    },
+    {
+      "lines": [
+        "And if thy glories here be found,",
+        "Streaming with radiance all around,",
+        "What must the fount of glory be!",
+        "In thee we'll hope, in thee confide,",
+        "Thou, mercy's never ebbing tide,",
+        "Thou, love's unfathomable sea!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:173"
+}

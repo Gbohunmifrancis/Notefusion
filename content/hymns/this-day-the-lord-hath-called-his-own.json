@@ -1,0 +1,63 @@
+{
+  "title": "This Day the Lord Hath Called His Own",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "William Hiley Bathurst",
+      "born": 1796,
+      "died": 1877,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "This Day the Lord Hath Called His Own in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Hiley Bathurst wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 41 of its twenty-second edition (1853), “Improvement of the Sabbath”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "This day the Lord hath called his own; O, let us, then, his praise de-clare, Fix our de-sires on him a-lone, And seek his face with fer-vent prayer.",
+  "verses": [
+    {
+      "lines": [
+        "This day the Lord hath called his own;",
+        "O, let us, then, his praise declare,",
+        "Fix our desires on him alone,",
+        "And seek his face with fervent prayer."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, in thy love we would rejoice,",
+        "Which bids the burdened soul be free,",
+        "And, with united heart and voice,",
+        "Devote these sacred hours to thee."
+      ]
+    },
+    {
+      "lines": [
+        "Now let the world's delusive things",
+        "No more our grovelling thoughts employ",
+        "But Faith be taught to stretch her wings,",
+        "In search of heaven's unfailing joy."
+      ]
+    },
+    {
+      "lines": [
+        "O, let these earthly Sabbaths, Lord,",
+        "Be to our lasting welfare blest;",
+        "The purest comfort here afford,",
+        "And fit us for eternal rest."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: William Hiley Bathurst died in 1877.",
+  "credits": "Words by William Hiley Bathurst (1796–1877), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:41"
+}

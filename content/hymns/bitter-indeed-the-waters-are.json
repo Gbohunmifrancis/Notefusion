@@ -1,0 +1,87 @@
+{
+  "title": "Bitter, Indeed, the Waters Are",
+  "tune": "york",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Bitter, Indeed, the Waters Are in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 13, “The Bitter waters. Ex 15:23-15”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Bit-ter, in-deed, the wa-ters are. Which in this des-ert flow; Though to the eye they pro-mise fair, They taste of sin and woe.",
+  "verses": [
+    {
+      "lines": [
+        "Bitter, indeed, the waters are.",
+        "Which in this desert flow;",
+        "Though to the eye they promise fair,",
+        "They taste of sin and woe."
+      ]
+    },
+    {
+      "lines": [
+        "Of pleasing draughts I once could dream,",
+        "But now, awake, l find,",
+        "That sin has poisoned every stream,",
+        "And left a curse behind."
+      ]
+    },
+    {
+      "lines": [
+        "But there's a wonder-working wood,",
+        "I've heard believers say,",
+        "Can make these bitter waters good,",
+        "And take the curse away."
+      ]
+    },
+    {
+      "lines": [
+        "The virtues of this healing tree",
+        "Are known and prized by few;",
+        "Reveal this secret, Lord, to me,",
+        "That I may prize it too."
+      ]
+    },
+    {
+      "lines": [
+        "The cross on which the Savior died,",
+        "And conquered for his saints;",
+        "This is the tree, by faith applied,",
+        "Which sweetens all complaints."
+      ]
+    },
+    {
+      "lines": [
+        "Thousands have found the blest effect,",
+        "Nor longer mourn their lot;",
+        "While on his sorrows they reflect,",
+        "Their own are all forgot."
+      ]
+    },
+    {
+      "lines": [
+        "When they, by faith, behold the cross,",
+        "Though many griefs they meet;",
+        "They draw again from every loss,",
+        "And find the bitter sweet."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:13"
+}

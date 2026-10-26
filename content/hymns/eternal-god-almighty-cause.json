@@ -1,0 +1,63 @@
+{
+  "title": "Eternal God! Almighty Cause",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Simon Browne",
+      "born": 1680,
+      "died": 1732,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Eternal God! Almighty Cause in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Simon Browne wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 471, “The One God”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "E-ter-nal God! Al-might-y Cause Of earth, and seas, and worlds un-known! All things are sub-ject to Thy laws; All things de-pend on Thee a-lone.",
+  "verses": [
+    {
+      "lines": [
+        "Eternal God! Almighty Cause",
+        "Of earth, and seas, and worlds unknown!",
+        "All things are subject to Thy laws;",
+        "All things depend on Thee alone."
+      ]
+    },
+    {
+      "lines": [
+        "Thy glorious being singly stands,",
+        "Of all within itself possessed;",
+        "By none controlled in Thy commands,",
+        "And in Thyself completely blessed."
+      ]
+    },
+    {
+      "lines": [
+        "Worship to Thee alone belongs,",
+        "Worship to Thee alone we give;",
+        "Thine be our hearts, and Thine our songs,",
+        "And to Thy glory may we live."
+      ]
+    },
+    {
+      "lines": [
+        "O, spread Thy truth through every land,",
+        "In every heart Thy love be known;",
+        "Subdue the world to Thy command,",
+        "And, as Thou art, reign God alone."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Simon Browne died in 1732.",
+  "credits": "Words by Simon Browne (1680–1732), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:471"
+}

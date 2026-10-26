@@ -1,0 +1,95 @@
+{
+  "title": "How David, When by Sin Deceived",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "How David, When by Sin Deceived in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 29, “David's fall 2Sam 11:27”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How Da-vid, when by sin de-ceived, From bad to worse went on! For when the Ho-ly Spi-rit's grieved, Our strength and guard are gone.",
+  "verses": [
+    {
+      "lines": [
+        "How David, when by sin deceived,",
+        "From bad to worse went on!",
+        "For when the Holy Spirit's grieved,",
+        "Our strength and guard are gone."
+      ]
+    },
+    {
+      "lines": [
+        "His eye on Bathsheba once fixed,",
+        "With poison filled his soul;",
+        "He ventured on adult'ry next,",
+        "And murder crowned the whole."
+      ]
+    },
+    {
+      "lines": [
+        "So from a spark of fire at first,",
+        "That has not been descried;",
+        "A dreadful flame has often burst,",
+        "And ravaged far and wide."
+      ]
+    },
+    {
+      "lines": [
+        "When sin deceives it hardens too,",
+        "For though he vainly fought",
+        "To hide his crimes from public view,",
+        "Of God he little thought."
+      ]
+    },
+    {
+      "lines": [
+        "He neither would, or could repent,",
+        "No true compunction felt;",
+        "'Till God in mercy Nathan sent,",
+        "His stubborn heart to melt."
+      ]
+    },
+    {
+      "lines": [
+        "The parable held forth a fact,",
+        "Designed his case to show;",
+        "But though the picture was exact,",
+        "Himself he did not know."
+      ]
+    },
+    {
+      "lines": [
+        "\"Thou art the man,\" the prophet said,",
+        "That word his slumber broke;",
+        "And when he owned his sin, and prayed,",
+        "The Lord forgiveness spoke."
+      ]
+    },
+    {
+      "lines": [
+        "Let those who think they stand beware,",
+        "For David stood before;",
+        "Nor let the fallen soul despair,",
+        "For mercy can restore."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:29"
+}

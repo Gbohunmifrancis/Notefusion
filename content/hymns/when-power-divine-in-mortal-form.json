@@ -1,0 +1,55 @@
+{
+  "title": "When Power Divine, in Mortal Form",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "James Edward Smith",
+      "born": 1759,
+      "died": 1828,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "When Power Divine, in Mortal Form in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "James Edward Smith wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 967 of its twenty-second edition (1853), “\"It is I, be not afraid.\"”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When Power Di-vine, in mor-tal form, Hushed with a word the rag-ing storm, In sooth-ing ac-cents Je-sus said, \"Lo, it is I! be not a-fraid.\"",
+  "verses": [
+    {
+      "lines": [
+        "When Power Divine, in mortal form,",
+        "Hushed with a word the raging storm,",
+        "In soothing accents Jesus said,",
+        "\"Lo, it is I! — be not afraid.\""
+      ]
+    },
+    {
+      "lines": [
+        "So, when in silence nature sleeps,",
+        "And his lone watch the mourner keeps,",
+        "One thought, shall every pang remove —",
+        "Trust, feeble man, thy Maker's love."
+      ]
+    },
+    {
+      "lines": [
+        "Blessed be the voice that breathes from heaven,",
+        "To every heart in sunder riven,",
+        "When love, and joy, and hope are fled,",
+        "\"Lo it is I! — be not afraid.\""
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Edward Smith died in 1828.",
+  "credits": "Words by James Edward Smith (1759–1828), public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:967"
+}

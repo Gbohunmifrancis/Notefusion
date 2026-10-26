@@ -1,0 +1,63 @@
+{
+  "title": "\"O, Not for These Alone I Pray,\"",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Emily Taylor",
+      "born": 1795,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "\"O, Not for These Alone I Pray,\" in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Emily Taylor wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 151, “\"I Pray Not for These Alone.\"”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "\"O, Not for these a-lone I pray,\" The dy-ing Sa-viour said; Though on his breast that mo-ment lay The loved dis-ci-ple's head;",
+  "verses": [
+    {
+      "lines": [
+        "\"O, Not for these alone I pray,\"",
+        "The dying Saviour said;",
+        "Though on his breast that moment lay",
+        "The loved disciple's head;"
+      ]
+    },
+    {
+      "lines": [
+        "Though to his eye that moment sprung",
+        "The kind, the pitying tear",
+        "For those that eager round him hung,",
+        "His words of love to hear."
+      ]
+    },
+    {
+      "lines": [
+        "No, not for them alone he prayed; —",
+        "For all of mortal race,",
+        "Whene'er their fervent prayer is made,",
+        "Where'er their dwelling-place."
+      ]
+    },
+    {
+      "lines": [
+        "Sweet is the thought, when here we meet,",
+        "His feast of love to share;",
+        "And, 'mid the toils of life, how sweet",
+        "The memory of his prayer!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Emily Taylor died in 1872.",
+  "credits": "Words by Emily Taylor (1795–1872), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:151"
+}

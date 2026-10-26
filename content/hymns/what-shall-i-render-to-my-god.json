@@ -1,0 +1,78 @@
+{
+  "title": "What Shall I Render to My God",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "What Shall I Render to My God in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 116, part 2, headed “Vows made in trouble paid in the church; or, Public thanks for private deliverance”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "What shall I ren-der to my God For all his kind-ness shown? My feet shall vis-it thine a-bode, My songs ad-dress thy throne.",
+  "verses": [
+    {
+      "lines": [
+        "What shall I render to my God",
+        "For all his kindness shown?",
+        "My feet shall visit thine abode,",
+        "My songs address thy throne."
+      ]
+    },
+    {
+      "lines": [
+        "Among the saints that fill thine house,",
+        "My offerings shall be paid;",
+        "There shall my zeal perform the vows",
+        "My soul in anguish made."
+      ]
+    },
+    {
+      "lines": [
+        "How much is mercy thy delight,",
+        "Thou ever blessed God!",
+        "How dear thy servants in thy sight!",
+        "How precious is their blood!"
+      ]
+    },
+    {
+      "lines": [
+        "How happy all thy servants are!",
+        "How great thy grace to me!",
+        "My life which thou hast made thy care,",
+        "Lord, I devote to thee."
+      ]
+    },
+    {
+      "lines": [
+        "Now I am thine, for ever thine,",
+        "Nor shall my purpose move;",
+        "Thy hand hath loos'd my bonds of pain,",
+        "And bound me with thy love."
+      ]
+    },
+    {
+      "lines": [
+        "Here in thy courts I leave my vow,",
+        "And thy rich grace record;",
+        "Witness, ye saints, who hear me now,",
+        "If I forsake the Lord."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 116:2"
+}

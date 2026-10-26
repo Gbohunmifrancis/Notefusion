@@ -1,0 +1,70 @@
+{
+  "title": "Be Still! Be Still! for All Around",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Be Still! Be Still! for All Around in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 4, “The House of God”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Be still! be still! for all a-round, On ei-ther hand, is ho-ly ground: Here in His house, the Lord to day Will lis-ten, while His peo-ple pray.",
+  "verses": [
+    {
+      "lines": [
+        "Be still! be still! for all around,",
+        "On either hand, is holy ground:",
+        "Here in His house, the Lord to-day",
+        "Will listen, while His people pray."
+      ]
+    },
+    {
+      "lines": [
+        "Thou, tost upon the waves of care,",
+        "Ready to sink with deep despair,",
+        "Here ask relief, with heart sincere,",
+        "And thou shalt find that God is here."
+      ]
+    },
+    {
+      "lines": [
+        "Thou who hast laid within the grave",
+        "Those whom thou hadst no power to save,",
+        "Believe their spirits now are near,",
+        "For angels wait while God is here."
+      ]
+    },
+    {
+      "lines": [
+        "Thou who hast dear ones far away,",
+        "In foreign lands, 'mid ocean's spray,",
+        "Pray for them now, and dry the tear,",
+        "And trust the God who listens here."
+      ]
+    },
+    {
+      "lines": [
+        "Thou who art mourning o'er thy sin,",
+        "Deploring guilt that reigns within,",
+        "The God of peace is ever near;",
+        "The troubled spirit meets Him here."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:4"
+}

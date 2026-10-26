@@ -1,0 +1,95 @@
+{
+  "title": "In Evil Long I Took Delight",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "In Evil Long I Took Delight in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 57, “Looking at the cross”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "In e-vil long I took de-light, Un-awed by shame or fear; Till a new ob-ject struck my sight, And stopped my wild ca-reer.",
+  "verses": [
+    {
+      "lines": [
+        "In evil long I took delight,",
+        "Unawed by shame or fear;",
+        "Till a new object struck my sight,",
+        "And stopped my wild career."
+      ]
+    },
+    {
+      "lines": [
+        "I saw one hanging on a tree,",
+        "In agonies and blood;",
+        "Who fixed his languid eyes on me,",
+        "As near his cross I stood."
+      ]
+    },
+    {
+      "lines": [
+        "Sure, never till my latest breath,",
+        "Can I forget that look;",
+        "It seemed to charge me with his death,",
+        "Though not a word he spoke."
+      ]
+    },
+    {
+      "lines": [
+        "My conscience felt, and owned the guilt,",
+        "And plunged me in despair;",
+        "I saw my sins his blood had spilt,",
+        "And helped to nail him there."
+      ]
+    },
+    {
+      "lines": [
+        "Alas! I knew not what I did,",
+        "But now my tears are vain;",
+        "Where shall my trembling soul be hid?",
+        "For I the Lord have slain."
+      ]
+    },
+    {
+      "lines": [
+        "A second look he gave, which said,",
+        "\"I freely all forgive;",
+        "This blood is for thy ransom paid,",
+        "I die, that thou may'st live.\""
+      ]
+    },
+    {
+      "lines": [
+        "Thus, while his death my sin displays,",
+        "In all its blackest hue;",
+        "(Such is the mystery of grace)",
+        "It seals my pardon too."
+      ]
+    },
+    {
+      "lines": [
+        "With pleasing grief and mournful joy,",
+        "My spirit now is filled;",
+        "That I should such a life destroy,",
+        "Yet live by him I killed."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:57"
+}

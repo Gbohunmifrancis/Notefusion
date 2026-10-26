@@ -1,0 +1,62 @@
+{
+  "title": "This Child We Dedicate to Thee",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "This Child We Dedicate to Thee in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 377, “Baptism of a Child”, where the book credits them to the W. Boston Collection.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "This child we ded-i-cate to Thee, O God of grace and pu-ri-ty! Shield it from sin and threat-ening wrong, And let Thy love its life pro-long.",
+  "verses": [
+    {
+      "lines": [
+        "This child we dedicate to Thee,",
+        "O God of grace and purity!",
+        "Shield it from sin and threatening wrong,",
+        "And let Thy love its life prolong."
+      ]
+    },
+    {
+      "lines": [
+        "O, may Thy spirit gently draw",
+        "Its willing soul to keep Thy law;",
+        "May virtue, piety, and truth,",
+        "Dawn even with its dawning youth!"
+      ]
+    },
+    {
+      "lines": [
+        "We, too, before Thy gracious sight,",
+        "Once shared the blest baptismal rite,",
+        "And would renew its solemn vow,",
+        "With love, and thanks, and praises, now."
+      ]
+    },
+    {
+      "lines": [
+        "Grant that, with true and faithful heart,",
+        "We still may act the Christian's part,",
+        "Cheered by each promise Thou hast given,",
+        "And laboring for the prize in heaven."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:377"
+}

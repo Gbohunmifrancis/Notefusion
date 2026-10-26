@@ -1,0 +1,63 @@
+{
+  "title": "Father, Breathe an Evening Blessing",
+  "tune": "omni-die",
+  "text": [
+    {
+      "name": "James Edmeston",
+      "born": 1791,
+      "died": 1867,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Father, Breathe an Evening Blessing in Tonic Solfa to OMNI DIE, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Edmeston wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 942 of its twenty-second edition (1853), “Confidence in God's Protection”.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to OMNI DIE; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Fa-ther, breathe an eve-ning bless-ing Ere re-pose our spi-rits seal; Sin and want we come con-fes-sing; Thou canst save and thou canst heal.",
+  "verses": [
+    {
+      "lines": [
+        "Father, breathe an evening blessing",
+        "Ere repose our spirits seal;",
+        "Sin and want we come confessing;",
+        "Thou canst save and thou canst heal."
+      ]
+    },
+    {
+      "lines": [
+        "Though destruction walk around us,",
+        "Though the arrows past us fly,",
+        "Angel guards from thee surround us;",
+        "We are safe, if thou art nigh."
+      ]
+    },
+    {
+      "lines": [
+        "Though the night be dark and dreary,",
+        "Darkness cannot hide from thee;",
+        "Thou art he who, never weary,",
+        "Watchest where thy people be."
+      ]
+    },
+    {
+      "lines": [
+        "Should swift death this night o'ertake us,",
+        "And command us to the tomb,",
+        "May the morn in heaven awake us,",
+        "Clad in bright, eternal bloom."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Edmeston died in 1867.",
+  "credits": "Words by James Edmeston (1791–1867), public domain, as printed in Hymns for Christian Devotion (1853); set to OMNI DIE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:942"
+}

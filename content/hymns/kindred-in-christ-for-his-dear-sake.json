@@ -1,0 +1,79 @@
+{
+  "title": "Kindred in Christ, for His Dear Sake",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Kindred in Christ, for His Dear Sake in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 70, “A welcome to christian friends”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Kin-dred in Christ, for his dear sake, A hear-ty wel-come here re-ceive; May we to-ge-ther now par-take The joys which on-ly he can give!",
+  "verses": [
+    {
+      "lines": [
+        "Kindred in Christ, for his dear sake,",
+        "A hearty welcome here receive;",
+        "May we together now partake",
+        "The joys which only he can give!"
+      ]
+    },
+    {
+      "lines": [
+        "To you and us by grace 'tis giv'n,",
+        "To know the Savior's precious name;",
+        "And shortly we shall meet in heav'n,",
+        "Our hope, our way, our end, the same."
+      ]
+    },
+    {
+      "lines": [
+        "May he, by whose kind care we meet,",
+        "Send his good Spirit from above,",
+        "Make our communications sweet,",
+        "And cause our hearts to burn with love!"
+      ]
+    },
+    {
+      "lines": [
+        "Forgotten be each worldly theme,",
+        "When christians see each other thus;",
+        "We only wish to speak of him,",
+        "Who lived, and died, and reigns for us."
+      ]
+    },
+    {
+      "lines": [
+        "We'll talk of all he did and said,",
+        "And suffered for us here below;",
+        "The path he marked for us to tread,",
+        "And what he's doing for us now."
+      ]
+    },
+    {
+      "lines": [
+        "Thus, as the moments pass away,",
+        "We'll love, and wonder, and adore;",
+        "And hasten on the glorious day,",
+        "When we shall meet to part no more."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:70"
+}

@@ -1,0 +1,102 @@
+{
+  "title": "My Trust Is in My Heavenly Friend",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "My Trust Is in My Heavenly Friend in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 7, headed “God's care of his people and punishment of persecutors”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "My trust is in my heav-enly Friend, My hope in thee, my God; Rise and my help-less life de-fend From those that seek my blood.",
+  "verses": [
+    {
+      "lines": [
+        "My trust is in my heavenly Friend,",
+        "My hope in thee, my God;",
+        "Rise and my helpless life defend",
+        "From those that seek my blood."
+      ]
+    },
+    {
+      "lines": [
+        "With insolence and fury they",
+        "My soul in pieces tear,",
+        "As hungry lions rend the prey",
+        "When no deliverer's near."
+      ]
+    },
+    {
+      "lines": [
+        "If I had e'er provok'd them first,",
+        "Or once abus'd my foe,",
+        "Then let him tread my life to dust,",
+        "And lay mine honour low."
+      ]
+    },
+    {
+      "lines": [
+        "If there be malice found in me,",
+        "I know thy piercing eyes;",
+        "I should not dare appeal to thee,",
+        "Nor ask my God to rise."
+      ]
+    },
+    {
+      "lines": [
+        "Arise, my God, lift up thy hand,",
+        "Their pride and power control;",
+        "Awake to judgment and command",
+        "Deliverance for my soul."
+      ]
+    },
+    {
+      "lines": [
+        "Let sinners and their wicked rage",
+        "Be humbled to the dust;",
+        "Shall not the God of truth engage",
+        "To vindicate the just?"
+      ]
+    },
+    {
+      "lines": [
+        "He knows the heart, he tries the reins,",
+        "He will defend th' upright:",
+        "His sharpest arrows he ordains",
+        "Against the sons of spite."
+      ]
+    },
+    {
+      "lines": [
+        "For me their malice digg'd a pit,",
+        "But there themselves are cast;",
+        "My God makes all their mischief light",
+        "On their own heads at last."
+      ]
+    },
+    {
+      "lines": [
+        "That cruel persecuting race",
+        "Must feel his dreadful sword;",
+        "Awake, my soul, and praise the grace",
+        "And justice of the Lord."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 7"
+}

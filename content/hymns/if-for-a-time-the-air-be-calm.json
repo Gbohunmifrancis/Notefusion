@@ -1,0 +1,95 @@
+{
+  "title": "If for a Time the Air Be Calm",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "If for a Time the Air Be Calm in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 87, “The sea”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "If for a time the air be calm, Se-rene and smooth the sea ap-pears; And shows no dan-ger to a-larm The in-ex-pe-rienced lands-man's fears.",
+  "verses": [
+    {
+      "lines": [
+        "If for a time the air be calm,",
+        "Serene and smooth the sea appears;",
+        "And shows no danger to alarm",
+        "The inexperienced landsman's fears."
+      ]
+    },
+    {
+      "lines": [
+        "But if the tempest once arise,",
+        "The faithless water swells and raves;",
+        "Its billows, foaming to the skies,",
+        "Disclose a thousand threat'ning graves."
+      ]
+    },
+    {
+      "lines": [
+        "My untried heart thus seemed to me,",
+        "(So little of myself I knew)",
+        "Smooth as the calm unruffled sea,",
+        "But ah! it proved as treach'rous too!"
+      ]
+    },
+    {
+      "lines": [
+        "The peace, of which I had a taste,",
+        "When Jesus first his love revealed",
+        "I fondly hoped would always last,",
+        "Because my foes were then concealed."
+      ]
+    },
+    {
+      "lines": [
+        "But when I felt the tempter's pow'r",
+        "Rouse my corruptions from their sleep;",
+        "I trembled at the stormy hour,",
+        "And saw the horrors of the deep."
+      ]
+    },
+    {
+      "lines": [
+        "Now, on presumption's billows borne,",
+        "My spirit seemed the Lord to dare;",
+        "Now, quick as thought, a sudden turn",
+        "Plunged me in gulfs of black despair."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, save me, or I sink, I prayed,",
+        "He heard, and bid the tempest cease;",
+        "The angry waves his word obeyed,",
+        "And all my fears were hushed to peace."
+      ]
+    },
+    {
+      "lines": [
+        "The peace is his, and not my own,",
+        "My heart (no better than before)",
+        "Is still to dreadful changes prone,",
+        "Then let me never trust it more."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:87"
+}

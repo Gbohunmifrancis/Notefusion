@@ -1,0 +1,63 @@
+{
+  "title": "Not for the Summer's Hour Alone",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Lydia Sigourney",
+      "born": 1791,
+      "died": 1865,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Not for the Summer's Hour Alone in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Lydia Sigourney wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 985 of its twenty-second edition (1853), “Marriage Hymn”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Not for the sum-mer's hour a-lone, When skies re-splen-dent shine, And youth and plea-sure fill the throne, Our hearts and hands we join;",
+  "verses": [
+    {
+      "lines": [
+        "Not for the summer's hour alone,",
+        "When skies resplendent shine,",
+        "And youth and pleasure fill the throne,",
+        "Our hearts and hands we join;"
+      ]
+    },
+    {
+      "lines": [
+        "But for those stern and wintry days",
+        "Of sorrow, pain, and fear,",
+        "When Heaven's wise discipline doth make",
+        "Our earthly journey drear; —"
+      ]
+    },
+    {
+      "lines": [
+        "Not for this span of life alone,",
+        "Which like a blast doth fly,",
+        "And as the transient flowers of grass,",
+        "Just blossom, droop, and die; —"
+      ]
+    },
+    {
+      "lines": [
+        "But for a being without end",
+        "This vow of love we take;",
+        "Grant us, O God, one home at last,",
+        "For thy great mercy's sake."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Lydia Sigourney died in 1865.",
+  "credits": "Words by Lydia Sigourney (1791–1865), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:985"
+}

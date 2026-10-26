@@ -1,0 +1,55 @@
+{
+  "title": "Great Shepherd of Thy People, Hear",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Great Shepherd of Thy People, Hear in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 27 of its twenty-second edition (1853), “A Blessing sought”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Great Shep-herd of thy peo-ple, hear; Thy pre-sence now dis-play; We kneel with-in thy house of prayer; O, give us hearts to pray.",
+  "verses": [
+    {
+      "lines": [
+        "Great Shepherd of thy people, hear;",
+        "Thy presence now display;",
+        "We kneel within thy house of prayer;",
+        "O, give us hearts to pray."
+      ]
+    },
+    {
+      "lines": [
+        "The clouds which veil thee from our sight,",
+        "In pity, Lord, remove;",
+        "Dispose our minds to hear aright",
+        "The message of thy love."
+      ]
+    },
+    {
+      "lines": [
+        "Help us, with holy fear and joy,",
+        "To kneel before thy face;",
+        "O, make us, creatures of thy power,",
+        "The children of thy grace."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Hymns for Christian Devotion (1853); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:27"
+}

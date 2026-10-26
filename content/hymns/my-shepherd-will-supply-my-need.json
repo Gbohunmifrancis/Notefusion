@@ -1,0 +1,78 @@
+{
+  "title": "My Shepherd Will Supply My Need",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "My Shepherd Will Supply My Need in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 23, part 2, headed “The same”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "My Shep-herd will sup-ply my need, Je-ho-vah is his name; In pas-tures fresh he makes me feed Be-side the liv-ing stream.",
+  "verses": [
+    {
+      "lines": [
+        "My Shepherd will supply my need,",
+        "Jehovah is his name;",
+        "In pastures fresh he makes me feed",
+        "Beside the living stream."
+      ]
+    },
+    {
+      "lines": [
+        "He brings my wandering spirit back,",
+        "When I forsake his ways;",
+        "And leads me for his mercy's sake,",
+        "In paths of truth and grace."
+      ]
+    },
+    {
+      "lines": [
+        "When I walk thro' the shades of death,",
+        "Thy presence is my stay;",
+        "A word of thy supporting breath",
+        "Drives all my fears away."
+      ]
+    },
+    {
+      "lines": [
+        "Thy hand, in spite of all my foes,",
+        "Doth still my table spread;",
+        "My cup with blessings overflows,",
+        "Thine oil anoints my head."
+      ]
+    },
+    {
+      "lines": [
+        "The sure provisions of my God",
+        "Attend me all my days;",
+        "O may thy house be mine abode,",
+        "And all my work be praise!"
+      ]
+    },
+    {
+      "lines": [
+        "There would I find a settled rest,",
+        "(While others go and come)",
+        "No more a stranger or a guest,",
+        "But like a child at home."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 23:2"
+}

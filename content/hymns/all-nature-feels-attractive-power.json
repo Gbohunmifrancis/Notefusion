@@ -1,0 +1,71 @@
+{
+  "title": "All Nature Feels Attractive Power",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "William Drennan",
+      "born": 1754,
+      "died": 1820,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "All Nature Feels Attractive Power in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Drennan wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 381 of its twenty-second edition (1853), “Law of Love”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "All na-ture feels at-trac-tive power, A strong, em-brac-ing force; The drops that spark-le in the shower, The plan-ets in their course.",
+  "verses": [
+    {
+      "lines": [
+        "All nature feels attractive power,",
+        "A strong, embracing force;",
+        "The drops that sparkle in the shower,",
+        "The planets in their course."
+      ]
+    },
+    {
+      "lines": [
+        "Thus, in the universe of mind,",
+        "Is felt the law of love;",
+        "The charity both strong and kind,",
+        "For all that live and move."
+      ]
+    },
+    {
+      "lines": [
+        "In this fine sympathetic chain",
+        "All creatures bear a part;",
+        "Their every pleasure, every pain,",
+        "Linked to the feeling heart."
+      ]
+    },
+    {
+      "lines": [
+        "More perfect bond, the Christian plan",
+        "Attaches soul to soul;",
+        "Our neighbor is the suffering man,",
+        "Though at the farthest pole."
+      ]
+    },
+    {
+      "lines": [
+        "To earth below, from heaven above,",
+        "The faith in Christ professed,",
+        "More clearly shows that God is love,",
+        "And whom he loves is blessed."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: William Drennan died in 1820.",
+  "credits": "Words by William Drennan (1754–1820), public domain, as printed in Hymns for Christian Devotion (1853); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:381"
+}

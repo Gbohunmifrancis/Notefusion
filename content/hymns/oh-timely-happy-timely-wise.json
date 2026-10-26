@@ -1,0 +1,71 @@
+{
+  "title": "Oh! Timely Happy, Timely Wise",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Keble",
+      "born": 1792,
+      "died": 1866,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Oh! Timely Happy, Timely Wise in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Keble wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 935 of its twenty-second edition (1853), “Morning Hymn”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Oh! time-ly hap-py, time-ly wise. Hearts that with ris-ing morn a-rise! Eyes that the beam ce-les-tial view, Which ev-er-more makes all things new!",
+  "verses": [
+    {
+      "lines": [
+        "Oh! timely happy, timely wise.",
+        "Hearts that with rising morn arise!",
+        "Eyes that the beam celestial view,",
+        "Which evermore makes all things new!"
+      ]
+    },
+    {
+      "lines": [
+        "New every morning is the love",
+        "Our wakening and uprising prove;",
+        "Through sleep and darkness safely brought,",
+        "Restored to life, and power, and thought."
+      ]
+    },
+    {
+      "lines": [
+        "New mercies, each returning day,",
+        "Hover around us while we pray;",
+        "New perils past, new sins forgiven,",
+        "New thoughts of God, new hopes of heaven."
+      ]
+    },
+    {
+      "lines": [
+        "If, on our daily course, our mind",
+        "Be set to hallow all we find,",
+        "New treasures still, of countless price,",
+        "God will provide for sacrifice."
+      ]
+    },
+    {
+      "lines": [
+        "Old friends, old scenes, will lovelier be,",
+        "As more of heaven in each we see;",
+        "Some softening gleams of love and prayer,",
+        "Shall dawn on every cross and care."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Keble died in 1866.",
+  "credits": "Words by John Keble (1792–1866), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:935"
+}

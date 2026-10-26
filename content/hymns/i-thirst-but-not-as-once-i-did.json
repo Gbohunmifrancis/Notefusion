@@ -1,0 +1,71 @@
+{
+  "title": "I Thirst, but Not as Once I Did",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "I Thirst, but Not as Once I Did in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 61, “My soul thirsteth for God”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "I thirst, but not as once I did, The vain de-lights of earth to share; Thy wounds, Em-man-uel, all for-bid, That I should seek my plea-sures there.",
+  "verses": [
+    {
+      "lines": [
+        "I thirst, but not as once I did,",
+        "The vain delights of earth to share;",
+        "Thy wounds, Emmanuel, all forbid,",
+        "That I should seek my pleasures there."
+      ]
+    },
+    {
+      "lines": [
+        "It was the sight of thy dear cross,",
+        "First weaned my soul from earthly things;",
+        "And taught me to esteem as dross,",
+        "The mirth of fools and pomp of kings."
+      ]
+    },
+    {
+      "lines": [
+        "I want that grace that springs from thee,",
+        "That quickens all things where it flows;",
+        "And makes a wretched thorn, like me,",
+        "Bloom as the myrtle, or the rose."
+      ]
+    },
+    {
+      "lines": [
+        "Dear fountain of delight unknown!",
+        "No longer sink below the brim;",
+        "But overflow, and pour me down",
+        "A living, and life-giving stream!"
+      ]
+    },
+    {
+      "lines": [
+        "For sure, of all the plants that share",
+        "The notice of thy Father's eye;",
+        "None proves less grateful to his care,",
+        "Or yields him meaner fruit than I."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:61"
+}

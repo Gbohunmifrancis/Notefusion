@@ -1,0 +1,67 @@
+{
+  "title": "Grace, Triumphant in the Throne",
+  "tune": "messiah-herald",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Grace, Triumphant in the Throne in Tonic Solfa to MESSIAH (HERALD), doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 75, “Not of works”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to MESSIAH (HERALD); any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Grace, tri-um-phant in the throne, Scorns a ri-val, reigns a-lone! Come and bow be-neath her sway, Cast your i-dol works a-way: Works of man, when made his plea, Nev-er shall ac-cept-ed be; Fruits of pride (vain glo-rious worm) Are the best he can per-form.",
+  "verses": [
+    {
+      "lines": [
+        "Grace, triumphant in the throne,",
+        "Scorns a rival, reigns alone!",
+        "Come and bow beneath her sway,",
+        "Cast your idol works away:",
+        "Works of man, when made his plea,",
+        "Never shall accepted be;",
+        "Fruits of pride (vain-glorious worm)",
+        "Are the best he can perform."
+      ]
+    },
+    {
+      "lines": [
+        "Self, the god his soul adores,",
+        "Influences all his pow'rs;",
+        "Jesus is a slighted name,",
+        "Self-advancement all his aim:",
+        "But when God the Judge shall come,",
+        "To pronounce the final doom",
+        "Then for rocks and hills to hide,",
+        "All his works and all his pride."
+      ]
+    },
+    {
+      "lines": [
+        "Still the boasting heart replies,",
+        "What the worthy and the wise,",
+        "Friends to temperance and peace,",
+        "Have not these a righteousness?",
+        "Banish every vain pretence",
+        "Built on human excellence;",
+        "Perish everything in man,",
+        "But the grace that never can."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to MESSIAH (HERALD) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:75"
+}

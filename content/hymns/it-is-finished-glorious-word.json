@@ -1,0 +1,61 @@
+{
+  "title": "It Is Finished! Glorious Word",
+  "tune": "ratisbon-werner",
+  "text": [
+    {
+      "name": "Stephen Greenleaf Bulfinch",
+      "born": 1809,
+      "died": 1870,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "It Is Finished! Glorious Word in Tonic Solfa to RATISBON (WERNER), doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Stephen Greenleaf Bulfinch wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 136, “\"It Is Finished.\"”.",
+    "The book printed the words without tunes, marked Sevens, six lines (7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to RATISBON (WERNER); any other Sevens, six lines tune fits them as well."
+  ],
+  "underlay": "It is fin-ished! glo-rious word From thy lips, our suf-fering Lord! Words of high, tri-um-phant might, Ere thy spir-it takes its flight. It is fin-ished! all is o'er; Pain and scorn op-press no more.",
+  "verses": [
+    {
+      "lines": [
+        "It is finished! glorious word",
+        "From thy lips, our suffering Lord!",
+        "Words of high, triumphant might,",
+        "Ere thy spirit takes its flight.",
+        "It is finished! all is o'er;",
+        "Pain and scorn oppress no more."
+      ]
+    },
+    {
+      "lines": [
+        "Now, no more foreboding dread",
+        "Shades the path thy feet must tread;",
+        "No more fear, lest in thine hour",
+        "Pain should patience overpower;",
+        "On the perfect sacrifice",
+        "Not a stain of weakness lies."
+      ]
+    },
+    {
+      "lines": [
+        "Champion! lay thine armor by;",
+        "'Tis thine hour of victory!",
+        "All thy toils are now o'erpast;",
+        "Thou hast found thy rest at last;",
+        "All hath faithfully been done,",
+        "And the world's salvation won."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Stephen Greenleaf Bulfinch died in 1870.",
+  "credits": "Words by Stephen Greenleaf Bulfinch (1809–1870), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to RATISBON (WERNER) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:136"
+}

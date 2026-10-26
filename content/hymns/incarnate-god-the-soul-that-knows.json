@@ -1,0 +1,95 @@
+{
+  "title": "Incarnate God! the Soul That Knows",
+  "tune": "york",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Incarnate God! the Soul That Knows in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 47, “The believer's safety. Ps 91”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "In-car-nate God! the soul that knows Thy name's mys-te-rious power Shall dwell in un-dis-turbed re-pose, Nor fear the try-ing hour.",
+  "verses": [
+    {
+      "lines": [
+        "Incarnate God! the soul that knows",
+        "Thy name's mysterious power",
+        "Shall dwell in undisturbed repose,",
+        "Nor fear the trying hour."
+      ]
+    },
+    {
+      "lines": [
+        "Thy wisdom, faithfulness and love,",
+        "To feeble helpless worms;",
+        "A buckler and a refuge prove,",
+        "From enemies and storms."
+      ]
+    },
+    {
+      "lines": [
+        "In vain the fowler spreads his net,",
+        "To draw them from thy care;",
+        "Thy timely call instructs their feet,",
+        "To shun the artful snare."
+      ]
+    },
+    {
+      "lines": [
+        "When like a baneful pestilence,",
+        "Sin mows its thousands down",
+        "On every side, without defence,",
+        "Thy grace secures thine own."
+      ]
+    },
+    {
+      "lines": [
+        "No midnight terrors haunt their bed,",
+        "No arrow wounds by day;",
+        "Unhurt on serpents they shall tread,",
+        "If found in duty's way."
+      ]
+    },
+    {
+      "lines": [
+        "Angels, unseen, attend the saints,",
+        "And bear them in their arms;",
+        "To cheer the spirit when it faints,",
+        "And guard the life from harms."
+      ]
+    },
+    {
+      "lines": [
+        "The angels' Lord, himself is nigh,",
+        "To them that love his name;",
+        "Ready to save them when they cry,",
+        "And put their foes to shame."
+      ]
+    },
+    {
+      "lines": [
+        "Crosses and changes are their lot,",
+        "Long as they sojourn here;",
+        "But since their Savior changes not,",
+        "What have the saints to fear?"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:47"
+}

@@ -1,0 +1,50 @@
+{
+  "title": "As Every Day Thy Mercy Spares",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "As Every Day Thy Mercy Spares in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 59, “The Heavenly Guardian”, where the book credits them to the Chr. Psalmist.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "As ev-ery day Thy mer-cy spares Will bring its tri-als or its cares, O Fa-ther, till my life shall end, Be Thou my coun-sel-lor and friend! Teach me Thy sta-tutes all di-vine, And let Thy will be al-ways mine!",
+  "verses": [
+    {
+      "lines": [
+        "As every day Thy mercy spares",
+        "Will bring its trials or its cares,",
+        "O Father, till my life shall end,",
+        "Be Thou my counsellor and friend!",
+        "Teach me Thy statutes all divine,",
+        "And let Thy will be always mine!"
+      ]
+    },
+    {
+      "lines": [
+        "When each day's scenes and labors close,",
+        "And wearied nature seeks repose,",
+        "With pardoning mercy, richly blest,",
+        "Guard me, my Father, while I rest;",
+        "And as each morning sun shall rise,",
+        "O, lead me onward to the skies!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:59"
+}

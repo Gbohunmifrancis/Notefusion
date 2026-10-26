@@ -1,0 +1,69 @@
+{
+  "title": "For Thee, O God, Our Constant Praise",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Nahum Tate",
+      "born": 1652,
+      "died": 1715,
+      "role": "Words"
+    },
+    {
+      "name": "Nicholas Brady",
+      "born": 1659,
+      "died": 1726,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "For Thee, O God, Our Constant Praise in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Nahum Tate and Nicholas Brady wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 33 of its twenty-second edition (1853), “Public Worship”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "For thee, O God, our con-stant praise In Zi-on waits, thy cho-sen seat; Our pro-mised al-tars there we'll raise, And all our zeal-ous vows com-plete.",
+  "verses": [
+    {
+      "lines": [
+        "For thee, O God, our constant praise",
+        "In Zion waits, thy chosen seat;",
+        "Our promised altars there we'll raise,",
+        "And all our zealous vows complete."
+      ]
+    },
+    {
+      "lines": [
+        "O thou, who to my humble prayer",
+        "Didst always bend thy listening ear,",
+        "To thee shall all mankind repair,",
+        "And at thy gracious throne appear."
+      ]
+    },
+    {
+      "lines": [
+        "Our sins, though numberless, in vain",
+        "To stop thy flowing mercy try;",
+        "For thou wilt cleanse the guilty stain,",
+        "And wash away the crimson dye."
+      ]
+    },
+    {
+      "lines": [
+        "Blest is the man, who, near thee placed,",
+        "Within thy sacred dwelling lives;",
+        "Whilst we at humbler distance taste",
+        "The vast delight thy worship gives."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Nahum Tate died in 1715; Nicholas Brady died in 1726.",
+  "credits": "Words by Nahum Tate (1652–1715) and Nicholas Brady (1659–1726), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:33"
+}

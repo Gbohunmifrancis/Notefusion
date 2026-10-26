@@ -1,0 +1,62 @@
+{
+  "title": "Soul! Celestial in Thy Birth",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Soul! Celestial in Thy Birth in Tonic Solfa to HEINLEIN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 197, “Come Home!”, where the book credits them to Briggs' Collection.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to HEINLEIN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Soul! ce-les-tial in thy birth, Dwell-ing yet in low-est earth, Pant-ing, shrink-ing to be free, Hear God's spir-it whis-per thee.",
+  "verses": [
+    {
+      "lines": [
+        "Soul! celestial in thy birth,",
+        "Dwelling yet in lowest earth,",
+        "Panting, shrinking to be free,",
+        "Hear God's spirit whisper thee."
+      ]
+    },
+    {
+      "lines": [
+        "Thus it saith; in accents mild, —",
+        "\"Weary wanderer, wayward child,",
+        "From thy Father's earnest love",
+        "Still forever wilt thou rove?"
+      ]
+    },
+    {
+      "lines": [
+        "\"Turn to hope, and peace, and light,",
+        "Freed from sin, and earth, and night;",
+        "I have called, entreated thee,",
+        "In my mercies gentle, free."
+      ]
+    },
+    {
+      "lines": [
+        "\"Human soul, in love divine",
+        "I have sought to make thee mine;",
+        "Still for thee good angels yearn;",
+        "Human soul, return, return!\""
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to HEINLEIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:197"
+}

@@ -1,0 +1,91 @@
+{
+  "title": "Pleasing Spring Again Is Here",
+  "tune": "watchman",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Pleasing Spring Again Is Here in Tonic Solfa to WATCHMAN, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 33, “Spring”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to WATCHMAN; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Pleas-ing spring a-gain is here! Trees and fields in bloom ap-pear; Hark! the birds, with art-less lays, War-ble their Cre-a-tor's praise! Where, in win-ter, all was snow, Now the flow'rs in clus-ters grow; And the corn, in green ar-ray, Prom-is-es a har-vest day.",
+  "verses": [
+    {
+      "lines": [
+        "Pleasing spring again is here!",
+        "Trees and fields in bloom appear;",
+        "Hark! the birds, with artless lays,",
+        "Warble their Creator's praise!",
+        "Where, in winter, all was snow,",
+        "Now the flow'rs in clusters grow;",
+        "And the corn, in green array,",
+        "Promises a harvest-day."
+      ]
+    },
+    {
+      "lines": [
+        "What a change has taken place!",
+        "Emblem of the spring of grace;",
+        "How the soul, in winter, mourns",
+        "Till the Lord, the Sun, returns;",
+        "Till the Spirit's gentle rain,",
+        "Bids the heart revive again;",
+        "Then the stone is turned to flesh,",
+        "And each grace springs forth afresh."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, afford a spring to me!",
+        "Let me feel like what I see;",
+        "Ah! my winter has been long,",
+        "Chilled my hopes, and stopped my song!",
+        "Winter threatened to destroy",
+        "Faith, and love, and every joy;",
+        "If thy life was in the root,",
+        "Still I could not yield thee fruit."
+      ]
+    },
+    {
+      "lines": [
+        "Speak, and by thy gracious voice",
+        "Make my drooping soul rejoice;",
+        "O beloved Savior, haste,",
+        "Tell me all the storms are past:",
+        "On thy garden deign to smile,",
+        "Raise the plants, enrich the soil;",
+        "Soon thy presence will restore",
+        "Life, to what seemed dead before."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, I long to be at home,",
+        "Where these changes never come!",
+        "Where the saints no winter fear,",
+        "Where 'tis spring throughout the year:",
+        "How unlike this state below!",
+        "There the flow'rs unwith'ring blow,",
+        "There no chilling blasts annoy,",
+        "All is love, and bloom, and joy."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WATCHMAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:33"
+}

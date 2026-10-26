@@ -1,0 +1,87 @@
+{
+  "title": "Jesus, Who Bought Us with His Blood",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Jesus, Who Bought Us with His Blood in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 22, “The prayer of Jabez. 1Chr 4:9,10”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus, who bought us with his blood, And makes our souls his care; Was known of old as Is-rael's God, And an-swered Ja-bez' prayer.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, who bought us with his blood,",
+        "And makes our souls his care;",
+        "Was known of old as Israel's God,",
+        "And answered Jabez' prayer."
+      ]
+    },
+    {
+      "lines": [
+        "Jabez! a child of grief! the name",
+        "Befits poor sinners well;",
+        "For Jesus bore the cross and shame,",
+        "To save our souls from hell."
+      ]
+    },
+    {
+      "lines": [
+        "Teach us, O Lord, like him, to plead",
+        "For mercies from above;",
+        "O come, and bless our souls indeed,",
+        "With light, and joy, and love."
+      ]
+    },
+    {
+      "lines": [
+        "The gospel's promised land is wide,",
+        "We fain would enter in;",
+        "But we are pressed, on every side,",
+        "With unbelief and sin."
+      ]
+    },
+    {
+      "lines": [
+        "Arise; O Lord, enlarge our coast,",
+        "Let us possess the whole;",
+        "That Satan may no longer boast",
+        "He can thy work control."
+      ]
+    },
+    {
+      "lines": [
+        "Oh, may thine hand be with us still,",
+        "Our Guide and Guardian be;",
+        "To keep us safe from every ill,",
+        "Till death shall set us free."
+      ]
+    },
+    {
+      "lines": [
+        "Help us on thee to cast our care,",
+        "And on thy word to rest;",
+        "That Israel's God, who heareth prayer,",
+        "Will grant us our request."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:22"
+}

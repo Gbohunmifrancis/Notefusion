@@ -1,0 +1,55 @@
+{
+  "title": "That Blessed Law of Thine",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "That Blessed Law of Thine in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 229, “Desire for Holiness”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "That bless-ed law of Thine, Fa-ther, to me im-part; The Spi-rit's law of life di-vine, O, write it in my heart!",
+  "verses": [
+    {
+      "lines": [
+        "That blessed law of Thine,",
+        "Father, to me impart; —",
+        "The Spirit's law of life divine,",
+        "O, write it in my heart!"
+      ]
+    },
+    {
+      "lines": [
+        "Implant it deep within,",
+        "Whence it may ne'er remove, —",
+        "The law of liberty from sin,",
+        "The perfect law of love."
+      ]
+    },
+    {
+      "lines": [
+        "Thy nature be my law,",
+        "Thy spotless sanctity,",
+        "And sweetly every moment draw",
+        "My happy soul to Thee."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:229"
+}

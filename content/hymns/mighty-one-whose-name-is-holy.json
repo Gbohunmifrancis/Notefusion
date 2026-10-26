@@ -1,0 +1,67 @@
+{
+  "title": "Mighty One, Whose Name Is Holy",
+  "tune": "lux-eoi",
+  "text": [
+    {
+      "name": "John Pierpont",
+      "born": 1785,
+      "died": 1866,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Mighty One, Whose Name Is Holy in Tonic Solfa to LUX EOI, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Pierpont wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 414, “For a Charitable Occasion”.",
+    "The book printed the words without tunes, marked Eights and Sevens Double (8.7.8.7.8.7.8.7), to be sung to any tune of that metre. This page sets them to LUX EOI; any other Eights and Sevens Double tune fits them as well."
+  ],
+  "underlay": "Might-y One, whose name is ho-ly, Thou wilt save Thy work a-live, And the spir-it of the low-ly Thou wilt vis-it and re-vive. What Thy pro-phets thus have spo-ken, A-ges wit-ness as they roll; Bleed-ing hearts and spi-rits bro-ken, Touched by Thee, O God, are whole.",
+  "verses": [
+    {
+      "lines": [
+        "Mighty One, whose name is holy,",
+        "Thou wilt save Thy work alive,",
+        "And the spirit of the lowly",
+        "Thou wilt visit and revive.",
+        "What Thy prophets thus have spoken,",
+        "Ages witness as they roll;",
+        "Bleeding hearts and spirits broken,",
+        "Touched by Thee, O God, are whole."
+      ]
+    },
+    {
+      "lines": [
+        "By Thy pitying spirit guided,",
+        "Jesus sought the sufferer's door;",
+        "Comfort for the poor provided,",
+        "And the mourner's sorrows bore; —",
+        "So Thy mercy's angel, bending,",
+        "Heard a friendless prisoner's call,",
+        "And through night's cold vault descending,",
+        "Loosed from chains Thy servant Paul."
+      ]
+    },
+    {
+      "lines": [
+        "Father, as Thy love is endless,",
+        "Working by Thy servants thus,",
+        "The forsaken and the friendless",
+        "Deign to visit, e'en by us;",
+        "So shall each, with spirit fervent",
+        "Laboring with Thee here below,",
+        "Be declared Thy faithful servant,",
+        "Where there's neither want nor woe."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Pierpont died in 1866.",
+  "credits": "Words by John Pierpont (1785–1866), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to LUX EOI by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:414"
+}

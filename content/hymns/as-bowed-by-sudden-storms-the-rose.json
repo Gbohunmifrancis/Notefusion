@@ -1,0 +1,63 @@
+{
+  "title": "As, Bowed by Sudden Storms, the Rose",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Lydia Sigourney",
+      "born": 1791,
+      "died": 1865,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "As, Bowed by Sudden Storms, the Rose in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Lydia Sigourney wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 579 of its twenty-second edition (1853), “Burial of a Friend”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "As, bowed by sud-den storms, the rose Sinks on the gar-den's breast, Down to the grave our bro-ther goes, In si-lence there to rest.",
+  "verses": [
+    {
+      "lines": [
+        "As, bowed by sudden storms, the rose",
+        "Sinks on the garden's breast,",
+        "Down to the grave our brother goes,",
+        "In silence there to rest."
+      ]
+    },
+    {
+      "lines": [
+        "No more with us his tuneful voice",
+        "The hymn of praise shall swell;",
+        "No more his cheerful heart rejoice",
+        "When peals the Sabbath bell."
+      ]
+    },
+    {
+      "lines": [
+        "Yet, if, in yonder cloudless sphere",
+        "Amid a sinless throng,",
+        "He utters in his Saviour's ear",
+        "The everlasting song, —"
+      ]
+    },
+    {
+      "lines": [
+        "No more we'll mourn the absent friend,",
+        "But lift our earnest prayer,",
+        "And daily every effort bend",
+        "To rise and join him there."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Lydia Sigourney died in 1865.",
+  "credits": "Words by Lydia Sigourney (1791–1865), public domain, as printed in Hymns for Christian Devotion (1853); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:579"
+}

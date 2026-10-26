@@ -1,0 +1,63 @@
+{
+  "title": "There Is a State Unknown, Unseen",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Jane Taylor",
+      "born": 1783,
+      "died": 1824,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "There Is a State Unknown, Unseen in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Jane Taylor wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 357, “The Unseen World”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "There is a state un-known, un-seen, Where par-ted souls must be; And but a step doth lie be-tween That world of souls and me.",
+  "verses": [
+    {
+      "lines": [
+        "There is a state unknown, unseen,",
+        "Where parted souls must be;",
+        "And but a step doth lie between",
+        "That world of souls and me."
+      ]
+    },
+    {
+      "lines": [
+        "I see no light, I hear no sound,",
+        "When midnight shades are spread;",
+        "Yet angels pitch their tents around,",
+        "And guard my quiet bed."
+      ]
+    },
+    {
+      "lines": [
+        "The things unseen, O God, reveal;",
+        "My spirit's vision clear,",
+        "Till I shall feel, and see, and know,",
+        "That those I love are near."
+      ]
+    },
+    {
+      "lines": [
+        "Impart the faith that soars on high,",
+        "Beyond this earthly strife;",
+        "That holds sweet converse with the sky,",
+        "And lives eternal life."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Jane Taylor died in 1824.",
+  "credits": "Words by Jane Taylor (1783–1824), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:357"
+}

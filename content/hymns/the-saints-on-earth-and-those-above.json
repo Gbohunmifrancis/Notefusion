@@ -1,0 +1,63 @@
+{
+  "title": "The Saints on Earth and Those Above",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "The Saints on Earth and Those Above in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 453, “The Communion of Saints”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The saints on earth and those a-bove But one com-mu-nion make; Joined to their Lord in bonds of love, All of His grace par-take.",
+  "verses": [
+    {
+      "lines": [
+        "The saints on earth and those above",
+        "But one communion make;",
+        "Joined to their Lord in bonds of love,",
+        "All of His grace partake."
+      ]
+    },
+    {
+      "lines": [
+        "One family, we dwell in Him;",
+        "One church above, beneath;",
+        "Though now divided by the stream,",
+        "The narrow stream of death."
+      ]
+    },
+    {
+      "lines": [
+        "One army of the living God,",
+        "To His command we bow;",
+        "Part of the host have crossed the flood",
+        "And part are crossing now."
+      ]
+    },
+    {
+      "lines": [
+        "O God, be Thou our constant guide!",
+        "Then, when the word is given,",
+        "Bid Thou death's flood its waves divide,",
+        "And land us safe in heaven."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:453"
+}

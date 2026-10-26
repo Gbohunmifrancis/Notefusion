@@ -1,0 +1,70 @@
+{
+  "title": "O Thou, Enthroned in Worlds Above",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O Thou, Enthroned in Worlds Above in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 440 of its twenty-second edition (1853), “The Lord's Prayer”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O Thou, en-throned in worlds a-bove, Our Fa-ther and our Friend! Lo, at the foot-stool of thy love, Thy child-ren hum-bly bend.",
+  "verses": [
+    {
+      "lines": [
+        "O Thou, enthroned in worlds above,",
+        "Our Father and our Friend!",
+        "Lo, at the footstool of thy love,",
+        "Thy children humbly bend."
+      ]
+    },
+    {
+      "lines": [
+        "All reverence to thy name be given;",
+        "Thy kingdom wide displayed;",
+        "And, as thy will is done in heaven,",
+        "Be it on earth obeyed."
+      ]
+    },
+    {
+      "lines": [
+        "Our table may thy bounty spread,",
+        "From thine exhaustless store,",
+        "From day to day with daily bread, —",
+        "Nor would we ask for more."
+      ]
+    },
+    {
+      "lines": [
+        "That pardon we to others give,",
+        "Do thou to us extend;",
+        "From all temptation, Lord, relieve;",
+        "From every ill defend."
+      ]
+    },
+    {
+      "lines": [
+        "And now to thee belong, Most High,",
+        "The kingdom, glory, power,",
+        "Through the broad earth and spacious sky,",
+        "Both now and evermore."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:440"
+}

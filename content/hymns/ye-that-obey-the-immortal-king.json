@@ -1,0 +1,55 @@
+{
+  "title": "Ye That Obey the Immortal King",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Ye That Obey the Immortal King in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 18 of its twenty-second edition (1853), “Daily and nightly Devotion”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Ye that o-bey th'im-mor-tal King, At-tend his ho-ly place; Bow to the glo-ries of his name, And sing his won-drous grace.",
+  "verses": [
+    {
+      "lines": [
+        "Ye that obey the immortal King,",
+        "Attend his holy place;",
+        "Bow to the glories of his name,",
+        "And sing his wondrous grace."
+      ]
+    },
+    {
+      "lines": [
+        "Lift up your hands by morning light,",
+        "And raise your thanks on high;",
+        "Send your admiring thoughts, by night,",
+        "Above the starry sky."
+      ]
+    },
+    {
+      "lines": [
+        "The God of Zion cheer your hearts",
+        "With rays of quickening grace:",
+        "'Tis he that spreads the heavens abroad,",
+        "Whose presence fills the place."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:18"
+}

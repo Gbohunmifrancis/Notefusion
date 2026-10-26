@@ -1,0 +1,61 @@
+{
+  "title": "Mark the Soft-falling Snow",
+  "tune": "st-john-parish-choir",
+  "text": [
+    {
+      "name": "Philip Doddridge",
+      "born": 1702,
+      "died": 1751,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Mark the Soft-falling Snow in Tonic Solfa to ST. JOHN (PARISH CHOIR), doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Philip Doddridge wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 293 of its twenty-second edition (1853), “Efficacy of the Gospel”.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.8.8), to be sung to any tune of that metre. This page sets them to ST. JOHN (PARISH CHOIR); any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "Mark the soft fall-ing snow, And the de-scend-ing rain! To heaven, from whence it fell, It turns not back a-gain; But wa-ters earth through ev-ery pore, And calls forth all her se-cret store.",
+  "verses": [
+    {
+      "lines": [
+        "Mark the soft-falling snow,",
+        "And the descending rain!",
+        "To heaven, from whence it fell,",
+        "It turns not back again;",
+        "But waters earth through every pore,",
+        "And calls forth all her secret store."
+      ]
+    },
+    {
+      "lines": [
+        "Arrayed in beauteous green",
+        "The hills and valleys shine,",
+        "And man and beast are fed",
+        "By providence divine:",
+        "The harvest bows its golden ears,",
+        "The copious seed of future years."
+      ]
+    },
+    {
+      "lines": [
+        "\"So,\" saith the God of grace,",
+        "\"My Gospel shall descend,",
+        "Almighty to effect",
+        "The purpose I intend;",
+        "Millions of souls shall feel its power,",
+        "And bear it down to millions more.\""
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Philip Doddridge died in 1751.",
+  "credits": "Words by Philip Doddridge (1702–1751), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. JOHN (PARISH CHOIR) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:293"
+}

@@ -1,0 +1,63 @@
+{
+  "title": "Brightest and Best of the Sons of the Morning",
+  "tune": "wesley-mason",
+  "text": [
+    {
+      "name": "Reginald Heber",
+      "born": 1783,
+      "died": 1826,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Brightest and Best of the Sons of the Morning in Tonic Solfa to WESLEY (MASON), doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Reginald Heber wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 108, “Epiphany”.",
+    "The book printed the words without tunes, marked Elevens and Tens (11.10.11.10), to be sung to any tune of that metre. This page sets them to WESLEY (MASON); any other Elevens and Tens tune fits them as well."
+  ],
+  "underlay": "Bright-est and best of the sons of the morn-ing, Dawn on our dark-ness, and lend us thine aid! Star of the East, the ho-ri-zon a-dorn-ing, Guide where our in-fant Re-deem-er is laid!",
+  "verses": [
+    {
+      "lines": [
+        "Brightest and best of the sons of the morning,",
+        "Dawn on our darkness, and lend us thine aid!",
+        "Star of the East, the horizon adorning,",
+        "Guide where our infant Redeemer is laid!"
+      ]
+    },
+    {
+      "lines": [
+        "Say, shall we yield him, in costly devotion,",
+        "Odors of Edom, and offerings divine?",
+        "Gems of the mountain, and pearls of the ocean,",
+        "Myrrh from the forest, or gold from the mine?"
+      ]
+    },
+    {
+      "lines": [
+        "Vainly we offer each costly oblation;",
+        "Vainly with gifts would his favor secure:",
+        "Richer by far is the heart's adoration;",
+        "Dearer to God are the prayers of the poor."
+      ]
+    },
+    {
+      "lines": [
+        "Brightest and best of the sons of the morning,",
+        "Dawn on our darkness, and lend us thine aid!",
+        "Star of the East, the horizon adorning,",
+        "Guide where our infant Redeemer is laid."
+      ]
+    }
+  ],
+  "metre": "11 10 11 10",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Reginald Heber died in 1826.",
+  "credits": "Words by Reginald Heber (1783–1826), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WESLEY (MASON) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:108"
+}

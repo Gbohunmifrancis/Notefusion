@@ -1,0 +1,78 @@
+{
+  "title": "I Love the Lord; He Heard My Cries",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "I Love the Lord; He Heard My Cries in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 116, part 1, headed “Recovery from sickness”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "I love the Lord; he heard my cries, And pi-ty'd ev-ery groan: Long as I live, when trou-bles rise, I'll has-ten to his throne.",
+  "verses": [
+    {
+      "lines": [
+        "I love the Lord; he heard my cries,",
+        "And pity'd every groan:",
+        "Long as I live, when troubles rise,",
+        "I'll hasten to his throne."
+      ]
+    },
+    {
+      "lines": [
+        "I love the Lord; he bow'd his ear,",
+        "And chas'd my griefs away;",
+        "O let my heart no more despair,",
+        "While I have breath to pray!"
+      ]
+    },
+    {
+      "lines": [
+        "My flesh declin'd, my spirits fell,",
+        "And I drew near the dead,",
+        "While inward pangs, and fears of hell",
+        "Perplex'd my wakeful head."
+      ]
+    },
+    {
+      "lines": [
+        "\"My God,\" I cry'd \"thy servant save,",
+        "\"Thou ever good and just;",
+        "\"Thy power can rescue from the grave,",
+        "\"Thy power is all my trust.\""
+      ]
+    },
+    {
+      "lines": [
+        "The Lord beheld me sore distrest,",
+        "He bid my pains remove:",
+        "Return, my soul, to God thy rest,",
+        "For thou hast known his love."
+      ]
+    },
+    {
+      "lines": [
+        "My God hath sav'd my soul from death,",
+        "And dry'd my failing tears;",
+        "Now to his praise I'll spend my breath,",
+        "And my remaining years."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 116:1"
+}

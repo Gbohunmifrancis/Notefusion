@@ -1,0 +1,63 @@
+{
+  "title": "Great God! Let All Our Tuneful Powers",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Ottiwell Heginbotham",
+      "born": 1744,
+      "died": 1768,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Great God! Let All Our Tuneful Powers in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Ottiwell Heginbotham wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 851 of its twenty-second edition (1853), “The God of the Seasons”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Great God! let all our tune-ful powers A-wake and sing thy might-y name; Thy hand rolls on our cir-cling hours, The hand from which our be-ing came.",
+  "verses": [
+    {
+      "lines": [
+        "Great God! let all our tuneful powers",
+        "Awake and sing thy mighty name;",
+        "Thy hand rolls on our circling hours,",
+        "The hand from which our being came."
+      ]
+    },
+    {
+      "lines": [
+        "Seasons and moons revolving round",
+        "In beauteous order speak thy praise;",
+        "And years with smiling mercy crowned,",
+        "To thee successive honors raise."
+      ]
+    },
+    {
+      "lines": [
+        "Each changing season on our souls",
+        "Its sweetest, kindest influence sheds;",
+        "And every period, as it rolls,",
+        "Showers countless blessings on our heads."
+      ]
+    },
+    {
+      "lines": [
+        "Our lives, our health, our friends, we owe",
+        "All to thy vast unbounded love;",
+        "Ten thousand precious gifts below,",
+        "And hope of nobler joys above."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Ottiwell Heginbotham died in 1768.",
+  "credits": "Words by Ottiwell Heginbotham (1744–1768), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:851"
+}

@@ -1,0 +1,86 @@
+{
+  "title": "With All My Powers of Heart and Tongue",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "With All My Powers of Heart and Tongue in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 138, headed “Restoring and preserving grace”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "With all my powers of heart and tongue I'll praise my Mak-er in my song: An-gels shall hear the notes I raise, Ap-prove the song, and join the praise.",
+  "verses": [
+    {
+      "lines": [
+        "With all my powers of heart and tongue",
+        "I'll praise my Maker in my song:",
+        "Angels shall hear the notes I raise,",
+        "Approve the song, and join the praise."
+      ]
+    },
+    {
+      "lines": [
+        "Angels that make thy church their care",
+        "Shall witness my devotions there,",
+        "While holy zeal directs my eyes",
+        "To thy fair temple in the skies."
+      ]
+    },
+    {
+      "lines": [
+        "I'll sing thy truth and mercy, Lord,",
+        "I'll sing the wonders of thy word;",
+        "Not all thy works and names below",
+        "So much thy power and glory show."
+      ]
+    },
+    {
+      "lines": [
+        "To God I cry'd when troubles rose;",
+        "He heard me, and subdu'd my foes,",
+        "He did my rising fears control,",
+        "And strength diffus'd thro' all my soul."
+      ]
+    },
+    {
+      "lines": [
+        "The God of heaven maintains his state,",
+        "Frowns on the proud and scorns the great;",
+        "But from his throne descends to see",
+        "The sons of humble poverty."
+      ]
+    },
+    {
+      "lines": [
+        "Amidst a thousand snares I stand",
+        "Upheld and guarded by thy hand;",
+        "Thy words my fainting soul revive,",
+        "And keep my dying faith alive."
+      ]
+    },
+    {
+      "lines": [
+        "Grace will complete what grace begins,",
+        "To save from sorrows or from sins;",
+        "The work that wisdom undertakes",
+        "Eternal mercy ne'er forsakes."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 138"
+}

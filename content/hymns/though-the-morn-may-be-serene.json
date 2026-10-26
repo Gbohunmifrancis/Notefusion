@@ -1,0 +1,103 @@
+{
+  "title": "Though the Morn May Be Serene",
+  "tune": "martyn",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Though the Morn May Be Serene in Tonic Solfa to MARTYN, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 34, “Summer-forms”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to MARTYN; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Though the morn may be se-rene, Not a threat'n-ing cloud be seen; Who can un-der-take to say 'Twill be plea-sant all the day? Tem-pests sud-den-ly may rise, Dark-ness o-ver-spread the skies; Light-nings flash, and thun-ders roar, Ere a short lived day be o'er.",
+  "verses": [
+    {
+      "lines": [
+        "Though the morn may be serene,",
+        "Not a threat'ning cloud be seen;",
+        "Who can undertake to say",
+        "'Twill be pleasant all the day?",
+        "Tempests suddenly may rise,",
+        "Darkness overspread the skies;",
+        "Lightnings flash, and thunders roar,",
+        "Ere a short-lived day be o'er."
+      ]
+    },
+    {
+      "lines": [
+        "Often thus, the child of grace,",
+        "Enters on his christian race;",
+        "Guilt and fear are overborne,",
+        "'Tis with him a summer's morn:",
+        "While his new-felt joys abound,",
+        "All things seem to smile around;",
+        "And he hopes it will be fair,",
+        "All the day, and all the year."
+      ]
+    },
+    {
+      "lines": [
+        "Should we warn him of a change,",
+        "He would think the caution strange;",
+        "He no change or trouble fears,",
+        "Till the gath'ring storm appears;",
+        "Till dark clouds his sun conceal,",
+        "Till temptation's pow'r he feel;",
+        "Then he trembles, and looks pale,",
+        "All his hopes and courage fail."
+      ]
+    },
+    {
+      "lines": [
+        "But the wonder-working Lord",
+        "Soothes the tempest by his word;",
+        "Stills the thunder, stops the rain,",
+        "And his sun breaks forth again:",
+        "Soon the cloud again returns,",
+        "Now he joys, and now he mourns;",
+        "Oft his sky is overcast,",
+        "Ere the day of life be past."
+      ]
+    },
+    {
+      "lines": [
+        "Tried believers too can say,",
+        "In the course of one short day,",
+        "Though the morning has been fair,",
+        "Proved a golden hour of prayer:",
+        "Sin, and Satan, long ere night,",
+        "Have their comforts put to flight;",
+        "Ah! what heart-felt peace and joy,",
+        "Unexpected storms destroy."
+      ]
+    },
+    {
+      "lines": [
+        "Dearest Savior, call us soon",
+        "To thine high eternal noon;",
+        "Never there shall tempest rise",
+        "To conceal thee from our eyes:",
+        "Satan shall no more deceive,",
+        "We no more thy Spirit grieve;",
+        "But through cloudless, endless days,",
+        "Sound, to golden harps, thy praise."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MARTYN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:34"
+}

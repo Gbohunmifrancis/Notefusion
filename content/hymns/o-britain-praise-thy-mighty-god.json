@@ -1,0 +1,78 @@
+{
+  "title": "O Britain, Praise Thy Mighty God",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "O Britain, Praise Thy Mighty God in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 147, part 2, headed “Summer and winter”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Bri-tain, praise thy might-y God, And make his hon-ours known a-broad, He bid the o-cean round thee flow; Not bars of brass could guard thee so.",
+  "verses": [
+    {
+      "lines": [
+        "O Britain, praise thy mighty God,",
+        "And make his honours known abroad,",
+        "He bid the ocean round thee flow;",
+        "Not bars of brass could guard thee so."
+      ]
+    },
+    {
+      "lines": [
+        "Thy children are secure and blest;",
+        "Thy shores have peace, thy cities rest;",
+        "He feeds thy sons with finest wheat,",
+        "And adds his blessing to their meat."
+      ]
+    },
+    {
+      "lines": [
+        "Thy changing season he ordains,",
+        "Thine early and thy later rains:",
+        "His flakes of snow like wool he sends,",
+        "And thus the springing corn defends."
+      ]
+    },
+    {
+      "lines": [
+        "With hoary frost he strews the ground;",
+        "His hail descends with clattering sound:",
+        "Where is the man so vainly bold",
+        "That dares defy his dreadful cold?"
+      ]
+    },
+    {
+      "lines": [
+        "He bids the southern breezes blow,",
+        "The ice dissolves, the waters flow;",
+        "But he hath nobler works and ways",
+        "To call the Britons to his praise."
+      ]
+    },
+    {
+      "lines": [
+        "To all the Isle his laws are shown,",
+        "His gospel thro' the nation known;",
+        "He hath not thus reveal'd his word",
+        "To every land: Praise ye the Lord."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 147:2"
+}

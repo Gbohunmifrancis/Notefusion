@@ -1,0 +1,95 @@
+{
+  "title": "When Peter Through the Tedious Night",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "When Peter Through the Tedious Night in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 10, “Casting the gospel net”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When Pe-ter through the te-dious night Had of-ten cast his net in vain; Soon as his Lord ap-peared in sight He glad-ly let it down a-gain.",
+  "verses": [
+    {
+      "lines": [
+        "When Peter through the tedious night",
+        "Had often cast his net in vain;",
+        "Soon as his Lord appeared in sight",
+        "He gladly let it down again."
+      ]
+    },
+    {
+      "lines": [
+        "Once more the gospel net we cast,",
+        "Do thou, O Lord, the effort own;",
+        "We learn from disappointments past,",
+        "To rest our hope on thee alone."
+      ]
+    },
+    {
+      "lines": [
+        "Upheld by thy supporting hand,",
+        "We enter on another year;",
+        "And now we meet, at thy command,",
+        "To seek thy gracious presence here."
+      ]
+    },
+    {
+      "lines": [
+        "May this be a much favored hour,",
+        "To souls in Satan's bondage led!",
+        "O clothe thy word with sovereign pow'r",
+        "To break the rocks, and raise the dead!"
+      ]
+    },
+    {
+      "lines": [
+        "Have mercy on our num'rous youth,",
+        "Who young in years, are old in sin;",
+        "And by thy Spirit, and thy truth,",
+        "Show them the state their souls are in."
+      ]
+    },
+    {
+      "lines": [
+        "Then, by a Savior's dying love",
+        "To every wounded heart revealed,",
+        "Temptations, fears, and guilt remove,",
+        "And be their Sun, and Strength, and Shield."
+      ]
+    },
+    {
+      "lines": [
+        "To mourners speak a cheering word,",
+        "On seeking souls vouchsafe to shine;",
+        "Let poor backsliders be restored,",
+        "And all thy saints in praises join."
+      ]
+    },
+    {
+      "lines": [
+        "O hear our prayer and give us hope,",
+        "That when thy voice shall call us home,",
+        "Thou still wilt raise a people up,",
+        "To love and praise thee in our room."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:10"
+}

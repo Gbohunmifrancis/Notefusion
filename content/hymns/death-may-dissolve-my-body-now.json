@@ -1,0 +1,78 @@
+{
+  "title": "Death May Dissolve My Body Now",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Death May Dissolve My Body Now in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 27, headed “Assurance of heaven; or, A saint prepared to die, 2 Tim. 4. 6 7 8 18”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Death may dis-solve my bo-dy now, And bear my spir-it home; Why do my min-utes move so slow, Nor my sal-va-tion come?",
+  "verses": [
+    {
+      "lines": [
+        "Death may dissolve my body now,",
+        "And bear my spirit home;",
+        "Why do my minutes move so slow,",
+        "Nor my salvation come?"
+      ]
+    },
+    {
+      "lines": [
+        "With heavenly weapons I have fought",
+        "The battles of the Lord,",
+        "Finish'd my course, and kept the faith,",
+        "And wait the sure reward."
+      ]
+    },
+    {
+      "lines": [
+        "God has laid up in heaven for me",
+        "A crown which cannot fade;",
+        "The righteous Judge at that great day",
+        "Shall place it on my head."
+      ]
+    },
+    {
+      "lines": [
+        "Nor hath the King of grace decreed",
+        "This prize for me alone;",
+        "But all that love and long to see",
+        "Th' appearance of his Son."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus the Lord shall guard me safe",
+        "From every ill design;",
+        "And to his heavenly kingdom keep",
+        "This feeble soul of mine."
+      ]
+    },
+    {
+      "lines": [
+        "God is my everlasting aid",
+        "And hell shall rage in vain;",
+        "To him be highest glory paid,",
+        "And endless praise. — Amen."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:27"
+}

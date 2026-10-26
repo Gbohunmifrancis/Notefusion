@@ -1,0 +1,86 @@
+{
+  "title": "How Long Wilt Thou Conceal Thy Face",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "How Long Wilt Thou Conceal Thy Face in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 13, part 2, headed “Complaint under temptations of the devil”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How long wilt thou con-ceal thy face? My God, how long de-lay? When shall I feel those heav-enly rays That chase my fears a-way?",
+  "verses": [
+    {
+      "lines": [
+        "How long wilt thou conceal thy face?",
+        "My God, how long delay?",
+        "When shall I feel those heavenly rays",
+        "That chase my fears away?"
+      ]
+    },
+    {
+      "lines": [
+        "How long shall my poor labouring soul",
+        "Wrestle and toil in vain?",
+        "Thy word can all my foes control,",
+        "And ease my raging pain."
+      ]
+    },
+    {
+      "lines": [
+        "See how the prince of darkness tries",
+        "All his malicious arts,",
+        "He spreads a mist around my eyes,",
+        "And throws his fiery darts."
+      ]
+    },
+    {
+      "lines": [
+        "Be thou my sun and thou my shield,",
+        "My soul in safety keep;",
+        "Make haste before mine eyes are seal'd",
+        "In death's eternal sleep."
+      ]
+    },
+    {
+      "lines": [
+        "How would the tempter boast aloud",
+        "If I become his prey!",
+        "Behold the sons of hell grow proud",
+        "At thy so long delay."
+      ]
+    },
+    {
+      "lines": [
+        "But they shall fly at thy rebuke,",
+        "And Satan hide his head;",
+        "He knows the terrors of thy look",
+        "And hears thy voice with dread."
+      ]
+    },
+    {
+      "lines": [
+        "Thou wilt display that sovereign grace,",
+        "Where all my hopes have hung;",
+        "I shall employ my lips in praise,",
+        "And victory shall be sung."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 13:2"
+}

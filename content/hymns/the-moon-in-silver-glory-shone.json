@@ -1,0 +1,95 @@
+{
+  "title": "The Moon in Silver Glory Shone",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Moon in Silver Glory Shone in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 85, “On the eclipse of the moon. July 30, 1776”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The moon in sil-ver glo-ry shone, And not a cloud in sight; When sud-den-ly a shade be-gun To in-ter-cept her light.",
+  "verses": [
+    {
+      "lines": [
+        "The moon in silver glory shone,",
+        "And not a cloud in sight;",
+        "When suddenly a shade begun",
+        "To intercept her light."
+      ]
+    },
+    {
+      "lines": [
+        "How fast across her orb it spread,",
+        "How fast her light withdrew!",
+        "A circle, tinged with languid red,",
+        "Was all appeared in view."
+      ]
+    },
+    {
+      "lines": [
+        "While many with unmeaning eye",
+        "Gaze on thy works in vain;",
+        "Assist me, Lord, that I may try",
+        "Instruction to obtain."
+      ]
+    },
+    {
+      "lines": [
+        "Fain would my thankful heart and lips",
+        "Unite in praise to thee;",
+        "And meditate on thy eclipse,",
+        "In sad Gethsemane."
+      ]
+    },
+    {
+      "lines": [
+        "Thy peoples guilt, a heavy load!",
+        "(When standing in their room)",
+        "Deprived thee of the light of God,",
+        "And filled thy soul with gloom."
+      ]
+    },
+    {
+      "lines": [
+        "How punctually eclipses move,",
+        "Obedient to thy will!",
+        "Thus shall thy faithfulness and love,",
+        "Thy promises fulfill."
+      ]
+    },
+    {
+      "lines": [
+        "Dark, like the moon without the sun,",
+        "I mourn thine absence, Lord!",
+        "For light or comfort I have none,",
+        "But what thy beams afford."
+      ]
+    },
+    {
+      "lines": [
+        "But lo! the hour draws near apace,",
+        "When changes shall be o'er;",
+        "Then I shall see thee face to face,",
+        "And be eclipsed no more."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:85"
+}

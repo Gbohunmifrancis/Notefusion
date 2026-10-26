@@ -1,0 +1,71 @@
+{
+  "title": "Awake, My Soul! Lift Up Thine Eyes",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Anna Laetitia Barbauld",
+      "born": 1743,
+      "died": 1825,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Awake, My Soul! Lift Up Thine Eyes in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Anna Laetitia Barbauld wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 318, “The Christian Warfare”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "A-wake, my soul! lift up thine eyes; See where thy foes a-gainst thee rise, In long ar-ray, a nu-merous host; A-wake, my soul! or thou art lost.",
+  "verses": [
+    {
+      "lines": [
+        "Awake, my soul! lift up thine eyes;",
+        "See where thy foes against thee rise,",
+        "In long array, a numerous host;",
+        "Awake, my soul! or thou art lost."
+      ]
+    },
+    {
+      "lines": [
+        "Here giant danger threatening stands,",
+        "Mustering his pale, terrific bands;",
+        "There, pleasure's silken banners spread,",
+        "And willing souls are captives led."
+      ]
+    },
+    {
+      "lines": [
+        "See where rebellious passions rage,",
+        "And fierce desires and lusts engage;",
+        "The meanest foe of all the train",
+        "Has thousands and ten thousands slain."
+      ]
+    },
+    {
+      "lines": [
+        "Come, then, my soul! now learn to wield",
+        "The weight of thine immortal shield;",
+        "Put on the armor from above",
+        "Of heavenly truth and heavenly love."
+      ]
+    },
+    {
+      "lines": [
+        "The terror and the charm repel,",
+        "And powers of earth, and powers of hell;",
+        "The Man of Calvary triumphed here;",
+        "Why should his faithful followers fear?"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Anna Laetitia Barbauld died in 1825.",
+  "credits": "Words by Anna Laetitia Barbauld (1743–1825), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:318"
+}

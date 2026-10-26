@@ -1,0 +1,60 @@
+{
+  "title": "Come to Jesus, O My Brothers",
+  "tune": "st-austin",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Come to Jesus, O My Brothers in Tonic Solfa to ST. AUSTIN, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 161, “The Weary and Heavy-Laden”.",
+    "The book printed the words without tunes, marked 8.7.8.7.4.7, to be sung to any tune of that metre. This page sets them to ST. AUSTIN; any other 8.7.8.7.4.7 tune fits them as well."
+  ],
+  "underlay": "Come to Je-sus, O my broth-ers, Come in this ac-cept-ed hour; Je-sus rea-dy stands to save you, Full of pi-ty, love, and power; He is ab-le, He is will-ing, doubt no more.",
+  "verses": [
+    {
+      "lines": [
+        "Come to Jesus, O my brothers,",
+        "Come in this accepted hour;",
+        "Jesus ready stands to save you,",
+        "Full of pity, love, and power;",
+        "He is able,",
+        "He is willing, — doubt no more."
+      ]
+    },
+    {
+      "lines": [
+        "Let not conscience make you linger,",
+        "Nor of fitness fondly dream;",
+        "All the fitness he requireth",
+        "Is to feel your need of him;",
+        "This he gives you, —",
+        "'Tis the spirit's struggling beam."
+      ]
+    },
+    {
+      "lines": [
+        "Come, ye weary, heavy laden;",
+        "Wait not, — 'tis your Saviour's call;",
+        "If you tarry till you're better,",
+        "You will never come at all.",
+        "Not the righteous,",
+        "Sinners, Jesus came to call."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 4 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. AUSTIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:161"
+}

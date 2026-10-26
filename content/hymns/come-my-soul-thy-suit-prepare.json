@@ -1,0 +1,87 @@
+{
+  "title": "Come, My Soul, Thy Suit Prepare",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Come, My Soul, Thy Suit Prepare in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 31, “Ask what I shall give thee. 1Ki 3:5”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Come, my soul, thy suit pre-pare, Je-sus loves to an-swer prayer, He him-self has bid thee pray, There-fore will not say thee nay.",
+  "verses": [
+    {
+      "lines": [
+        "Come, my soul, thy suit prepare,",
+        "Jesus loves to answer prayer,",
+        "He himself has bid thee pray,",
+        "Therefore will not say thee nay."
+      ]
+    },
+    {
+      "lines": [
+        "Thou art coming to a King,",
+        "Large petitions with thee bring;",
+        "For his grace and pow'r are such,",
+        "None can ever ask too much."
+      ]
+    },
+    {
+      "lines": [
+        "With my burden I begin,",
+        "Lord, remove this load of sin!",
+        "Let thy blood, for sinners spilt,",
+        "Set my conscience free from guilt."
+      ]
+    },
+    {
+      "lines": [
+        "Lord! I come to thee for rest,",
+        "Take possession of my breast;",
+        "There thy blood-bought right maintain,",
+        "And without a rival reign."
+      ]
+    },
+    {
+      "lines": [
+        "As the image in the glass",
+        "Answers the beholder's face;",
+        "Thus unto my heart appear,",
+        "Print thine own resemblance there."
+      ]
+    },
+    {
+      "lines": [
+        "While I am a pilgrim here,",
+        "Let thy love my spirit cheer;",
+        "As my Guide, my Guard, my Friend,",
+        "Lead me to my journey's end."
+      ]
+    },
+    {
+      "lines": [
+        "Show me what I have to do,",
+        "Every hour my strength renew;",
+        "Let me live a life of faith,",
+        "Let me die thy peoples death."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:31"
+}

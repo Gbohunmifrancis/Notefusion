@@ -1,0 +1,63 @@
+{
+  "title": "Our God, Where'er Thy People Meet",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Our God, Where'er Thy People Meet in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 910 of its twenty-second edition (1853), “For Social Worship”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Our God, wher-e'er thy peo-ple meet, There they be-hold thy mer-cy seat; Wher-e'er they seek thee, thou art found, And ev-ery place is hal-lowed ground.",
+  "verses": [
+    {
+      "lines": [
+        "Our God, where'er thy people meet,",
+        "There they behold thy mercy-seat;",
+        "Where'er they seek thee, thou art found,",
+        "And every place is hallowed ground."
+      ]
+    },
+    {
+      "lines": [
+        "For thou, within no walls confined,",
+        "Inhabitest the humble mind;",
+        "Such ever bring thee where they come,",
+        "And, going, take thee to their home."
+      ]
+    },
+    {
+      "lines": [
+        "Here may we prove the power of prayer",
+        "To strengthen faith, and sweeten care;",
+        "To teach our faint desires to rise,",
+        "And bring all heaven before our eyes."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, we are few, but thou art near;",
+        "Nor short thine arm, nor deaf thine ear:",
+        "O, rend the heavens, comes quickly down,",
+        "And make a thousand hearts thine own!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:910"
+}

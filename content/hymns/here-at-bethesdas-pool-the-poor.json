@@ -1,0 +1,95 @@
+{
+  "title": "Here at Bethesda's Pool, the Poor",
+  "tune": "york",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Here at Bethesda's Pool, the Poor in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 113, “The pool of Bethesda. Jn 5:2-4”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Here at Be-thes-da's pool, the poor, The with-ered, halt, and blind; With wait-ing hearts ex-pect a cure, And free ad-mit-tance find.",
+  "verses": [
+    {
+      "lines": [
+        "Here at Bethesda's pool, the poor,",
+        "The withered, halt, and blind;",
+        "With waiting hearts expect a cure,",
+        "And free admittance find."
+      ]
+    },
+    {
+      "lines": [
+        "Here streams of wondrous virtue flow",
+        "To heal a sin-sick soul;",
+        "To wash the filthy white as snow,",
+        "And make the wounded whole."
+      ]
+    },
+    {
+      "lines": [
+        "The dumb break forth in songs of praise,",
+        "The blind their fight receive;",
+        "The cripple runs in wisdom's ways,",
+        "The dead revive, and live!"
+      ]
+    },
+    {
+      "lines": [
+        "Restrained to no one case, or time,",
+        "These waters always move;",
+        "Sinners, in every age and clime,",
+        "Their vital influence prove."
+      ]
+    },
+    {
+      "lines": [
+        "Yet numbers daily near them lie,",
+        "Who meet with no relief;",
+        "With life in view they pine and die",
+        "In hopeless unbelief."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis strange they should refuse to bathe,",
+        "And yet frequent the pool;",
+        "But none can even wish for faith,",
+        "While love of sin bears rule."
+      ]
+    },
+    {
+      "lines": [
+        "Satan their consciences has sealed,",
+        "And stupefied their thought;",
+        "For were they willing to be healed,",
+        "The cure would soon be wrought."
+      ]
+    },
+    {
+      "lines": [
+        "Do thou, dear Savior, interpose,",
+        "Their stubborn wills constrain;",
+        "Or else to them the water flows,",
+        "And grace is preached in vain."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:113"
+}

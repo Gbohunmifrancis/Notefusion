@@ -1,0 +1,71 @@
+{
+  "title": "While Yet the Youthful Spirit Bears",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Letitia Elizabeth Landon",
+      "born": 1802,
+      "died": 1838,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "While Yet the Youthful Spirit Bears in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Letitia Elizabeth Landon wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 447, “Feed My Lambs!”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "While yet the youth-ful spir-it bears The i-mage of its God with-in, And un-ef-faced that beau-ty wears, Which may too soon be stained by sin;",
+  "verses": [
+    {
+      "lines": [
+        "While yet the youthful spirit bears",
+        "The image of its God within,",
+        "And uneffaced that beauty wears,",
+        "Which may too soon be stained by sin;"
+      ]
+    },
+    {
+      "lines": [
+        "Then is the time for faith and love",
+        "To take in charge their precious care, —",
+        "Teach the young heart to look above,",
+        "Teach the young lips to speak in prayer."
+      ]
+    },
+    {
+      "lines": [
+        "The world will come with care and crime,",
+        "And tempt too oft that heart astray;",
+        "Still the seed sown in early time",
+        "Shall not be wholly cast away."
+      ]
+    },
+    {
+      "lines": [
+        "The infant prayer, the infant hymn,",
+        "Within the darkened soul will rise,",
+        "When age's weary eye is dim,",
+        "And the grave's shadow round us lies."
+      ]
+    },
+    {
+      "lines": [
+        "The infant hymn is heard again,",
+        "The infant prayer is breathed once more;",
+        "Reclasping thus the broken chain,",
+        "We turn to all we loved before."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Letitia Elizabeth Landon died in 1838.",
+  "credits": "Words by Letitia Elizabeth Landon (1802–1838), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:447"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "O Thou, to Whom, in Ancient Time",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Pierpont",
+      "born": 1785,
+      "died": 1866,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O Thou, to Whom, in Ancient Time in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Pierpont wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 81, “Every Place a Temple”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Thou, to whom, in an-cient time, The lyre of He-brew bards was strung; Whom kings a-dored in songs sub-lime, And pro-phets praised with glow-ing tongue:",
+  "verses": [
+    {
+      "lines": [
+        "O Thou, to whom, in ancient time,",
+        "The lyre of Hebrew bards was strung;",
+        "Whom kings adored in songs sublime,",
+        "And prophets praised with glowing tongue:"
+      ]
+    },
+    {
+      "lines": [
+        "Not now on Zion's height alone",
+        "Thy favored worshippers may dwell;",
+        "Nor where, at sultry noon, Thy Son",
+        "Sat weary, by the Patriarch's well."
+      ]
+    },
+    {
+      "lines": [
+        "From every place below the skies,",
+        "The grateful song, the fervent prayer, —",
+        "The incense of the heart, — may rise",
+        "To heaven, and find acceptance there."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee shall age, with snowy hair,",
+        "And strength, and beauty, bend the knee;",
+        "And childhood lisp, with reverent air,",
+        "Its praises and its prayers to Thee!"
+      ]
+    },
+    {
+      "lines": [
+        "O Thou, to whom, in ancient time,",
+        "The lyre of prophet bards was strung,",
+        "To Thee, at last, in every clime,",
+        "Shall temples rise, and praise be sung!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Pierpont died in 1866.",
+  "credits": "Words by John Pierpont (1785–1866), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:81"
+}

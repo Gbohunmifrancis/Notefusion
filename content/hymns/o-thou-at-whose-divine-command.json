@@ -1,0 +1,55 @@
+{
+  "title": "O Thou, at Whose Divine Command",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Henry Alford",
+      "born": 1810,
+      "died": 1871,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "O Thou, at Whose Divine Command in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Henry Alford wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 486, “The Seed of the Word”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Thou, at whose di-vine com-mand Good seed is sown in ev-ery land, Thy ho-ly spir-it now im-part, And for Thy word pre-pare each heart!",
+  "verses": [
+    {
+      "lines": [
+        "O Thou, at whose divine command",
+        "Good seed is sown in every land,",
+        "Thy holy spirit now impart,",
+        "And for Thy word prepare each heart!"
+      ]
+    },
+    {
+      "lines": [
+        "Not 'mid the thorns of worldly thought,",
+        "Nor soon by passing plunderers caught,",
+        "Nor lacking depth the root to feed,",
+        "May we receive Thy spirit's seed;"
+      ]
+    },
+    {
+      "lines": [
+        "But may it, where Thy sowers toil,",
+        "Fall in a good and honest soil;",
+        "And springing up from firmest root,",
+        "Through patience, bear abundant fruit."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Henry Alford died in 1871.",
+  "credits": "Words by Henry Alford (1810–1871), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:486"
+}

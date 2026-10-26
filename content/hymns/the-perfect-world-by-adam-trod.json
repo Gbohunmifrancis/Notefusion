@@ -1,0 +1,63 @@
+{
+  "title": "The Perfect World by Adam Trod",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Nathaniel Parker Willis",
+      "born": 1806,
+      "died": 1867,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "The Perfect World by Adam Trod in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Nathaniel Parker Willis wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 697 of its twenty-second edition (1853), “Dedication Hymn”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The per-fect world by A-dam trod, Was the first tem-ple, built by God; His fi-at laid the cor-ner stone, And heaved its pil-lars, one by one.",
+  "verses": [
+    {
+      "lines": [
+        "The perfect world by Adam trod,",
+        "Was the first temple, — built by God;",
+        "His fiat laid the corner-stone,",
+        "And heaved its pillars, one by one."
+      ]
+    },
+    {
+      "lines": [
+        "He hung its starry roof on high, —",
+        "The broad, illimitable sky;",
+        "He spread its pavement, green and bright",
+        "And curtained it with morning light."
+      ]
+    },
+    {
+      "lines": [
+        "The mountains in their places stood, —",
+        "The sea, the sky, — and \"all was good;\"",
+        "And when its first pure praises rang,",
+        "The \"morning stars together sang.\""
+      ]
+    },
+    {
+      "lines": [
+        "Lord! 'tis not ours to make the sea,",
+        "And earth and sky a house for thee;",
+        "But in thy sight our offering stands,",
+        "A humbler temple, \"made with hands.\""
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Nathaniel Parker Willis died in 1867.",
+  "credits": "Words by Nathaniel Parker Willis (1806–1867), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:697"
+}

@@ -1,0 +1,63 @@
+{
+  "title": "From Every Stormy Wind That Blows",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Hugh Stowell",
+      "born": 1799,
+      "died": 1865,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "From Every Stormy Wind That Blows in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Hugh Stowell wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 452 of its twenty-second edition (1853), “The Mercy-seat”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "From ev-ery storm-y wind that blows, From ev-ery swel-ling tide of woes, There is a calm, a sure re-treat; 'Tis found be-fore the mer-cy seat.",
+  "verses": [
+    {
+      "lines": [
+        "From every stormy wind that blows,",
+        "From every swelling tide of woes,",
+        "There is a calm, a sure retreat;",
+        "'Tis found before the mercy-seat."
+      ]
+    },
+    {
+      "lines": [
+        "There is a place were Jesus sheds",
+        "The oil of gladness on our heads, —",
+        "A place of all on earth most sweet;",
+        "It is the heavenly mercy-seat."
+      ]
+    },
+    {
+      "lines": [
+        "There is a scene where spirits blend,",
+        "Where friend holds fellowship with friend;",
+        "Though sundered far, by faith they meet",
+        "Around one common mercy-seat."
+      ]
+    },
+    {
+      "lines": [
+        "There, there, on eagle wings we soar,",
+        "And sin and sense molest no more;",
+        "And heaven comes down our souls to greet,",
+        "And glory crowns the mercy-seat."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Hugh Stowell died in 1865.",
+  "credits": "Words by Hugh Stowell (1799–1865), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:452"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "Darkness Overspreads Us Here",
+  "tune": "watchman",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Darkness Overspreads Us Here in Tonic Solfa to WATCHMAN, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 127, “Salvation drawing nearer. Rom 8”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to WATCHMAN; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Dark-ness o-ver-spreads us here, But the night wears fast a-way; Ja-cob's star will soon ap-pear, Lead-ing on e-ter-nal day! Now 'tis time to rouse from sleep, Trim our lamps and stand pre-pared; For our Lord strict watch to keep, Lest he find us off our guard.",
+  "verses": [
+    {
+      "lines": [
+        "Darkness overspreads us here,",
+        "But the night wears fast away;",
+        "Jacob's star will soon appear,",
+        "Leading on eternal day!",
+        "Now 'tis time to rouse from sleep,",
+        "Trim our lamps and stand prepared;",
+        "For our Lord strict watch to keep,",
+        "Lest he find us off our guard."
+      ]
+    },
+    {
+      "lines": [
+        "Let his people courage take,",
+        "Bear with a submissive mind",
+        "All they suffer for his sake,",
+        "Rich amends they soon will find:",
+        "He will wipe away their tears,",
+        "Near himself appoint their lot;",
+        "All their sorrows, pains and fears,",
+        "Quickly then wilt be forgot."
+      ]
+    },
+    {
+      "lines": [
+        "Though already saved, by grace,",
+        "From the hour we first believed;",
+        "Yet while sin and war have place,",
+        "We have but a part received:",
+        "Still we for salvation wait,",
+        "Every hour it nearer comes!",
+        "Death will break the prison gate,",
+        "And admit us to our homes."
+      ]
+    },
+    {
+      "lines": [
+        "Sinners, what can you expect?",
+        "You who now the Savior dare;",
+        "Break his laws, his grace reject,",
+        "You must stand before his bar!",
+        "Tremble, lest he say, Depart!",
+        "Oh the horrors of that sound!",
+        "Lord, make every careless heart,",
+        "Seek thee while thou may'st be found."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WATCHMAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:127"
+}

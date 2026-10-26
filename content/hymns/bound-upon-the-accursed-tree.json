@@ -1,0 +1,67 @@
+{
+  "title": "Bound upon the Accursed Tree",
+  "tune": "messiah-herald",
+  "text": [
+    {
+      "name": "Henry Hart Milman",
+      "born": 1791,
+      "died": 1868,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Bound upon the Accursed Tree in Tonic Solfa to MESSIAH (HERALD), doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Henry Hart Milman wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 248 of its twenty-second edition (1853), “\"They shall look on Him whom they pierced.\"”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to MESSIAH (HERALD); any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Bound up-on the ac-cursed tree, Faint and bleed-ing, who is he? By the cheek so pale and wan, By the crown of twist-ed thorn, By the side so deep-ly pierced, By the baf-fled, burn-ing thirst, By the droop-ing death dewed brow. Son of man! 'tis thou! 'tis thou!",
+  "verses": [
+    {
+      "lines": [
+        "Bound upon the accursed tree,",
+        "Faint and bleeding, who is he?",
+        "By the cheek so pale and wan,",
+        "By the crown of twisted thorn,",
+        "By the side so deeply pierced,",
+        "By the baffled, burning thirst,",
+        "By the drooping death-dewed brow.",
+        "Son of man! 'tis thou! 'tis thou!"
+      ]
+    },
+    {
+      "lines": [
+        "Bound upon the accursed tree,",
+        "Sad and dying, who is he?",
+        "By the last and bitter cry,",
+        "Life breathed out in agony:",
+        "By the lifeless body laid",
+        "In the chamber of the dead:",
+        "Crucified! we know thee now;",
+        "Son of man! 'tis thou! 'tis thou!"
+      ]
+    },
+    {
+      "lines": [
+        "Bound upon the accursed tree,",
+        "Dread and awful, who is he?",
+        "By the prayer for them that slew,",
+        "\"Lord! they know not what they do;\"",
+        "By the sealed and guarded cave,",
+        "By the spoiled and empty grave,",
+        "By that clear, immortal brow,",
+        "Son of God! 'tis thou! 'tis thou!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Henry Hart Milman died in 1868.",
+  "credits": "Words by Henry Hart Milman (1791–1868), public domain, as printed in Hymns for Christian Devotion (1853); set to MESSIAH (HERALD) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:248"
+}

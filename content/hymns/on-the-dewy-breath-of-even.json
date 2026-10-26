@@ -1,0 +1,62 @@
+{
+  "title": "On the Dewy Breath of Even",
+  "tune": "galilee-jude",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "On the Dewy Breath of Even in Tonic Solfa to GALILEE (JUDE), doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 554, “Evening Hymn”, where the book credits them to Martineau's Collection.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to GALILEE (JUDE); any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "On the dew-y breath of e-ven Thou-sand o-dors min-gling rise, Borne like in-cense up to hea-ven, Na-ture's eve-ning sac-ri-fice.",
+  "verses": [
+    {
+      "lines": [
+        "On the dewy breath of even",
+        "Thousand odors mingling rise,",
+        "Borne like incense up to heaven, —",
+        "Nature's evening sacrifice."
+      ]
+    },
+    {
+      "lines": [
+        "With her fragrant offerings blending,",
+        "Let our glad thanksgivings be",
+        "To Thy throne, O Lord, ascending, —",
+        "Incense of our hearts to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Thou, whose favors without number",
+        "All our days with gladness bless,",
+        "Let Thine eye, that knows no slumber,",
+        "Guard our hours of helplessness."
+      ]
+    },
+    {
+      "lines": [
+        "Then, though conscious we are sleeping",
+        "In the outer courts of death,",
+        "Safe beneath a Father's keeping,",
+        "Calm we rest in perfect faith."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to GALILEE (JUDE) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:554"
+}

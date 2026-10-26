@@ -1,0 +1,66 @@
+{
+  "title": "As in Solemn Congregation",
+  "tune": "lux-eoi",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "As in Solemn Congregation in Tonic Solfa to LUX EOI, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 687 of its twenty-second edition (1853), “The Eucharist”.",
+    "The book printed the words without tunes, marked Eights and Sevens Double (8.7.8.7.8.7.8.7), to be sung to any tune of that metre. This page sets them to LUX EOI; any other Eights and Sevens Double tune fits them as well."
+  ],
+  "underlay": "As in sol-emn con-gre-ga-tion We at-tend up-on thy house, For the sweet com-mem-o-ra-tion And re-new-al of our vows; Let thy fa-vor, with us rest-ing, Con-se-crate the bread and wine; May we, of thy good-ness tast-ing, All be filled with love di-vine!",
+  "verses": [
+    {
+      "lines": [
+        "As in solemn congregation",
+        "We attend upon thy house,",
+        "For the sweet commemoration",
+        "And renewal of our vows;",
+        "Let thy favor, with us resting,",
+        "Consecrate the bread and wine;",
+        "May we, of thy goodness tasting,",
+        "All be filled with love divine!"
+      ]
+    },
+    {
+      "lines": [
+        "Jesus gave the sacred token",
+        "Of his passion, wine and bread,",
+        "Symbols of his body broken,",
+        "And his blood for sinners shed.",
+        "To the rite we come, confessing",
+        "Free redemption, grace unbought;",
+        "His be every name of blessing,",
+        "For his love, surpassing thought!"
+      ]
+    },
+    {
+      "lines": [
+        "May thy counsels, King of glory!",
+        "Grateful awe and rapture move,",
+        "As we meditate the story",
+        "Of the Saviour's dying love;",
+        "Hear us, Lord, of thee entreating",
+        "Strength to walk in Jesus' ways!",
+        "God of light, shine on our meeting!",
+        "God of grace, accept our praise!"
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to LUX EOI by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:687"
+}

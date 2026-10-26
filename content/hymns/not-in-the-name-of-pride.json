@@ -1,0 +1,63 @@
+{
+  "title": "Not in the Name of Pride",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Not in the Name of Pride in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 155, “Presence of Jesus”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Not in the name of pride Or self-ish-ness we're met; From world-ly paths we turn a-side, And world-ly thoughts for-get.",
+  "verses": [
+    {
+      "lines": [
+        "Not in the name of pride",
+        "Or selfishness we're met;",
+        "From worldly paths we turn aside,",
+        "And worldly thoughts forget."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, we look to thee,",
+        "Thy promised presence claim!",
+        "Thou in the midst of us shalt be,",
+        "Assembled in thy name."
+      ]
+    },
+    {
+      "lines": [
+        "Present we know thou art;",
+        "But, O, thyself reveal!",
+        "Now, Lord, let every bounding heart",
+        "Thy peace and gladness feel!"
+      ]
+    },
+    {
+      "lines": [
+        "O, may thy quickening voice",
+        "The death of sin remove;",
+        "And bid our inmost souls rejoice",
+        "In hope of perfect love!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:155"
+}

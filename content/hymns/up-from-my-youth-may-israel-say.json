@@ -1,0 +1,102 @@
+{
+  "title": "Up from My Youth, May Israel Say",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Up from My Youth, May Israel Say in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 129, headed “Persecutors punished”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Up from my youth, may Is-rael say, Have I been nurs'd in tears; My griefs were con-stant as the day, And te-dious as the years.",
+  "verses": [
+    {
+      "lines": [
+        "Up from my youth, may Israel say,",
+        "Have I been nurs'd in tears;",
+        "My griefs were constant as the day,",
+        "And tedious as the years."
+      ]
+    },
+    {
+      "lines": [
+        "Up from my youth I bore the rage",
+        "Of all the sons of strife;",
+        "Oft they assail'd my riper age,",
+        "But not destroy'd my life."
+      ]
+    },
+    {
+      "lines": [
+        "Their cruel plough had torn my flesh",
+        "With furrows long and deep,",
+        "Hourly they vex my wounds afresh,",
+        "Nor let my sorrows sleep."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord grew angry on his throne,",
+        "And with impartial eye",
+        "Measur'd the mischiefs they had done",
+        "Then let his arrows fly."
+      ]
+    },
+    {
+      "lines": [
+        "How was their insolence surpris'd",
+        "To hear his thunders roll!",
+        "And all the foes of Zion seiz'd",
+        "With horror to the soul."
+      ]
+    },
+    {
+      "lines": [
+        "Thus shall the men that hate the saints",
+        "Be blasted from the sky;",
+        "Their glory fades, their courage faints,",
+        "And all their projects die."
+      ]
+    },
+    {
+      "lines": [
+        "What tho' they flourish tall and fair,",
+        "They have no root beneath;",
+        "Their growth shall perish in despair,",
+        "And lie despis'd in death."
+      ]
+    },
+    {
+      "lines": [
+        "So corn that on the house-top stands",
+        "No hope of harvest gives;",
+        "The reaper ne'er shall fill his hands,",
+        "Nor binder fold the sheaves."
+      ]
+    },
+    {
+      "lines": [
+        "It springs and withers on the place:",
+        "No traveller bestows",
+        "A word of blessing on the grass,",
+        "Nor minds it as he goes."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 129"
+}

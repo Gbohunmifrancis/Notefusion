@@ -1,0 +1,63 @@
+{
+  "title": "A King Shall Reign in Righteousness",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Sebastian Streeter",
+      "born": 1783,
+      "died": 1867,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "A King Shall Reign in Righteousness in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Sebastian Streeter wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 255 of its twenty-second edition (1853), “The Hiding-place”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "A King shall reign in right-eous-ness, And all the kin-dred na-tions bless; The King of Sa-lem, King of peace, Nor shall his spread-ing king-dom cease.",
+  "verses": [
+    {
+      "lines": [
+        "A King shall reign in righteousness,",
+        "And all the kindred nations bless;",
+        "The King of Salem, King of peace, —",
+        "Nor shall his spreading kingdom cease."
+      ]
+    },
+    {
+      "lines": [
+        "In him the naked soul shall find",
+        "A hiding-place from chilling wind;",
+        "Or, when the raging tempests beat,",
+        "A covert warm, a safe retreat."
+      ]
+    },
+    {
+      "lines": [
+        "In burning sands and thirsty ground,",
+        "He like a river shall be found,",
+        "Or lofty rock, beneath whose shade",
+        "The weary traveller rests his head."
+      ]
+    },
+    {
+      "lines": [
+        "The dimness gone, all eyes shall see",
+        "His glory, grace, and majesty;",
+        "All ears shall hearken, and the word",
+        "Of life receive from Christ the Lord."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Sebastian Streeter died in 1867.",
+  "credits": "Words by Sebastian Streeter (1783–1867), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:255"
+}

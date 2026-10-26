@@ -1,0 +1,87 @@
+{
+  "title": "Alas! by Nature How Depraved",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Alas! by Nature How Depraved in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 29, “How shall I put thee among the children? Jer 3:19”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "A-las! by na-ture how de-praved, How prone to ev-ery ill! Our lives, to Sa-tan, how en-slaved, How ob-sti-nate our will!",
+  "verses": [
+    {
+      "lines": [
+        "Alas! by nature how depraved,",
+        "How prone to every ill!",
+        "Our lives, to Satan, how enslaved,",
+        "How obstinate our will!"
+      ]
+    },
+    {
+      "lines": [
+        "And can such sinners be restored,",
+        "Such rebels reconciled?",
+        "Can grace itself the means afford",
+        "To make a foe a child?"
+      ]
+    },
+    {
+      "lines": [
+        "Yes, grace has found the wondrous means",
+        "Which shall effectual prove;",
+        "To cleanse us from our countless sins,",
+        "And teach our hearts to love."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus for sinners undertakes,",
+        "And died that we may live;",
+        "His blood a full atonement makes,",
+        "And cries aloud, \"Forgive.\""
+      ]
+    },
+    {
+      "lines": [
+        "Yet one thing more must grace provide,",
+        "To bring us home to God;",
+        "Or we shall slight the Lord, who died,",
+        "And trample on his blood."
+      ]
+    },
+    {
+      "lines": [
+        "The holy Spirit must reveal",
+        "The Savior's work and worth;",
+        "Then the hard heart begins to feel",
+        "A new and heavenly birth."
+      ]
+    },
+    {
+      "lines": [
+        "Thus bought with blood, and born again,",
+        "Redeemed, and saved, by grace",
+        "Rebels, in God's own house obtain",
+        "A son's and daughter's place."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:29"
+}

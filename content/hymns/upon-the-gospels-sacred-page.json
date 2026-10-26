@@ -1,0 +1,63 @@
+{
+  "title": "Upon the Gospel's Sacred Page",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "John Bowring",
+      "born": 1792,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Upon the Gospel's Sacred Page in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Bowring wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 296 of its twenty-second edition (1853), “Progress of Gospel Truth”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Up-on the Go-spel's sa-cred page The ga-thered beams of a-ges shine; And, as it ha-stens, ev-ery age But makes its bright-ness more di-vine.",
+  "verses": [
+    {
+      "lines": [
+        "Upon the Gospel's sacred page",
+        "The gathered beams of ages shine;",
+        "And, as it hastens, every age",
+        "But makes its brightness more divine."
+      ]
+    },
+    {
+      "lines": [
+        "Truth, strengthened by the strength of thought,",
+        "Pours inexhaustible supplies,",
+        "Whence sagest teachers may be taught,",
+        "And Wisdom's self become more wise."
+      ]
+    },
+    {
+      "lines": [
+        "More glorious still as centuries roll,",
+        "New regions blest, new powers unfurled,",
+        "Expanding with the expanding soul,",
+        "Its waters shall o'erflow the world;"
+      ]
+    },
+    {
+      "lines": [
+        "Flow to restore, but not destroy;",
+        "As when the cloudless lamp of day",
+        "Pours out its floods of light and joy,",
+        "And sweeps each lingering mist away."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Bowring died in 1872.",
+  "credits": "Words by John Bowring (1792–1872), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:296"
+}

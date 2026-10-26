@@ -1,0 +1,71 @@
+{
+  "title": "Thou Fount of Love and Grace",
+  "tune": "darwall",
+  "text": [
+    {
+      "name": "Otis Ainsworth Skinner",
+      "born": 1807,
+      "died": 1861,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Thou Fount of Love and Grace in Tonic Solfa to DARWALL, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Otis Ainsworth Skinner wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 701 of its twenty-second edition (1853), “Dedication Hymn”.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.8.8), to be sung to any tune of that metre. This page sets them to DARWALL; any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "Thou Fount of love and grace, Whose throne is fixed on high, Un-veil thy smil-ing face, And to our souls draw nigh; And let our prayers and praise a-rise, Like grate-ful in-cense to the skies.",
+  "verses": [
+    {
+      "lines": [
+        "Thou Fount of love and grace,",
+        "Whose throne is fixed on high,",
+        "Unveil thy smiling face,",
+        "And to our souls draw nigh;",
+        "And let our prayers and praise arise,",
+        "Like grateful incense to the skies."
+      ]
+    },
+    {
+      "lines": [
+        "This house to thee we give —",
+        "Thine may it ever be —",
+        "Here bid the sinner live,",
+        "Here set the captive free,",
+        "Here let thy word its beams display",
+        "And safely guide to endless day."
+      ]
+    },
+    {
+      "lines": [
+        "Here may the stricken heart",
+        "By truth be cheered and blessed,",
+        "And here thy grace impart,",
+        "To all by grief oppressed —",
+        "And streams of peace and plenty flow,",
+        "To all who seek thy joy to know."
+      ]
+    },
+    {
+      "lines": [
+        "Long may these walls resound",
+        "With thy salvation, Lord,",
+        "And grace to all abound,",
+        "Who hear thy holy word —",
+        "And youth and age their offerings raise.",
+        "In songs of ardent, cheerful praise."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Otis Ainsworth Skinner died in 1861.",
+  "credits": "Words by Otis Ainsworth Skinner (1807–1861), public domain, as printed in Hymns for Christian Devotion (1853); set to DARWALL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:701"
+}

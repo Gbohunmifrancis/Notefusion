@@ -1,0 +1,62 @@
+{
+  "title": "My God, Accept My Early Vows",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "My God, Accept My Early Vows in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 141, headed “Watchfulness, and brotherly reproof”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "My God, ac-cept my ear-ly vows, Like morn-ing in-cense in thine house, And let my night-ly wor-ship rise Sweet as th'e-ve-ning sac-ri-fice.",
+  "verses": [
+    {
+      "lines": [
+        "My God, accept my early vows,",
+        "Like morning incense in thine house,",
+        "And let my nightly worship rise",
+        "Sweet as the evening sacrifice."
+      ]
+    },
+    {
+      "lines": [
+        "Watch o'er my lips, and guard them, Lord,",
+        "From every rash and heedless word;",
+        "Nor let my feet incline to tread",
+        "The guilty path where sinners lead."
+      ]
+    },
+    {
+      "lines": [
+        "O may the righteous, when I stray,",
+        "Smite, and reprove my wandering way!",
+        "Their gentle words, like ointment shed,",
+        "Shall never bruise, but cheer my head."
+      ]
+    },
+    {
+      "lines": [
+        "When I behold them prest with grief,",
+        "I'll cry to heaven for their relief;",
+        "And by my warm petitions prove",
+        "how much I prize their faithful love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 141"
+}

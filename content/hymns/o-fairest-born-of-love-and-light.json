@@ -1,0 +1,79 @@
+{
+  "title": "O Fairest-born of Love and Light",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Greenleaf Whittier",
+      "born": 1807,
+      "died": 1892,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O Fairest-born of Love and Light in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Greenleaf Whittier wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 181, “Christianity”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O fair-est born of Love and Light, Yet bend-ing brow and eye se-vere On all which pains the ho-ly sight, Or wounds the pure and per-fect ear,",
+  "verses": [
+    {
+      "lines": [
+        "O fairest-born of Love and Light,",
+        "Yet bending brow and eye severe",
+        "On all which pains the holy sight,",
+        "Or wounds the pure and perfect ear, —"
+      ]
+    },
+    {
+      "lines": [
+        "The generous feeling, pure and warm,",
+        "Which owns the rights of all divine,",
+        "The pitying heart, the helping arm,",
+        "The prompt self-sacrifice, are thine!"
+      ]
+    },
+    {
+      "lines": [
+        "Beneath thy broad, impartial eye,",
+        "How fade the lines of caste and birth!",
+        "How equal in their sufferings lie",
+        "The groaning multitudes of earth!"
+      ]
+    },
+    {
+      "lines": [
+        "Still to a stricken brother true,",
+        "Whatever clime hath nurtured him;",
+        "As stooped to heal the wounded Jew",
+        "The worshipper of Gerizim."
+      ]
+    },
+    {
+      "lines": [
+        "In holy words which cannot die,",
+        "In thoughts which angels leaned to know,",
+        "Christ gave thy message from on high,",
+        "Thy mission to a world of woe."
+      ]
+    },
+    {
+      "lines": [
+        "That voice's echo hath not died;",
+        "From the blue lake of Galilee,",
+        "From Tabor's lonely mountain-side,",
+        "It calls a struggling world to thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Greenleaf Whittier died in 1892.",
+  "credits": "Words by John Greenleaf Whittier (1807–1892), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:181"
+}

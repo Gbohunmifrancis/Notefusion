@@ -1,0 +1,62 @@
+{
+  "title": "O'er Mountain Tops, the Mount of God",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O'er Mountain Tops, the Mount of God in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 811 of its twenty-second edition (1853), “Prospect of Universal Peace”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O'er moun-tain tops, the mount of God, In lat-ter days, shall rise A-bove the sum-mits of the hills, And draw the won-dering eyes.",
+  "verses": [
+    {
+      "lines": [
+        "O'er mountain tops, the mount of God,",
+        "In latter days, shall rise",
+        "Above the summits of the hills,",
+        "And draw the wondering eyes."
+      ]
+    },
+    {
+      "lines": [
+        "The beams that shine from Zion's hill",
+        "Shall lighten every land;",
+        "The King who reigns in Salem's towers",
+        "Shall the whole world command."
+      ]
+    },
+    {
+      "lines": [
+        "Nor war shall rage, nor hostile strife",
+        "Disturb those happy years;",
+        "To ploughshares men shall beat their swords,",
+        "To pruning-hooks their spears."
+      ]
+    },
+    {
+      "lines": [
+        "No longer host, encountering host,",
+        "Shall crowds of slain deplore;",
+        "They'll lay the martial trumpet by,",
+        "And study war no more."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:811"
+}

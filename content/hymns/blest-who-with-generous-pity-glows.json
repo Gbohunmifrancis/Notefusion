@@ -1,0 +1,50 @@
+{
+  "title": "Blest Who with Generous Pity Glows",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Blest Who with Generous Pity Glows in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 780 of its twenty-second edition (1853), “The Blessedness of considering the Poor. Ps. 41:1-3”, where the book credits them to Pratt's Collection.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Blest who with gen-erous pi-ty glows, Who learns to feel an-oth-er's woes; Bows to the poor man's wants his ear, And wipes the help-less or-phan's tear! In ev-ery want, in ev-ery woe, Him-self thy pi-ty, Lord, shall know.",
+  "verses": [
+    {
+      "lines": [
+        "Blest who with generous pity glows,",
+        "Who learns to feel another's woes;",
+        "Bows to the poor man's wants his ear,",
+        "And wipes the helpless orphan's tear!",
+        "In every want, in every woe,",
+        "Himself thy pity, Lord, shall know."
+      ]
+    },
+    {
+      "lines": [
+        "Thy love his life shall guard, thy hand",
+        "Give to his lot the chosen land;",
+        "Nor leave him, in the troubled day,",
+        "To unrelenting foes a prey.",
+        "In sickness thou shall raise his head,",
+        "And make with tenderest care his bed."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:780"
+}

@@ -1,0 +1,63 @@
+{
+  "title": "My Soul No More Shall Strive in Vain",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Anne Steele",
+      "born": 1717,
+      "died": 1778,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "My Soul No More Shall Strive in Vain in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Anne Steele wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 241, “Self-Consecration”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "My soul no more shall strive in vain, Slave to the world, and slave to sin! A no-bler toil I will sus-tain, A no-bler sat-is-fac-tion win.",
+  "verses": [
+    {
+      "lines": [
+        "My soul no more shall strive in vain,",
+        "Slave to the world, and slave to sin!",
+        "A nobler toil I will sustain,",
+        "A nobler satisfaction win."
+      ]
+    },
+    {
+      "lines": [
+        "I will resolve, with all my heart,",
+        "With all my powers, to serve the Lord;",
+        "Nor from His precepts e'er depart,",
+        "Whose service is a rich reward."
+      ]
+    },
+    {
+      "lines": [
+        "O, be His service all my joy!",
+        "Around let my example shine,",
+        "Till others love the blest employ,",
+        "And join in labors so divine."
+      ]
+    },
+    {
+      "lines": [
+        "O, may I never faint nor tire,",
+        "Nor, wandering, leave His sacred ways;",
+        "Great God! accept my soul's desire,",
+        "And give me strength to live Thy praise."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Anne Steele died in 1778.",
+  "credits": "Words by Anne Steele (1717–1778), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:241"
+}

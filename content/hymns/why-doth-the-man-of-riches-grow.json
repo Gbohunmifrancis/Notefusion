@@ -1,0 +1,110 @@
+{
+  "title": "Why Doth the Man of Riches Grow",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Why Doth the Man of Riches Grow in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 10 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 49, part 1, headed “Pride and death; or, The vanity of life and riches”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Why doth the man of rich-es grow To in-so-lence and pride, To see his wealth and hon-ours flow With ev-ery ris-ing tide?",
+  "verses": [
+    {
+      "lines": [
+        "Why doth the man of riches grow",
+        "To insolence and pride,",
+        "To see his wealth and honours flow",
+        "With every rising tide?"
+      ]
+    },
+    {
+      "lines": [
+        "Why doth he treat the poor with scorn,",
+        "Made of the self-same clay,",
+        "And boast as tho' his flesh was born",
+        "Of better dust than they?"
+      ]
+    },
+    {
+      "lines": [
+        "Not all his treasures can procure",
+        "His soul a short reprieve,",
+        "Redeem from death one guilty hour,",
+        "Or make his brother live."
+      ]
+    },
+    {
+      "lines": [
+        "Life is a blessing can't be sold,",
+        "The ransom is too high;",
+        "Justice will ne'er be brib'd with gold",
+        "That man may never die."
+      ]
+    },
+    {
+      "lines": [
+        "He sees the brutish and the wise,",
+        "The timorous and the brave,",
+        "Quit their possessions, close their eyes,",
+        "And hasten to the grave."
+      ]
+    },
+    {
+      "lines": [
+        "Yet 'tis his inward thought and pride, —",
+        "\"My house shall ever stand;",
+        "\"And that my name may long abide,",
+        "\"I'll give it to my land.\""
+      ]
+    },
+    {
+      "lines": [
+        "Vain are his thoughts, his hopes are lost,",
+        "How soon his memory dies!",
+        "His name is written in the dust",
+        "Where his own carcase lies."
+      ]
+    },
+    {
+      "lines": [
+        "This is the folly of their way;",
+        "And yet their sons, as vain,",
+        "Approve the words their fathers say,",
+        "And act their works again."
+      ]
+    },
+    {
+      "lines": [
+        "Men void of wisdom and of grace,",
+        "If honour raise them high.",
+        "Live like the beast, a thoughtless race,",
+        "And like the beast they die."
+      ]
+    },
+    {
+      "lines": [
+        "Laid in the grave like silly sheep,",
+        "Death feeds upon them there,",
+        "Till the last trumpet break their sleep",
+        "In terror and despair."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 49:1"
+}

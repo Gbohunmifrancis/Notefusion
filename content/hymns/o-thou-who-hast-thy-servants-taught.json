@@ -1,0 +1,63 @@
+{
+  "title": "O Thou, Who Hast Thy Servants Taught",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Henry Alford",
+      "born": 1810,
+      "died": 1871,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "O Thou, Who Hast Thy Servants Taught in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Henry Alford wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 482, “Sincere Worship”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O Thou, who hast Thy ser-vants taught That not by words a-lone, But by the fruits of ho-li-ness, The life of God is shown;",
+  "verses": [
+    {
+      "lines": [
+        "O Thou, who hast Thy servants taught",
+        "That not by words alone,",
+        "But by the fruits of holiness,",
+        "The life of God is shown;"
+      ]
+    },
+    {
+      "lines": [
+        "While in Thy house of prayer we meet,",
+        "And call Thee God and Lord,",
+        "Give us a heart to follow Thee,",
+        "Obedient to Thy word!"
+      ]
+    },
+    {
+      "lines": [
+        "When we our voices lift in praise,",
+        "Give Thou us grace to bring",
+        "An offering of unfeigned thanks,",
+        "And with the spirit sing."
+      ]
+    },
+    {
+      "lines": [
+        "And in the dangerous path of life",
+        "Uphold us as we go;",
+        "That with our lips and in our lives",
+        "Thy glory we may show."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Henry Alford died in 1871.",
+  "credits": "Words by Henry Alford (1810–1871), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:482"
+}

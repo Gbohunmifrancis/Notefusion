@@ -1,0 +1,71 @@
+{
+  "title": "O Pure Reformers! Not in Vain",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "John Greenleaf Whittier",
+      "born": 1807,
+      "died": 1892,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O Pure Reformers! Not in Vain in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Greenleaf Whittier wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 191, “The Reformers”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O pure Re-form-ers! not in vain Your trust in hu-man kind; The good which blood-shed could not gain, Your peace-ful zeal shall find.",
+  "verses": [
+    {
+      "lines": [
+        "O pure Reformers! not in vain",
+        "Your trust in human kind;",
+        "The good which bloodshed could not gain,",
+        "Your peaceful zeal shall find."
+      ]
+    },
+    {
+      "lines": [
+        "The truths ye urge are borne abroad",
+        "By every wind and tide;",
+        "The voice of nature and of God",
+        "Speaks out upon your side."
+      ]
+    },
+    {
+      "lines": [
+        "The weapons which your hands have found",
+        "Are those which Heaven hath wrought,",
+        "Light, Truth, and Love, — your battle-ground,",
+        "The free, broad field of Thought."
+      ]
+    },
+    {
+      "lines": [
+        "O, may no selfish purpose break",
+        "The beauty of your plan,",
+        "Nor lie from throne or altar shake",
+        "Your steady faith in man."
+      ]
+    },
+    {
+      "lines": [
+        "Press on! and if we may not share",
+        "The glory of your fight,",
+        "We'll ask at least, in earnest prayer,",
+        "God's blessing on the Right."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Greenleaf Whittier died in 1892.",
+  "credits": "Words by John Greenleaf Whittier (1807–1892), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:191"
+}

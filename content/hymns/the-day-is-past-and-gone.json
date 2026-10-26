@@ -1,0 +1,54 @@
+{
+  "title": "The Day Is Past and Gone",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "The Day Is Past and Gone in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 951 of its twenty-second edition (1853), “Evening Hymn”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "The day is past and gone; Th'e-ve-ning shades ap-pear; O, may we all re-mem-ber well The night of death draws near!",
+  "verses": [
+    {
+      "lines": [
+        "The day is past and gone;",
+        "The evening shades appear;",
+        "O, may we all remember well",
+        "The night of death draws near!"
+      ]
+    },
+    {
+      "lines": [
+        "We lay our garments by,",
+        "Upon our beds to rest;",
+        "So death shall soon disrobe us all",
+        "Of what is here possessed."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, keep us safe this night,",
+        "Secure from all our fears;",
+        "May angels guard us, while we sleep,",
+        "Till morning light appears!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:951"
+}

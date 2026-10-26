@@ -1,0 +1,71 @@
+{
+  "title": "Our Country Is Immanuel's Ground",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Anna Laetitia Barbauld",
+      "born": 1743,
+      "died": 1825,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Our Country Is Immanuel's Ground in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Anna Laetitia Barbauld wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 449, “The Christian Pilgrim”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Our coun-try is Im-man-uel's ground; We seek that pro-mised soil; The songs of Zi-on cheer our hearts, While stran-gers here we toil.",
+  "verses": [
+    {
+      "lines": [
+        "Our country is Immanuel's ground;",
+        "We seek that promised soil;",
+        "The songs of Zion cheer our hearts,",
+        "While strangers here we toil."
+      ]
+    },
+    {
+      "lines": [
+        "Oft do our eyes with joy o'erflow,",
+        "And oft are bathed in tears;",
+        "But only heaven our hopes can raise,",
+        "And sin alone, our fears."
+      ]
+    },
+    {
+      "lines": [
+        "We tread the path our Master trod;",
+        "We bear the cross he bore;",
+        "And every thorn that wounds our feet",
+        "His temples pierced before."
+      ]
+    },
+    {
+      "lines": [
+        "The flowers that spring along the road",
+        "We scarcely stoop to pluck;",
+        "We walk o'er beds of shining ore,",
+        "Nor waste one wishful look."
+      ]
+    },
+    {
+      "lines": [
+        "We purge our mortal dross away,",
+        "Refining as we run;",
+        "And while we die to earth and sense,",
+        "Our heaven is here begun."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Anna Laetitia Barbauld died in 1825.",
+  "credits": "Words by Anna Laetitia Barbauld (1743–1825), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:449"
+}

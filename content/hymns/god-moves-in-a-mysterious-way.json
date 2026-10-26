@@ -1,0 +1,79 @@
+{
+  "title": "God Moves in a Mysterious Way",
+  "tune": "york",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "God Moves in a Mysterious Way in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 15, “Light shining out of darkness”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "God moves in a mys-te-rious way, His won-ders to per-form; He plants his foot-steps in the sea, And rides up-on the storm.",
+  "verses": [
+    {
+      "lines": [
+        "God moves in a mysterious way,",
+        "His wonders to perform;",
+        "He plants his footsteps in the sea,",
+        "And rides upon the storm."
+      ]
+    },
+    {
+      "lines": [
+        "Deep in unfathomable mines",
+        "Of never failing skill",
+        "He treasures up his bright designs,",
+        "And works his sovereign will."
+      ]
+    },
+    {
+      "lines": [
+        "Ye fearful saints fresh courage take,",
+        "The clouds ye so much dread",
+        "Are big with mercy, and shall break",
+        "In blessings on your head."
+      ]
+    },
+    {
+      "lines": [
+        "Judge not the Lord by feeble sense,",
+        "But trust him for his grace;",
+        "Behind a frowning providence,",
+        "He hides a smiling face."
+      ]
+    },
+    {
+      "lines": [
+        "His purposes will ripen fast,",
+        "Unfolding every hour;",
+        "The bud may have a bitter taste,",
+        "But sweet will be the flow'r."
+      ]
+    },
+    {
+      "lines": [
+        "Blind unbelief is sure to err,",
+        "And scan his work in vain;",
+        "God is his own interpreter,",
+        "And he will make it plain."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:15"
+}

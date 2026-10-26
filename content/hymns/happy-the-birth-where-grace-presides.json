@@ -1,0 +1,87 @@
+{
+  "title": "Happy the Birth Where Grace Presides",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Happy the Birth Where Grace Presides in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 60, “The power of grace”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Hap-py the birth where grace pre-sides To form the fu-ture life! In wis-dom's paths the soul she guides, Re-mote from noise and strife.",
+  "verses": [
+    {
+      "lines": [
+        "Happy the birth where grace presides",
+        "To form the future life!",
+        "In wisdom's paths the soul she guides,",
+        "Remote from noise and strife."
+      ]
+    },
+    {
+      "lines": [
+        "Since I have known the Savior's name",
+        "And what for me he bore;",
+        "No more I toil for empty fame,",
+        "I thirst for gold no more."
+      ]
+    },
+    {
+      "lines": [
+        "Placed by his hand in this retreat,",
+        "I make his love my theme;",
+        "And see that all the world calls great,",
+        "Is but a waking dream."
+      ]
+    },
+    {
+      "lines": [
+        "Since be has ranked my worthless name",
+        "Amongst his favored few;",
+        "Let the mad world who scoff at them",
+        "Revile and hate me too."
+      ]
+    },
+    {
+      "lines": [
+        "O thou whose voice the dead can raise,",
+        "And soften hearts of stone,",
+        "And teach the dumb to sing thy praise,",
+        "This work is all thine own!"
+      ]
+    },
+    {
+      "lines": [
+        "Thy wond'ring saints rejoice to see",
+        "A wretch, like me, restored",
+        "And point, and say, \"How changed is he,",
+        "Who once defied the Lord!\""
+      ]
+    },
+    {
+      "lines": [
+        "Grace bid me live, and taught my tongue",
+        "To aim at notes divine;",
+        "And grace accepts my feeble song,",
+        "The glory, Lord, be thine!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:60"
+}

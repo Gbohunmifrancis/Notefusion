@@ -1,0 +1,78 @@
+{
+  "title": "God of My Mercy and My Praise",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "God of My Mercy and My Praise in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 109, headed “Love to enemies, from the example of Christ”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "God of my mer-cy and my praise, Thy glo-ry is my song; The sin-ners speak a-gainst thy grace With a blas-phem-ing tongue.",
+  "verses": [
+    {
+      "lines": [
+        "God of my mercy and my praise,",
+        "Thy glory is my song;",
+        "The sinners speak against thy grace",
+        "With a blaspheming tongue."
+      ]
+    },
+    {
+      "lines": [
+        "When in the form of mortal man",
+        "Thy Son on earth was found,",
+        "With cruel slanders, false and vain,",
+        "They compass'd him around."
+      ]
+    },
+    {
+      "lines": [
+        "Their miseries his compassion move,",
+        "Their peace he still pursu'd;",
+        "They render hatred for his love,",
+        "And evil for his good."
+      ]
+    },
+    {
+      "lines": [
+        "Their malice rag'd without a cause,",
+        "Yet, with his dying breath,",
+        "He pray'd for murderers on his cross,",
+        "And blest his foes in death."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, shall thy bright example shine",
+        "In vain before my eyes?",
+        "Give me a soul a-kin to thine",
+        "To love mine enemies."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord shall on my side engage,",
+        "And, in my Saviour's name,",
+        "I shall defeat their pride and rage",
+        "Who slander and condemn."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 109"
+}

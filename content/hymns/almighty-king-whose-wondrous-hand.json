@@ -1,0 +1,71 @@
+{
+  "title": "Almighty King! Whose Wondrous Hand",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Almighty King! Whose Wondrous Hand in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 81, “Grace and Providence”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Al-might-y King! whose won-drous hand, Sup-ports the weight of sea and land; Whose grace is such a bound-less store, No heart shall break that sighs for more.",
+  "verses": [
+    {
+      "lines": [
+        "Almighty King! whose wondrous hand,",
+        "Supports the weight of sea and land;",
+        "Whose grace is such a boundless store,",
+        "No heart shall break that sighs for more."
+      ]
+    },
+    {
+      "lines": [
+        "Thy Providence supplies my food,",
+        "And 'tis thy blessing makes it good;",
+        "My soul is nourished by thy word,",
+        "Let soul and body praise the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "My streams of outward comfort came",
+        "From him, who built this earthly frame;",
+        "Whate'er I want his bounty gives,",
+        "By whom my soul for ever lives."
+      ]
+    },
+    {
+      "lines": [
+        "Either his hand preserves from pain,",
+        "Or, if I feel it, heals again;",
+        "From Satan's malice shields my breast,",
+        "Or overrules it for the best."
+      ]
+    },
+    {
+      "lines": [
+        "Forgive the song that falls so low",
+        "Beneath the gratitude I owe!",
+        "It means thy praise, however poor,",
+        "An angel's song can do no more."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:81"
+}

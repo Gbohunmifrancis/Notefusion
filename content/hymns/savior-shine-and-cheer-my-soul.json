@@ -1,0 +1,91 @@
+{
+  "title": "Savior Shine and Cheer My Soul",
+  "tune": "ratisbon-werner",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Savior Shine and Cheer My Soul in Tonic Solfa to RATISBON (WERNER), doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 44, “The change”.",
+    "The book printed the words without tunes, marked Sevens, six lines (7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to RATISBON (WERNER); any other Sevens, six lines tune fits them as well."
+  ],
+  "underlay": "Sa-vior shine and cheer my soul, Bid my dy-ing hopes re-vive; Make my woun-ded spir-it whole, Far a-way the temp-ter drive: Speak the word and set me free, Let me live a-lone to thee.",
+  "verses": [
+    {
+      "lines": [
+        "Savior shine and cheer my soul,",
+        "Bid my dying hopes revive;",
+        "Make my wounded spirit whole,",
+        "Far away the tempter drive:",
+        "Speak the word and set me free,",
+        "Let me live alone to thee."
+      ]
+    },
+    {
+      "lines": [
+        "Shall I sigh and pray in vain,",
+        "Wilt thou still refuse to hear;",
+        "Wilt thou not return again,",
+        "Must I yield to black despair?",
+        "Thou hast taught my heart to pray,",
+        "Canst thou turn thy face away?"
+      ]
+    },
+    {
+      "lines": [
+        "Once I thought my mountain strong,",
+        "Firmly fixed no more to move;",
+        "Then thy grace was all my song,",
+        "Then my soul was filled with love:",
+        "Those were happy golden days,",
+        "Sweetly spent in prayer and praise."
+      ]
+    },
+    {
+      "lines": [
+        "When my friends have said, \"Beware,",
+        "Soon or late you'll find a change;\"",
+        "I could see no cause for fear,",
+        "Vain their caution seemed and strange:",
+        "Not a cloud obscured my sky,",
+        "Could I think a tempest nigh?"
+      ]
+    },
+    {
+      "lines": [
+        "Little, then, myself I knew,",
+        "Little thought of Satan's pow'r;",
+        "Now I find their words were true,",
+        "Now I feel the stormy hour!",
+        "Sin has put my joys to flight,",
+        "Sin has changed my day to night."
+      ]
+    },
+    {
+      "lines": [
+        "Satan asks, and mocks my woe,",
+        "\"Boaster, where is now your God?\"",
+        "Silence, Lord, this cruel foe,",
+        "Let him know I'm bought with blood:",
+        "Tell him, since I know thy name,",
+        "Though I change thou art the same."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to RATISBON (WERNER) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:44"
+}

@@ -1,0 +1,87 @@
+{
+  "title": "One Aweful Word Which Jesus Spoke",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "One Aweful Word Which Jesus Spoke in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 97, “The blasted fig-tree. Mk 11:20”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "One awe-ful word which Je-sus spoke, A-gainst the tree which bore no fruit; More pierc-ing than the light-ning's stroke, Blast-ed and dried it to the root.",
+  "verses": [
+    {
+      "lines": [
+        "One aweful word which Jesus spoke,",
+        "Against the tree which bore no fruit;",
+        "More piercing than the lightning's stroke,",
+        "Blasted and dried it to the root."
+      ]
+    },
+    {
+      "lines": [
+        "But could a tree the Lord offend,",
+        "To make him show his anger thus?",
+        "He surely had a farther end,",
+        "To be a warning word to us."
+      ]
+    },
+    {
+      "lines": [
+        "The fig-tree by its leaves was known,",
+        "But having not a fig to show;",
+        "It brought a heavy sentence down,",
+        "\"Let none hereafter on thee grow.\""
+      ]
+    },
+    {
+      "lines": [
+        "Too many, who the gospel hear,",
+        "Whom Satan blinds and sin deceives;",
+        "We to this fig-tree may compare,",
+        "They yield no fruit, but only leaves."
+      ]
+    },
+    {
+      "lines": [
+        "Knowledge, and zeal, and gifts, and talk,",
+        "Unless combined with faith and love,",
+        "And witnessed by a gospel walk,",
+        "Will not a true profession prove."
+      ]
+    },
+    {
+      "lines": [
+        "Without the fruit the Lord expects",
+        "Knowledge will make our state the worse;.",
+        "The barren trees he still rejects,",
+        "And soon will blast them with his curse."
+      ]
+    },
+    {
+      "lines": [
+        "O Lord, unite our hearts in prayer!",
+        "On each of us thy Spirit send;",
+        "That we the fruits of grace may bear,",
+        "And find acceptance in the end."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:97"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "Bless, O Bless, Almighty Father",
+  "tune": "galilee-jude",
+  "text": [
+    {
+      "name": "John Greenleaf Adams",
+      "born": 1810,
+      "died": 1887,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Bless, O Bless, Almighty Father in Tonic Solfa to GALILEE (JUDE), doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Greenleaf Adams wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 997 of its twenty-second edition (1853), “\"She hath done what she could.\" Mark 14:8”.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to GALILEE (JUDE); any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Bless, O bless, Al-might-y Fa-ther, Wom-an's mis-sion with our race, Her fond striv-ings here to ga-ther Fruits of thy re-deem-ing grace.",
+  "verses": [
+    {
+      "lines": [
+        "Bless, O bless, Almighty Father,",
+        "Woman's mission with our race, —",
+        "Her fond strivings here to gather",
+        "Fruits of thy redeeming grace."
+      ]
+    },
+    {
+      "lines": [
+        "Though her way be not where honor",
+        "Wins the gazing world's acclaim,",
+        "Yet we bless thee that upon her",
+        "Rests the power of Jesus' name."
+      ]
+    },
+    {
+      "lines": [
+        "In that name, O Father, strengthen",
+        "Her full heart and ready hands;",
+        "May her efforts serve to lengthen",
+        "Christian love's encircling bands."
+      ]
+    },
+    {
+      "lines": [
+        "Where the mourning and the needy",
+        "And the suffering faint and die,",
+        "Be her presence sure and speedy,",
+        "Mercy's blessings to supply."
+      ]
+    },
+    {
+      "lines": [
+        "Where old error's words are spoken,",
+        "Be truth's witness by her given,",
+        "Till, the spell of bondage broken,",
+        "Earth redeemed resembles heaven."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Greenleaf Adams died in 1887.",
+  "credits": "Words by John Greenleaf Adams (1810–1887), public domain, as printed in Hymns for Christian Devotion (1853); set to GALILEE (JUDE) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:997"
+}

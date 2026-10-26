@@ -1,0 +1,63 @@
+{
+  "title": "Lord, We Come Before Thee Now",
+  "tune": "st-bees",
+  "text": [
+    {
+      "name": "William Hammond",
+      "born": 1719,
+      "died": 1783,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Lord, We Come Before Thee Now in Tonic Solfa to ST. BEES, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Hammond wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 22 of its twenty-second edition (1853), “A Blessing humbly requested”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to ST. BEES; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Lord, we come be-fore thee now; At thy feet we hum-bly bow; O, do not our suit dis-dain; Shall we seek thee, Lord, in vain?",
+  "verses": [
+    {
+      "lines": [
+        "Lord, we come before thee now;",
+        "At thy feet we humbly bow;",
+        "O, do not our suit disdain;",
+        "Shall we seek thee, Lord, in vain?"
+      ]
+    },
+    {
+      "lines": [
+        "In thine own appointed way,",
+        "Now we seek thee; here we stay;",
+        "Lord, from hence we would not go,",
+        "Till a blessing thou bestow."
+      ]
+    },
+    {
+      "lines": [
+        "Comfort those who weep and mourn;",
+        "Let the time of joy return;",
+        "Those that are cast down, lift up;",
+        "Make them strong in faith and hope."
+      ]
+    },
+    {
+      "lines": [
+        "Grant that all may seek and find",
+        "Thee a God supremely kind;",
+        "Heal the sick; the captive free;",
+        "Let us all rejoice in thee."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: William Hammond died in 1783.",
+  "credits": "Words by William Hammond (1719–1783), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. BEES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:22"
+}

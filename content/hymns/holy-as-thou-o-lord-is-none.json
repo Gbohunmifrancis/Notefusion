@@ -1,0 +1,55 @@
+{
+  "title": "Holy as Thou, O Lord, Is None",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Holy as Thou, O Lord, Is None in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 136 of its twenty-second edition (1853), “The Holiness of God”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Ho-ly as thou, O Lord, is none! Thy ho-li-ness is all thine own; A drop of that un-bound-ed sea Is ours, a drop de-rived from thee.",
+  "verses": [
+    {
+      "lines": [
+        "Holy as thou, O Lord, is none!",
+        "Thy holiness is all thine own;",
+        "A drop of that unbounded sea",
+        "Is ours, a drop derived from thee."
+      ]
+    },
+    {
+      "lines": [
+        "And when thy purity we share,",
+        "Only thy glory we declare;",
+        "And humbled into nothing own,",
+        "Holy and pure is God alone."
+      ]
+    },
+    {
+      "lines": [
+        "Sole self-existent God and Lord,",
+        "By all the heavenly hosts adored!",
+        "Let all on earth bow down to thee,",
+        "And own thy peerless majesty."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:136"
+}

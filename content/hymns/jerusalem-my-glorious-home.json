@@ -1,0 +1,66 @@
+{
+  "title": "Jerusalem! My Glorious Home",
+  "tune": "materna",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Jerusalem! My Glorious Home in Tonic Solfa to MATERNA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 558 of its twenty-second edition (1853), “The Society of Heaven”, where the book credits them to the Christian Psalmist.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to MATERNA; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "Je-ru-sa-lem! my glo-rious home! Name ev-er dear to me! When shall my la-bors have an end In joy, and peace and thee? When shall these eyes thy heaven built walls And pear-ly gates be-hold? Thy bul-warks with sal-va-tion strong, And streets of shin-ing gold.",
+  "verses": [
+    {
+      "lines": [
+        "Jerusalem! my glorious home!",
+        "Name ever dear to me!",
+        "When shall my labors have an end",
+        "In joy, and peace and thee?",
+        "When shall these eyes thy heaven-built walls",
+        "And pearly gates behold?",
+        "Thy bulwarks with salvation strong,",
+        "And streets of shining gold."
+      ]
+    },
+    {
+      "lines": [
+        "There happier bowers than Eden's bloom,",
+        "Nor sin nor sorrow know:",
+        "Blest seats! through rude and stormy scenes",
+        "I onward press to you.",
+        "Why should I shrink at pain and woe?",
+        "Or feel at death dismay?",
+        "I've Canaan's goodly land in view,",
+        "And realms of endless day."
+      ]
+    },
+    {
+      "lines": [
+        "Apostles, martyrs, prophets, there,",
+        "Around my Saviour stand;",
+        "And soon my friends in Christ below",
+        "Will join the glorious band.",
+        "Jerusalem! my glorious home!",
+        "My soul still pants for thee;",
+        "Then shall my labors have an end,",
+        "When I thy joys shall see."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to MATERNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:558"
+}

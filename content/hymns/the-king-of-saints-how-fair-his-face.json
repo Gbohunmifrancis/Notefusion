@@ -1,0 +1,78 @@
+{
+  "title": "The King of Saints, How Fair His Face",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "The King of Saints, How Fair His Face in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 45, part 4, headed “Christ and his church; or, The mystical marriage”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The king of saints, how fair his face, A-dorn'd with maj-es-ty and grace! He comes with bless-ings from a-bove, And wins the na-tions to his love.",
+  "verses": [
+    {
+      "lines": [
+        "The king of saints, how fair his face,",
+        "Adorn'd with majesty and grace!",
+        "He comes with blessings from above,",
+        "And wins the nations to his love."
+      ]
+    },
+    {
+      "lines": [
+        "At his right hand our eyes behold",
+        "The queen array'd in purest gold;",
+        "The world admires her heavenly dress,",
+        "Her robe of joy and righteousness."
+      ]
+    },
+    {
+      "lines": [
+        "He forms her beauties like his own;",
+        "He calls and seats her near his throne:",
+        "Fair stranger, let thine heart forget",
+        "The idols of thy native state."
+      ]
+    },
+    {
+      "lines": [
+        "So shall the King the more rejoice",
+        "In thee, the favourite of his choice;",
+        "Let him be lov'd and yet ador'd,",
+        "For he's thy Maker and thy Lord."
+      ]
+    },
+    {
+      "lines": [
+        "O happy hour, when thou shalt rise",
+        "To his fair palace in the skies,",
+        "And all thy Sons (a numerous train)",
+        "Each like a prince in glory reign!"
+      ]
+    },
+    {
+      "lines": [
+        "Let endless honours crown his head;",
+        "Let every age his praises spread;",
+        "While we with cheerful songs approve",
+        "The condescensions of his love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 45:4"
+}

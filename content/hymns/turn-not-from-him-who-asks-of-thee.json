@@ -1,0 +1,71 @@
+{
+  "title": "Turn Not from Him Who Asks of Thee",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Jones Very",
+      "born": 1813,
+      "died": 1880,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Turn Not from Him Who Asks of Thee in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Jones Very wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 286, “Kind Words”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Turn not from him who asks of thee A por-tion of thy store; Thou poor in world-ly goods may'st be, Yet canst give what is more.",
+  "verses": [
+    {
+      "lines": [
+        "Turn not from him who asks of thee",
+        "A portion of thy store;",
+        "Thou poor in worldly goods may'st be,",
+        "Yet canst give what is more."
+      ]
+    },
+    {
+      "lines": [
+        "The balm of comfort thou canst pour",
+        "Into his grieving mind,",
+        "Who oft is turned from wealth's proud door,",
+        "With many a word unkind."
+      ]
+    },
+    {
+      "lines": [
+        "Does any from the false world find",
+        "Naught but reproach and scorn?",
+        "Does any, stung by words unkind,",
+        "Wish that he ne'er was born?"
+      ]
+    },
+    {
+      "lines": [
+        "Do thou raise up his drooping heart,",
+        "Restore his wounded mind;",
+        "Though naught of wealth thou canst impart",
+        "Yet still thou may'st be kind."
+      ]
+    },
+    {
+      "lines": [
+        "And oft again thy words shall wing",
+        "Backward their course to thee,",
+        "And in thy breast will prove a spring",
+        "Of pure felicity."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Jones Very died in 1880.",
+  "credits": "Words by Jones Very (1813–1880), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:286"
+}

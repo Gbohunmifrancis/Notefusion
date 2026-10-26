@@ -1,0 +1,79 @@
+{
+  "title": "What Various Hindrances We Meet",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "What Various Hindrances We Meet in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 60, “Exhortation to prayer”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "What var-ious hin-dran-ces we meet In com-ing to a mer-cy seat? Yet who that knows the worth of prayer, But wish-es to be of-ten there.",
+  "verses": [
+    {
+      "lines": [
+        "What various hindrances we meet",
+        "In coming to a mercy-seat?",
+        "Yet who that knows the worth of prayer,",
+        "But wishes to be often there."
+      ]
+    },
+    {
+      "lines": [
+        "Prayer makes the darkened cloud withdraw,",
+        "Prayer climbs the ladder Jacob saw;",
+        "Gives exercise to faith and love,",
+        "Brings every blessing from above."
+      ]
+    },
+    {
+      "lines": [
+        "Restraining prayer, we cease to fight;",
+        "Prayer makes the christian's armor bright;",
+        "And Satan trembles, when he sees",
+        "The weakest saint upon his knees."
+      ]
+    },
+    {
+      "lines": [
+        "While Moses stood with arms spread wide,",
+        "Success was found on Israel's side;",
+        "But when through weariness they failed,",
+        "That moment Amalek prevailed."
+      ]
+    },
+    {
+      "lines": [
+        "Have you no words? ah, think again,",
+        "Words flow apace when you complain;",
+        "And fill your fellow-creature's ear",
+        "With the sad tale of all your care."
+      ]
+    },
+    {
+      "lines": [
+        "Were half the breath thus vainly spent,",
+        "To heav'n in supplication sent;",
+        "Your cheerful song would oft'ner be,",
+        "Hear what the Lord has done for me"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:60"
+}

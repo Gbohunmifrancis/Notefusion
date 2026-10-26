@@ -1,0 +1,70 @@
+{
+  "title": "Saviour! I My Cross Have Taken",
+  "tune": "all-for-jesus",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Saviour! I My Cross Have Taken in Tonic Solfa to ALL FOR JESUS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 272, “Taking up the Cross”.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to ALL FOR JESUS; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Sa-viour! I my cross have ta-ken, All to leave, and fol-low thee; Though by all things else for-sa-ken, Thou shall my Re-deem-er be.",
+  "verses": [
+    {
+      "lines": [
+        "Saviour! I my cross have taken,",
+        "All to leave, and follow thee;",
+        "Though by all things else forsaken,",
+        "Thou shall my Redeemer be."
+      ]
+    },
+    {
+      "lines": [
+        "Perish every fond ambition,",
+        "All I've sought, or hoped, or known,",
+        "Yet, how rich is my condition!",
+        "God and heaven are still mine own."
+      ]
+    },
+    {
+      "lines": [
+        "Know, my soul, thy full salvation;",
+        "Rise o'er sin, and fear, and care;",
+        "Joy to find, in every station,",
+        "Something still to do and bear."
+      ]
+    },
+    {
+      "lines": [
+        "Think what Spirit dwells within thee;",
+        "Think what Father's smiles are thine;",
+        "Think that Jesus died to win thee;",
+        "Child of heaven, canst thou repine?"
+      ]
+    },
+    {
+      "lines": [
+        "Haste thee on from cross to glory,",
+        "Armed by faith and winged by prayer;",
+        "Heaven's eternal day's before thee,",
+        "God's own hand shall lead thee there."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ALL FOR JESUS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:272"
+}

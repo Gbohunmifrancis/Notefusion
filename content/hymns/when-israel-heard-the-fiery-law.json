@@ -1,0 +1,87 @@
+{
+  "title": "When Israel Heard the Fiery Law",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "When Israel Heard the Fiery Law in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 18, “The golden calf. Ex 32:4,31”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When Is-rael heard the fie-ry law, From Si-nai's top pro-claimed; Their hearts seemed full of ho-ly awe, Their stub-born spi-rits tamed.",
+  "verses": [
+    {
+      "lines": [
+        "When Israel heard the fiery law,",
+        "From Sinai's top proclaimed;",
+        "Their hearts seemed full of holy awe,",
+        "Their stubborn spirits tamed."
+      ]
+    },
+    {
+      "lines": [
+        "Yet, as forgetting all they knew,",
+        "Ere forty days were past;",
+        "With blazing Sinai still in view,",
+        "A molten calf they cast."
+      ]
+    },
+    {
+      "lines": [
+        "Yea, Aaron, God's anointed priest,",
+        "Who on the mount had been",
+        "He durst prepare the idol-beast,",
+        "And lead them on to sin."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, what is man! and what are we,",
+        "To recompense thee thus!",
+        "In their offence our own we see,",
+        "Their story points at us."
+      ]
+    },
+    {
+      "lines": [
+        "From Sinai we have heard thee speak,",
+        "And from mount Calv'ry too;",
+        "And yet to idols oft we seek,",
+        "While thou art in our view."
+      ]
+    },
+    {
+      "lines": [
+        "Some golden calf, or golden dream,",
+        "Some fancied creature-good,",
+        "Presumes to share the heart with him,",
+        "Who bought the whole with blood."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, save us from our golden calves,",
+        "Our sin with grief we own;",
+        "We would no more be thine by halves,",
+        "But live to thee alone."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:18"
+}

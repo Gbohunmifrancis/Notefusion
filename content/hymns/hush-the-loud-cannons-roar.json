@@ -1,0 +1,63 @@
+{
+  "title": "Hush the Loud Cannon's Roar",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "John Johns",
+      "born": 1801,
+      "died": 1847,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Hush the Loud Cannon's Roar in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Johns wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 184, “Human Brotherhood”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Hush the loud can-non's roar, The fran-tic war-rior's call! Why should the earth be drenched with gore? Are we not broth-ers all?",
+  "verses": [
+    {
+      "lines": [
+        "Hush the loud cannon's roar,",
+        "The frantic warrior's call!",
+        "Why should the earth be drenched with gore?",
+        "Are we not brothers all?"
+      ]
+    },
+    {
+      "lines": [
+        "Want, from the wretch depart!",
+        "Chains, from the captive fall!",
+        "Sweet mercy, melt the oppressor's heart, —",
+        "Sufferers are brothers all."
+      ]
+    },
+    {
+      "lines": [
+        "Churches and sects, strike down",
+        "Each mean partition-wall!",
+        "Let love each harsher feeling drown, —",
+        "Christians are brothers all."
+      ]
+    },
+    {
+      "lines": [
+        "Let love and truth alone",
+        "Hold human hearts in thrall,",
+        "That heaven its work at length may own,",
+        "And men be brothers all."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Johns died in 1847.",
+  "credits": "Words by John Johns (1801–1847), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:184"
+}

@@ -1,0 +1,91 @@
+{
+  "title": "What Contradictions Meet",
+  "tune": "st-john-parish-choir",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "What Contradictions Meet in Tonic Solfa to ST. JOHN (PARISH CHOIR), doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 26, “Travailing in birth for souls. Gal 4:19”.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.8.8), to be sung to any tune of that metre. This page sets them to ST. JOHN (PARISH CHOIR); any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "What con-tra-dic-tions meet In min-is-ters' em-ploy! It is a bit-ter sweet, A sor-row full of joy: No oth-er post af-fords a place For e-qual hon-or, or dis-grace!",
+  "verses": [
+    {
+      "lines": [
+        "What contradictions meet",
+        "In ministers' employ!",
+        "It is a bitter sweet,",
+        "A sorrow full of joy:",
+        "No other post affords a place",
+        "For equal honor, or disgrace!"
+      ]
+    },
+    {
+      "lines": [
+        "Who can describe the pain",
+        "Which faithful preachers feel;",
+        "Constrained to speak, in vain,",
+        "To hearts as hard as steel?",
+        "Or who can tell the pleasures felt,",
+        "When stubborn hearts begin to melt?"
+      ]
+    },
+    {
+      "lines": [
+        "The Savior's dying love,",
+        "The soul's amazing worth;",
+        "Their utmost efforts move,",
+        "And draw their bowels forth:",
+        "They pray and strive, their rest departs,",
+        "Till Christ be formed in sinners hearts."
+      ]
+    },
+    {
+      "lines": [
+        "If some small hope appear,",
+        "They still are not content;",
+        "But, with a jealous fear,",
+        "They watch for the event:",
+        "Too oft they find their hopes deceived,",
+        "Then, how their inmost souls are grieved!"
+      ]
+    },
+    {
+      "lines": [
+        "But when their pains succeed,",
+        "And from the tender blade",
+        "The rip'ning ears proceed,",
+        "Their toils are overpaid:",
+        "No harvest-joy can equal theirs,",
+        "To find the fruit of all their cares."
+      ]
+    },
+    {
+      "lines": [
+        "On what has now been sown",
+        "Thy blessing, Lord, bestow;",
+        "The pow'r is thine alone,",
+        "To make it spring and grow:",
+        "Do thou the gracious harvest raise,",
+        "And thou, alone, shalt have the praise."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. JOHN (PARISH CHOIR) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:26"
+}

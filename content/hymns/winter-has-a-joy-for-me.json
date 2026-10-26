@@ -1,0 +1,79 @@
+{
+  "title": "Winter Has a Joy for Me",
+  "tune": "innocents",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Winter Has a Joy for Me in Tonic Solfa to INNOCENTS, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 83, “I will praise the Lord at all times”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to INNOCENTS; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Win-ter has a joy for me, While the Sa-vior's charms I read, Low-ly, meek, from blem-ish free, In the snow drop's pen-sive head.",
+  "verses": [
+    {
+      "lines": [
+        "Winter has a joy for me,",
+        "While the Savior's charms I read,",
+        "Lowly, meek, from blemish free,",
+        "In the snow-drop's pensive head."
+      ]
+    },
+    {
+      "lines": [
+        "Spring returns, and brings along",
+        "Life-invigorating suns:",
+        "Hark! the turtle's plaintive song,",
+        "Seems to speak his dying groans!"
+      ]
+    },
+    {
+      "lines": [
+        "Summer has a thousand charms,",
+        "All expressive of his worth;",
+        "'Tis his sun that lights and warms,",
+        "His the air that cools the earth."
+      ]
+    },
+    {
+      "lines": [
+        "What, has autumn left to say",
+        "Nothing, of a Savior's grace?",
+        "Yes, the beams of milder day",
+        "Tell me of his smiling face."
+      ]
+    },
+    {
+      "lines": [
+        "Light appears with early dawn",
+        "While the sun makes haste to rise,",
+        "See his bleeding beauties, drawn",
+        "On the blushes of the skies."
+      ]
+    },
+    {
+      "lines": [
+        "Evening, with a silent pace,",
+        "Slowly moving in the west,",
+        "Shows an emblem of his grace,",
+        "Points to an eternal rest."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to INNOCENTS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:83"
+}

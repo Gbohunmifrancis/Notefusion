@@ -1,0 +1,55 @@
+{
+  "title": "When, on Devotion's Seraph Wing",
+  "tune": "all-saints-new",
+  "text": [
+    {
+      "name": "Sarah Elizabeth Miles",
+      "born": 1807,
+      "died": 1877,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "When, on Devotion's Seraph Wing in Tonic Solfa to ALL SAINTS, NEW, doh is Bb: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Sarah Elizabeth Miles wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 359, “Foretaste of Heaven”.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to ALL SAINTS, NEW; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "When, on de-vo-tion's ser-aph wing, The spir-it soars a-bove, And feels Thy pre-sence, Fa-ther, Friend, God of e-ter-nal love! The joys of earth, how swift they fade Be-fore that liv-ing ray, Which gives to the rapt soul a glimpse Of pure and per-fect day!",
+  "verses": [
+    {
+      "lines": [
+        "When, on devotion's seraph wing,",
+        "The spirit soars above,",
+        "And feels Thy presence, Father, Friend,",
+        "God of eternal love!",
+        "The joys of earth, how swift they fade",
+        "Before that living ray,",
+        "Which gives to the rapt soul a glimpse",
+        "Of pure and perfect day!"
+      ]
+    },
+    {
+      "lines": [
+        "A gleam of Heaven's own light, though now",
+        "Its brightness scarce appears",
+        "Through the pale shadows that are spread",
+        "Around our earthly years;",
+        "But Thine unclouded smile, O God!",
+        "Fills that all-glorious place,",
+        "Where we shall know as we are known,",
+        "And see Thee, face to face."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Sarah Elizabeth Miles died in 1877.",
+  "credits": "Words by Sarah Elizabeth Miles (1807–1877), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ALL SAINTS, NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:359"
+}

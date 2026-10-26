@@ -1,0 +1,91 @@
+{
+  "title": "As the Serpent Raised by Moses",
+  "tune": "rustington",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "As the Serpent Raised by Moses in Tonic Solfa to RUSTINGTON, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 61, “Look unto me, and be ye saved. Isa 45:22”.",
+    "The book printed the words without tunes, marked Eights and Sevens Double (8.7.8.7.8.7.8.7), to be sung to any tune of that metre. This page sets them to RUSTINGTON; any other Eights and Sevens Double tune fits them as well."
+  ],
+  "underlay": "As the ser-pent raised by Mo-ses Healed the burn-ing ser-pent's bite; Je-sus thus him-self dis-clo-ses To the woun-ded sin-ner's sight: Hear his gra-cious in-vi-ta-tion, \"I have life and peace to give, I have wrought out full sal-va-tion, Sin-ner, look to me and live.",
+  "verses": [
+    {
+      "lines": [
+        "As the serpent raised by Moses",
+        "Healed the burning serpent's bite;",
+        "Jesus thus himself discloses",
+        "To the wounded sinner's sight:",
+        "Hear his gracious invitation,",
+        "\"I have life and peace to give,",
+        "I have wrought out full salvation,",
+        "Sinner, look to me and live."
+      ]
+    },
+    {
+      "lines": [
+        "Pore upon your sins no longer,",
+        "Well I know their mighty guilt;",
+        "But my love than death is stronger,",
+        "I my blood have freely spilt:",
+        "Though your heart has long been hardened,",
+        "Look on me--it soft shall grow;",
+        "Past transgressions shall be pardoned,",
+        "And I'll wash you white as snow."
+      ]
+    },
+    {
+      "lines": [
+        "I have seen what you were doing,",
+        "Though you little thought of me;",
+        "You were madly bent on ruin,",
+        "But I said--It shall not be:",
+        "You had been for ever wretched,",
+        "Had I not espoused your part;",
+        "Now behold my arms outstretched",
+        "To receive you to my heart."
+      ]
+    },
+    {
+      "lines": [
+        "Well may shame, and joy, and wonder,",
+        "All your inward passions move;",
+        "I could crush thee with my thunder,",
+        "But I speak to thee in love:",
+        "See! your sins are all forgiven,",
+        "I have paid the countless sum!",
+        "Now my death has opened heaven,",
+        "Thither you shall shortly come.\""
+      ]
+    },
+    {
+      "lines": [
+        "Dearest Savior, we adore thee",
+        "For thy precious life and death;",
+        "Melt each stubborn heart before thee,",
+        "Give us all the eye of faith:",
+        "From the law's condemning sentence,",
+        "To thy mercy we appeal;",
+        "Thou alone canst give repentance,",
+        "Thou alone our souls canst heal."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to RUSTINGTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:61"
+}

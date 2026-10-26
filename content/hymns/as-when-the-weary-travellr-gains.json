@@ -1,0 +1,79 @@
+{
+  "title": "As When the Weary Travell'r Gains",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "As When the Weary Travell'r Gains in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 58, “Home in view”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "As when the wea-ry trav-ell'r gains The height of some o'er look-ing hill; His heart re-vives, if cross the plains He eyes his home, though dis-tant still.",
+  "verses": [
+    {
+      "lines": [
+        "As when the weary travell'r gains",
+        "The height of some o'er-looking hill;",
+        "His heart revives, if cross the plains",
+        "He eyes his home, though distant still."
+      ]
+    },
+    {
+      "lines": [
+        "While he surveys the much-loved spot,",
+        "He slights the space that lies between;",
+        "His past fatigues are now forgot,",
+        "Because his journey's end is seen."
+      ]
+    },
+    {
+      "lines": [
+        "Thus, when the christian pilgrim views",
+        "By faith, his mansion in the skies;",
+        "The sight his fainting strength renews,",
+        "And wings his speed to reach the prize."
+      ]
+    },
+    {
+      "lines": [
+        "The thought of home his spirit cheers,",
+        "No more he grieves for troubles past;",
+        "Nor any future trial fears,",
+        "So he may safe arrive at last."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis there, he says, I am to dwell",
+        "With Jesus, in the realms of day;",
+        "Then I shall bid my cares farewell,",
+        "And he will wipe my tears away."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, on thee our hope depends,",
+        "To lead us on to thine abode;",
+        "Assured our home will make amends",
+        "For all our toil while on the road."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:58"
+}

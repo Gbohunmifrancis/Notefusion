@@ -1,0 +1,71 @@
+{
+  "title": "This Is the Fast the Lord Doth Choose",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Hosea Ballou",
+      "born": 1771,
+      "died": 1852,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "This Is the Fast the Lord Doth Choose in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Hosea Ballou wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 868 of its twenty-second edition (1853), “The Acceptable Fast”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "This is the fast the Lord doth choose; Each hea-vy bur-den to un-do, The bands of wick-ed-ness to loose, And bid the cap-tive free-ly go.",
+  "verses": [
+    {
+      "lines": [
+        "This is the fast the Lord doth choose;",
+        "Each heavy burden to undo,",
+        "The bands of wickedness to loose,",
+        "And bid the captive freely go."
+      ]
+    },
+    {
+      "lines": [
+        "Let every vile and sinful yoke",
+        "Of servile bondage and of fear,",
+        "By mercy, love and truth be broke;",
+        "And from each eye wipe every tear."
+      ]
+    },
+    {
+      "lines": [
+        "Yes, to the hungry deal thy bread;",
+        "Bring to thine house the outcast poor;",
+        "There let the fainting soul be fed,",
+        "Nor spurn the needy from thy door."
+      ]
+    },
+    {
+      "lines": [
+        "And when thou seest the naked, spare",
+        "The raiment that his wants demand;",
+        "Since all mankind thy kindred are,",
+        "To all thy charity expand."
+      ]
+    },
+    {
+      "lines": [
+        "Thus did the Saviour of our race:",
+        "Himself, the Bread of Life, he gave;",
+        "He clothed us with his righteousness,",
+        "And broke the fetters from the slave."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Hosea Ballou died in 1852.",
+  "credits": "Words by Hosea Ballou (1771–1852), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:868"
+}

@@ -1,0 +1,95 @@
+{
+  "title": "By Various Maxims, Forms and Rules",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "By Various Maxims, Forms and Rules in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 134, “Looking unto Jesus. Heb 12:2”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "By var-ious max-ims, forms and rules, That pass for wis-dom in the schools, I strove my pas-sion to re-strain; But all my ef-forts proved in vain.",
+  "verses": [
+    {
+      "lines": [
+        "By various maxims, forms and rules,",
+        "That pass for wisdom in the schools,",
+        "I strove my passion to restrain;",
+        "But all my efforts proved in vain."
+      ]
+    },
+    {
+      "lines": [
+        "But since the Savior I have known",
+        "My rules are all reduced to one;",
+        "To keep my Lord, by faith, in view,",
+        "This strength supplies and motives too."
+      ]
+    },
+    {
+      "lines": [
+        "I see him lead a suff'ring life,",
+        "Patient, amidst reproach and strife;",
+        "And from his pattern courage take",
+        "To bear, and suffer, for his sake."
+      ]
+    },
+    {
+      "lines": [
+        "Upon the cross I see him bleed,",
+        "And by the sight from guilt am freed;",
+        "This sight destroys the life of sin,",
+        "And quickens heav'nly life within."
+      ]
+    },
+    {
+      "lines": [
+        "To look to Jesus as he rose",
+        "Confirms my faith, disarms my foes;",
+        "Satan I shame and overcome,",
+        "By pointing to my Savior's tomb."
+      ]
+    },
+    {
+      "lines": [
+        "Exalted on his glorious throne,",
+        "I see him make my cause his own;",
+        "Then all my anxious cares subside,",
+        "For Jesus lives, and will provide."
+      ]
+    },
+    {
+      "lines": [
+        "I see him look with pity down,",
+        "And hold in view the conqu'ror's crown;",
+        "If pressed with griefs and cares before,",
+        "My soul revives, nor asks for more."
+      ]
+    },
+    {
+      "lines": [
+        "By faith I see the hour at hand",
+        "When in his presence I shall stand;",
+        "Then it will be my endless bliss,",
+        "To see him where, and as he is."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:134"
+}

@@ -1,0 +1,70 @@
+{
+  "title": "When My Love to Christ Grows Weak",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "When My Love to Christ Grows Weak in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 144, “Strength Through Christ's Sufferings”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "When my love to Christ grows weak, When for deep-er faith I seek, Then in thought I go to thee, Gar-den of Geth-se-ma-ne!",
+  "verses": [
+    {
+      "lines": [
+        "When my love to Christ grows weak,",
+        "When for deeper faith I seek,",
+        "Then in thought I go to thee,",
+        "Garden of Gethsemane!"
+      ]
+    },
+    {
+      "lines": [
+        "There I walk amid the shades,",
+        "While the lingering twilight fades,",
+        "See that suffering, friendless One",
+        "Weeping, praying there alone."
+      ]
+    },
+    {
+      "lines": [
+        "When my love for Christ grows weak,",
+        "When for stronger faith I seek,",
+        "Hill of Calvary! I go",
+        "To thy scenes of fear and woe; —"
+      ]
+    },
+    {
+      "lines": [
+        "There behold his agony,",
+        "Suffered on the bitter tree;",
+        "See his anguish, see his faith;",
+        "Love triumphant still in death."
+      ]
+    },
+    {
+      "lines": [
+        "Then to life I turn again,",
+        "Learning all the worth of pain,",
+        "Learning all the might that lies",
+        "In a full self-sacrifice."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:144"
+}

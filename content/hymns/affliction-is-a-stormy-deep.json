@@ -1,0 +1,63 @@
+{
+  "title": "Affliction Is a Stormy Deep",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Nathaniel Cotton",
+      "born": 1705,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Affliction Is a Stormy Deep in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Nathaniel Cotton wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 609 of its twenty-second edition (1853), “God, the Refuge of the Afflicted”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "A-fflic-tion is a storm-y deep, Where wave re-sounds to wave; Though o'er our heads the bil-lows roll, We know the Lord can save.",
+  "verses": [
+    {
+      "lines": [
+        "Affliction is a stormy deep,",
+        "Where wave resounds to wave;",
+        "Though o'er our heads the billows roll,",
+        "We know the Lord can save."
+      ]
+    },
+    {
+      "lines": [
+        "When darkness and when sorrows rose,",
+        "And pressed on every side,",
+        "The Lord hath still sustained our steps,",
+        "And still hath been our Guide."
+      ]
+    },
+    {
+      "lines": [
+        "Perhaps, before the morning dawn,",
+        "He will restore our peace;",
+        "For he who bade the tempest roar,",
+        "Can bid the tempest cease."
+      ]
+    },
+    {
+      "lines": [
+        "Here will we rest, here build our hopes,",
+        "Nor murmur at his rod;",
+        "He's more to us than all the world,",
+        "Our Health, our Life, our God."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Nathaniel Cotton died in 1788.",
+  "credits": "Words by Nathaniel Cotton (1705–1788), public domain, as printed in Hymns for Christian Devotion (1853); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:609"
+}

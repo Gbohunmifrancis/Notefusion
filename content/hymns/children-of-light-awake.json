@@ -1,0 +1,63 @@
+{
+  "title": "Children of Light, Awake",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Stephen Greenleaf Bulfinch",
+      "born": 1809,
+      "died": 1870,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Children of Light, Awake in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Stephen Greenleaf Bulfinch wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 359 of its twenty-second edition (1853), “The Use of Present Opportunities”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Child-ren of light, a-wake, At Je-sus' call a-rise, Forth with your lea-der to par-take His toils, his vic-to-ries.",
+  "verses": [
+    {
+      "lines": [
+        "Children of light, awake,",
+        "At Jesus' call arise,",
+        "Forth with your leader to partake",
+        "His toils, his victories."
+      ]
+    },
+    {
+      "lines": [
+        "Ye must not idly stand,",
+        "His sacred voice who hear;",
+        "Arm for the strife the feeble hand,",
+        "The holy standard rear."
+      ]
+    },
+    {
+      "lines": [
+        "Nought doth the world afford,",
+        "But toil must be the price;",
+        "Wilt thou not, servant of the Lord,",
+        "Then toil for paradise?"
+      ]
+    },
+    {
+      "lines": [
+        "Awake, ye sons of light,",
+        "Strive till the prize be won;",
+        "Far spent already is the night;",
+        "The day comes brightening on."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Stephen Greenleaf Bulfinch died in 1870.",
+  "credits": "Words by Stephen Greenleaf Bulfinch (1809–1870), public domain, as printed in Hymns for Christian Devotion (1853); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:359"
+}

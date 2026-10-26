@@ -1,0 +1,110 @@
+{
+  "title": "O God, My Refuge, Hear My Cries",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "O God, My Refuge, Hear My Cries in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 10 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 55, part 1, headed “Support for the afflicted and tempted soul”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O God, my re-fuge, hear my cries, Be-hold my flow-ing tears, For earth and hell my hurt de-vise, And tri-umph in my fears.",
+  "verses": [
+    {
+      "lines": [
+        "O God, my refuge, hear my cries,",
+        "Behold my flowing tears,",
+        "For earth and hell my hurt devise,",
+        "And triumph in my fears."
+      ]
+    },
+    {
+      "lines": [
+        "Their rage is levell'd at my life,",
+        "My soul with guilt they load,",
+        "And fill my thoughts with inward strife",
+        "To shake my hope in God."
+      ]
+    },
+    {
+      "lines": [
+        "With inward pain my heart-strings sound,",
+        "I groan with every breath;",
+        "Horror and fear beset me round",
+        "Amongst the shades of death,"
+      ]
+    },
+    {
+      "lines": [
+        "O were I like a feather'd dove,",
+        "And innocence had wings,",
+        "I'd fly, and make a long remove,",
+        "From all these restless things."
+      ]
+    },
+    {
+      "lines": [
+        "Let me to some wild desert go,",
+        "And find a peaceful home,",
+        "Where storms of malice never blow,",
+        "Temptations never come."
+      ]
+    },
+    {
+      "lines": [
+        "Vain hopes, and vain inventions all",
+        "To 'scape the rage of hell!",
+        "The mighty God on whom I call",
+        "Can save me here as well."
+      ]
+    },
+    {
+      "lines": [
+        "By morning light I'll seek his face,",
+        "At noon repeat my cry,",
+        "The night shall hear me ask his grace,",
+        "Nor will he long deny."
+      ]
+    },
+    {
+      "lines": [
+        "God shall preserve my soul from fear,",
+        "Or shield me when afraid;",
+        "Ten thousand angels must appear",
+        "If he command their aid."
+      ]
+    },
+    {
+      "lines": [
+        "I cast my burdens on the Lord,",
+        "The Lord sustains them all;",
+        "My courage rests upon his word",
+        "That saints shall never fall."
+      ]
+    },
+    {
+      "lines": [
+        "My highest hopes shall not be vain,",
+        "My lips shall spread his praise;",
+        "While cruel and deceitful men",
+        "Scarce live out half their days."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 55:1"
+}

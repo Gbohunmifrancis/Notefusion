@@ -1,0 +1,63 @@
+{
+  "title": "Jehovah God! Thy Gracious Power",
+  "tune": "york",
+  "text": [
+    {
+      "name": "James Thomson",
+      "born": 1700,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Jehovah God! Thy Gracious Power in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Thomson wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 138 of its twenty-second edition (1853), “All-embracing Providence of God”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Je-ho-vah God! thy gra-cious power On ev-ery hand we see; O may the bless-ings of each hour Lead all our thoughts to thee.",
+  "verses": [
+    {
+      "lines": [
+        "Jehovah God! thy gracious power",
+        "On every hand we see;",
+        "O may the blessings of each hour",
+        "Lead all our thoughts to thee."
+      ]
+    },
+    {
+      "lines": [
+        "If, on the wings of morn, we speed",
+        "To earth's remotest bound,",
+        "Thy hand will there our footsteps lead,",
+        "Thy love, our path surround."
+      ]
+    },
+    {
+      "lines": [
+        "Thy power is in the ocean deeps,",
+        "And reaches to the skies;",
+        "Thine eye of mercy never sleeps,",
+        "Thy goodness never dies."
+      ]
+    },
+    {
+      "lines": [
+        "In all the varying scenes of time,",
+        "On thee our hopes depend;",
+        "Through every age, in every clime,",
+        "Our Father, and our Friend!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Thomson died in 1748.",
+  "credits": "Words by James Thomson (1700–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:138"
+}

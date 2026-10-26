@@ -1,0 +1,63 @@
+{
+  "title": "God, Who Is Just and Kind",
+  "tune": "franconia",
+  "text": [
+    {
+      "name": "John Patrick",
+      "born": 1632,
+      "died": 1695,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "God, Who Is Just and Kind in Tonic Solfa to FRANCONIA, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Patrick wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 496 of its twenty-second edition (1853), “The Fatherly Love of God”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to FRANCONIA; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "God, who is just and kind, Will those who err in-struct, And to the paths of right-eous-ness Their wan-dering steps con-duct.",
+  "verses": [
+    {
+      "lines": [
+        "God, who is just and kind,",
+        "Will those who err instruct,",
+        "And to the paths of righteousness",
+        "Their wandering steps conduct."
+      ]
+    },
+    {
+      "lines": [
+        "The humble soul he guides,",
+        "Teaches the meek his way,",
+        "Kindness and truth he shows to all",
+        "Who his just laws obey."
+      ]
+    },
+    {
+      "lines": [
+        "Give me the tender heart",
+        "That mixes fear with love,",
+        "And lead me through whatever path",
+        "Thy wisdom shall approve."
+      ]
+    },
+    {
+      "lines": [
+        "Oh! ever keep my soul",
+        "From error, shame and guilt;",
+        "Nor suffer the fair hope to fail,",
+        "Which on thy truth is built."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Patrick died in 1695.",
+  "credits": "Words by John Patrick (1632–1695), public domain, as printed in Hymns for Christian Devotion (1853); set to FRANCONIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:496"
+}

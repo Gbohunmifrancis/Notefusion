@@ -1,0 +1,79 @@
+{
+  "title": "Joy Is a Fruit That Will Not Grow",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Joy Is a Fruit That Will Not Grow in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 42, “The joy of the Lord is your strength. Neh 9:10”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Joy is a fruit that will not grow In na-ture's bar-ren foil; All we can boast, till Christ we know, Is van-i-ty and toil.",
+  "verses": [
+    {
+      "lines": [
+        "Joy is a fruit that will not grow",
+        "In nature's barren foil;",
+        "All we can boast, till Christ we know,",
+        "Is vanity and toil."
+      ]
+    },
+    {
+      "lines": [
+        "But where the Lord has planted grace;",
+        "And made his glories known;",
+        "There fruits of heavenly joy and peace",
+        "Are found, and there alone."
+      ]
+    },
+    {
+      "lines": [
+        "A bleeding Savior seen by faith,",
+        "A sense of pard'ning love;",
+        "A hope that triumphs over death,",
+        "Give joys like those above."
+      ]
+    },
+    {
+      "lines": [
+        "To take a glimpse within the veil,",
+        "To know that God is mine;",
+        "Are springs of joy that never fail,",
+        "Unspeakably divine!"
+      ]
+    },
+    {
+      "lines": [
+        "These are the joys which satisfy,",
+        "And sanctify the mind;",
+        "Which make the spirit mount on high,",
+        "And leave the world behind."
+      ]
+    },
+    {
+      "lines": [
+        "No more, believers, mourn your lot,",
+        "But if you are the Lord'S;",
+        "Resign to them that know him not,",
+        "Such joys as earth affords."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:42"
+}

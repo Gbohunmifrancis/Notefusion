@@ -1,0 +1,134 @@
+{
+  "title": "Lord, Thou Hast Search'd and Seen Me Thro'",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Lord, Thou Hast Search'd and Seen Me Thro' in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 13 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 139, part 1, headed “The all-seeing God”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Lord, thou hast search'd and seen me thro'; Thine eye com-mands with pierc-ing view My ris-ing and my rest-ing hours, My heart and flesh with all their powers.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, thou hast search'd and seen me thro';",
+        "Thine eye commands with piercing view",
+        "My rising and my resting hours,",
+        "My heart and flesh with all their powers."
+      ]
+    },
+    {
+      "lines": [
+        "My thoughts, before they are my own,",
+        "Are to my God distinctly known;",
+        "He knows the words I mean to speak",
+        "Ere from my opening lips they break."
+      ]
+    },
+    {
+      "lines": [
+        "Within thy circling power I stand;",
+        "On every side I find thy hand:",
+        "Awake, asleep, at home, abroad,",
+        "I am surrounded still with God."
+      ]
+    },
+    {
+      "lines": [
+        "Amazing knowledge, vast and great!",
+        "What large extent! what lofty height!",
+        "My soul, with all the powers I boast,",
+        "Is in the boundless prospect lost."
+      ]
+    },
+    {
+      "lines": [
+        "\"O may these thoughts possess my breast,",
+        "\"Where'er I rove where'er I rest!",
+        "\"Nor let my weaker passions dare",
+        "\"Consent to sin, for God is there.\""
+      ]
+    },
+    {
+      "lines": [
+        "Could I so false, so faithless prove,",
+        "To quit thy service and thy love,",
+        "Where, Lord, could I thy presence shun,",
+        "Or from thy dreadful glory run?"
+      ]
+    },
+    {
+      "lines": [
+        "If up to heaven I take my flight,",
+        "'Tis there thou dwell'st enthron'd in light;",
+        "Or dive to hell, there vengeance reigns,",
+        "And Satan groans beneath thy chains."
+      ]
+    },
+    {
+      "lines": [
+        "If mounted on a morning ray,",
+        "I fly beyond the western sea,",
+        "Thy swifter hand would first arrive,",
+        "And there arrest thy fugitive."
+      ]
+    },
+    {
+      "lines": [
+        "Or should I try to shun thy sight",
+        "Beneath the spreading veil of night,",
+        "One glance of thine, one piercing ray,",
+        "Would kindle darkness into day."
+      ]
+    },
+    {
+      "lines": [
+        "\"O may these thoughts possess my breast,",
+        "\"Where'er I rove, where'er I rest!",
+        "\"Nor let my weaker passions dare",
+        "\"Consent to sin, for God is there.\""
+      ]
+    },
+    {
+      "lines": [
+        "The veil of night is no disguise,",
+        "No screen from thy all-searching eyes;",
+        "Thy hand can seize thy foes as soon,",
+        "Thro' midnight shades as blazing noon."
+      ]
+    },
+    {
+      "lines": [
+        "Midnight and noon in this agree,",
+        "Great God, they're both alike to thee:",
+        "Not death can hide what God will spy,",
+        "And hell lies naked to his eye."
+      ]
+    },
+    {
+      "lines": [
+        "\"O may these thoughts possess my breast,",
+        "\"Where'er I rove where'er I rest!",
+        "\"Nor let my weaker passions dare",
+        "\"Consent to sin, for God is there.\""
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 139:1"
+}

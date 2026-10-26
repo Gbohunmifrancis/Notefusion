@@ -1,0 +1,61 @@
+{
+  "title": "O, Come, Loud Anthems Let Us Sing",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Nahum Tate",
+      "born": 1652,
+      "died": 1715,
+      "role": "Words"
+    },
+    {
+      "name": "Nicholas Brady",
+      "born": 1659,
+      "died": 1726,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O, Come, Loud Anthems Let Us Sing in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Nahum Tate and Nicholas Brady wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 5 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O, Come, loud an-thems let us sing, Loud thanks to our Al-might-y King; For we our voi-ces high should raise, When our sal-va-tion's Rock we praise.",
+  "verses": [
+    {
+      "lines": [
+        "O, Come, loud anthems let us sing,",
+        "Loud thanks to our Almighty King;",
+        "For we our voices high should raise,",
+        "When our salvation's Rock we praise."
+      ]
+    },
+    {
+      "lines": [
+        "Into his presence let us haste,",
+        "To thank him, for his favors past;",
+        "To him address, in joyful songs,",
+        "The praise that to his name belongs."
+      ]
+    },
+    {
+      "lines": [
+        "O, let us to his courts repair,",
+        "And bow with adoration there;",
+        "With joy and fear devoutly all",
+        "Before the Lord, our Maker, fall!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Nahum Tate died in 1715; Nicholas Brady died in 1726.",
+  "credits": "Words by Nahum Tate (1652–1715) and Nicholas Brady (1659–1726), public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:5"
+}

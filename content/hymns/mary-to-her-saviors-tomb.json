@@ -1,0 +1,79 @@
+{
+  "title": "Mary to Her Savior's Tomb",
+  "tune": "watchman",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Mary to Her Savior's Tomb in Tonic Solfa to WATCHMAN, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 117, “Weeping Mary Jn 20:11-16”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to WATCHMAN; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Ma-ry to her Sa-vior's tomb Hast-ed at the ear-ly dawn; Spice she brought, and sweet per-fume, But the Lord, The loved, was gone. For a-while she weep-ing stood, Struck with sor-row and sur-prise; Shed-ding tears, a plen-teous flood, For her heart sup-plied her eyes.",
+  "verses": [
+    {
+      "lines": [
+        "Mary to her Savior's tomb",
+        "Hasted at the early dawn;",
+        "Spice she brought, and sweet perfume,",
+        "But the Lord, The loved, was gone.",
+        "For awhile she weeping stood,",
+        "Struck with sorrow and surprise;",
+        "Shedding tears, a plenteous flood,",
+        "For her heart supplied her eyes."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, who is always near,",
+        "Though too often unperceived",
+        "Came, his drooping child to cheer,",
+        "And enquired, Why she grieved?",
+        "Though at first she knew him not,",
+        "When he called her by her name,",
+        "Then her griefs were all forgot,",
+        "For she found he was the same."
+      ]
+    },
+    {
+      "lines": [
+        "Grief and sighing quickly fled",
+        "When she heard his welcome voice;",
+        "Just before she thought him dead,",
+        "Now he bids her heart rejoice:",
+        "What a change his word can make,",
+        "Turning darkness into day!",
+        "You who weep for Jesus' sake;",
+        "He will wipe your tears away."
+      ]
+    },
+    {
+      "lines": [
+        "He who came to comfort her,",
+        "When she thought her all was lost;",
+        "Will for your relief appear,",
+        "Though you now are tempest-tossed:",
+        "On his word your burden cast,",
+        "On his love your thoughts employ;",
+        "Weeping for awhile may last,",
+        "But the morning brings the joy."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WATCHMAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:117"
+}

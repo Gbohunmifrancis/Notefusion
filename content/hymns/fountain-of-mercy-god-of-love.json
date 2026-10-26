@@ -1,0 +1,70 @@
+{
+  "title": "Fountain of Mercy, God of Love",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Fountain of Mercy, God of Love in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 877 of its twenty-second edition (1853), “The Same”, where the book credits them to the Christian Psalmist.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Foun-tain of mer-cy, God of love, How rich thy boun-ties are! The roll-ing sea-sons, as they move, Pro-claim thy con-stant care.",
+  "verses": [
+    {
+      "lines": [
+        "Fountain of mercy, God of love,",
+        "How rich thy bounties are!",
+        "The rolling seasons, as they move,",
+        "Proclaim thy constant care."
+      ]
+    },
+    {
+      "lines": [
+        "When in the bosom of the earth",
+        "The sower hid the grain,",
+        "Thy goodness marked its secret birth,",
+        "And sent the early rain."
+      ]
+    },
+    {
+      "lines": [
+        "The spring's sweet influence, Lord, was thine",
+        "The plants in beauty grew;",
+        "Thou gav'st refulgent suns to shine,",
+        "And mild, refreshing dew."
+      ]
+    },
+    {
+      "lines": [
+        "These various mercies from above",
+        "Matured the swelling grain;",
+        "A kindly harvest crowns thy love,",
+        "And plenty fills the plain."
+      ]
+    },
+    {
+      "lines": [
+        "We own and bless thy gracious sway;",
+        "Thy hand all nature hails;",
+        "Seed-time nor harvest, night nor day,",
+        "Summer nor winter, fails."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:877"
+}

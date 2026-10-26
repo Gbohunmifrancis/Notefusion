@@ -1,0 +1,62 @@
+{
+  "title": "Not in the Church-yard Shall He Sleep",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Not in the Church-yard Shall He Sleep in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 834 of its twenty-second edition (1853), “The Sailor's Grave”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Not in the church yard shall he sleep, A-mid the si-lent gloom, His home was on the might-y deep, And there shall be his tomb.",
+  "verses": [
+    {
+      "lines": [
+        "Not in the church-yard shall he sleep,",
+        "Amid the silent gloom, —",
+        "His home was on the mighty deep,",
+        "And there shall be his tomb."
+      ]
+    },
+    {
+      "lines": [
+        "He loved his own bright, deep blue sea,",
+        "O'er it he loved to roam;",
+        "And now his winding sheet shall be",
+        "That same bright ocean's foam."
+      ]
+    },
+    {
+      "lines": [
+        "No village bell shall toll for him",
+        "Its mournful, solemn dirge;",
+        "The winds shall chant a requiem",
+        "To him beneath the surge."
+      ]
+    },
+    {
+      "lines": [
+        "For him, break not the grassy turf,",
+        "Nor turn the dewy sod;",
+        "His dust shall rest beneath the surf,",
+        "His spirit with its God."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:834"
+}

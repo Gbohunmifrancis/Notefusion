@@ -1,0 +1,78 @@
+{
+  "title": "A Voice upon the Midnight Air",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "A Voice upon the Midnight Air in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 131, “\"Let This Cup Pass From Me.\"”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "A voice up-on the mid-night air, Where Ke-dron's moon-lit wa-ters stray, Weeps forth in a-go-ny of prayer, \"O Fa-ther, take this cup a-way!\"",
+  "verses": [
+    {
+      "lines": [
+        "A voice upon the midnight air,",
+        "Where Kedron's moonlit waters stray,",
+        "Weeps forth in agony of prayer,",
+        "\"O Father, take this cup away!\""
+      ]
+    },
+    {
+      "lines": [
+        "Ah, thou who sorrow'st unto death,",
+        "We conquer in thy mortal fray;",
+        "And earth for all her children saith,",
+        "\"O God, take not this cup away!\""
+      ]
+    },
+    {
+      "lines": [
+        "O Lord of sorrow, meekly die;",
+        "Thou'lt heal or hallow all our woe;",
+        "Thy peace shall still the mourner's sigh;",
+        "Thy strength shall raise the faint and low."
+      ]
+    },
+    {
+      "lines": [
+        "Great chief of faithful souls, arise;",
+        "None else can lead the martyr band,",
+        "Who teach the soul how peril flies,",
+        "When faith, unarmed, uplifts the hand."
+      ]
+    },
+    {
+      "lines": [
+        "O King of earth, the cross ascend;",
+        "O'er climes and ages 'tis thy throne;",
+        "Where'er thy fading eye may bend,",
+        "The desert blooms and is thine own."
+      ]
+    },
+    {
+      "lines": [
+        "Thy parting blessing, Lord, we pray;",
+        "Make but one fold below, above;",
+        "And when we go the last, lone way,",
+        "O, give the welcome of thy love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:131"
+}

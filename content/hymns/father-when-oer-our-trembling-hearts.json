@@ -1,0 +1,67 @@
+{
+  "title": "Father, When O'er Our Trembling Hearts",
+  "tune": "all-saints-new",
+  "text": [
+    {
+      "name": "Stephen Greenleaf Bulfinch",
+      "born": 1809,
+      "died": 1870,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Father, When O'er Our Trembling Hearts in Tonic Solfa to ALL SAINTS, NEW, doh is Bb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Stephen Greenleaf Bulfinch wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 213, “Help Thou Our Unbelief”.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to ALL SAINTS, NEW; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "Fa-ther, when o'er our trem-bling hearts Doubt's sha-dows gath-ering brood, When faith in Thee al-most de-parts, And gloomi-est fears in-trude; For-sake us not, O God of grace, But send those fears re-lief; Grant us a-gain to see Thy face; Lord, help our un-be-lief!",
+  "verses": [
+    {
+      "lines": [
+        "Father, when o'er our trembling hearts",
+        "Doubt's shadows gathering brood,",
+        "When faith in Thee almost departs,",
+        "And gloomiest fears intrude;",
+        "Forsake us not, O God of grace,",
+        "But send those fears relief;",
+        "Grant us again to see Thy face;",
+        "Lord, help our unbelief!"
+      ]
+    },
+    {
+      "lines": [
+        "When sorrow comes, and joys are flown,",
+        "And fondest hopes lie dead,",
+        "And blessings, long esteemed our own,",
+        "Are now forever fled;",
+        "When the bright promise of our spring",
+        "Is but a withered leaf,",
+        "Lord, to Thy truths still let us cling;",
+        "Help Thou our unbelief!"
+      ]
+    },
+    {
+      "lines": [
+        "And when the powers of nature fail",
+        "Upon the couch of pain,",
+        "Nor love nor friendship can avail",
+        "The spirit to detain;",
+        "Then, Father, be our closing eyes",
+        "Undimmed by tears of grief;",
+        "And, if a trembling doubt arise,",
+        "Help Thou our unbelief!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Stephen Greenleaf Bulfinch died in 1870.",
+  "credits": "Words by Stephen Greenleaf Bulfinch (1809–1870), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ALL SAINTS, NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:213"
+}

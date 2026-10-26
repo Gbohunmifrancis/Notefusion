@@ -1,0 +1,62 @@
+{
+  "title": "Let Me Not Wander Comfortless",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Let Me Not Wander Comfortless in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 338, “Consolation”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Let me not wan-der com-fort-less, My Fa-ther, far from Thee; But still be-neath Thy guar-dian wing In ho-ly qui-et be.",
+  "verses": [
+    {
+      "lines": [
+        "Let me not wander comfortless,",
+        "My Father, far from Thee;",
+        "But still beneath Thy guardian wing",
+        "In holy quiet be."
+      ]
+    },
+    {
+      "lines": [
+        "The storms of grief, the tears of woe,",
+        "Soothed by Thy love, shall cease;",
+        "And all the trembling spirit breathe",
+        "A deep, unbroken peace."
+      ]
+    },
+    {
+      "lines": [
+        "The power of prayer shall o'er me shed",
+        "A deep, celestial calm;",
+        "More soft than evening's twilight dews,",
+        "My soul shall feel its balm."
+      ]
+    },
+    {
+      "lines": [
+        "For there Thy still, small voice shall speak",
+        "Thy great, Thy boundless love;",
+        "And tears and smiles, and grief and joy,",
+        "Shall lift my soul above."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:338"
+}

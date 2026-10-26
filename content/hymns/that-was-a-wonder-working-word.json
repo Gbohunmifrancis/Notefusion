@@ -1,0 +1,79 @@
+{
+  "title": "That Was a Wonder-working Word",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "That Was a Wonder-working Word in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 80, “The old and new creation”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "That was a won-der work-ing word Which could the vast cre-a-tion raise! An-gels, at-ten-dant on their Lord, Ad-mired the plan, and sung his praise.",
+  "verses": [
+    {
+      "lines": [
+        "That was a wonder-working word",
+        "Which could the vast creation raise!",
+        "Angels, attendant on their Lord,",
+        "Admired the plan, and sung his praise."
+      ]
+    },
+    {
+      "lines": [
+        "From what a dark and shapeless mass,",
+        "All nature sprang at his command!",
+        "Let there be light, and light there was,",
+        "And sun and stars, and sea and land."
+      ]
+    },
+    {
+      "lines": [
+        "With equal speed the earth and seas,",
+        "Their mighty Maker's voice obeyed;",
+        "He spake, and strait the plants and trees,",
+        "And birds, and beasts, and man were made."
+      ]
+    },
+    {
+      "lines": [
+        "But man, the lord and crown of all,",
+        "By sin his honor soon defaced;",
+        "His heart (how altered since the fall!)",
+        "Is dark, deformed, and void, and waste."
+      ]
+    },
+    {
+      "lines": [
+        "The new creation of the soul",
+        "Does now no less his pow'r display;",
+        "Than when he formed the mighty whole,",
+        "And kindled darkness into day."
+      ]
+    },
+    {
+      "lines": [
+        "Though self-destroyed, O Lord, we are,",
+        "Yet let us feel what thou cast do;",
+        "Thy word the ruin can repair,",
+        "And all our hearts create anew."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:80"
+}

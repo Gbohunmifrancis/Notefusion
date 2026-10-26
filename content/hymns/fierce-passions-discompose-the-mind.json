@@ -1,0 +1,95 @@
+{
+  "title": "Fierce Passions Discompose the Mind",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Fierce Passions Discompose the Mind in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 131, “Contentment Php 4:11”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fierce pas-sions dis-com-pose the mind, As tem-pests vex the sea; But calm con-tent and peace we find, When, Lord, we turn to thee.",
+  "verses": [
+    {
+      "lines": [
+        "Fierce passions discompose the mind,",
+        "As tempests vex the sea;",
+        "But calm content and peace we find,",
+        "When, Lord, we turn to thee."
+      ]
+    },
+    {
+      "lines": [
+        "In vain by reason and by rule,",
+        "We try to bend the will;",
+        "For none, but in the Savior's school,",
+        "Can learn the heav'nly skill."
+      ]
+    },
+    {
+      "lines": [
+        "Since at his feet my soul has sat,",
+        "His gracious words to hear;",
+        "Contented with my present state,",
+        "I cast, on him, my care."
+      ]
+    },
+    {
+      "lines": [
+        "\"Art thou a sinner, soul? he said,",
+        "Then how canst thou complain?",
+        "How light thy troubles here, if weighed",
+        "With everlasting pain!"
+      ]
+    },
+    {
+      "lines": [
+        "If thou of murmuring wouldst be cured,",
+        "Compare thy griefs with mine;",
+        "Think what my love for thee endured,",
+        "And thou wilt not repine."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis I appoint thy daily lot,",
+        "And I do all things well:",
+        "Thou soon shalt leave this wretched spot,",
+        "And rise with me to dwell."
+      ]
+    },
+    {
+      "lines": [
+        "In life my grace shall strength supply,",
+        "Proportioned to thy day;",
+        "At death thou still shalt find me nigh,",
+        "To wipe thy tears away.\""
+      ]
+    },
+    {
+      "lines": [
+        "Thus I who once my wretched days,",
+        "In vain repinings spent;",
+        "Taught in my Savior's school of grace,",
+        "Have learned to be content."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:131"
+}

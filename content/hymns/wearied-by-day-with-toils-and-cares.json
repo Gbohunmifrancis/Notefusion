@@ -1,0 +1,95 @@
+{
+  "title": "Wearied by Day with Toils and Cares",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Wearied by Day with Toils and Cares in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 69, “On the fire at Olney. September 22, 1777”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Wea-ried by day with toils and cares, How wel-come is the peace-ful night! Sweet sleep our wast-ed strength re-pairs, And fits us for re-turn-ing light.",
+  "verses": [
+    {
+      "lines": [
+        "Wearied by day with toils and cares,",
+        "How welcome is the peaceful night!",
+        "Sweet sleep our wasted strength repairs,",
+        "And fits us for returning light."
+      ]
+    },
+    {
+      "lines": [
+        "Yet when our eyes in sleep are closed,",
+        "Our rest may break ere well begun;",
+        "To dangers every hour exposed",
+        "We neither can foresee nor shun."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis of the Lord that we can sleep",
+        "A single night without alarms;",
+        "His eye alone our lives can keep",
+        "Secure, amidst a thousand harms."
+      ]
+    },
+    {
+      "lines": [
+        "For months and years of safety past,",
+        "Ungrateful, we, alas! have been;",
+        "Though patient long, he spoke at last,",
+        "And bid the fire rebuke our sin."
+      ]
+    },
+    {
+      "lines": [
+        "The shout of fire! a dreadful cry,",
+        "Impressed each heart with deep dismay;",
+        "While the fierce blaze and red'ning sky,",
+        "Made midnight wear the face of day."
+      ]
+    },
+    {
+      "lines": [
+        "The throng and terror who can speak!",
+        "The various sounds that filled the air!",
+        "The infant's wail, the mother's shriek,",
+        "The voice of blasphemy and prayer!"
+      ]
+    },
+    {
+      "lines": [
+        "But prayer prevailed, and saved the town;",
+        "The few, who loved the Savior's name,",
+        "Were heard, and mercy hasted down",
+        "To change the wind, and stop the flame."
+      ]
+    },
+    {
+      "lines": [
+        "O, may that night be ne'er forgot!",
+        "Lord, still increase thy praying few!",
+        "Were Olney left without a Lot,",
+        "Ruin, like Sodom's, would ensue."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:69"
+}

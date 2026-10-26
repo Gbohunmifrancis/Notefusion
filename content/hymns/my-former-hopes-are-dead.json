@@ -1,0 +1,71 @@
+{
+  "title": "My Former Hopes Are Dead",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "My Former Hopes Are Dead in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 8, “The shining Light”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "My for-mer hopes are dead, My ter-ror now be-gins; I feel, a-las! that I am dead In tres-pass-es and sins.",
+  "verses": [
+    {
+      "lines": [
+        "My former hopes are dead,",
+        "My terror now begins;",
+        "I feel, alas! that I am dead",
+        "In trespasses and sins."
+      ]
+    },
+    {
+      "lines": [
+        "Ah, whither shall I fly?",
+        "I hear the thunder roar",
+        "The law proclaims destruction nigh,",
+        "And vengeance at the door."
+      ]
+    },
+    {
+      "lines": [
+        "When I review my ways,",
+        "I dread impending doom;",
+        "But sure, a friendly whisper says,",
+        "\"Flee from the wrath to come.\""
+      ]
+    },
+    {
+      "lines": [
+        "I see, or think I see,",
+        "A glimm'ring from afar;",
+        "A beam of day that shines for me,",
+        "To save me from despair."
+      ]
+    },
+    {
+      "lines": [
+        "Fore-runner of the sun,",
+        "It marks the Pilgrim's way;",
+        "I'll gaze upon it while I run,",
+        "And watch the rising day."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:8"
+}

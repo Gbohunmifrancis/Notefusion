@@ -1,0 +1,46 @@
+{
+  "title": "While Now upon This Sabbath Eve",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "While Now upon This Sabbath Eve in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 97 of its twenty-second edition (1853), “Close of Worship. Evening”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "While now up-on this Sab-bath eve, Thy house, Al-might-y God, we leave 'Tis sweet, as sinks the set-ting sun, To think on all our du-ties done.",
+  "verses": [
+    {
+      "lines": [
+        "While now upon this Sabbath eve,",
+        "Thy house, Almighty God, we leave",
+        "'Tis sweet, as sinks the setting sun,",
+        "To think on all our duties done."
+      ]
+    },
+    {
+      "lines": [
+        "Oh! evermore may all our bliss",
+        "Be peaceful, pure, divine, like this;",
+        "And may each Sabbath, as it flies,",
+        "Fit us for joy beyond the skies."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:97"
+}

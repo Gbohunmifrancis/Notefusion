@@ -1,0 +1,63 @@
+{
+  "title": "O God! the Darkness Roll Away",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "William Gaskell",
+      "born": 1805,
+      "died": 1884,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O God! the Darkness Roll Away in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Gaskell wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 172, “Thy Kingdom Come!”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O God! the dark-ness roll a-way Which clouds the hu-man soul, And let the bright, the per-fect day, Speed on-ward to its goal.",
+  "verses": [
+    {
+      "lines": [
+        "O God! the darkness roll away",
+        "Which clouds the human soul,",
+        "And let the bright, the perfect day,",
+        "Speed onward to its goal."
+      ]
+    },
+    {
+      "lines": [
+        "Let every hateful passion die,",
+        "Which makes of brethren foes;",
+        "And war no longer raise its cry,",
+        "To mar the world's repose."
+      ]
+    },
+    {
+      "lines": [
+        "Let faith, and hope, and charity,",
+        "Go forth through all the earth;",
+        "And man, in heavenly bearing, be",
+        "True to his heavenly birth."
+      ]
+    },
+    {
+      "lines": [
+        "Yea, let Thy glorious kingdom come",
+        "Of holiness and love,",
+        "And make this world a portal meet",
+        "For Thy bright courts above."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Gaskell died in 1884.",
+  "credits": "Words by William Gaskell (1805–1884), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:172"
+}

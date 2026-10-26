@@ -1,0 +1,71 @@
+{
+  "title": "Searcher of Hearts! Before Thy Face",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Philip Doddridge",
+      "born": 1702,
+      "died": 1751,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Searcher of Hearts! Before Thy Face in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Philip Doddridge wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 461 of its twenty-second edition (1853), “For Freedom from Secret Sin”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Sear-cher of hearts! be-fore thy face I all my soul dis-play; And, con-scious of its in-nate arts, En-treat thy strict sur-vey.",
+  "verses": [
+    {
+      "lines": [
+        "Searcher of hearts! before thy face",
+        "I all my soul display;",
+        "And, conscious of its innate arts,",
+        "Entreat thy strict survey."
+      ]
+    },
+    {
+      "lines": [
+        "If, lurking in its inmost folds,",
+        "I any sin conceal,",
+        "O, let a ray of light divine",
+        "The secret guile reveal."
+      ]
+    },
+    {
+      "lines": [
+        "If tinctured with that odious gall",
+        "Unknowing I remain,",
+        "Let grace, like a pure silver stream,",
+        "Wash out the hateful stain."
+      ]
+    },
+    {
+      "lines": [
+        "If, in these fatal fetters bound,",
+        "A wretched slave I lie,",
+        "Smite off my chains, and wake my soul",
+        "To light and liberty."
+      ]
+    },
+    {
+      "lines": [
+        "To humble penitence and prayer",
+        "Be gentle pity given;",
+        "Speak ample pardon to my heart,",
+        "And seal its claim to heaven."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Philip Doddridge died in 1751.",
+  "credits": "Words by Philip Doddridge (1702–1751), public domain, as printed in Hymns for Christian Devotion (1853); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:461"
+}

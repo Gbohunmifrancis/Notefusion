@@ -1,0 +1,55 @@
+{
+  "title": "For a Season Called to Part",
+  "tune": "pleyels-hymn",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "For a Season Called to Part in Tonic Solfa to PLEYEL'S HYMN, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 921 of its twenty-second edition (1853), “Parting Hymn”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to PLEYEL'S HYMN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "For a sea-son called to part, Let us then our-selves com-mend To the gra-cious eye and heart Of our ev-er pre-sent Friend.",
+  "verses": [
+    {
+      "lines": [
+        "For a season called to part,",
+        "Let us then ourselves commend",
+        "To the gracious eye and heart",
+        "Of our ever-present Friend."
+      ]
+    },
+    {
+      "lines": [
+        "Father, hear our humble prayer!",
+        "Tender shepherd of thy sheep,",
+        "Let thy mercy and thy care",
+        "All our souls in safety keep."
+      ]
+    },
+    {
+      "lines": [
+        "In thy strength may we be strong;",
+        "Sweeten every cross and pain;",
+        "Give us, if we live, ere long,",
+        "Here to meet in peace again."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Hymns for Christian Devotion (1853); set to PLEYEL'S HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:921"
+}

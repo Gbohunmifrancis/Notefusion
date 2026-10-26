@@ -1,0 +1,54 @@
+{
+  "title": "From the Table Now Retiring",
+  "tune": "galilee-jude",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "From the Table Now Retiring in Tonic Solfa to GALILEE (JUDE), doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 695 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to GALILEE (JUDE); any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "From the ta-ble now re-tir-ing, Which for us the Lord hath spread, May our souls, re-fresh-ment find-ing, Grow in all things like our Head.",
+  "verses": [
+    {
+      "lines": [
+        "From the table now retiring,",
+        "Which for us the Lord hath spread,",
+        "May our souls, refreshment finding,",
+        "Grow in all things like our Head."
+      ]
+    },
+    {
+      "lines": [
+        "His example by beholding,",
+        "May our lives his image bear;",
+        "Him our Lord and Master calling,",
+        "His commands may we revere."
+      ]
+    },
+    {
+      "lines": [
+        "Love to God and man displaying,",
+        "Walking steadfast in his way, —",
+        "Joy attend us in believing!",
+        "Peace from God, through endless day!"
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to GALILEE (JUDE) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:695"
+}

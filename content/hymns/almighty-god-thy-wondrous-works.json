@@ -1,0 +1,55 @@
+{
+  "title": "Almighty God! Thy Wondrous Works",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Benjamin Beddome",
+      "born": 1717,
+      "died": 1795,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Almighty God! Thy Wondrous Works in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Benjamin Beddome wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 139 of its twenty-second edition (1853), “The Mysteries of Providence”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Al-might-y God! thy won-drous works Of prov-i-dence and grace, An an-gel's per-fect mind ex-ceed, And all our pride a-base.",
+  "verses": [
+    {
+      "lines": [
+        "Almighty God! thy wondrous works",
+        "Of providence and grace,",
+        "An angel's perfect mind exceed,",
+        "And all our pride abase."
+      ]
+    },
+    {
+      "lines": [
+        "Stupendous heights! amazing depths!",
+        "Creatures in vain explore:",
+        "Or, if a transient glimpse we gain,",
+        "'Tis faint and quickly o'er."
+      ]
+    },
+    {
+      "lines": [
+        "Though all the mysteries lie concealed",
+        "Beyond what we can see,",
+        "Grant us the knowledge of ourselves,",
+        "The knowledge, Lord, of thee."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Benjamin Beddome died in 1795.",
+  "credits": "Words by Benjamin Beddome (1717–1795), public domain, as printed in Hymns for Christian Devotion (1853); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:139"
+}

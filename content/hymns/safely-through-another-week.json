@@ -1,0 +1,81 @@
+{
+  "title": "Safely Through Another Week",
+  "tune": "ratisbon-werner",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Safely Through Another Week in Tonic Solfa to RATISBON (WERNER), doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 40, “Saturday evening”.",
+    "The book printed the words without tunes, marked Sevens, six lines (7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to RATISBON (WERNER); any other Sevens, six lines tune fits them as well."
+  ],
+  "underlay": "Safe-ly through an-oth-er week, God has brought us on our way, Let us now a bless-ing seek On th'ap-proach-ing sab-bath day: Day, of all the week, the best; Em-blem of e-ter-nal rest!",
+  "verses": [
+    {
+      "lines": [
+        "Safely through another week,",
+        "God has brought us on our way,",
+        "Let us now a blessing seek",
+        "On th' approaching sabbath-day:",
+        "Day, of all the week, the best;",
+        "Emblem of eternal rest!"
+      ]
+    },
+    {
+      "lines": [
+        "Mercies, multiplied each hour,",
+        "Through the week our praise demand;",
+        "Guarded by almighty pow'r,",
+        "Fed and guided by his hand:",
+        "Though ungrateful we have been,",
+        "Only made returns of sin."
+      ]
+    },
+    {
+      "lines": [
+        "While we pray for pard'ning grace,",
+        "Through the dear Redeemer's name;",
+        "Show thy reconciled face,",
+        "Shine away our sin and shame:",
+        "From our worldly cares set free,",
+        "May we rest, this night, with thee."
+      ]
+    },
+    {
+      "lines": [
+        "When the morn shall bid us rise,",
+        "May we feel thy presence near;",
+        "May thy glory meet our eyes,",
+        "When we in thy house appear!",
+        "There afford us, Lord, a taste",
+        "Of our everlasting feast."
+      ]
+    },
+    {
+      "lines": [
+        "May thy gospel's joyful sound",
+        "Conquer sinners, comfort saints;",
+        "Make the fruits of grace abound,",
+        "Bring relief for all complaints:",
+        "Thus may all our Sabbaths prove",
+        "Till we join the church above!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to RATISBON (WERNER) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:40"
+}

@@ -1,0 +1,63 @@
+{
+  "title": "O Thou, Who on Thy Chosen Son",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Henry Ware Jr.",
+      "born": 1794,
+      "died": 1843,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O Thou, Who on Thy Chosen Son in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Henry Ware Jr. wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 709 of its twenty-second edition (1853), “Ordination or Installation”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Thou, who on thy cho-sen Son Didst send thy Spir-it like a dove, To mark the long ex-pect-ed one, And seal the mes-sen-ger of love;",
+  "verses": [
+    {
+      "lines": [
+        "O Thou, who on thy chosen Son",
+        "Didst send thy Spirit like a dove,",
+        "To mark the long expected one,",
+        "And seal the messenger of love;"
+      ]
+    },
+    {
+      "lines": [
+        "And when the heralds of his name",
+        "Went forth his glorious truth to spread,",
+        "Didst send it down in tongues of flame",
+        "To hallow each devoted head;"
+      ]
+    },
+    {
+      "lines": [
+        "So, Lord, thy servant now inspire",
+        "With holy unction from above;",
+        "Give him the tongue of living fire,",
+        "Give him the temper of the dove."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, hear thy suppliant church to-day;",
+        "Accept our work, our souls possess,",
+        "'Tis ours to labor, watch, and pray;",
+        "Be thine to cheer, sustain, and bless."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Henry Ware Jr. died in 1843.",
+  "credits": "Words by Henry Ware Jr. (1794–1843), public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:709"
+}

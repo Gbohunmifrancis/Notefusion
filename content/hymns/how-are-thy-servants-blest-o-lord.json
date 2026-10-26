@@ -1,0 +1,63 @@
+{
+  "title": "How Are Thy Servants Blest, O Lord",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Joseph Addison",
+      "born": 1672,
+      "died": 1719,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "How Are Thy Servants Blest, O Lord in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Joseph Addison wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 995 of its twenty-second edition (1853), “The Traveller's Hymn”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How are thy ser-vants blest, O Lord! How sure is their de-fence! E-ter-nal wis-dom is their guide, Their help om-ni-po-tence.",
+  "verses": [
+    {
+      "lines": [
+        "How are thy servants blest, O Lord!",
+        "How sure is their defence!",
+        "Eternal wisdom is their guide,",
+        "Their help omnipotence."
+      ]
+    },
+    {
+      "lines": [
+        "In foreign realms, and lands remote,",
+        "Supported by thy care,",
+        "They pass unhurt through burning climes,",
+        "And breathe in tainted air."
+      ]
+    },
+    {
+      "lines": [
+        "Thy mercy sweetens every soil,",
+        "Makes every region please;",
+        "The hoary, frozen hills it warms,",
+        "And smooths the boisterous seas."
+      ]
+    },
+    {
+      "lines": [
+        "In midst of dangers, fears, and death,",
+        "Thy goodness I'll adore,",
+        "And praise thee for thy mercies past,",
+        "And humbly hope for more."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Joseph Addison died in 1719.",
+  "credits": "Words by Joseph Addison (1672–1719), public domain, as printed in Hymns for Christian Devotion (1853); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:995"
+}

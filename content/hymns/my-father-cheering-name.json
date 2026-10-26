@@ -1,0 +1,71 @@
+{
+  "title": "My Father! Cheering Name",
+  "tune": "franconia",
+  "text": [
+    {
+      "name": "Anne Steele",
+      "born": 1717,
+      "died": 1778,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "My Father! Cheering Name in Tonic Solfa to FRANCONIA, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Anne Steele wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 102 of its twenty-second edition (1853), “God our Father”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to FRANCONIA; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "My Fa-ther! cheer-ing name! O, may I call thee mine? Give me the hum-ble hope to claim A por-tion so di-vine.",
+  "verses": [
+    {
+      "lines": [
+        "My Father! cheering name!",
+        "O, may I call thee mine?",
+        "Give me the humble hope to claim",
+        "A portion so divine."
+      ]
+    },
+    {
+      "lines": [
+        "Whate'er thy will denies,",
+        "I calmly would resign;",
+        "For thou art just, and good, and wise:",
+        "O, bend my will to thine!"
+      ]
+    },
+    {
+      "lines": [
+        "Whate'er thy will ordains,",
+        "O give me strength to bear",
+        "Still let me know a father reigns,",
+        "And trust a father's care."
+      ]
+    },
+    {
+      "lines": [
+        "Thy ways are little known",
+        "To my weak, erring sight;",
+        "Yet shall my soul, believing, own",
+        "That all thy ways are right."
+      ]
+    },
+    {
+      "lines": [
+        "My Father! — blissful name!",
+        "Above expression dear!",
+        "If thou accept my humble claim,",
+        "I bid adieu to fear."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Anne Steele died in 1778.",
+  "credits": "Words by Anne Steele (1717–1778), public domain, as printed in Hymns for Christian Devotion (1853); set to FRANCONIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:102"
+}

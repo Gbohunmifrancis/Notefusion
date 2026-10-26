@@ -1,0 +1,71 @@
+{
+  "title": "Father of All, Omniscient Mind",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Thomas Blacklock",
+      "born": 1721,
+      "died": 1791,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Father of All, Omniscient Mind in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Thomas Blacklock wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 111 of its twenty-second edition (1853), “Omniscience and Omnipresence”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther of all, om-ni-scient Mind, Thy wis-dom who can com-pre-hend? Its high-est point what eye can find, Or to its low-est depths de-scend?",
+  "verses": [
+    {
+      "lines": [
+        "Father of all, omniscient Mind,",
+        "Thy wisdom who can comprehend?",
+        "Its highest point what eye can find,",
+        "Or to its lowest depths descend?"
+      ]
+    },
+    {
+      "lines": [
+        "If up to heaven's ethereal height,",
+        "Thy prospect to elude, I rise,",
+        "In splendor there supremely bright,",
+        "Thy presence shall my sight surprise."
+      ]
+    },
+    {
+      "lines": [
+        "Thee, mighty God, my wondering soul,",
+        "Thee, all her conscious powers adore,",
+        "Whose being circumscribes the whole,",
+        "Whose eyes the universe explore."
+      ]
+    },
+    {
+      "lines": [
+        "Thine essence fills this breathing frame;",
+        "It glows in every vital part,",
+        "Lights up our souls with livelier flame,",
+        "And feeds with life each beating heart."
+      ]
+    },
+    {
+      "lines": [
+        "To thee, from whom our being came,",
+        "Whose smile is all the heaven we know,",
+        "Inspired with this exalted theme,",
+        "To thee our grateful strains shall flow."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Thomas Blacklock died in 1791.",
+  "credits": "Words by Thomas Blacklock (1721–1791), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:111"
+}

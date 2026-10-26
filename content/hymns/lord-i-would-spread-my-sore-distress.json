@@ -1,0 +1,86 @@
+{
+  "title": "Lord, I Would Spread My Sore Distress",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Lord, I Would Spread My Sore Distress in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 51, part 4, headed “Original and actual sin confessed and pardoned”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Lord, I would spread my sore dis-tress And guilt be-fore thine eyes; A-gainst thy laws, a-gainst thy grace, How high my crimes a-rise.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, I would spread my sore distress",
+        "And guilt before thine eyes;",
+        "Against thy laws, against thy grace,",
+        "How high my crimes arise."
+      ]
+    },
+    {
+      "lines": [
+        "Shouldst thou condemn my soul to hell,",
+        "And crush my flesh to dust,",
+        "Heaven would approve thy vengeance well,",
+        "And earth must own it just."
+      ]
+    },
+    {
+      "lines": [
+        "I from the stock of Adam came,",
+        "Unholy and unclean;",
+        "All my original is shame,",
+        "And all my nature sin."
+      ]
+    },
+    {
+      "lines": [
+        "Born in a world of guilt, I drew",
+        "Contagion with my breath;",
+        "And, as my days advanc'd, I grew",
+        "A juster prey for death."
+      ]
+    },
+    {
+      "lines": [
+        "Cleanse me, O Lord, and cheer my soul",
+        "With thy forgiving love;",
+        "O, make my broken spirit whole,",
+        "And bid my pains remove."
+      ]
+    },
+    {
+      "lines": [
+        "Let not thy Spirit quite depart,",
+        "Nor drive me from thy face;",
+        "Create anew my vicious heart,",
+        "And fill it with thy grace."
+      ]
+    },
+    {
+      "lines": [
+        "Then will I make thy mercy known",
+        "Before the sons of men;",
+        "Backsliders shall address thy throne,",
+        "And turn to God again."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 51:4"
+}

@@ -1,0 +1,63 @@
+{
+  "title": "God Is Our Refuge and Defence",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "God Is Our Refuge and Defence in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 634 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "God is our re-fuge and de-fence, In trou-ble our un-fail-ing aid; Se-cure in his om-ni-po-tence, What foe can make our soul a-fraid?",
+  "verses": [
+    {
+      "lines": [
+        "God is our refuge and defence,",
+        "In trouble our unfailing aid;",
+        "Secure in his omnipotence,",
+        "What foe can make our soul afraid?"
+      ]
+    },
+    {
+      "lines": [
+        "Yea, though the earth's foundations rock,",
+        "And mountains down the gulf be hurled,",
+        "His people smile amid the shock,",
+        "They look beyond this transient world."
+      ]
+    },
+    {
+      "lines": [
+        "There is a river pure and bright,",
+        "Whose streams make glad the heavenly plains,",
+        "Where, in eternity of light,",
+        "The city of our God remains."
+      ]
+    },
+    {
+      "lines": [
+        "Built by the word of his command,",
+        "With his unclouded presence blessed,",
+        "Firm as his throne the bulwarks stand;",
+        "There is our home, our hope, our rest."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:634"
+}

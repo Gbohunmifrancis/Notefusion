@@ -1,0 +1,78 @@
+{
+  "title": "When God Reveal'd His Gracious Name",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "When God Reveal'd His Gracious Name in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 126, part 2, headed “The joy of a remarkable conversion; or, Melancholy removed”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When God re-veal'd his gra-cious Name, And chang'd my mourn-ful state, My rap-ture seem'd a pleas-ing dream, The grace ap-pear'd so great.",
+  "verses": [
+    {
+      "lines": [
+        "When God reveal'd his gracious Name,",
+        "And chang'd my mournful state,",
+        "My rapture seem'd a pleasing dream,",
+        "The grace appear'd so great."
+      ]
+    },
+    {
+      "lines": [
+        "The world beheld the glorious change,",
+        "And did thy hand confess;",
+        "My tongue broke out in unknown strains,",
+        "And sung surprising grace:"
+      ]
+    },
+    {
+      "lines": [
+        "\"Great is the work,\" my neighbours cry'd,",
+        "And own'd the power divine;",
+        "\"Great is the work,\" my heart reply'd,",
+        "\"And be the glory thine.\""
+      ]
+    },
+    {
+      "lines": [
+        "The Lord can clear the darkest skies,",
+        "Can give us day for night,",
+        "Make drops of sacred sorrow rise",
+        "To rivers of delight."
+      ]
+    },
+    {
+      "lines": [
+        "Let those that sow in sadness wait",
+        "Till the fair harvest come,",
+        "They shall confess their sheaves are great,",
+        "And shout the blessings home."
+      ]
+    },
+    {
+      "lines": [
+        "Tho' seed lie bury'd long in dust,",
+        "It shan't deceive their hope;",
+        "The precious grain can ne'er be lost,",
+        "For grace insures the crop."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 126:2"
+}

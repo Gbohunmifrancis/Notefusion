@@ -1,0 +1,71 @@
+{
+  "title": "Glory to Thee, My God, This Night",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Thomas Ken",
+      "born": 1637,
+      "died": 1711,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Glory to Thee, My God, This Night in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Thomas Ken wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 946 of its twenty-second edition (1853), “Trusting God. Evening Hymn”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Glo-ry to thee, my God, this night, For all the bless-ings of the light: Keep me, O, keep me, King of kings, Be-neath the sha-dow of thy wings.",
+  "verses": [
+    {
+      "lines": [
+        "Glory to thee, my God, this night,",
+        "For all the blessings of the light:",
+        "Keep me, O, keep me, King of kings,",
+        "Beneath the shadow of thy wings."
+      ]
+    },
+    {
+      "lines": [
+        "Forgive me, Lord, through thy dear Son",
+        "The ills which I this day have done;",
+        "That with the world, myself, and thee,",
+        "I, ere I sleep, at peace may be."
+      ]
+    },
+    {
+      "lines": [
+        "O, may my soul on thee repose,",
+        "And with sweet sleep mine eyelids close!",
+        "Sleep that shall me more vigorous make",
+        "To serve my God when I awake."
+      ]
+    },
+    {
+      "lines": [
+        "Be thou my Guardian while I sleep;",
+        "Thy watchful station near me keep;",
+        "My heart with love celestial fill,",
+        "And guard me from th' approach of ill."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, let my heart forever share",
+        "The bliss of thy paternal care:",
+        "'Tis heaven on earth, 'tis heaven above,",
+        "To see thy face and sing thy love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Thomas Ken died in 1711.",
+  "credits": "Words by Thomas Ken (1637–1711), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:946"
+}

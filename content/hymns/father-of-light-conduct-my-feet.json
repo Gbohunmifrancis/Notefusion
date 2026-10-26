@@ -1,0 +1,71 @@
+{
+  "title": "Father of Light! Conduct My Feet",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Christopher Smart",
+      "born": 1722,
+      "died": 1771,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Father of Light! Conduct My Feet in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Christopher Smart wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 450 of its twenty-second edition (1853), “For Prudence and Wisdom”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther of light! con-duct my feet Through life's dark, dan-gerous road; Let each ad-vanc-ing step still bring Me near-er to my God.",
+  "verses": [
+    {
+      "lines": [
+        "Father of light! conduct my feet",
+        "Through life's dark, dangerous road;",
+        "Let each advancing step still bring",
+        "Me nearer to my God."
+      ]
+    },
+    {
+      "lines": [
+        "Let heaven-eyed prudence be my guide;",
+        "And, when I go astray,",
+        "Recall my feet from folly's path",
+        "To wisdom's better way."
+      ]
+    },
+    {
+      "lines": [
+        "Teach me in every various scene",
+        "To keep my end in sight;",
+        "And while I tread life's mazy track,",
+        "Let wisdom guide me right."
+      ]
+    },
+    {
+      "lines": [
+        "That heavenly wisdom from above",
+        "Abundantly impart;",
+        "And let it guard, and guide, and warm,",
+        "And penetrate my heart:"
+      ]
+    },
+    {
+      "lines": [
+        "Till it shall lead me to thyself,",
+        "Fountain of bliss and love!",
+        "And all my darkness be dispersed",
+        "In endless light above."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Christopher Smart died in 1771.",
+  "credits": "Words by Christopher Smart (1722–1771), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:450"
+}

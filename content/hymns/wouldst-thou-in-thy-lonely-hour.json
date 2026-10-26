@@ -1,0 +1,62 @@
+{
+  "title": "Wouldst Thou in Thy Lonely Hour",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Wouldst Thou in Thy Lonely Hour in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 92, “Silent Worship”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Wouldst thou in thy lone-ly hour Prais-es to th'E-ter-nal pour? I will teach thy soul to be Tem-ple, hymn, and har-mo-ny.",
+  "verses": [
+    {
+      "lines": [
+        "Wouldst thou in thy lonely hour",
+        "Praises to the Eternal pour?",
+        "I will teach thy soul to be",
+        "Temple, hymn, and harmony."
+      ]
+    },
+    {
+      "lines": [
+        "Sweeter songs than poets sing",
+        "Thou shalt for thine offering bring;",
+        "Softly murmured hymns, that dwell",
+        "In devotion's deepest cell."
+      ]
+    },
+    {
+      "lines": [
+        "Know that music's holiest strain",
+        "Loves to linger, loves to reign,",
+        "In that calm of quiet thought",
+        "Which the passions trouble not."
+      ]
+    },
+    {
+      "lines": [
+        "Wouldst thou in thy lonely hour",
+        "Praises to the Eternal pour?",
+        "Thus thy soul may learn to be",
+        "Temple, hymn, and harmony."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:92"
+}

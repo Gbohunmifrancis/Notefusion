@@ -1,0 +1,47 @@
+{
+  "title": "Again Our Ears Have Heard the Voice",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Again Our Ears Have Heard the Voice in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 83 of its twenty-second edition (1853), “After Divine Service”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "A-gain our ears have heard the voice At which the dead shall live; O, may the sound our hearts re-joice, And strength im-mor-tal give!",
+  "verses": [
+    {
+      "lines": [
+        "Again our ears have heard the voice",
+        "At which the dead shall live;",
+        "O, may the sound our hearts rejoice,",
+        "And strength immortal give!"
+      ]
+    },
+    {
+      "lines": [
+        "And have we heard the word with joy?",
+        "And have we felt its power?",
+        "To keep it be our blest employ,",
+        "Till life's extremest hour."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:83"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "Jesus, Where'er Thy People Meet",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Jesus, Where'er Thy People Meet in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 44, “On opening a place for social prayer”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus, wher-e'er thy peo-ple meet, There they be-hold thy mer-cy seat; Wher-e'er they seek thee thou art found, And ev-ery place is hal-lowed ground.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, where'er thy people meet,",
+        "There they behold thy mercy-seat;",
+        "Where'er they seek thee thou art found,",
+        "And every place is hallowed ground."
+      ]
+    },
+    {
+      "lines": [
+        "For thou, within no walls confined,",
+        "Inhabitest the humble mind;",
+        "Such ever bring thee, where they come,",
+        "And going, take thee to their home."
+      ]
+    },
+    {
+      "lines": [
+        "Dear Shepherd of thy chosen few",
+        "Thy former mercies here renew;",
+        "Here, to our waiting hearts, proclaim",
+        "The sweetness of thy saving name."
+      ]
+    },
+    {
+      "lines": [
+        "Here may we prove the pow'r of prayer,",
+        "To strengthen faith, and sweeten care;",
+        "To teach our faint desires to rise",
+        "And bring all heav'n before our eyes."
+      ]
+    },
+    {
+      "lines": [
+        "Behold at thy commanding word,",
+        "We stretch the curtain and the cord;",
+        "Come thou, and fill this wider space,",
+        "And bless us with a large increase."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, we are few, but thou art near;",
+        "Nor short thine arm, nor deaf thine ear;",
+        "Oh rend the heav'ns, come quickly down,",
+        "And make a thousand hearts thine own!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:44"
+}

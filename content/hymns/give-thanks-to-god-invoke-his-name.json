@@ -1,0 +1,190 @@
+{
+  "title": "Give Thanks to God, Invoke His Name",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Give Thanks to God, Invoke His Name in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 20 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 105, headed “God's conduct of Israel, and the plagues of Egypt”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Give thanks to God, in-voke his Name, And tell the world his grace; Sound thro' the earth his deeds of fame, That all may seek his face.",
+  "verses": [
+    {
+      "lines": [
+        "Give thanks to God, invoke his Name,",
+        "And tell the world his grace;",
+        "Sound thro' the earth his deeds of fame,",
+        "That all may seek his face."
+      ]
+    },
+    {
+      "lines": [
+        "His covenant, which he kept in mind",
+        "For numerous ages past,",
+        "To numerous ages yet behind,",
+        "In equal force shall last."
+      ]
+    },
+    {
+      "lines": [
+        "He sware to Abraham and his seed,",
+        "And made the blessing sure:",
+        "Gentiles the ancient promise read,",
+        "And find his truths endure."
+      ]
+    },
+    {
+      "lines": [
+        "\"Thy seed shall make all nations blest,\"",
+        "(Said the Almighty voice)",
+        "\"And Canaan's land shall be their rest,",
+        "\"The type of heavenly joys.\""
+      ]
+    },
+    {
+      "lines": [
+        "How large the grant! how rich the grace!",
+        "To give them Canaan's land,",
+        "When they were strangers in the place,",
+        "A little feeble band!"
+      ]
+    },
+    {
+      "lines": [
+        "Like pilgrims thro' the countries round",
+        "Securely they remov'd;",
+        "And haughty kings that on them frown'd,",
+        "Severely he reprov'd."
+      ]
+    },
+    {
+      "lines": [
+        "\"Touch mine anointed, and my arm",
+        "\"Shall soon revenge the wrong:",
+        "\"The man that does my prophets harm",
+        "Shall know their God is strong.\""
+      ]
+    },
+    {
+      "lines": [
+        "Then let the world forbear its rage,",
+        "Nor put the church in fear:",
+        "Israel must live thro' every age,",
+        "And be th' Almighty's care."
+      ]
+    },
+    {
+      "lines": [
+        "When Pharaoh dar'd to vex the saints,",
+        "And thus provok'd their God,",
+        "Moses was sent at their complaints,",
+        "Arm'd with his dreadful rod."
+      ]
+    },
+    {
+      "lines": [
+        "He call'd for darkness; darkness came",
+        "Like an o'erwhelming flood;",
+        "He turn'd each lake and every stream",
+        "To lakes and streams of blood."
+      ]
+    },
+    {
+      "lines": [
+        "He gave the sign, and noisome flies",
+        "Thro' the whole country spread;",
+        "And frogs, in croaking armies, rise",
+        "About the monarch's bed."
+      ]
+    },
+    {
+      "lines": [
+        "Thro' fields, and towns, and palaces,",
+        "The tenfold vengeance flew;",
+        "Locusts in swarms devour'd their trees,",
+        "And hail their cattle slew."
+      ]
+    },
+    {
+      "lines": [
+        "Then by an angel's midnight stroke,",
+        "The flower of Egypt dy'd;",
+        "The strength of every house was broke,",
+        "Their glory and their pride."
+      ]
+    },
+    {
+      "lines": [
+        "Now let the world forbear its rage,",
+        "Nor put the church in fear;",
+        "Israel must live thro' every age,",
+        "And be th' Almighty's care."
+      ]
+    },
+    {
+      "lines": [
+        "Thus were the tribes from bondage brought,",
+        "And left the hated ground;",
+        "Each some Egyptian spoils had got,",
+        "And not one feeble found."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord himself chose out their way,",
+        "And mark'd their journies right,",
+        "Gave them a leading cloud by day,",
+        "A fiery guide by night."
+      ]
+    },
+    {
+      "lines": [
+        "They thirst; and waters from the rock",
+        "In rich abundance flow,",
+        "And following still the course they took,",
+        "Ran all the desert thro'."
+      ]
+    },
+    {
+      "lines": [
+        "O wondrous stream O blessed type",
+        "Of ever-flowing grace!",
+        "So Christ our rock maintains our life",
+        "Thro' all this wilderness."
+      ]
+    },
+    {
+      "lines": [
+        "Thus guarded by th' Almighty hand",
+        "The chosen tribes possest",
+        "Canaan the rich, the promis'd land,",
+        "And there enjoy'd their rest."
+      ]
+    },
+    {
+      "lines": [
+        "Then let the world forbear its rage,",
+        "The church renounce her fear;",
+        "Israel must live thro' every age,",
+        "And be th' Almighty's care."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 105"
+}

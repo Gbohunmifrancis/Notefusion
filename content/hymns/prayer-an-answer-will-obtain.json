@@ -1,0 +1,95 @@
+{
+  "title": "Prayer an Answer Will Obtain",
+  "tune": "pleyels-hymn",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Prayer an Answer Will Obtain in Tonic Solfa to PLEYEL'S HYMN, doh is G: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 88, “Woman of Canaan. Mt 15:22-28”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to PLEYEL'S HYMN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Prayer an an-swer will ob-tain, Though the Lord a-while de-lay; None shall seek his face in vain, None be emp-ty sent a-way.",
+  "verses": [
+    {
+      "lines": [
+        "Prayer an answer will obtain,",
+        "Though the Lord awhile delay;",
+        "None shall seek his face in vain,",
+        "None be empty sent away."
+      ]
+    },
+    {
+      "lines": [
+        "When the woman came from Tyre,",
+        "And for help to Jesus sought;",
+        "Though he granted her desire,",
+        "Yet at first he answered not."
+      ]
+    },
+    {
+      "lines": [
+        "Could she guess at his intent,",
+        "When he to his follow'rs said,",
+        "\"I to Israel's sheep am sent,",
+        "Dogs must not have children's bread.\""
+      ]
+    },
+    {
+      "lines": [
+        "She was not of Israel's seed,",
+        "But of Canaan's wretched race;",
+        "Thought herself a dog indeed;",
+        "Was not this a hopeless case?"
+      ]
+    },
+    {
+      "lines": [
+        "Yet although from Canaan sprung,",
+        "Though a dog herself she styled;",
+        "She had Israel's faith and tongue,",
+        "And was owned for Abraham's child."
+      ]
+    },
+    {
+      "lines": [
+        "From his words she draws a plea;",
+        "Though unworthy children's bread,",
+        "'Tis enough for one like me,",
+        "If with crumbs I may be fed."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus then his heart revealed,",
+        "\"Woman canst thou thus believe?",
+        "I to thy petition yield,",
+        "All that thou canst wish, receive."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis a pattern set for us,",
+        "How we ought to wait and pray;",
+        "None who plead and wrestle thus,",
+        "Shall be empty sent away."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to PLEYEL'S HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:88"
+}

@@ -1,0 +1,55 @@
+{
+  "title": "O Lord, Thy Perfect Word",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "Benjamin Beddome",
+      "born": 1717,
+      "died": 1795,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O Lord, Thy Perfect Word in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Benjamin Beddome wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 191 of its twenty-second edition (1853), “Superiority of the Scriptures”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "O Lord, thy per-fect word Di-rects our steps a-right; Nor can all oth-er books af-ford Such prof-it or de-light.",
+  "verses": [
+    {
+      "lines": [
+        "O Lord, thy perfect word",
+        "Directs our steps aright;",
+        "Nor can all other books afford",
+        "Such profit or delight."
+      ]
+    },
+    {
+      "lines": [
+        "Celestial light it sheds,",
+        "To cheer this vail below;",
+        "To distant lands its glory spreads,",
+        "And streams of mercy flow."
+      ]
+    },
+    {
+      "lines": [
+        "True wisdom it imparts;",
+        "Commands our hope and fear;",
+        "O, may we hide it in our hearts,",
+        "And feel its influence there."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Benjamin Beddome died in 1795.",
+  "credits": "Words by Benjamin Beddome (1717–1795), public domain, as printed in Hymns for Christian Devotion (1853); set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:191"
+}

@@ -1,0 +1,63 @@
+{
+  "title": "Jesus! Delightful, Charming Name",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Benjamin Beddome",
+      "born": 1717,
+      "died": 1795,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Jesus! Delightful, Charming Name in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Benjamin Beddome wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 245 of its twenty-second edition (1853), “Christ the Resting-Place”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus! de-light-ful, charm-ing name! It spreads a fra-grance round; Jus-tice and mer-cy, truth and peace, In u-nion here are found.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus! delightful, charming name!",
+        "It spreads a fragrance round;",
+        "Justice and mercy, truth and peace,",
+        "In union here are found."
+      ]
+    },
+    {
+      "lines": [
+        "He is our life, our joy, our strength;",
+        "In him all glories meet;",
+        "He is a shade above our heads,",
+        "A light to guide our feet."
+      ]
+    },
+    {
+      "lines": [
+        "When storms arise and tempests blow,",
+        "He speaks the stilling word;",
+        "The threatening billows cease to flow,",
+        "The winds obey their Lord."
+      ]
+    },
+    {
+      "lines": [
+        "The thickest clouds are soon dispersed,",
+        "If Jesus shows his face;",
+        "To weary, heavy-laden souls",
+        "He is the resting-place."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Benjamin Beddome died in 1795.",
+  "credits": "Words by Benjamin Beddome (1717–1795), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:245"
+}

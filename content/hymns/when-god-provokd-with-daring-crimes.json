@@ -1,0 +1,102 @@
+{
+  "title": "When God, Provok'd with Daring Crimes",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "When God, Provok'd with Daring Crimes in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 107, part 6, headed “Colonies planted; or, Nations blest and punished”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When God, pro-vok'd with dar-ing crimes, Scour-ges the mad-ness of the times, He turns their fields to bar-ren sand, And dries the riv-ers from the land.",
+  "verses": [
+    {
+      "lines": [
+        "When God, provok'd with daring crimes,",
+        "Scourges the madness of the times,",
+        "He turns their fields to barren sand,",
+        "And dries the rivers from the land."
+      ]
+    },
+    {
+      "lines": [
+        "His word can raise the springs again,",
+        "And make the wither'd mountains green,",
+        "Send showery blessings from the skies,",
+        "And harvests in the desert rise."
+      ]
+    },
+    {
+      "lines": [
+        "Where nothing dwelt but beasts of prey,",
+        "Or men as fierce and wild as they;",
+        "He bids th' opprest and poor repair,",
+        "And builds them towns and cities there."
+      ]
+    },
+    {
+      "lines": [
+        "They sow the fields, and trees they plant,",
+        "Whose yearly fruit supplies their want:",
+        "Their race grows up from fruitful stocks,",
+        "Their wealth increases with their flocks."
+      ]
+    },
+    {
+      "lines": [
+        "Thus they are blest; but if they sin,",
+        "He lets the heathen nations in,",
+        "A savage crew invades their lands,",
+        "Their princes die by barbarous hands."
+      ]
+    },
+    {
+      "lines": [
+        "Their captive sons, expos'd to scorn,",
+        "Wander unpity'd and forlorn;",
+        "The country lies unfenc'd, untill'd,",
+        "And desolation spreads the field."
+      ]
+    },
+    {
+      "lines": [
+        "Yet if the humbled nation mourns,",
+        "Again his dreadful hand he turns;",
+        "Again he makes their cities thrive,",
+        "And bids the dying churches live."
+      ]
+    },
+    {
+      "lines": [
+        "The righteous, with a joyful sense,",
+        "Admire the works of providence;",
+        "And tongues of atheists shall no more",
+        "Blaspheme the God that saints adore."
+      ]
+    },
+    {
+      "lines": [
+        "How few, with pious care, record",
+        "The wondrous dealings of the Lord!",
+        "But wise observers still shall find",
+        "The Lord is holy, just, and kind."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 107:6"
+}

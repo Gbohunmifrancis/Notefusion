@@ -1,0 +1,63 @@
+{
+  "title": "Behold Th' Amazing Sight",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Philip Doddridge",
+      "born": 1702,
+      "died": 1751,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Behold Th' Amazing Sight in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Philip Doddridge wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 247 of its twenty-second edition (1853), “Attraction of the Cross”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Be-hold th'a-maz-ing sight, The Sa-viour lift-ed high! Be-hold the Fa-ther's chief de-light Ex-pire in a-go-ny!",
+  "verses": [
+    {
+      "lines": [
+        "Behold th' amazing sight,",
+        "The Saviour lifted high!",
+        "Behold the Father's chief delight",
+        "Expire in agony!"
+      ]
+    },
+    {
+      "lines": [
+        "For whom, for whom, my heart,",
+        "Were all these sorrows borne?",
+        "Why did he feel that piercing smart,",
+        "And meet that cruel scorn?"
+      ]
+    },
+    {
+      "lines": [
+        "For love of us he bled,",
+        "And all in torture died;",
+        "'T was love that bowed his fainting head,",
+        "And oped his gushing side."
+      ]
+    },
+    {
+      "lines": [
+        "In him our hearts unite,",
+        "Nor share his grief alone,",
+        "But from his cross pursue their flight",
+        "To his triumphant throne."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Philip Doddridge died in 1751.",
+  "credits": "Words by Philip Doddridge (1702–1751), public domain, as printed in Hymns for Christian Devotion (1853); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:247"
+}

@@ -1,0 +1,63 @@
+{
+  "title": "Far from These Scenes of Night",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Anne Steele",
+      "born": 1717,
+      "died": 1778,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Far from These Scenes of Night in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Anne Steele wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 559 of its twenty-second edition (1853), “Heaven”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Far from these scenes of night Un-bound-ed glo-ries rise, And realms of in-fin-ite de-light, Un-known to mor-tal eyes.",
+  "verses": [
+    {
+      "lines": [
+        "Far from these scenes of night",
+        "Unbounded glories rise,",
+        "And realms of infinite delight,",
+        "Unknown to mortal eyes."
+      ]
+    },
+    {
+      "lines": [
+        "No cloud those regions know,",
+        "Forever bright and fair;",
+        "For sin, the source of mortal woe,",
+        "Can never enter there."
+      ]
+    },
+    {
+      "lines": [
+        "There night is never known,",
+        "Nor sun's faint, sickly ray;",
+        "But glory from th' eternal throne",
+        "Spreads everlasting day."
+      ]
+    },
+    {
+      "lines": [
+        "O may this prospect fire",
+        "Our hearts with ardent love!",
+        "And lively faith and strong desire",
+        "Bear every thought above."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Anne Steele died in 1778.",
+  "credits": "Words by Anne Steele (1717–1778), public domain, as printed in Hymns for Christian Devotion (1853); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:559"
+}

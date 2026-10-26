@@ -1,0 +1,63 @@
+{
+  "title": "Go to the Grave in All Thy Glorious Prime",
+  "tune": "ellers",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Go to the Grave in All Thy Glorious Prime in Tonic Solfa to ELLERS, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 408, “Death in Manhood”.",
+    "The book printed the words without tunes, marked Tens (10.10.10.10), to be sung to any tune of that metre. This page sets them to ELLERS; any other Tens tune fits them as well."
+  ],
+  "underlay": "Go to the grave in all thy glo-rious prime, In full ac-tiv-i-ty of zeal and power: A Chris-tian can-not die be-fore his time; The Lord's ap-point-ment is the ser-vant's hour.",
+  "verses": [
+    {
+      "lines": [
+        "Go to the grave in all thy glorious prime,",
+        "In full activity of zeal and power:",
+        "A Christian cannot die before his time;",
+        "The Lord's appointment is the servant's hour."
+      ]
+    },
+    {
+      "lines": [
+        "Go to the grave; at noon from labor cease;",
+        "Rest on thy sheaves, thy harvest work is done;",
+        "Come from the heat of battle, and in peace,",
+        "Soldier, go home; with thee the field is won."
+      ]
+    },
+    {
+      "lines": [
+        "Go to the grave, for there thy Saviour lay,",
+        "In death's embraces, ere he rose on high;",
+        "And all the ransomed, by that narrow way,",
+        "Pass to eternal life beyond the sky."
+      ]
+    },
+    {
+      "lines": [
+        "Go to the grave, — no, to thy home above;",
+        "Be thy pure spirit present with the Lord,",
+        "Where thou for faith and hope hast perfect love,",
+        "And open vision for the written word."
+      ]
+    }
+  ],
+  "metre": "10 10 10 10",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ELLERS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:408"
+}

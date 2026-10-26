@@ -1,0 +1,63 @@
+{
+  "title": "When Before Thy Throne We Kneel",
+  "tune": "innocents",
+  "text": [
+    {
+      "name": "John Bowring",
+      "born": 1792,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "When Before Thy Throne We Kneel in Tonic Solfa to INNOCENTS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Bowring wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 1 of its twenty-second edition (1853), “Humble Worship”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to INNOCENTS; any other Sevens tune fits them as well."
+  ],
+  "underlay": "When be-fore thy throne we kneel, Filled with awe and ho-ly fear, Teach us, O our God! to feel All thy sa-cred pre-sence near.",
+  "verses": [
+    {
+      "lines": [
+        "When before thy throne we kneel,",
+        "Filled with awe and holy fear,",
+        "Teach us, O our God! to feel",
+        "All thy sacred presence near."
+      ]
+    },
+    {
+      "lines": [
+        "Check each proud and wandering thought",
+        "When on thy great name we call;",
+        "Man is nought — is less than nought:",
+        "Thou, our God, art all in all."
+      ]
+    },
+    {
+      "lines": [
+        "Weak, imperfect creatures, we",
+        "In this vale of darkness dwell;",
+        "Yet presume to look to thee,",
+        "'Midst thy light ineffable."
+      ]
+    },
+    {
+      "lines": [
+        "O, receive the praise that dares",
+        "Seek thy heaven-exalted throne;",
+        "Bless our offerings, hear our pray'rs,",
+        "Infinite and Holy One!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Bowring died in 1872.",
+  "credits": "Words by John Bowring (1792–1872), public domain, as printed in Hymns for Christian Devotion (1853); set to INNOCENTS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:1"
+}

@@ -1,0 +1,55 @@
+{
+  "title": "One Cup of Healing Oil and Wine",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "William Drummond of Hawthornden",
+      "born": 1585,
+      "died": 1649,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "One Cup of Healing Oil and Wine in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "William Drummond of Hawthornden wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 291, “Faith and Works”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "One cup of heal-ing oil and wine, One tear drop shed on mer-cy's shrine, Is thrice more grate-ful, Lord, to Thee, Than lift-ed eye or bend-ed knee.",
+  "verses": [
+    {
+      "lines": [
+        "One cup of healing oil and wine,",
+        "One tear-drop shed on mercy's shrine,",
+        "Is thrice more grateful, Lord, to Thee,",
+        "Than lifted eye or bended knee."
+      ]
+    },
+    {
+      "lines": [
+        "In true and genuine faith we trace",
+        "The source of every Christian grace;",
+        "Within the pious heart it plays,",
+        "A living fount of joy and praise."
+      ]
+    },
+    {
+      "lines": [
+        "Kind deeds of peace and love betray",
+        "Where'er the stream has found its way;",
+        "But where these spring not rich and fair,",
+        "The stream has never wandered there."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Drummond of Hawthornden died in 1649.",
+  "credits": "Words by William Drummond of Hawthornden (1585–1649), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:291"
+}

@@ -1,0 +1,78 @@
+{
+  "title": "My God, My King, Thy Various Praise",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "My God, My King, Thy Various Praise in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 145, part 1, headed “The greatness of God”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "My God, my King, thy var-ious praise Shall fill the rem-nant of my days; Thy grace em-ploy my hum-ble tongue Till death and glo-ry raise the song.",
+  "verses": [
+    {
+      "lines": [
+        "My God, my King, thy various praise",
+        "Shall fill the remnant of my days;",
+        "Thy grace employ my humble tongue",
+        "Till death and glory raise the song."
+      ]
+    },
+    {
+      "lines": [
+        "The wings of every hour shall bear",
+        "Some thankful tribute to thine ear;",
+        "And every setting sun shall see",
+        "New works of duty done for thee."
+      ]
+    },
+    {
+      "lines": [
+        "Thy truth and justice I'll proclaim;",
+        "Thy bounty flows, an endless stream,",
+        "Thy mercy swift, thine anger slow,",
+        "But dreadful to the stubborn foe."
+      ]
+    },
+    {
+      "lines": [
+        "Thy works with sovereign glory shine,",
+        "And speak thy majesty divine;",
+        "Let Britain round her shores proclaim",
+        "The sound and honour of thy Name."
+      ]
+    },
+    {
+      "lines": [
+        "Let distant times and nations raise",
+        "The long succession of thy praise;",
+        "And unborn ages make my song",
+        "The joy and labour of their tongue."
+      ]
+    },
+    {
+      "lines": [
+        "But who can speak thy wondrous deeds?",
+        "Thy greatness all our thoughts exceeds!",
+        "Vast and unsearchable thy ways!",
+        "Vast and immortal be thy praise!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 145:1"
+}

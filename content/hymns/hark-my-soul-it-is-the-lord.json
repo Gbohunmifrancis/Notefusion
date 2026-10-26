@@ -1,0 +1,79 @@
+{
+  "title": "Hark, My Soul! It Is the Lord",
+  "tune": "innocents",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Hark, My Soul! It Is the Lord in Tonic Solfa to INNOCENTS, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 118, “Lovest thou me? Jn 21:16”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to INNOCENTS; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Hark, my soul! it is the Lord; 'Tis thy Sa-vior, hear his word; Je-sus speaks, and speaks to thee; \"Say, poor sin-ner, lov'st thou me?",
+  "verses": [
+    {
+      "lines": [
+        "Hark, my soul! it is the Lord;",
+        "'Tis thy Savior, hear his word;",
+        "Jesus speaks, and speaks to thee;",
+        "\"Say, poor sinner, lov'st thou me?"
+      ]
+    },
+    {
+      "lines": [
+        "I delivered thee when bound,",
+        "And, when wounded, healed thy wound;",
+        "Sought thee wand'ring, set thee right,",
+        "Turned thy darkness into light.\""
+      ]
+    },
+    {
+      "lines": [
+        "Can a woman's tender care",
+        "Cease, towards the child she bare?",
+        "Yes, she may forgetful be,",
+        "Yet will I remember thee."
+      ]
+    },
+    {
+      "lines": [
+        "\"Mine is an unchanging love;",
+        "Higher than the heights above;",
+        "Deeper than the depths beneath,",
+        "Free and faithful, strong as death."
+      ]
+    },
+    {
+      "lines": [
+        "Thou shalt see my glory soon,",
+        "When the work of grace is done;",
+        "Partner of my throne shalt be,",
+        "Say, poor sinner, lov'st thou me?\""
+      ]
+    },
+    {
+      "lines": [
+        "Lord it is my chief complaint,",
+        "That my love is weak and faint;",
+        "Yet I love thee and adore,",
+        "Oh for grace to love thee more!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to INNOCENTS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:118"
+}

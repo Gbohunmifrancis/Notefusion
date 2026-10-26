@@ -1,0 +1,62 @@
+{
+  "title": "God of Our Fathers! by Whose Hand",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "God of Our Fathers! by Whose Hand in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 68, “For Guidance and Protection”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "God of our fa-thers! by whose hand Thy peo-ple still are blest, Be with us through our pil-grim-age, Con-duct us to our rest.",
+  "verses": [
+    {
+      "lines": [
+        "God of our fathers! by whose hand",
+        "Thy people still are blest,",
+        "Be with us through our pilgrimage,",
+        "Conduct us to our rest."
+      ]
+    },
+    {
+      "lines": [
+        "Through each perplexing path of life",
+        "Our wandering footsteps guide;",
+        "Give us each day our daily bread,",
+        "And raiment fit provide."
+      ]
+    },
+    {
+      "lines": [
+        "O, spread Thy sheltering wings around,",
+        "Till all our wanderings cease,",
+        "And at our Fathers loved abode",
+        "Our souls arrive in peace."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee, our Father and our God,",
+        "We our whole souls resign;",
+        "And thankful own, that all we are",
+        "And all we have is Thine."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:68"
+}

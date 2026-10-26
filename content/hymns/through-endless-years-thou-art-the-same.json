@@ -1,0 +1,69 @@
+{
+  "title": "Through Endless Years Thou Art the Same",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Nahum Tate",
+      "born": 1652,
+      "died": 1715,
+      "role": "Words"
+    },
+    {
+      "name": "Nicholas Brady",
+      "born": 1659,
+      "died": 1726,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Through Endless Years Thou Art the Same in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Nahum Tate and Nicholas Brady wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 127 of its twenty-second edition (1853), “God Unchangeable”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Through end-less years thou art the same, O thou e-ter-nal God; Each fu-ture age shall know thy name, And tell thy works a-broad.",
+  "verses": [
+    {
+      "lines": [
+        "Through endless years thou art the same,",
+        "O thou eternal God;",
+        "Each future age shall know thy name,",
+        "And tell thy works abroad."
+      ]
+    },
+    {
+      "lines": [
+        "The strong foundations of the earth",
+        "Of old by thee were laid;",
+        "By thee the beauteous arch of heaven",
+        "With matchless skill was made."
+      ]
+    },
+    {
+      "lines": [
+        "Soon may this goodly frame of things",
+        "Created by thy hand,",
+        "Be, like a vesture, laid aside,",
+        "And changed at thy command."
+      ]
+    },
+    {
+      "lines": [
+        "But thy perfections, all divine,",
+        "Eternal as thy days,",
+        "Through everlasting ages shine,",
+        "With undiminished rays."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Nahum Tate died in 1715; Nicholas Brady died in 1726.",
+  "credits": "Words by Nahum Tate (1652–1715) and Nicholas Brady (1659–1726), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:127"
+}

@@ -1,0 +1,54 @@
+{
+  "title": "Holy Spirit, Source of Gladness",
+  "tune": "rustington",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Holy Spirit, Source of Gladness in Tonic Solfa to RUSTINGTON, doh is F: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 483, “Come, Holy Spirit!”.",
+    "The book printed the words without tunes, marked Eights and Sevens Double (8.7.8.7.8.7.8.7), to be sung to any tune of that metre. This page sets them to RUSTINGTON; any other Eights and Sevens Double tune fits them as well."
+  ],
+  "underlay": "Ho-ly Spir-it, source of glad-ness, Shine a-mid the clouds of night; O'er our wea-ri-ness and sad-ness Breathe Thy life, and shed Thy light! Send us Thine il-lu-mi-na-tion, Ban-ish all our fears at length, Rest up-on this con-gre-ga-tion, Spir-it of un-fail-ing Strength!",
+  "verses": [
+    {
+      "lines": [
+        "Holy Spirit, source of gladness,",
+        "Shine amid the clouds of night;",
+        "O'er our weariness and sadness",
+        "Breathe Thy life, and shed Thy light!",
+        "Send us Thine illumination,",
+        "Banish all our fears at length,",
+        "Rest upon this congregation,",
+        "Spirit of unfailing Strength!"
+      ]
+    },
+    {
+      "lines": [
+        "Let that love, which knows no measure,",
+        "Now in quickening showers descend,",
+        "Bringing us the richest treasure",
+        "Man can wish or God can send;",
+        "Hear our earnest supplication,",
+        "Every struggling heart release,",
+        "Rest upon this congregation,",
+        "Spirit of eternal Peace!"
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to RUSTINGTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:483"
+}

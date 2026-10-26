@@ -1,0 +1,55 @@
+{
+  "title": "Dear as Thou Wast, and Justly Dear",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Thomas Dale",
+      "born": 1797,
+      "died": 1870,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Dear as Thou Wast, and Justly Dear in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Thomas Dale wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 407, “\"Weep Not.\"”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Dear as thou wast, and just-ly dear, We would not weep for thee; One thought shall check the start-ing tear, It is that thou art free.",
+  "verses": [
+    {
+      "lines": [
+        "Dear as thou wast, and justly dear,",
+        "We would not weep for thee;",
+        "One thought shall check the starting tear, —",
+        "It is — that thou art free."
+      ]
+    },
+    {
+      "lines": [
+        "And thus shall faith's consoling power",
+        "The tears of love restrain;",
+        "O, who that saw thy parting hour",
+        "Could wish thee here again?"
+      ]
+    },
+    {
+      "lines": [
+        "Gently the passing spirit fled,",
+        "Sustained by grace divine;",
+        "O, may such grace on us be shed,",
+        "And make our end like thine!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Thomas Dale died in 1870.",
+  "credits": "Words by Thomas Dale (1797–1870), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:407"
+}

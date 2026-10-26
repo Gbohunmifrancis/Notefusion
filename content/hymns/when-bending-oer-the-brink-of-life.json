@@ -1,0 +1,55 @@
+{
+  "title": "When, Bending O'er the Brink of Life",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "William Bengo Collyer",
+      "born": 1782,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "When, Bending O'er the Brink of Life in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "William Bengo Collyer wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 533 of its twenty-second edition (1853), “Prayer for Support in Death”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When, bend-ing o'er the brink of life, My trem-bling soul shall stand, And wait to pass death's aw-ful flood, Great God, at thy com-mand;",
+  "verses": [
+    {
+      "lines": [
+        "When, bending o'er the brink of life,",
+        "My trembling soul shall stand,",
+        "And wait to pass death's awful flood,",
+        "Great God, at thy command; —"
+      ]
+    },
+    {
+      "lines": [
+        "Thou Source of life and joy supreme,",
+        "Whose arm alone can save,",
+        "Dispel the darkness that surrounds",
+        "The entrance to the grave."
+      ]
+    },
+    {
+      "lines": [
+        "Lay thy supporting, gentle hand",
+        "Beneath my sinking head,",
+        "And let a beam of light divine",
+        "Illume my dying bed."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: William Bengo Collyer died in 1854.",
+  "credits": "Words by William Bengo Collyer (1782–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:533"
+}

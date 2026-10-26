@@ -1,0 +1,87 @@
+{
+  "title": "O, Speak That Gracious Word Again",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "O, Speak That Gracious Word Again in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 53, “Peace restored”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O, speak that gra-cious word a-gain, And cheer my droop-ing heart! No voice but thine can soothe my pain, Or bid my fears de-part.",
+  "verses": [
+    {
+      "lines": [
+        "O, speak that gracious word again,",
+        "And cheer my drooping heart!",
+        "No voice but thine can soothe my pain,",
+        "Or bid my fears depart."
+      ]
+    },
+    {
+      "lines": [
+        "And canst thou still vouchsafe to own",
+        "A wretch so vile as I?",
+        "And may I still approach thy throne,",
+        "And Abba, Father, cry?"
+      ]
+    },
+    {
+      "lines": [
+        "Oh then let saints and angels join,",
+        "And help me to proclaim,",
+        "The grace that healed a breach like mine,",
+        "And put my foes to shame!"
+      ]
+    },
+    {
+      "lines": [
+        "How oft did Satan's cruel boast",
+        "My troubled soul affright!",
+        "He told me I was surely lost,",
+        "And God had left me quite."
+      ]
+    },
+    {
+      "lines": [
+        "Guilt made me fear, lest all were true",
+        "The lying tempter said!",
+        "But now the Lord appears in view,",
+        "My enemy is fled."
+      ]
+    },
+    {
+      "lines": [
+        "My Savior, by his pow'rful word,",
+        "Has turned my night to day;",
+        "And his salvation's joys restored,",
+        "Which I had sinned away."
+      ]
+    },
+    {
+      "lines": [
+        "Dear Lord I wonder and adore,",
+        "Thy grace is all divine;",
+        "Oh keep me, that I sin no more",
+        "Against such love as thine!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:53"
+}

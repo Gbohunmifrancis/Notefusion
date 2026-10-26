@@ -1,0 +1,77 @@
+{
+  "title": "Thou, Lord, by Strictest Search Hast Known",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Nahum Tate",
+      "born": 1652,
+      "died": 1715,
+      "role": "Words"
+    },
+    {
+      "name": "Nicholas Brady",
+      "born": 1659,
+      "died": 1726,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Thou, Lord, by Strictest Search Hast Known in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Nahum Tate and Nicholas Brady wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 140 of its twenty-second edition (1853), “\"Whither shall I go from thy presence?\"”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thou, Lord, by stric-test search hast known My ris-ing up and ly-ing down; My se-cret thoughts are known to thee, Known long be-fore con-ceived by me.",
+  "verses": [
+    {
+      "lines": [
+        "Thou, Lord, by strictest search hast known",
+        "My rising up and lying down;",
+        "My secret thoughts are known to thee,",
+        "Known long before conceived by me."
+      ]
+    },
+    {
+      "lines": [
+        "O could I so perfidious be,",
+        "To think of once deserting thee!",
+        "Where, Lord, could I thy influence shun?",
+        "Or whither from thy presence run?"
+      ]
+    },
+    {
+      "lines": [
+        "If I the morning's wings could gain,",
+        "And fly beyond the western main,",
+        "Thy swifter hand would first arrive,",
+        "And there arrest thy fugitive."
+      ]
+    },
+    {
+      "lines": [
+        "Or should I try to shun thy sight",
+        "Beneath the sable wings of night,",
+        "One glance from thee, one piercing ray,",
+        "Would kindle darkness into day."
+      ]
+    },
+    {
+      "lines": [
+        "Search, try, O God, my thoughts and heart,",
+        "If mischief lurks in any part;",
+        "Correct me where I go astray,",
+        "And guide me in thy perfect way."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Nahum Tate died in 1715; Nicholas Brady died in 1726.",
+  "credits": "Words by Nahum Tate (1652–1715) and Nicholas Brady (1659–1726), public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:140"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "How Honored Is the Place",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "How Honored Is the Place in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 654 of its twenty-second edition (1853), “Safety of the Church”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "How hon-ored is the place Where we a-dor-ing stand! Zi-on, the glo-ry of the earth, And beau-ty of the land.",
+  "verses": [
+    {
+      "lines": [
+        "How honored is the place",
+        "Where we adoring stand! —",
+        "Zion, the glory of the earth,",
+        "And beauty of the land."
+      ]
+    },
+    {
+      "lines": [
+        "Bulwarks of grace defend",
+        "The city where we dwell,",
+        "While walls, of strong salvation made,",
+        "Defy th' assaults of hell."
+      ]
+    },
+    {
+      "lines": [
+        "Lift up th' eternal gates;",
+        "The doors wide open fling;",
+        "Enter, ye nations that obey",
+        "The statutes of your King."
+      ]
+    },
+    {
+      "lines": [
+        "Here taste unmingled joys,",
+        "And live in perfect peace,",
+        "You that have known Jehovah's name,",
+        "And ventured on his grace."
+      ]
+    },
+    {
+      "lines": [
+        "Trust in the Lord, ye saints,",
+        "And banish all your fears;",
+        "Strength in the Lord Jehovah dwells,",
+        "Eternal as his years."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:654"
+}

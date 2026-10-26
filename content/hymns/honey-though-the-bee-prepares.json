@@ -1,0 +1,95 @@
+{
+  "title": "Honey Though the Bee Prepares",
+  "tune": "st-bees",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Honey Though the Bee Prepares in Tonic Solfa to ST. BEES, doh is Ab: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 56, “Vanity of the creature sanctified”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to ST. BEES; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Hon-ey though the bee pre-pares, An en-ven-omed sting he wears; Pierc-ing thorns a guard com-pose Round the fra-grant bloom-ing rose.",
+  "verses": [
+    {
+      "lines": [
+        "Honey though the bee prepares,",
+        "An envenomed sting he wears;",
+        "Piercing thorns a guard compose",
+        "Round the fragrant blooming rose."
+      ]
+    },
+    {
+      "lines": [
+        "Where we think to find a sweet,",
+        "Oft a painful sting we meet:",
+        "When the rose invites our eye,",
+        "We forget the thorn is nigh."
+      ]
+    },
+    {
+      "lines": [
+        "Why are thus our hopes beguiled?",
+        "Why are all our pleasures spoiled?",
+        "Why do agony and woe",
+        "From our choicest comforts grow?"
+      ]
+    },
+    {
+      "lines": [
+        "Sin has been the cause of all!",
+        "'Twas not thus before the fall:",
+        "What but pain, and thorn, and sting,",
+        "From the root of sin can spring?"
+      ]
+    },
+    {
+      "lines": [
+        "Now with every good we find",
+        "Vanity and grief entwined;",
+        "What we feel, or what we fear,",
+        "All our joys embitter here."
+      ]
+    },
+    {
+      "lines": [
+        "Yet, through the Redeemer's love,",
+        "These afflictions blessings prove;",
+        "He the wounding stings and thorns,",
+        "Into healing med'cines turns."
+      ]
+    },
+    {
+      "lines": [
+        "From the earth our hearts they wean,",
+        "Teach us on his arm to lean;",
+        "Urge us to a throne of grace,",
+        "Make us seek a resting place."
+      ]
+    },
+    {
+      "lines": [
+        "In the mansions of our King",
+        "Sweets abound without a sting;",
+        "Thornless there the roses blow,",
+        "And the joys unmingled flow."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. BEES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:56"
+}

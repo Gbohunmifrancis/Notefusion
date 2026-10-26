@@ -1,0 +1,63 @@
+{
+  "title": "Thou Seest My Feebleness",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Thou Seest My Feebleness in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 516, “For Help in Temptation”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Thou seest my fee-ble-ness; Fa-ther! be Thou my power, My help and re-fuge in dis-tress, My for-tress and my tower!",
+  "verses": [
+    {
+      "lines": [
+        "Thou seest my feebleness;",
+        "Father! be Thou my power,",
+        "My help and refuge in distress,",
+        "My fortress and my tower!"
+      ]
+    },
+    {
+      "lines": [
+        "Give me to trust in Thee;",
+        "Be Thou my sure abode;",
+        "My helm and sword and buckler be,",
+        "My Saviour and my God!"
+      ]
+    },
+    {
+      "lines": [
+        "Myself I cannot save,",
+        "Myself I cannot keep;",
+        "But strength in Thee I surely have,",
+        "Whose eyelids never sleep."
+      ]
+    },
+    {
+      "lines": [
+        "My soul to Thee alone,",
+        "For always, I commend;",
+        "Thou lovest me, Father, as Thine own,",
+        "And lovest to the end."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:516"
+}

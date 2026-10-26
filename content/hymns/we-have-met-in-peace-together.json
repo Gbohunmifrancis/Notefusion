@@ -1,0 +1,66 @@
+{
+  "title": "We Have Met in Peace Together",
+  "tune": "lux-eoi",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "We Have Met in Peace Together in Tonic Solfa to LUX EOI, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 749 of its twenty-second edition (1853), “Opening of the School”.",
+    "The book printed the words without tunes, marked Eights and Sevens Double (8.7.8.7.8.7.8.7), to be sung to any tune of that metre. This page sets them to LUX EOI; any other Eights and Sevens Double tune fits them as well."
+  ],
+  "underlay": "We have met in peace to-ge-ther In this house of God a-gain; Con-stant friends have led us hith-er, Here to chant the sol-emn strain, Here to breathe our a-dor-a-tion, Here the Sav-iour's praise to sing: May the Spir-it of sal-va-tion Come with heal-ing in his wing.",
+  "verses": [
+    {
+      "lines": [
+        "We have met in peace together",
+        "In this house of God again;",
+        "Constant friends have led us hither,",
+        "Here to chant the solemn strain,",
+        "Here to breathe our adoration,",
+        "Here the Saviour's praise to sing:",
+        "May the Spirit of salvation",
+        "Come with healing in his wing."
+      ]
+    },
+    {
+      "lines": [
+        "We have met, and Time is flying;",
+        "We shall part, and still his wing,",
+        "Sweeping o'er the dead and dying,",
+        "Will the changeful seasons bring:",
+        "Let us, while our hearts are lightest,",
+        "In our fresh and early years,",
+        "Turn to Him whose smile is brightest,",
+        "And whose grace will calm our fears."
+      ]
+    },
+    {
+      "lines": [
+        "He will aid us, should existence",
+        "With its sorrows sting the breast;",
+        "Gleaming in the onward distance,",
+        "Faith will mark the land of rest:",
+        "There, 'midst day-beams round him playing,",
+        "We our Father's face shall see,",
+        "And shall hear him gently saying,",
+        "\"Little children, come to me.\""
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to LUX EOI by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:749"
+}

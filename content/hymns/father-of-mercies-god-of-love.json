@@ -1,0 +1,63 @@
+{
+  "title": "Father of Mercies, God of Love",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Ottiwell Heginbotham",
+      "born": 1744,
+      "died": 1768,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Father of Mercies, God of Love in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Ottiwell Heginbotham wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 613 of its twenty-second edition (1853), “Praising God in all Changes”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther of mer-cies, God of love, My Fa-ther and my God! I'll sing the hon-ors of thy name; And spread thy praise a-broad.",
+  "verses": [
+    {
+      "lines": [
+        "Father of mercies, God of love,",
+        "My Father and my God!",
+        "I'll sing the honors of thy name;",
+        "And spread thy praise abroad."
+      ]
+    },
+    {
+      "lines": [
+        "In every period of my life,",
+        "Thy thoughts of love appear;",
+        "Thy mercies gild each transient scene,",
+        "And crown each lengthening year."
+      ]
+    },
+    {
+      "lines": [
+        "In all these mercies may my soul",
+        "A father's bounty see:",
+        "Nor let the gifts thy grace bestows",
+        "Estrange my heart from thee."
+      ]
+    },
+    {
+      "lines": [
+        "Then will I close my eyes in death,",
+        "Free from distressing fear;",
+        "For death itself is life, my God,",
+        "If thou art with me there."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Ottiwell Heginbotham died in 1768.",
+  "credits": "Words by Ottiwell Heginbotham (1744–1768), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:613"
+}

@@ -1,0 +1,64 @@
+{
+  "title": "O God, Thy Grace Impart",
+  "tune": "malvern-gwyllt",
+  "text": [
+    {
+      "name": "Ray Palmer",
+      "born": 1808,
+      "died": 1887,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O God, Thy Grace Impart in Tonic Solfa to MALVERN (GWYLLT), doh is Bb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Ray Palmer wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 335 of its twenty-second edition (1853), “For Divine Guidance”.",
+    "The book printed the words without tunes, marked Sixes and Fours (6.6.4.6.6.6.4), to be sung to any tune of that metre. This page sets them to MALVERN (GWYLLT); any other Sixes and Fours tune fits them as well."
+  ],
+  "underlay": "O God, thy grace im-part! Re-vive my faint-ing heart; My zeal in-spire; Re-veal thy-self to me, And may my love to thee Pure, warm, and change-less be, A liv-ing fire.",
+  "verses": [
+    {
+      "lines": [
+        "O God, thy grace impart!",
+        "Revive my fainting heart;",
+        "My zeal inspire;",
+        "Reveal thyself to me,",
+        "And may my love to thee",
+        "Pure, warm, and changeless be, —",
+        "A living fire."
+      ]
+    },
+    {
+      "lines": [
+        "While life's dark maze I tread,",
+        "And griefs around me spread,",
+        "Be thou my guide;",
+        "Bid darkness turn to day,",
+        "Wipe sorrow's tears away,",
+        "Nor let me ever stray",
+        "From thee aside."
+      ]
+    },
+    {
+      "lines": [
+        "When ends life's transient dream,",
+        "When death's cold sullen stream",
+        "Shall o'er me roll,",
+        "O Father, then in love,",
+        "Fear and distress remove,",
+        "And bear me safe above, —",
+        "A ransomed soul."
+      ]
+    }
+  ],
+  "metre": "6 6 4 6 6 6 4",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Ray Palmer died in 1887.",
+  "credits": "Words by Ray Palmer (1808–1887), public domain, as printed in Hymns for Christian Devotion (1853); set to MALVERN (GWYLLT) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:335"
+}

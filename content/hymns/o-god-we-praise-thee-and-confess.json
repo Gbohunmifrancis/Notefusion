@@ -1,0 +1,71 @@
+{
+  "title": "O God! We Praise Thee, and Confess",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "John Patrick",
+      "born": 1632,
+      "died": 1695,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O God! We Praise Thee, and Confess in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Patrick wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 50, “Te Deum”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O God! we praise Thee, and con-fess That Thou the on-ly Lord And ev-er-last-ing Fa-ther art, By all the earth a-dored.",
+  "verses": [
+    {
+      "lines": [
+        "O God! we praise Thee, and confess",
+        "That Thou the only Lord",
+        "And everlasting Father art,",
+        "By all the earth adored."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee all angels cry aloud;",
+        "To Thee the powers on high,",
+        "Both cherubim and seraphim,",
+        "Continually do cry:"
+      ]
+    },
+    {
+      "lines": [
+        "\"O holy, holy, holy Lord,",
+        "Whom heavenly hosts obey,",
+        "The world is with the glory filled",
+        "Of Thy majestic sway.\""
+      ]
+    },
+    {
+      "lines": [
+        "The apostles' glorious company,",
+        "And prophets crowned with light,",
+        "With all the martyrs' noble host,",
+        "Thy constant praise recite."
+      ]
+    },
+    {
+      "lines": [
+        "The holy church throughout the world,",
+        "O Lord, confesses Thee,",
+        "That Thou the Eternal Father art,",
+        "Of boundless majesty."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Patrick died in 1695.",
+  "credits": "Words by John Patrick (1632–1695), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:50"
+}

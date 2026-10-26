@@ -1,0 +1,95 @@
+{
+  "title": "When Moses Waved His Mystic Rod",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "When Moses Waved His Mystic Rod in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 16, “The rod of Moses”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When Mo-ses waved his mys-tic rod What won-ders fol-lowed while he spoke? Firm as a wall the wa-ters stood, Or gushed in riv-ers from the rock!",
+  "verses": [
+    {
+      "lines": [
+        "When Moses waved his mystic rod",
+        "What wonders followed while he spoke?",
+        "Firm as a wall the waters stood,",
+        "Or gushed in rivers from the rock!"
+      ]
+    },
+    {
+      "lines": [
+        "At his command the thunders rolled,",
+        "Lightning and hail his voice obeyed;",
+        "And Pharaoh trembled, to behold",
+        "His land in desolation laid."
+      ]
+    },
+    {
+      "lines": [
+        "But what could Moses' rod have done",
+        "Had he not been divinely sent?",
+        "The pow'r was from the Lord alone,",
+        "And Moses but the instrument."
+      ]
+    },
+    {
+      "lines": [
+        "O Lord, regard thy peoples prayers!",
+        "Assist a worm to preach aright",
+        "And since thy gospel-rod he bears,",
+        "Display thy wonders in our sight."
+      ]
+    },
+    {
+      "lines": [
+        "Proclaim the thunders of thy law,",
+        "Like lightning let thine arrows fly,",
+        "That careless sinners, struck with awe,",
+        "For refuge may to Jesus cry!"
+      ]
+    },
+    {
+      "lines": [
+        "Make streams of godly sorrow flow",
+        "From rocky hearts, unused to feel;",
+        "And let the poor in spirit know",
+        "That thou art near, their griefs to heal."
+      ]
+    },
+    {
+      "lines": [
+        "But chiefly, we would now look up",
+        "To ask a blessing for our youth,",
+        "The rising generation's hope,",
+        "That they may know and love thy truth."
+      ]
+    },
+    {
+      "lines": [
+        "Arise, O Lord, afford a sign,",
+        "Now shall our prayers success obtain;",
+        "Since both the means and pow'r are thine,",
+        "How can the rod be raised in vain!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:16"
+}

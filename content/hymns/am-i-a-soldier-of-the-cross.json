@@ -1,0 +1,79 @@
+{
+  "title": "Am I a Soldier of the Cross",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Am I a Soldier of the Cross in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 311, “The Soldier of the Cross”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Am I a sol-dier of the cross, And pledged to bear its shame? And shall I fear to own Christ's cause, Or blush to speak his name?",
+  "verses": [
+    {
+      "lines": [
+        "Am I a soldier of the cross,",
+        "And pledged to bear its shame?",
+        "And shall I fear to own Christ's cause,",
+        "Or blush to speak his name?"
+      ]
+    },
+    {
+      "lines": [
+        "Must I be carried to the skies",
+        "On flowery beds of ease,",
+        "While others fought to win the prize,",
+        "And sailed through bloody seas?"
+      ]
+    },
+    {
+      "lines": [
+        "Are there no foes for me to face?",
+        "Must I not stem the flood?",
+        "Shall sloth and faintness win Thy peace,",
+        "O Thou, the martyr's God?"
+      ]
+    },
+    {
+      "lines": [
+        "The fearless heart Thou wilt sustain;",
+        "Increase my courage, Lord!",
+        "I'll bear the toil, endure the pain,",
+        "Supported by Thy word."
+      ]
+    },
+    {
+      "lines": [
+        "The saints in all this glorious war",
+        "Shall conquer, though they die;",
+        "They see the triumph from afar,",
+        "And seize it with their eye."
+      ]
+    },
+    {
+      "lines": [
+        "When Thy illustrious day shall rise,",
+        "And all Thy armies shine",
+        "In robes of victory through the skies,",
+        "The glory shall be Thine."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:311"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "Thou Art, O God, the Life and Light",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Thomas Moore",
+      "born": 1779,
+      "died": 1852,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Thou Art, O God, the Life and Light in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Thomas Moore wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 84, “God's Presence in Nature”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Thou art, O God, the life and light Of all this won-drous world we see; Its glow by day, its smile by night, Are but re-flec-tions caught from Thee: Wher-e'er we turn, Thy glo-ries shine, And all things fair and bright are Thine.",
+  "verses": [
+    {
+      "lines": [
+        "Thou art, O God, the life and light",
+        "Of all this wondrous world we see;",
+        "Its glow by day, its smile by night,",
+        "Are but reflections caught from Thee:",
+        "Where'er we turn, Thy glories shine,",
+        "And all things fair and bright are Thine."
+      ]
+    },
+    {
+      "lines": [
+        "When day, with farewell beam, delays",
+        "Among the opening clouds of even,",
+        "And we can almost think we gaze",
+        "Through golden vistas into heaven,",
+        "Those hues that make the sun's decline",
+        "So soft, so radiant, Lord, are Thine."
+      ]
+    },
+    {
+      "lines": [
+        "When night, with wings of starry gloom,",
+        "O'ershadows all the earth and skies,",
+        "Like some dark, beauteous bird, whose plume",
+        "Is sparkling with unnumbered eyes,",
+        "That sacred gloom, those fires divine,",
+        "So grand, so countless, Lord, are Thine."
+      ]
+    },
+    {
+      "lines": [
+        "When youthful spring around us breathes,",
+        "Thy spirit warms her fragrant sigh;",
+        "And every flower the summer wreathes",
+        "Is born beneath Thy kindling eye:",
+        "Where'er we turn, Thy glories shine,",
+        "And all things fair and bright are Thine."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Thomas Moore died in 1852.",
+  "credits": "Words by Thomas Moore (1779–1852), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:84"
+}

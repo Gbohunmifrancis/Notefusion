@@ -1,0 +1,63 @@
+{
+  "title": "Speak with Us, Lord; Thyself Reveal",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Speak with Us, Lord; Thyself Reveal in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 522, “For the Divine Presence”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Speak with us, Lord; Thy-self re-veal, While here on earth we rove; Speak to our hearts, and let us feel The kin-dlings of Thy love.",
+  "verses": [
+    {
+      "lines": [
+        "Speak with us, Lord; Thyself reveal,",
+        "While here on earth we rove;",
+        "Speak to our hearts, and let us feel",
+        "The kindlings of Thy love."
+      ]
+    },
+    {
+      "lines": [
+        "With Thee conversing, we forget",
+        "All toil and time and care;",
+        "Labor is rest, and pain is sweet,",
+        "If Thou art present there."
+      ]
+    },
+    {
+      "lines": [
+        "Here then, our God, be pleased to stay,",
+        "And bid our hearts rejoice;",
+        "Our bounding hearts shall own Thy sway,",
+        "And echo to Thy voice."
+      ]
+    },
+    {
+      "lines": [
+        "Thou callest us to seek Thy face;",
+        "Thy face, O God, we seek,",
+        "Attend the whispers of Thy grace,",
+        "And hear Thee inly speak."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:522"
+}

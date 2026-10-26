@@ -1,0 +1,62 @@
+{
+  "title": "When, Blest Redeemer, Thou Art Near",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "When, Blest Redeemer, Thou Art Near in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 154, “The Presence of Jesus”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When, blest Re-deem-er, thou art near, The soul en-joys a sa-cred peace: Thy pre-sence calms our ev-ery fear, And gives from ev-ery doubt re-lease.",
+  "verses": [
+    {
+      "lines": [
+        "When, blest Redeemer, thou art near,",
+        "The soul enjoys a sacred peace:",
+        "Thy presence calms our every fear,",
+        "And gives from every doubt release."
+      ]
+    },
+    {
+      "lines": [
+        "Be with us now, in truth and love,",
+        "In strength that conquers every sin;",
+        "O, cleanse, and bless, and lift above,",
+        "And may thy cross our hearts still win."
+      ]
+    },
+    {
+      "lines": [
+        "In suffering may we strength receive",
+        "From memory of thy victory won;",
+        "In doubt our drooping hopes revive; —",
+        "Thus be thy presence with us shown!"
+      ]
+    },
+    {
+      "lines": [
+        "Be ever near our spirits, Lord;",
+        "And, drawn by sympathy, may we",
+        "Still, through thy cross, thy life, thy word,",
+        "In faith and love come near to thee!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:154"
+}

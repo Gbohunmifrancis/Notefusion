@@ -1,0 +1,71 @@
+{
+  "title": "Lord of the Sabbath, Hear Our Vows",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Philip Doddridge",
+      "born": 1702,
+      "died": 1751,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Lord of the Sabbath, Hear Our Vows in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Philip Doddridge wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 373, “The Eternal Sabbath”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Lord of the Sab-bath, hear our vows, On this Thy day, in this Thy house; And own, as grate-ful sac-ri-fice, The songs which from Thy church-es rise.",
+  "verses": [
+    {
+      "lines": [
+        "Lord of the Sabbath, hear our vows,",
+        "On this Thy day, in this Thy house;",
+        "And own, as grateful sacrifice,",
+        "The songs which from Thy churches rise."
+      ]
+    },
+    {
+      "lines": [
+        "Thine earthly Sabbaths, Lord, we love;",
+        "But there's a nobler rest above;",
+        "To that our longing souls aspire,",
+        "With earnest hope and strong desire."
+      ]
+    },
+    {
+      "lines": [
+        "No more fatigue, no more distress;",
+        "Nor sin nor death shall reach the place;",
+        "No groans to mingle with the songs",
+        "Which warble from immortal tongues."
+      ]
+    },
+    {
+      "lines": [
+        "No rude alarms of raging foes;",
+        "No cares to break the long repose;",
+        "No midnight shade, no clouded sun,",
+        "But sacred, high, eternal noon."
+      ]
+    },
+    {
+      "lines": [
+        "O long expected day, begin;",
+        "Dawn on these realms of woe and sin!",
+        "Fain would we leave this weary road,",
+        "And pass through death, to rest with God."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Philip Doddridge died in 1751.",
+  "credits": "Words by Philip Doddridge (1702–1751), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:373"
+}

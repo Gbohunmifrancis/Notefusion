@@ -1,0 +1,67 @@
+{
+  "title": "The Heavenly Spheres to Thee, O God",
+  "tune": "materna",
+  "text": [
+    {
+      "name": "John Bowring",
+      "born": 1792,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "The Heavenly Spheres to Thee, O God in Tonic Solfa to MATERNA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Bowring wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 399, “The Hymn of the Seasons”.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to MATERNA; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "The heav-enly spheres to Thee, O God, At-tune their eve-ning hymn; All wise, all ho-ly, Thou art praised In song of ser-a-phim. Un-num-bered sys-tems, suns, and worlds, U-nite to wor-ship Thee, While Thy ma-jes-tic great-ness fills Space, time, e-ter-ni-ty.",
+  "verses": [
+    {
+      "lines": [
+        "The heavenly spheres to Thee, O God,",
+        "Attune their evening hymn;",
+        "All-wise, all-holy, Thou art praised",
+        "In song of seraphim.",
+        "Unnumbered systems, suns, and worlds,",
+        "Unite to worship Thee,",
+        "While Thy majestic greatness fills",
+        "Space, time, eternity."
+      ]
+    },
+    {
+      "lines": [
+        "Nature, a temple worthy Thee,",
+        "Beams with Thy light and love;",
+        "Whose flowers so sweetly bloom below,",
+        "Whose stars rejoice above;",
+        "Whose altars are the mountain-cliffs",
+        "That rise along the shore;",
+        "Whose anthems, the sublime accord",
+        "Of storm and ocean-roar."
+      ]
+    },
+    {
+      "lines": [
+        "Her song of gratitude is sung",
+        "By Spring's awakening hours;",
+        "Her Summer offers at Thy shrine",
+        "Its earliest, loveliest flowers;",
+        "Her Autumn brings its golden fruits,",
+        "In glorious luxury given;",
+        "While Winter's silver heights reflect",
+        "Thy brightness back to heaven."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Bowring died in 1872.",
+  "credits": "Words by John Bowring (1792–1872), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MATERNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:399"
+}

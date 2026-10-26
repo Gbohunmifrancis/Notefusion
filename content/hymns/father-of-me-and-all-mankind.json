@@ -1,0 +1,62 @@
+{
+  "title": "Father of Me and All Mankind",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Father of Me and All Mankind in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 491 of its twenty-second edition (1853), “\"Thy Kingdom Come.\"”, where the book credits them to Wesley's Collection.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther of me and all man-kind, And all the hosts a-bove, Let ev-ery un-der-stand-ing mind U-nite to praise thy love.",
+  "verses": [
+    {
+      "lines": [
+        "Father of me and all mankind,",
+        "And all the hosts above,",
+        "Let every understanding mind",
+        "Unite to praise thy love."
+      ]
+    },
+    {
+      "lines": [
+        "Thy kingdom come, with power and grace",
+        "To every heart of man;",
+        "Thy peace, and joy, and righteousness,",
+        "In all our bosoms reign."
+      ]
+    },
+    {
+      "lines": [
+        "The righteousness that never ends,",
+        "But makes an end of sin;",
+        "The joy that human thought transcends,",
+        "Into our souls bring in."
+      ]
+    },
+    {
+      "lines": [
+        "The kingdom of established peace,",
+        "Which can no more remove;",
+        "The perfect powers of godliness,",
+        "Th' omnipotence of love."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:491"
+}

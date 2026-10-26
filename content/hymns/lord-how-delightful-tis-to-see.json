@@ -1,0 +1,47 @@
+{
+  "title": "Lord, How Delightful 'Tis to See",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Lord, How Delightful 'Tis to See in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 95 of its twenty-second edition (1853), “The Joy and Blessing of Worship”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Lord, how de-light-ful 'tis to see A whole as-sem-bly wor-ship thee; At once they sing, at once they pray, They hear of heaven and learn the way.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, how delightful 'tis to see",
+        "A whole assembly worship thee;",
+        "At once they sing, at once they pray,",
+        "They hear of heaven and learn the way."
+      ]
+    },
+    {
+      "lines": [
+        "O, write upon our memory, Lord,",
+        "The text and doctrines of thy word:",
+        "That we may break thy laws no more,",
+        "But love thee better than before."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:95"
+}

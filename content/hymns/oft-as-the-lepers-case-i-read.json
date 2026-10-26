@@ -1,0 +1,95 @@
+{
+  "title": "Oft as the Leper's Case I Read",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Oft as the Leper's Case I Read in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 82, “The leper. Mt 8:23”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Oft as the lep-er's case I read, My own de-scribed I feel; Sin is a lep-ro-sy in-deed, Which none but Christ can heal.",
+  "verses": [
+    {
+      "lines": [
+        "Oft as the leper's case I read,",
+        "My own described I feel;",
+        "Sin is a leprosy indeed,",
+        "Which none but Christ can heal."
+      ]
+    },
+    {
+      "lines": [
+        "Awhile I would have passed for well,",
+        "And strove my spots to hide;",
+        "Till it broke out incurable,",
+        "Too plain to be denied."
+      ]
+    },
+    {
+      "lines": [
+        "Then from the saints I sought to flee,",
+        "And dreaded to be seen;",
+        "I thought they all would point at me,",
+        "And cry, \"Unclean, unclean!\""
+      ]
+    },
+    {
+      "lines": [
+        "What anguish did my soul endure,",
+        "Till hope and patience ceased?",
+        "The more I strove myself to cure,",
+        "The more the plague increased."
+      ]
+    },
+    {
+      "lines": [
+        "While thus I lay distressed, I saw",
+        "The Savior passing by;",
+        "To him, though filled with shame and awe,",
+        "I raised my mournful cry."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, thou canst heal me if thou wilt,",
+        "For thou canst all things do;",
+        "O cleanse my leprous soul from guilt,",
+        "My filthy heart renew!"
+      ]
+    },
+    {
+      "lines": [
+        "He heard, and with a gracious look,",
+        "Pronounced the healing word;",
+        "\"I will, be clean\" -- and while he spoke",
+        "I felt my health restored."
+      ]
+    },
+    {
+      "lines": [
+        "Come lepers, seize the present hour,",
+        "The Savior's grace to prove;",
+        "He can relieve, for he is pow'r,",
+        "He will, for he is love."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:82"
+}

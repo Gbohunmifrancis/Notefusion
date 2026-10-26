@@ -1,0 +1,63 @@
+{
+  "title": "On Eyes That Never Saw the Day",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Edmund Butcher",
+      "born": 1757,
+      "died": 1822,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "On Eyes That Never Saw the Day in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Edmund Butcher wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 218 of its twenty-second edition (1853), “Miracles of Christ”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "On eyes that nev-er saw the day Christ pours the bright ce-les-tial ray; And deaf-ened ears, by him un-bound, Catch all the har-mo-ny of sound.",
+  "verses": [
+    {
+      "lines": [
+        "On eyes that never saw the day",
+        "Christ pours the bright celestial ray;",
+        "And deafened ears, by him unbound,",
+        "Catch all the harmony of sound."
+      ]
+    },
+    {
+      "lines": [
+        "Lameness takes up its bed, and goes",
+        "Rejoicing in the strength that flows",
+        "Through every nerve; and, free from pain,",
+        "Pours forth to God the grateful strain."
+      ]
+    },
+    {
+      "lines": [
+        "The shattered mind his word restores,",
+        "And tunes afresh the mental powers;",
+        "The dead revive, to life return,",
+        "And bid affection cease to mourn."
+      ]
+    },
+    {
+      "lines": [
+        "Canst thou, my soul, these wonders trace,",
+        "And not admire Jehovah's grace?",
+        "Canst thou behold thy Prophet's power,",
+        "And not the God he served adore?"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Edmund Butcher died in 1822.",
+  "credits": "Words by Edmund Butcher (1757–1822), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:218"
+}

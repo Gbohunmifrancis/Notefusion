@@ -1,0 +1,63 @@
+{
+  "title": "And Can My Heart Aspire So High",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Anne Steele",
+      "born": 1717,
+      "died": 1778,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "And Can My Heart Aspire So High in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Anne Steele wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 481 of its twenty-second edition (1853), “Filial Submission”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "And can my heart as-pire so high, To say, \"My Fa-ther,\" God? Lord, at thy feet, I fain would lie, And learn to kiss the rod.",
+  "verses": [
+    {
+      "lines": [
+        "And can my heart aspire so high,",
+        "To say, \"My Father,\" God?",
+        "Lord, at thy feet, I fain would lie,",
+        "And learn to kiss the rod."
+      ]
+    },
+    {
+      "lines": [
+        "I would submit to all thy will,",
+        "For thou art good and wise;",
+        "Let each rebellious thought be still,",
+        "Nor one faint murmur rise."
+      ]
+    },
+    {
+      "lines": [
+        "Thy love can cheer the darkest gloom,",
+        "And bid me wait serene,",
+        "Till hopes and joys immortal bloom,",
+        "And brighten all the scene."
+      ]
+    },
+    {
+      "lines": [
+        "\"My Father, God,\" permit my heart",
+        "To plead her humble claim,",
+        "And ask the bliss those words impart,",
+        "In my Redeemer's name."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Anne Steele died in 1778.",
+  "credits": "Words by Anne Steele (1717–1778), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:481"
+}

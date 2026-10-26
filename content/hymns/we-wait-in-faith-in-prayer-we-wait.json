@@ -1,0 +1,70 @@
+{
+  "title": "We Wait in Faith, in Prayer We Wait",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "We Wait in Faith, in Prayer We Wait in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 595, “The Morning”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "We wait in faith, in prayer we wait, Un-til the hap-py hour When God shall ope the morn-ing gate, By His al-might-y power.",
+  "verses": [
+    {
+      "lines": [
+        "We wait in faith, in prayer we wait,",
+        "Until the happy hour",
+        "When God shall ope the morning gate,",
+        "By His almighty power."
+      ]
+    },
+    {
+      "lines": [
+        "We wait in faith, and turn our face",
+        "To where the day-light springs;",
+        "Till He shall come earth's gloom to chase,",
+        "With healing on His wings."
+      ]
+    },
+    {
+      "lines": [
+        "And even now, amid the gray,",
+        "The East is brightening fast,",
+        "And kindling to that perfect day",
+        "Which never shall be past."
+      ]
+    },
+    {
+      "lines": [
+        "We wait in faith, we wait in prayer,",
+        "Till that blest day shall shine,",
+        "When earth shall fruits of Eden bear,",
+        "And all, O God, be Thine!"
+      ]
+    },
+    {
+      "lines": [
+        "O, guide us till our night is done!",
+        "Until, from shore to shore,",
+        "Thou, Lord, our everlasting sun,",
+        "Art shining evermore!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:595"
+}

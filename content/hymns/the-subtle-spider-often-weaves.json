@@ -1,0 +1,95 @@
+{
+  "title": "The Subtle Spider Often Weaves",
+  "tune": "york",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Subtle Spider Often Weaves in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 92, “The bee saved from the spider”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The sub-tle spi-der of-ten weaves His un-sus-pect-ed snares, A-mong the bal-my flow'rs and leaves, To which the bee re-pairs.",
+  "verses": [
+    {
+      "lines": [
+        "The subtle spider often weaves",
+        "His unsuspected snares,",
+        "Among the balmy flow'rs and leaves,",
+        "To which the bee repairs."
+      ]
+    },
+    {
+      "lines": [
+        "When in his web he sees one hang,",
+        "With a malicious joy,",
+        "He darts upon it with his fang,",
+        "To poison and destroy."
+      ]
+    },
+    {
+      "lines": [
+        "How welcome then, some pitying friend,",
+        "To save the threatened bee!",
+        "The spider's treach'rous web to rend,",
+        "And set the captive free!"
+      ]
+    },
+    {
+      "lines": [
+        "My soul has been in such a case,",
+        "When first I knew the Lord,",
+        "I hasted to the means of grace,",
+        "Where sweets I knew were stored."
+      ]
+    },
+    {
+      "lines": [
+        "Little I thought of danger near,",
+        "That soon my joys would ebb;",
+        "But ah! I met a spider there,",
+        "Who caught me in his web."
+      ]
+    },
+    {
+      "lines": [
+        "Then Satan raised his pois'nous sting,",
+        "And aimed his blows at me;",
+        "While I, poor helpless trembling thing,",
+        "Could neither fight nor flee."
+      ]
+    },
+    {
+      "lines": [
+        "But O! the Savior's pitying eye",
+        "Relieved me from despair;",
+        "He saw me at the point to die",
+        "And broke the fatal snare."
+      ]
+    },
+    {
+      "lines": [
+        "My case his heedless saints should warn,",
+        "Or cheer them if afraid;",
+        "May you from me your danger learn,",
+        "And where to look for aid."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:92"
+}

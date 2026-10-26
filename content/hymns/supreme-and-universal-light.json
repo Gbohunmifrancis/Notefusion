@@ -1,0 +1,63 @@
+{
+  "title": "Supreme and Universal Light",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Henry Moore",
+      "born": 1732,
+      "died": 1802,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Supreme and Universal Light in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Henry Moore wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 429 of its twenty-second edition (1853), “Wisdom and Virtue sought from God”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Su-preme and u-ni-ver-sal Light! Foun-tain of rea-son! Judge of right! Par-ent of good! whose bless-ings flow On all a-bove, and all be-low:",
+  "verses": [
+    {
+      "lines": [
+        "Supreme and universal Light!",
+        "Fountain of reason! Judge of right!",
+        "Parent of good! whose blessings flow",
+        "On all above, and all below:"
+      ]
+    },
+    {
+      "lines": [
+        "Assist us, Lord, to act, to be,",
+        "What nature and thy laws decree;",
+        "Worthy that intellectual flame,",
+        "Which from thy breathing spirit came!"
+      ]
+    },
+    {
+      "lines": [
+        "May our expanded souls disclaim",
+        "The narrow view, the selfish aim;",
+        "But with a Christian zeal embrace",
+        "Whate'er is friendly to our race."
+      ]
+    },
+    {
+      "lines": [
+        "O Father, grace and virtue grant!",
+        "No more we wish, no more we want:",
+        "To know, to serve thee, and to love,",
+        "Is peace below, — is bliss above."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Henry Moore died in 1802.",
+  "credits": "Words by Henry Moore (1732–1802), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:429"
+}

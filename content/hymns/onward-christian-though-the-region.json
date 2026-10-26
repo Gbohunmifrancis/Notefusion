@@ -1,0 +1,70 @@
+{
+  "title": "Onward, Christian, Though the Region",
+  "tune": "stuttgart",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Onward, Christian, Though the Region in Tonic Solfa to STUTTGART, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 720 of its twenty-second edition (1853), “Burden and Conflict of the Ministry”.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to STUTTGART; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "On-ward, Chris-tian, though the re-gion Where thou art be drear and lone; God hath set a guar-dian le-gion Ve-ry near thee, press thou on!",
+  "verses": [
+    {
+      "lines": [
+        "Onward, Christian, though the region",
+        "Where thou art be drear and lone;",
+        "God hath set a guardian legion",
+        "Very near thee, — press thou on!"
+      ]
+    },
+    {
+      "lines": [
+        "By the thorn-wood, and none other,",
+        "Is the mount of vision won;",
+        "Tread it without shrinking, brother!",
+        "Jesus trod it, — press thou on!"
+      ]
+    },
+    {
+      "lines": [
+        "By thy trustful, calm endeavor,",
+        "Guiding, cheering, like the sun,",
+        "Earth-bound hearts thou shalt deliver",
+        "O, for their sake, press thou on!"
+      ]
+    },
+    {
+      "lines": [
+        "Be this world the wiser, stronger,",
+        "For thy life of pain and peace;",
+        "While it needs thee, O, no longer",
+        "Pray thou for thy quick release."
+      ]
+    },
+    {
+      "lines": [
+        "Pray thou, Christian, daily, rather,",
+        "That thou be a faithful son;",
+        "By the prayer of Jesus, — \"Father,",
+        "Not my will, but thine, be done!\""
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to STUTTGART by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:720"
+}

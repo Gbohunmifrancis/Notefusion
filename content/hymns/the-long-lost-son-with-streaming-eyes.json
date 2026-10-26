@@ -1,0 +1,70 @@
+{
+  "title": "The Long-lost Son, with Streaming Eyes",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "The Long-lost Son, with Streaming Eyes in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 324 of its twenty-second edition (1853), “The Prodigal's Return”, where the book credits them to the Village Hymns.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The long lost son, with stream-ing eyes, From fol-ly just a-wake, Re-views his wan-derings with sur-prise; His heart be-gins to break.",
+  "verses": [
+    {
+      "lines": [
+        "The long-lost son, with streaming eyes,",
+        "From folly just awake,",
+        "Reviews his wanderings with surprise;",
+        "His heart begins to break."
+      ]
+    },
+    {
+      "lines": [
+        "\"I starve,\" he cries, \"nor can I bear",
+        "The famine in this land,",
+        "While servants of my Father share",
+        "The bounty of his hand."
+      ]
+    },
+    {
+      "lines": [
+        "\"With deep repentance I'll return",
+        "And seek my Father's face;",
+        "Unworthy to be called a son,",
+        "I'll ask a servant's place.\""
+      ]
+    },
+    {
+      "lines": [
+        "Far off the Father saw him move,",
+        "In pensive silence mourn,",
+        "And quickly ran with arms of love,",
+        "To welcome his return."
+      ]
+    },
+    {
+      "lines": [
+        "O, let thy boundless mercy shine",
+        "On my benighted soul,",
+        "Correct my passions, mend my heart,",
+        "And all my fears control."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:324"
+}

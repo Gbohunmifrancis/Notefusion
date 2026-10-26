@@ -1,0 +1,95 @@
+{
+  "title": "A Garden Contemplation Suits",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "A Garden Contemplation Suits in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 95, “The garden”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "A Gar-den con-tem-pla-tion suits, And may in-struc-tion yield, Sweet-er than all the flow'rs and fruits With which the spot is filled.",
+  "verses": [
+    {
+      "lines": [
+        "A Garden contemplation suits,",
+        "And may instruction yield,",
+        "Sweeter than all the flow'rs and fruits",
+        "With which the spot is filled."
+      ]
+    },
+    {
+      "lines": [
+        "Eden was Adam's dwelling place,",
+        "While blest with innocence;",
+        "But sin o'erwhelmed him with disgrace,",
+        "And drove the rebel thence."
+      ]
+    },
+    {
+      "lines": [
+        "Oft as the garden-walk we tread,",
+        "We should bemoan his fall;",
+        "The trespass of our legal head",
+        "In ruin plunged us all."
+      ]
+    },
+    {
+      "lines": [
+        "The garden of Gethsemane,",
+        "The second Adam saw,",
+        "Oppressed with woe, to set us free",
+        "From the avenging law."
+      ]
+    },
+    {
+      "lines": [
+        "How stupid we, who can forget,",
+        "With gardens in our sight,",
+        "His agonies and bloody sweat,",
+        "In that tremendous night"
+      ]
+    },
+    {
+      "lines": [
+        "His church as a fair garden stands,",
+        "Which walls of love enclose;",
+        "Each tree is planted by his hand,",
+        "And by his blessing grows."
+      ]
+    },
+    {
+      "lines": [
+        "Believing hearts are gardens too,",
+        "For grace has sown its seeds;",
+        "Where once, by nature, nothing grew",
+        "But thorns and worthless weeds."
+      ]
+    },
+    {
+      "lines": [
+        "Such themes to those who Jesus love,",
+        "May constant joys afford;",
+        "And make a barren desert prove",
+        "The garden of the Lord."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:95"
+}

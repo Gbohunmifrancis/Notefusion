@@ -1,0 +1,70 @@
+{
+  "title": "Fountain of Life, and God of Love",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Fountain of Life, and God of Love in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 396, “Seed-Time and Harvest Shall Not Cease”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Foun-tain of life, and God of love! How rich Thy boun-ties are! The roll-ing sea-sons, as they move, Pro-claim Thy con-stant care.",
+  "verses": [
+    {
+      "lines": [
+        "Fountain of life, and God of love!",
+        "How rich Thy bounties are!",
+        "The rolling seasons, as they move,",
+        "Proclaim Thy constant care."
+      ]
+    },
+    {
+      "lines": [
+        "When in the bosom of the earth",
+        "The sower hid the grain,",
+        "Thy goodness marked its secret birth,",
+        "And sent the early rain."
+      ]
+    },
+    {
+      "lines": [
+        "The spring's sweet influence, Lord, was Thine,",
+        "Its mild, refreshing showers;",
+        "Thou gav'st the ripening suns to shine,",
+        "And summer's golden hours."
+      ]
+    },
+    {
+      "lines": [
+        "Thy quickening life, forever near,",
+        "Matured the swelling grain; —",
+        "The bounteous harvest crowns the year,",
+        "And plenty fills the plain."
+      ]
+    },
+    {
+      "lines": [
+        "With thankful hearts we trace Thy way",
+        "Through all our smiling vales;",
+        "Thou, by whose love, nor night nor day,",
+        "Seed-time nor harvest, fails!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:396"
+}

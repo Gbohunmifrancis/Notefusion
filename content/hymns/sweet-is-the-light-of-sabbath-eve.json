@@ -1,0 +1,63 @@
+{
+  "title": "Sweet Is the Light of Sabbath Eve",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "James Edmeston",
+      "born": 1791,
+      "died": 1867,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Sweet Is the Light of Sabbath Eve in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Edmeston wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 462, “Sabbath Evening”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Sweet is the light of Sab-bath eve, And soft the sun-beam lin-gering there; Those sa-cred hours this low earth leave, Waft-ed on wings of praise and prayer.",
+  "verses": [
+    {
+      "lines": [
+        "Sweet is the light of Sabbath eve,",
+        "And soft the sunbeam lingering there;",
+        "Those sacred hours this low earth leave,",
+        "Wafted on wings of praise and prayer."
+      ]
+    },
+    {
+      "lines": [
+        "The time, how lovely and how still!",
+        "Peace shines and smiles on all below;",
+        "The plain, the stream, the wood, the hill,",
+        "All fair with evening's setting glow!"
+      ]
+    },
+    {
+      "lines": [
+        "Season of rest! the tranquil soul",
+        "Feels thy sweet calm, and melts in love;",
+        "And while these sacred moments roll,",
+        "Faith sees a smiling heaven above."
+      ]
+    },
+    {
+      "lines": [
+        "Thou God of mercy, swift to hear,",
+        "More swift than man to tell his need;",
+        "Be Thou to us, this evening, near,",
+        "And to Thy fount our spirits lead!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: James Edmeston died in 1867.",
+  "credits": "Words by James Edmeston (1791–1867), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:462"
+}

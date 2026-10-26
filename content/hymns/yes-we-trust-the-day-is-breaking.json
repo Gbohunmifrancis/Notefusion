@@ -1,0 +1,61 @@
+{
+  "title": "Yes, We Trust the Day Is Breaking",
+  "tune": "st-austin",
+  "text": [
+    {
+      "name": "Thomas Kelly",
+      "born": 1769,
+      "died": 1855,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Yes, We Trust the Day Is Breaking in Tonic Solfa to ST. AUSTIN, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Thomas Kelly wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 299 of its twenty-second edition (1853), “Encouraging Prospects”.",
+    "The book printed the words without tunes, marked 8.7.8.7.4.7, to be sung to any tune of that metre. This page sets them to ST. AUSTIN; any other 8.7.8.7.4.7 tune fits them as well."
+  ],
+  "underlay": "Yes, we trust the day is break-ing; Joy-ful times are near at hand; God, the might-y God, is speak-ing, By his word, in ev-ery land: When he choos-es, Dark-ness flies at his com-mand.",
+  "verses": [
+    {
+      "lines": [
+        "Yes, we trust the day is breaking;",
+        "Joyful times are near at hand;",
+        "God, the mighty God, is speaking,",
+        "By his word, in every land:",
+        "When he chooses,",
+        "Darkness flies at his command."
+      ]
+    },
+    {
+      "lines": [
+        "While the foe becomes more daring,",
+        "While he enters like a flood,",
+        "God, the Saviour, is preparing",
+        "Means to spread his truth abroad:",
+        "Every language",
+        "Soon shall tell the love of God."
+      ]
+    },
+    {
+      "lines": [
+        "God of Jacob, high and glorious,",
+        "Let thy people see thy hand;",
+        "Let the gospel be victorious,",
+        "Through the world, in every land;",
+        "Then shall idols",
+        "Perish, Lord, at thy command."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 4 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Thomas Kelly died in 1855.",
+  "credits": "Words by Thomas Kelly (1769–1855), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AUSTIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:299"
+}

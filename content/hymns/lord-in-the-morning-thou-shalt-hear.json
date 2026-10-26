@@ -1,0 +1,94 @@
+{
+  "title": "Lord, in the Morning Thou Shalt Hear",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Lord, in the Morning Thou Shalt Hear in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 5, headed “For the Lord's day morning”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Lord, in the morn-ing thou shalt hear My voice a-scen-ding high; To thee will I di-rect my prayer, To thee lift up mine eye;",
+  "verses": [
+    {
+      "lines": [
+        "Lord, in the morning thou shalt hear",
+        "My voice ascending high;",
+        "To thee will I direct my prayer,",
+        "To thee lift up mine eye;"
+      ]
+    },
+    {
+      "lines": [
+        "Up to the hills where Christ is gone",
+        "To plead for all his saints,",
+        "Presenting at his Father's throne",
+        "Our songs and our complaints."
+      ]
+    },
+    {
+      "lines": [
+        "Thou art a God before whose sight",
+        "The wicked shall not stand;",
+        "Sinners shall ne'er be thy delight,",
+        "Nor dwell at thy right hand."
+      ]
+    },
+    {
+      "lines": [
+        "But to thy house will I resort,",
+        "To taste thy mercies there;",
+        "I will frequent thine holy court,",
+        "And worship in thy fear."
+      ]
+    },
+    {
+      "lines": [
+        "O may thy Spirit guide my feet",
+        "In ways of righteousness!",
+        "Make every path of duty straight",
+        "And plain before my face."
+      ]
+    },
+    {
+      "lines": [
+        "My watchful enemies combine",
+        "To tempt my feet astray;",
+        "They flatter with a base design",
+        "To make my soul their prey."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, crush the serpent in the dust,",
+        "And all his plots destroy;",
+        "While those that in thy mercy trust",
+        "For ever shout for joy."
+      ]
+    },
+    {
+      "lines": [
+        "The men that love and fear thy name",
+        "Shall see their hopes fulfill'd;",
+        "The mighty God will compass them",
+        "With favour as a shield."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 5"
+}

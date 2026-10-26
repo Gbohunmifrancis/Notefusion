@@ -1,0 +1,87 @@
+{
+  "title": "The Water Stood Like Walls of Brass",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Water Stood Like Walls of Brass in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 97, “The creatures in the Lord's hands”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The wa-ter stood like walls of brass, To let the sons of Is-rael pass; And from the rock in riv-ers burst At Mo-ses' prayer to quench their thirst.",
+  "verses": [
+    {
+      "lines": [
+        "The water stood like walls of brass,",
+        "To let the sons of Israel pass;",
+        "And from the rock in rivers burst",
+        "At Moses' prayer to quench their thirst."
+      ]
+    },
+    {
+      "lines": [
+        "The fire restrained by God's commands,",
+        "Could only burn his people's bands;",
+        "Too faint, when he was with them there,",
+        "To singe their garments or their hair."
+      ]
+    },
+    {
+      "lines": [
+        "At Daniel's feet the lions lay",
+        "Like harmless lambs, nor touched their prey;",
+        "And ravens, which on carrion fed,",
+        "Procured Elijah flesh and bread."
+      ]
+    },
+    {
+      "lines": [
+        "Thus creatures only can fulfill",
+        "Their great Creator's holy will;",
+        "And when his servants need their aid,",
+        "His purposes must be obeyed."
+      ]
+    },
+    {
+      "lines": [
+        "So if his blessing he refuse,",
+        "Their pow'r to help they quickly lose,",
+        "Sure as on creatures we depend,",
+        "Our hopes in disappointment end."
+      ]
+    },
+    {
+      "lines": [
+        "Then let us trust the Lord alone,",
+        "And creature-confidence disown;",
+        "Nor if they threaten need we fear,",
+        "They cannot hurt if he be near."
+      ]
+    },
+    {
+      "lines": [
+        "If instruments of pain they prove,",
+        "Still they are guided by his love;",
+        "As lancets by the surgeon's skill,",
+        "Which wound to cure, and not to kill."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:97"
+}

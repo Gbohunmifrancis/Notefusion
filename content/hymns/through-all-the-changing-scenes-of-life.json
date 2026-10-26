@@ -1,0 +1,69 @@
+{
+  "title": "Through All the Changing Scenes of Life",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Nahum Tate",
+      "born": 1652,
+      "died": 1715,
+      "role": "Words"
+    },
+    {
+      "name": "Nicholas Brady",
+      "born": 1659,
+      "died": 1726,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Through All the Changing Scenes of Life in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Nahum Tate and Nicholas Brady wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 617 of its twenty-second edition (1853), “Praising God through all Changes”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Through all the chang-ing scenes of life, In trou-ble and in joy, The prais-es of my God shall still My heart and tongue em-ploy.",
+  "verses": [
+    {
+      "lines": [
+        "Through all the changing scenes of life,",
+        "In trouble and in joy,",
+        "The praises of my God shall still",
+        "My heart and tongue employ."
+      ]
+    },
+    {
+      "lines": [
+        "Of his deliverance I will boast,",
+        "Till all who are distressed",
+        "From my example comfort take,",
+        "And charm their griefs to rest."
+      ]
+    },
+    {
+      "lines": [
+        "The hosts of God encamp around",
+        "The dwellings of the just;",
+        "Deliverance he affords to all",
+        "Who in his succor trust."
+      ]
+    },
+    {
+      "lines": [
+        "O make but trial of his love!",
+        "Experience will decide",
+        "How blest they are, and only they,",
+        "Who in his truth confide."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Nahum Tate died in 1715; Nicholas Brady died in 1726.",
+  "credits": "Words by Nahum Tate (1652–1715) and Nicholas Brady (1659–1726), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:617"
+}

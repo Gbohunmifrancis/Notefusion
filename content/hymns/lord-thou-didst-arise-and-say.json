@@ -1,0 +1,55 @@
+{
+  "title": "Lord! Thou Didst Arise and Say",
+  "tune": "messiah-herald",
+  "text": [
+    {
+      "name": "Henry Hart Milman",
+      "born": 1791,
+      "died": 1868,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Lord! Thou Didst Arise and Say in Tonic Solfa to MESSIAH (HERALD), doh is F: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Henry Hart Milman wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 186, “He Rebuked the Wind and the Sea”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to MESSIAH (HERALD); any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Lord! thou didst a-rise and say To the trou-bled wa-ters, Peace! And the tem-pest died a-way; Down they sank, the foam-ing seas, And a calm and heav-ing sleep Spread o'er all the glas-sy deep; All the a-zure lake se-rene Like an-oth-er heaven was seen.",
+  "verses": [
+    {
+      "lines": [
+        "Lord! thou didst arise and say",
+        "To the troubled waters, Peace!",
+        "And the tempest died away;",
+        "Down they sank, the foaming seas,",
+        "And a calm and heaving sleep",
+        "Spread o'er all the glassy deep;",
+        "All the azure lake serene",
+        "Like another heaven was seen."
+      ]
+    },
+    {
+      "lines": [
+        "Lord! thy gracious word repeat",
+        "To the billows of the proud!",
+        "Quell the tyrant's martial heat,",
+        "Quell the fierce and changing crowd!",
+        "Then the earth shall find repose",
+        "From oppressions, and from woes;",
+        "And an imaged heaven appear",
+        "In the world of darkness here."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Henry Hart Milman died in 1868.",
+  "credits": "Words by Henry Hart Milman (1791–1868), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MESSIAH (HERALD) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:186"
+}

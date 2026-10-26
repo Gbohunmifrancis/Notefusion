@@ -1,0 +1,55 @@
+{
+  "title": "Hark! the Song of Jubilee",
+  "tune": "hollingside",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Hark! the Song of Jubilee in Tonic Solfa to HOLLINGSIDE, doh is D: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 305 of its twenty-second edition (1853), “Christ's Triumph”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to HOLLINGSIDE; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Hark! the song of ju-bi-lee, Loud as might-y thun-ders roar, Or the ful-ness of the sea, When it breaks up-on the shore; Hal-le-lu-jah to the Lord! God om-ni-po-tent shall reign; Hal-le-lu-jah! let the word E-cho round the earth and main.",
+  "verses": [
+    {
+      "lines": [
+        "Hark! the song of jubilee,",
+        "Loud as mighty thunders roar,",
+        "Or the fulness of the sea,",
+        "When it breaks upon the shore; —",
+        "Hallelujah to the Lord!",
+        "God omnipotent shall reign;",
+        "Hallelujah! let the word",
+        "Echo round the earth and main."
+      ]
+    },
+    {
+      "lines": [
+        "Hallelujah! — hark! the sound,",
+        "Heard through earth, and through the skies,",
+        "Wakes above, beneath, around,",
+        "All creation's harmonies:",
+        "See Jehovah's banner furled,",
+        "Sheathed his sword; he speaks, — 't is done!",
+        "And the kingdoms of this world",
+        "Are the kingdoms of his Son."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to HOLLINGSIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:305"
+}

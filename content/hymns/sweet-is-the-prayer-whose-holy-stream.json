@@ -1,0 +1,62 @@
+{
+  "title": "Sweet Is the Prayer Whose Holy Stream",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Sweet Is the Prayer Whose Holy Stream in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 101, “Silent Prayer”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Sweet is the prayer whose ho-ly stream In ear-nest plead-ing flows; De-vo-tion dwells up-on the theme, And warm and war-mer glows.",
+  "verses": [
+    {
+      "lines": [
+        "Sweet is the prayer whose holy stream",
+        "In earnest pleading flows;",
+        "Devotion dwells upon the theme,",
+        "And warm and warmer glows."
+      ]
+    },
+    {
+      "lines": [
+        "Faith grasps the blessing she desires,",
+        "Hope points the upward gaze;",
+        "And love, untrembling love, inspires",
+        "The eloquence of praise."
+      ]
+    },
+    {
+      "lines": [
+        "But sweeter far the still, small voice,",
+        "Heard by no human ear,",
+        "When God hath made the heart rejoice,",
+        "And dried the bitter tear."
+      ]
+    },
+    {
+      "lines": [
+        "Nor accents flow, nor words ascend;",
+        "All utterance faileth there;",
+        "But listening spirits comprehend,",
+        "And God accepts the prayer."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:101"
+}

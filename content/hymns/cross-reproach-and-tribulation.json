@@ -1,0 +1,62 @@
+{
+  "title": "Cross, Reproach, and Tribulation",
+  "tune": "omni-die",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Cross, Reproach, and Tribulation in Tonic Solfa to OMNI DIE, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 535, “Bearing the Reproach of Christ”, where the book credits them to a Moravian source.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to OMNI DIE; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Cross, re-proach, and tri-bu-la-tion, Ye to me are wel-come guests, When I have this con-sol-a-tion, That my soul in Je-sus rests.",
+  "verses": [
+    {
+      "lines": [
+        "Cross, reproach, and tribulation,",
+        "Ye to me are welcome guests,",
+        "When I have this consolation,",
+        "That my soul in Jesus rests."
+      ]
+    },
+    {
+      "lines": [
+        "The reproach of Christ is glorious;",
+        "Those who here his burden bear",
+        "In the end shall prove victorious,",
+        "And eternal gladness share."
+      ]
+    },
+    {
+      "lines": [
+        "Bear then the reproach of Jesus,",
+        "Ye who live a life of faith!",
+        "Lift triumphant songs and praises,",
+        "Even in martyrdom and death."
+      ]
+    },
+    {
+      "lines": [
+        "Bonds and stripes, and evil story,",
+        "Are our honorable crowns;",
+        "Pain is peace, and shame is glory,",
+        "Gloomy dungeons are as thrones."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to OMNI DIE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:535"
+}

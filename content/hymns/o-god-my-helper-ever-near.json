@@ -1,0 +1,63 @@
+{
+  "title": "O God, My Helper, Ever Near",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "John Fawcett",
+      "born": 1740,
+      "died": 1817,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O God, My Helper, Ever Near in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Fawcett wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 891 of its twenty-second edition (1853), “\"He holdeth our soul in life.\"”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O God, my help-er, ev-er near! Crown with thy smile the pre-sent year; Pre-serve me by thy fa-vor still, And fit me for thy sa-cred will.",
+  "verses": [
+    {
+      "lines": [
+        "O God, my helper, ever near!",
+        "Crown with thy smile the present year;",
+        "Preserve me by thy favor still,",
+        "And fit me for thy sacred will."
+      ]
+    },
+    {
+      "lines": [
+        "My safety, each succeeding hour,",
+        "Depends on thy supporting power:",
+        "Accept my thanks for mercies past,",
+        "And be my guard, while life shall last."
+      ]
+    },
+    {
+      "lines": [
+        "My moments move with wingéd haste,",
+        "Nor know I which shall be the last:",
+        "Danger and death are ever nigh,",
+        "And I this year perhaps may die."
+      ]
+    },
+    {
+      "lines": [
+        "Prepare me for the trying day;",
+        "Then call my willing soul away:",
+        "I'll quit the world at thy command,",
+        "And trust my spirit to thy hand."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Fawcett died in 1817.",
+  "credits": "Words by John Fawcett (1740–1817), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:891"
+}

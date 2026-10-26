@@ -1,0 +1,64 @@
+{
+  "title": "Raise the Adoring Song",
+  "tune": "malvern-gwyllt",
+  "text": [
+    {
+      "name": "John Greenleaf Adams",
+      "born": 1810,
+      "died": 1887,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Raise the Adoring Song in Tonic Solfa to MALVERN (GWYLLT), doh is Bb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Greenleaf Adams wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 989 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Sixes and Fours (6.6.4.6.6.6.4), to be sung to any tune of that metre. This page sets them to MALVERN (GWYLLT); any other Sixes and Fours tune fits them as well."
+  ],
+  "underlay": "Raise the a-dor-ing song! Prais-es to God be-long, In this glad hour! He who from worlds on high, Spreads o-ver earth and sky Proofs of his maj-es-ty, Good-ness and power!",
+  "verses": [
+    {
+      "lines": [
+        "Raise the adoring song!",
+        "Praises to God belong,",
+        "In this glad hour!",
+        "He who from worlds on high,",
+        "Spreads over earth and sky",
+        "Proofs of his majesty,",
+        "Goodness and power!"
+      ]
+    },
+    {
+      "lines": [
+        "Praise, that Instruction's voice",
+        "Bids the young heart rejoice",
+        "In this fair land;",
+        "Praise, that the humblest mind",
+        "Wisdom's true light may find,",
+        "Ground on which all inclined",
+        "Freely may stand."
+      ]
+    },
+    {
+      "lines": [
+        "Source of all holiness!",
+        "With thy rich favor bless",
+        "This house of thine;",
+        "Here be true knowledge sought,",
+        "Here purest wisdom taught,",
+        "Wisdom with Freedom fraught,",
+        "Freedom divine!"
+      ]
+    }
+  ],
+  "metre": "6 6 4 6 6 6 4",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Greenleaf Adams died in 1887.",
+  "credits": "Words by John Greenleaf Adams (1810–1887), public domain, as printed in Hymns for Christian Devotion (1853); set to MALVERN (GWYLLT) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:989"
+}

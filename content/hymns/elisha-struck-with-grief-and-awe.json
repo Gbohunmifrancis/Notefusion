@@ -1,0 +1,95 @@
+{
+  "title": "Elisha, Struck with Grief and Awe",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Elisha, Struck with Grief and Awe in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 19, “Elijah's mantle. 2Ki 51:11-14”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "El-i-sha, struck with grief and awe, Cried, \"Ah! where now is Is-rael's stay?\" When he his hon-ored mas-ter saw Borne by a fie-ry carr a-way.",
+  "verses": [
+    {
+      "lines": [
+        "Elisha, struck with grief and awe,",
+        "Cried, \"Ah! where now is Israel's stay?\"",
+        "When he his honored master saw",
+        "Borne by a fiery carr away."
+      ]
+    },
+    {
+      "lines": [
+        "But while be looked a last adieu,",
+        "His mantle, as it fell, he caught;",
+        "The Spirit rested on him too,",
+        "And equal miracles he wrought."
+      ]
+    },
+    {
+      "lines": [
+        "\"Where is Elijah's God,\" he cried,",
+        "And with the mantle smote the flood;",
+        "His word controlled the swelling tide,",
+        "Th' obedient waters upright stood."
+      ]
+    },
+    {
+      "lines": [
+        "The wonder-working gospel, thus",
+        "From hand to hand, has been conveyed",
+        "We have the mantle still with us,",
+        "But where, O where, the Spirit's aid?"
+      ]
+    },
+    {
+      "lines": [
+        "When Peter first this mantle waved,",
+        "How soon it melted hearts of steel!",
+        "Sinners, by thousands, then were saved,",
+        "But now how few its virtues feel?"
+      ]
+    },
+    {
+      "lines": [
+        "Where is Elijah's God, the Lord,",
+        "Thine Israel's hope, and joy, and boast!",
+        "Reveal thine arm, confirm thy word,",
+        "Give us another Pentecost!"
+      ]
+    },
+    {
+      "lines": [
+        "Assist thy messenger to speak,",
+        "And while he aims to lisp thy truth,",
+        "The bonds of sin and Satan break,",
+        "And pour thy blessing on our youth."
+      ]
+    },
+    {
+      "lines": [
+        "For them we now approach thy throne,",
+        "Teach them to know and love thy name,",
+        "Then shall thy thankful people own",
+        "Elijah's God is still the same."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:19"
+}

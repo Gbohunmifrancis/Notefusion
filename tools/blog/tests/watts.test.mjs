@@ -103,15 +103,52 @@ test("words set by metre are left out of hymn recognition", () => {
   assert.doesNotMatch(json, /behold-the-glories/);
 });
 
+const PSALMS = `
+Psalm 23:2. C. M.
+The same.
+
+1. My Shepherd will supply my need,
+Jehovah is his name;
+In pastures fresh he makes me feed
+Beside the living stream.
+
+Psalm 122:1.
+Going to church.
+1 How did my heart rejoice to hear
+My friends devoutly say,
+"In Zion let us all appear,
+"And keep the solemn day!"
+
+Psalm 130.
+Pardoning grace, 2 Cor. 12.
+1 Peter 1. 3.
+
+1 Out of the depths of doleful woe,
+Doxology.
+`;
+
+test("the psalms are read part by part: a verse numbered '1.', a heading run into its first verse, a scripture reference", () => {
+  const parts = parseWatts(PSALMS, "psalms");
+  assert.deepEqual(parts.map((p) => [p.psalm, p.part]), [[23, 2], [122, 1], [130, null]]);
+  assert.equal(parts[0].verses[0][0], "My Shepherd will supply my need,");
+  assert.deepEqual(parts[1].heading, ["Going to church."]);
+  assert.equal(parts[1].verses[0][0], "How did my heart rejoice to hear");
+  assert.deepEqual(parts[2].heading, ["Pardoning grace, 2 Cor. 12.", "1 Peter 1. 3."]);
+  assert.equal(parts[2].verses[0][0], "Out of the depths of doleful woe,");
+  // In the hymns, a line "Psalm 147. 19 20." is the scripture under a heading, not a psalm.
+  assert.equal(parseWatts("Hymn 1:3.\nThe Scriptures.\nPsalm 147. 19 20.\n\n1 God who in various methods told\n").length, 1);
+});
+
 test("the committed Watts pages: unreviewed, set by metre, each underlay one syllable to a note of its tune", () => {
   const { allHymns } = loadAll({ includeDrafts: true });
-  const watts = allHymns.filter((h) => h.importedFrom?.startsWith("watts-1707:"));
-  assert.ok(watts.length >= 200);
+  const watts = allHymns.filter((h) => /^watts-17(07|19):/.test(h.importedFrom || ""));
+  assert.ok(watts.filter((h) => h.importedFrom.startsWith("watts-1707:")).length >= 250);
+  assert.ok(watts.filter((h) => h.importedFrom.startsWith("watts-1719:Psalm ")).length >= 250);
   const N = loadEngine();
   for (const h of watts) {
     assert.equal(h.setByMetre, true, h.slug);
     assert.equal(h.reviewed, false, h.slug);
-    assert.equal(h.source, "Isaac Watts, Hymns and Spiritual Songs (1707)", h.slug);
+    assert.equal(h.source, h.importedFrom.startsWith("watts-1707:") ? "Isaac Watts, Hymns and Spiritual Songs (1707)" : "Isaac Watts, The Psalms of David Imitated (1719)", h.slug);
     assert.match(h.licence, /^Public domain/, h.slug);
     assert.ok(Object.values(TUNES).flat().includes(h.tune), h.slug);
     assert.equal(N.syllabify(h.underlay).length, h.tuneData.parsed.notes.length, h.slug);

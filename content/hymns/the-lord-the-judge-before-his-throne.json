@@ -1,0 +1,78 @@
+{
+  "title": "The Lord, the Judge, Before His Throne",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "The Lord, the Judge, Before His Throne in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 50, part 1, headed “The last judgment; or, The saints rewarded”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The Lord, the Judge, be-fore his throne, Bids the whole earth draw nigh, The na-tions near the ris-ing sun, And near the west-ern sky.",
+  "verses": [
+    {
+      "lines": [
+        "The Lord, the Judge, before his throne,",
+        "Bids the whole earth draw nigh,",
+        "The nations near the rising sun,",
+        "And near the western sky."
+      ]
+    },
+    {
+      "lines": [
+        "No more shall bold blasphemers say,",
+        "\"Judgment will ne'er begin,\"",
+        "No more abuse his long delay",
+        "To impudence and sin."
+      ]
+    },
+    {
+      "lines": [
+        "Thron'd on a cloud our God shall come,",
+        "Bright flames prepare his way,",
+        "Thunder and darkness, fire and storm,",
+        "Lead on the dreadful day."
+      ]
+    },
+    {
+      "lines": [
+        "Heaven from above his call shall hear,",
+        "Attending angels come,",
+        "And earth and hell shall know and fear",
+        "His justice and their doom."
+      ]
+    },
+    {
+      "lines": [
+        "\"But gather all my saints,\" he cries,",
+        "\"That made their peace with God,",
+        "\"By the Redeemer's sacrifice,",
+        "\"And seal'd it with his blood."
+      ]
+    },
+    {
+      "lines": [
+        "\"Their faith and works brought forth to light",
+        "\"Shall make the world confess",
+        "\"My sentence of reward is right,",
+        "\"And heaven adore my grace.\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 50:1"
+}

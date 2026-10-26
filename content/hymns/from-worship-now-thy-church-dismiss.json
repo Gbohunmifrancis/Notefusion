@@ -1,0 +1,55 @@
+{
+  "title": "From Worship, Now, Thy Church Dismiss",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Hosea Ballou",
+      "born": 1771,
+      "died": 1852,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "From Worship, Now, Thy Church Dismiss in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Hosea Ballou wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 88 of its twenty-second edition (1853), “Dismission”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "From wor-ship, now, thy church dis-miss But not with-out thy bless-ing, Lord; O grant a taste of heav-enly bliss, And seal in-struc-tion from thy word.",
+  "verses": [
+    {
+      "lines": [
+        "From worship, now, thy church dismiss —",
+        "But not without thy blessing, Lord;",
+        "O grant a taste of heavenly bliss,",
+        "And seal instruction from thy word."
+      ]
+    },
+    {
+      "lines": [
+        "Oft may these pleasant scenes return",
+        "When we shall meet to worship thee;",
+        "Oft may our hearts within us burn",
+        "To hear thy word, thy goodness see."
+      ]
+    },
+    {
+      "lines": [
+        "And when these pleasant scenes are past,",
+        "To thee, our God, O may we come,",
+        "And meet th' assembled world at last,",
+        "In Zion, our eternal home."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Hosea Ballou died in 1852.",
+  "credits": "Words by Hosea Ballou (1771–1852), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:88"
+}

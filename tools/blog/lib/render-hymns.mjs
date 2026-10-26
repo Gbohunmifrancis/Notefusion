@@ -107,7 +107,7 @@ function faqFor(h) {
   return [
     { q: `What is the doh of ${n}?`, a: `In this version, in ${v.key}, doh is ${v.doh}. If your choir sings it in another key, doh moves to the new key note and every solfa syllable stays the same — that is what movable doh means.` },
     { q: `What note does ${n} start on?`, a: `It starts on ${v.first.solfa} (${v.first.letter} in ${v.key})${v.pickupWord ? `, a pickup on ${v.pickupWord} before the first full bar` : ""}. Find doh first, then sing up or down to ${v.first.solfa}.` },
-    { q: `Is ${n} in the public domain?`, a: `Yes. ${pdPeople.length ? `${pdPeople.map(diedPhrase).join(", ")}; ` : ""}the words were first published in ${h.textPublished} and the music in ${h.tuneData.musicPublished}. Everyone named died before ${PD_DIED_BEFORE} and both were published before ${PD_PUBLISHED_BEFORE}, so the hymn is out of copyright in the UK, the EU, the United States and Nigeria. Modern arrangements and translations can still be under copyright.` },
+    { q: `Is ${n} in the public domain?`, a: `Yes. ${pdPeople.length ? `${pdPeople.map(diedPhrase).join(", ")}; ` : ""}the words were ${h.textPublishedBy ? "in print by" : "first published in"} ${h.textPublished} and the music in ${h.tuneData.musicPublished}. Everyone named died before ${PD_DIED_BEFORE} and both were published before ${PD_PUBLISHED_BEFORE}, so the hymn is out of copyright in the UK, the EU, the United States and Nigeria. Modern arrangements and translations can still be under copyright.` },
   ];
 }
 

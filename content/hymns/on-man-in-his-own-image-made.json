@@ -1,0 +1,95 @@
+{
+  "title": "On Man, in His Own Image Made",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "On Man, in His Own Image Made in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 1, “Adam. Gen 3:9”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "On man, in his own i-mage made, How much did God be-stow? The whole cre-a-tion hom-age paid, And owned him Lord, be-low!",
+  "verses": [
+    {
+      "lines": [
+        "On man, in his own image made,",
+        "How much did God bestow?",
+        "The whole creation homage paid,",
+        "And owned him Lord, below!"
+      ]
+    },
+    {
+      "lines": [
+        "He dwelt in Eden's garden, stored",
+        "With sweets for every sense;",
+        "And there with his descending Lord",
+        "He walked in confidence."
+      ]
+    },
+    {
+      "lines": [
+        "But O! by sin how quickly changed!",
+        "His honor forfeited,",
+        "His heart, from God and truth, estranged,",
+        "His conscience filled with dread!"
+      ]
+    },
+    {
+      "lines": [
+        "Now from his Maker's voice he flees,",
+        "Which was before his joy:",
+        "And thinks to hide, amidst the trees,",
+        "From an All-seeing eye."
+      ]
+    },
+    {
+      "lines": [
+        "Compelled to answer to his name,",
+        "With stubbornness and pride",
+        "He cast, on God himself, the blame,",
+        "Nor once for mercy cried."
+      ]
+    },
+    {
+      "lines": [
+        "But grace, unasked, his heart subdued",
+        "And all his guilt forgave;",
+        "By faith, the promised seed he viewed,",
+        "And felt his pow'r to save."
+      ]
+    },
+    {
+      "lines": [
+        "Thus we ourselves would justify,",
+        "Though we the Law transgress;",
+        "Like him, unable to deny,",
+        "Unwilling to confess."
+      ]
+    },
+    {
+      "lines": [
+        "But when by faith the sinner sees",
+        "A pardon bought with blood;",
+        "Then he forsakes his foolish pleas,",
+        "And gladly turns to God."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:1"
+}

@@ -1,0 +1,70 @@
+{
+  "title": "Speak Gently, — It Is Better Far",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Speak Gently, — It Is Better Far in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 285, “Speak Gently”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Speak gen-tly, it is bet-ter far To rule by love than fear; Speak gen-tly, let no harsh word mar The good we may do here.",
+  "verses": [
+    {
+      "lines": [
+        "Speak gently, — it is better far",
+        "To rule by love than fear;",
+        "Speak gently, — let no harsh word mar",
+        "The good we may do here."
+      ]
+    },
+    {
+      "lines": [
+        "Speak gently to the young, — for they",
+        "Will have enough to bear;",
+        "Pass through this life as best they may,",
+        "'Tis full of anxious care."
+      ]
+    },
+    {
+      "lines": [
+        "Speak gently to the aged one,",
+        "Grieve not the careworn heart;",
+        "The sands of life are nearly run,",
+        "Let them in peace depart."
+      ]
+    },
+    {
+      "lines": [
+        "Speak gently to the erring ones;",
+        "They must have toiled in vain;",
+        "Perchance unkindness made them so;",
+        "O, win them back again!"
+      ]
+    },
+    {
+      "lines": [
+        "Speak gently, — 'tis a little thing,",
+        "Dropped in the heart's deep well;",
+        "The good, the joy, that it may bring,",
+        "Eternity shall tell."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:285"
+}

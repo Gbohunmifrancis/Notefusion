@@ -1,0 +1,63 @@
+{
+  "title": "Awake, My Soul! Stretch Every Nerve",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Philip Doddridge",
+      "born": 1702,
+      "died": 1751,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Awake, My Soul! Stretch Every Nerve in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Philip Doddridge wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 315, “Forgetting the Things Behind”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "A-wake, my soul! stretch ev-ery nerve, And press with vig-or on; A heav-enly race de-mands thy zeal, And an im-mor-tal crown.",
+  "verses": [
+    {
+      "lines": [
+        "Awake, my soul! stretch every nerve,",
+        "And press with vigor on;",
+        "A heavenly race demands thy zeal,",
+        "And an immortal crown."
+      ]
+    },
+    {
+      "lines": [
+        "A cloud of witnesses around",
+        "Hold thee in full survey;",
+        "Forget the steps already trod,",
+        "And onward urge thy way."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis God's all-animating voice",
+        "That calls thee from on high;",
+        "'Tis His own hand presents the prize",
+        "To thine aspiring eye; —"
+      ]
+    },
+    {
+      "lines": [
+        "That prize with peerless glories bright,",
+        "Which shall new lustre boast,",
+        "When victors' wreaths and monarchs' gems",
+        "Shall blend in common dust."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Philip Doddridge died in 1751.",
+  "credits": "Words by Philip Doddridge (1702–1751), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:315"
+}

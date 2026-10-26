@@ -1,0 +1,55 @@
+{
+  "title": "Part in Peace! Is Day Before Us",
+  "tune": "omni-die",
+  "text": [
+    {
+      "name": "Sarah Flower Adams",
+      "born": 1805,
+      "died": 1848,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Part in Peace! Is Day Before Us in Tonic Solfa to OMNI DIE, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Sarah Flower Adams wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 60, “Peace be with You”.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to OMNI DIE; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Part in peace! is day be-fore us? Praise His name for life and light; Are the sha-dows length-ening o'er us? Bless His care who guards the night.",
+  "verses": [
+    {
+      "lines": [
+        "Part in peace! is day before us?",
+        "Praise His name for life and light;",
+        "Are the shadows lengthening o'er us?",
+        "Bless His care who guards the night."
+      ]
+    },
+    {
+      "lines": [
+        "Part in peace! with deep thanksgiving,",
+        "Rendering, as we homeward tread,",
+        "Gracious service to the living,",
+        "Tranquil memory to the dead."
+      ]
+    },
+    {
+      "lines": [
+        "Part in peace! such are the praises",
+        "God, our Maker, loveth best;",
+        "Such the worship that upraises",
+        "Human hearts to heavenly rest."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Sarah Flower Adams died in 1848.",
+  "credits": "Words by Sarah Flower Adams (1805–1848), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to OMNI DIE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:60"
+}

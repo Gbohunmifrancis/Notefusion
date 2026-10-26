@@ -1,0 +1,63 @@
+{
+  "title": "Rise, Crowned with Light, Imperial Salem, Rise",
+  "tune": "langran",
+  "text": [
+    {
+      "name": "Alexander Pope",
+      "born": 1688,
+      "died": 1744,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Rise, Crowned with Light, Imperial Salem, Rise in Tonic Solfa to LANGRAN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Alexander Pope wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 298 of its twenty-second edition (1853), “Predicted Glory of the Messiah's Kingdom”.",
+    "The book printed the words without tunes, marked Tens (10.10.10.10), to be sung to any tune of that metre. This page sets them to LANGRAN; any other Tens tune fits them as well."
+  ],
+  "underlay": "Rise, crowned with light, im-per-ial Sa-lem, rise! Ex-alt thy tow-ering head, and lift thine eyes! See heaven its spark-ling por-tals wide dis-play, And break up-on thee in a flood of day!",
+  "verses": [
+    {
+      "lines": [
+        "Rise, crowned with light, imperial Salem, rise!",
+        "Exalt thy towering head, and lift thine eyes!",
+        "See heaven its sparkling portals wide display,",
+        "And break upon thee in a flood of day!"
+      ]
+    },
+    {
+      "lines": [
+        "See a long race thy spacious courts adorn,",
+        "See future sons and daughters yet unborn,",
+        "In crowding ranks on every side arise,",
+        "Demanding life, impatient for the skies!"
+      ]
+    },
+    {
+      "lines": [
+        "See barbarous nations at thy gates attend,",
+        "Walk in thy light, and in thy temples bend!",
+        "See thy bright altars thronged with prostrate kings,",
+        "While every land its joyous tribute brings."
+      ]
+    },
+    {
+      "lines": [
+        "The seas shall waste, the skies to smoke decay,",
+        "Rocks fall to dust, and mountains melt away",
+        "But fixed his word, his saving power remains,",
+        "Thy realm shall last, thy own Messiah reigns."
+      ]
+    }
+  ],
+  "metre": "10 10 10 10",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Alexander Pope died in 1744.",
+  "credits": "Words by Alexander Pope (1688–1744), public domain, as printed in Hymns for Christian Devotion (1853); set to LANGRAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:298"
+}

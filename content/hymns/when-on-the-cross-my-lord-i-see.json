@@ -1,0 +1,79 @@
+{
+  "title": "When on the Cross, My Lord I See",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "When on the Cross, My Lord I See in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 54, “Christ crucified”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When on the cross, my Lord I see Bleed-ing to death, for wret-ched me; Sa-tan and sin no more can move, For I am all trans-formed to love.",
+  "verses": [
+    {
+      "lines": [
+        "When on the cross, my Lord I see",
+        "Bleeding to death, for wretched me;",
+        "Satan and sin no more can move,",
+        "For I am all transformed to love."
+      ]
+    },
+    {
+      "lines": [
+        "His thorns, and nails, pierce through my heart,",
+        "In every groan I bear a part;",
+        "I view his wounds with streaming eyes,",
+        "But see! he bows his head and dies!"
+      ]
+    },
+    {
+      "lines": [
+        "Come, sinners, view the Lamb of God,",
+        "Wounded and dead, and bathed in blood!",
+        "Behold his side, and venture near,",
+        "The well of endless life is here."
+      ]
+    },
+    {
+      "lines": [
+        "Here I forget my cares and pains;",
+        "I drink, yet still my thirst remains;",
+        "Only the fountain-head above,",
+        "Can satisfy the thirst of love."
+      ]
+    },
+    {
+      "lines": [
+        "O, that I thus could always feel!",
+        "Lord, more and more thy love reveal!",
+        "Then my glad tongue shall loud proclaim",
+        "The grace and glory of thy name."
+      ]
+    },
+    {
+      "lines": [
+        "Thy name dispels my guilt and fear,",
+        "Revives my heart, and charms my ear;",
+        "Affords a balm for every wound,",
+        "And Satan trembles at the sound."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:54"
+}

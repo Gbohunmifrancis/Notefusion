@@ -1,0 +1,70 @@
+{
+  "title": "\"Let There Be Light!\" — When from on High",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "\"Let There Be Light!\" — When from on High in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 975 of its twenty-second edition (1853), “The Faithful Minister”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "\"Let there be light!\" When from on high, O God, that first com-mand-ment came, Forth leaped the sun; and earth and sky Lay in his light, and felt his flame.",
+  "verses": [
+    {
+      "lines": [
+        "\"Let there be light!\" — When from on high,",
+        "O God, that first commandment came,",
+        "Forth leaped the sun; and earth and sky",
+        "Lay in his light, and felt his flame."
+      ]
+    },
+    {
+      "lines": [
+        "\"Let there be light!\" — The light of grace",
+        "And truth, a darkling world to bless,",
+        "Came with thy word, when on our race",
+        "Broke forth the Sun of Righteousness."
+      ]
+    },
+    {
+      "lines": [
+        "Light of our souls! how strong it grows:",
+        "That sun, how wide his beams he flings,",
+        "As up the glorious sky he goes,",
+        "With light and healing in his wings!"
+      ]
+    },
+    {
+      "lines": [
+        "Give us that light! O God, 'tis given!",
+        "Hope sees it open heaven's wide halls",
+        "To those who for the truth have striven;",
+        "And Faith walks firmly where it falls."
+      ]
+    },
+    {
+      "lines": [
+        "Churches no more, in cold eclipse,",
+        "Mourn the withholding of its rays;",
+        "It gilds their gates, and on the lips",
+        "Of every faithful preacher plays."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:975"
+}

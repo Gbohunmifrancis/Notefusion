@@ -1,0 +1,63 @@
+{
+  "title": "His Master Taken from His Head",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "His Master Taken from His Head in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 73, “On the death of a minister”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "His mas-ter ta-ken from his head, El-i-sha saw him go; And, in de-spond-ing ac-cents said, \"Ah, what must Is-rael do!\"",
+  "verses": [
+    {
+      "lines": [
+        "His master taken from his head,",
+        "Elisha saw him go;",
+        "And, in desponding accents said,",
+        "\"Ah, what must Israel do!\""
+      ]
+    },
+    {
+      "lines": [
+        "But he forgot the Lord, who lifts",
+        "The beggar to the throne;",
+        "Nor knew, that all Elijah's gifts",
+        "Would soon be made his own."
+      ]
+    },
+    {
+      "lines": [
+        "What! when a Paul has run his course,",
+        "Or when Apollos dies;",
+        "Is Israel left without resource?",
+        "And have we no supplies?"
+      ]
+    },
+    {
+      "lines": [
+        "Yes, while the dear Redeemer lives,",
+        "We have a boundless store;",
+        "And shall be fed with what he gives,",
+        "Who lives for evermore."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:73"
+}

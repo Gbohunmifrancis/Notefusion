@@ -1,0 +1,79 @@
+{
+  "title": "I Was a Groveling Creature Once",
+  "tune": "york",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "I Was a Groveling Creature Once in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 51, “Lively hope, and gracious fear”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "I was a grov-eling crea-ture once, And safe-ly cleaved to earth; I want-ed spir-it to re-nounce The clod that gave me birth.",
+  "verses": [
+    {
+      "lines": [
+        "I was a groveling creature once,",
+        "And safely cleaved to earth;",
+        "I wanted spirit to renounce",
+        "The clod that gave me birth."
+      ]
+    },
+    {
+      "lines": [
+        "But God has breathed upon a worm,",
+        "And sent me, from above,",
+        "Wings, such as clothe an angel's form,",
+        "The wings of joy and love."
+      ]
+    },
+    {
+      "lines": [
+        "With these to Pisgah's top I fly,",
+        "And there delighted stand;",
+        "To view, beneath a shining sky,",
+        "The spacious promised land."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord of all the vast domain,",
+        "Has promised it to me;",
+        "The length and breadth of all the plain,",
+        "As far as faith can see."
+      ]
+    },
+    {
+      "lines": [
+        "How glorious is my privilege!",
+        "To thee for help I call,",
+        "I stand upon a mountain's edge,",
+        "O save me, lest I fall!"
+      ]
+    },
+    {
+      "lines": [
+        "Though much exalted in the Lord,",
+        "My strength is not my own;",
+        "Then let me tremble at his word,",
+        "And none shall cast me down."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:51"
+}

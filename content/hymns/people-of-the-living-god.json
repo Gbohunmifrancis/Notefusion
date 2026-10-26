@@ -1,0 +1,55 @@
+{
+  "title": "People of the Living God",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "People of the Living God in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 660 of its twenty-second edition (1853), “Joined to God's People”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Peo-ple of the liv-ing God, I have sought the world a-round, Paths of sin and sor-row trod, Peace and com-fort no-where found.",
+  "verses": [
+    {
+      "lines": [
+        "People of the living God,",
+        "I have sought the world around,",
+        "Paths of sin and sorrow trod,",
+        "Peace and comfort nowhere found."
+      ]
+    },
+    {
+      "lines": [
+        "Now to you my spirit turns, —",
+        "Turns, a fugitive unblest;",
+        "Brethren, where your altar burns,",
+        "O, receive me into rest."
+      ]
+    },
+    {
+      "lines": [
+        "Lonely I no longer roam,",
+        "Like the cloud, the wind, the wave;",
+        "Where you dwell shall be my home,",
+        "Where you die shall be my grave."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:660"
+}

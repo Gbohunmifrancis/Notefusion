@@ -1,0 +1,54 @@
+{
+  "title": "O, for the Death of Those",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O, for the Death of Those in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 604 of its twenty-second edition (1853), “The Peaceful Death of the Righteous”, where the book credits them to the Ch. Psalmody.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "O, for the death of those Who slum-ber in the Lord! O, be like theirs my last re-pose, Like theirs my last re-ward!",
+  "verses": [
+    {
+      "lines": [
+        "O, for the death of those",
+        "Who slumber in the Lord!",
+        "O, be like theirs my last repose,",
+        "Like theirs my last reward!"
+      ]
+    },
+    {
+      "lines": [
+        "Their ransomed spirits soar,",
+        "On wings of faith and love,",
+        "To meet the Saviour they adore,",
+        "And reign with him above."
+      ]
+    },
+    {
+      "lines": [
+        "With us their names shall live",
+        "Through long-succeeding years,",
+        "Embalmed with all our hearts can give, —",
+        "Our praises and our tears."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:604"
+}

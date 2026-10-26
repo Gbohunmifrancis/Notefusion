@@ -1,0 +1,70 @@
+{
+  "title": "'Twas God Who Fixed the Rolling Spheres",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "'Twas God Who Fixed the Rolling Spheres in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 104 of its twenty-second edition (1853), “Omnipotence of God”, where the book credits them to Martineau's Collection.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "'Twas God who fixed the roll-ing spheres, And stretched the bound-less skies, Who formed the plan of end-less years, And bade the a-ges rise.",
+  "verses": [
+    {
+      "lines": [
+        "'Twas God who fixed the rolling spheres,",
+        "And stretched the boundless skies,",
+        "Who formed the plan of endless years,",
+        "And bade the ages rise."
+      ]
+    },
+    {
+      "lines": [
+        "From everlasting is his might,",
+        "Immense and unconfined;",
+        "He pierces through the realms of light,",
+        "And rides upon the wind."
+      ]
+    },
+    {
+      "lines": [
+        "He darts along the burning sky;",
+        "Loud thunders round him roar;",
+        "Through worlds above his terrors fly,",
+        "While worlds below adore."
+      ]
+    },
+    {
+      "lines": [
+        "He speaks, — great nature's wheels stand still",
+        "And leave their wonted round;",
+        "The mountains melt; each trembling hill",
+        "Forsakes its ancient bound."
+      ]
+    },
+    {
+      "lines": [
+        "Ye worlds, and every living thing,",
+        "Fulfil his high command;",
+        "Pay grateful homage to your King,",
+        "And own his ruling hand."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:104"
+}

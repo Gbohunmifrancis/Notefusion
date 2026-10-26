@@ -1,0 +1,63 @@
+{
+  "title": "O, Help Us, Lord! Each Hour of Need",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Henry Hart Milman",
+      "born": 1791,
+      "died": 1868,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O, Help Us, Lord! Each Hour of Need in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Henry Hart Milman wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 209, “Prayer for Help”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O, help us, Lord! each hour of need Thy heav-enly suc-cor give; Help us in thought, in word, in deed, Each hour on earth we live.",
+  "verses": [
+    {
+      "lines": [
+        "O, help us, Lord! each hour of need",
+        "Thy heavenly succor give;",
+        "Help us in thought, in word, in deed,",
+        "Each hour on earth we live."
+      ]
+    },
+    {
+      "lines": [
+        "O, help us, when our spirits bleed,",
+        "With doubt and anguish sore;",
+        "And when our hearts are cold and dead,",
+        "O, help us, Lord, the more."
+      ]
+    },
+    {
+      "lines": [
+        "O, help us, through the prayer of faith,",
+        "More firmly to believe;",
+        "For still the more the servant hath,",
+        "The more shall he receive."
+      ]
+    },
+    {
+      "lines": [
+        "O, help us, Father! from on high;",
+        "We know no help but Thee;",
+        "O, help us so to live and die,",
+        "As Thine in heaven to be!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Henry Hart Milman died in 1868.",
+  "credits": "Words by Henry Hart Milman (1791–1868), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:209"
+}

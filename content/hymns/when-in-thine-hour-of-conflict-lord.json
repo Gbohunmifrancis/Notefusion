@@ -1,0 +1,70 @@
+{
+  "title": "When in Thine Hour of Conflict, Lord",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "When in Thine Hour of Conflict, Lord in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 215, “Angels from Heaven Strengthening Him”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When in thine hour of con-flict, Lord, The temp-ter to thy soul was nigh, Or when that bit-ter cup was poured In thy deep gar-den a-go-ny,",
+  "verses": [
+    {
+      "lines": [
+        "When in thine hour of conflict, Lord,",
+        "The tempter to thy soul was nigh,",
+        "Or when that bitter cup was poured",
+        "In thy deep garden-agony, —"
+      ]
+    },
+    {
+      "lines": [
+        "Not then, when uttermost thy need,",
+        "Seemed light across thy soul to break;",
+        "No seraph form was seen to speed,",
+        "Nor yet the voice of comfort spake;"
+      ]
+    },
+    {
+      "lines": [
+        "Till, by thine own triumphant word,",
+        "The victory over ill was won;",
+        "Until the voice of faith was heard,",
+        "\"Thy will, O God, not mine, be done!\""
+      ]
+    },
+    {
+      "lines": [
+        "Lord, bring those precious moments back,",
+        "When fainting against sin we strain;",
+        "Or in thy counsels fail to track",
+        "Aught but the present grief and pain."
+      ]
+    },
+    {
+      "lines": [
+        "In weakness, help us to contend;",
+        "In darkness, yield to God our will;",
+        "And true hearts, faithful to the end,",
+        "Cheer by thine holy angels still!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:215"
+}

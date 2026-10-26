@@ -1,0 +1,62 @@
+{
+  "title": "Great God, at Thy Command",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Great God, at Thy Command in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 863 of its twenty-second edition (1853), “Summer”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Great God, at thy com-mand, Sea-sons in or-der rise: Thy power and love in con-cert reign Through earth, and seas, and skies.",
+  "verses": [
+    {
+      "lines": [
+        "Great God, at thy command,",
+        "Seasons in order rise:",
+        "Thy power and love in concert reign",
+        "Through earth, and seas, and skies."
+      ]
+    },
+    {
+      "lines": [
+        "How balmy is the air!",
+        "How warm the sun's bright beams!",
+        "While, to refresh the ground, the rains",
+        "Descend in gentle streams."
+      ]
+    },
+    {
+      "lines": [
+        "With grateful praise we own",
+        "Thy providential hand,",
+        "While grass, and herbs, and waving corn,",
+        "Adorn and bless the land."
+      ]
+    },
+    {
+      "lines": [
+        "But greater still the gift",
+        "Of thy belovéd Son;",
+        "By him forgiveness, peace, and joy,",
+        "Through endless ages run."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:863"
+}

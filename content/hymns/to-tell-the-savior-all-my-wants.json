@@ -1,0 +1,79 @@
+{
+  "title": "To Tell the Savior All My Wants",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "To Tell the Savior All My Wants in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 47, “The hidden life”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "To tell the Sa-vior all my wants, How pleas-ing is the task? Nor less to praise him when he grants Be-yond what I can ask.",
+  "verses": [
+    {
+      "lines": [
+        "To tell the Savior all my wants,",
+        "How pleasing is the task?",
+        "Nor less to praise him when he grants",
+        "Beyond what I can ask."
+      ]
+    },
+    {
+      "lines": [
+        "My lab'ring spirit vainly seeks",
+        "To tell but half the joy;",
+        "With how much tenderness he speaks,",
+        "And helps me to reply."
+      ]
+    },
+    {
+      "lines": [
+        "Nor were it wise, nor should I choose",
+        "Such secrets to declare;",
+        "Like precious wines their taste they lose",
+        "Exposed to open air."
+      ]
+    },
+    {
+      "lines": [
+        "But this with boldness I proclaim,",
+        "Nor care if thousands hear;",
+        "Sweet is the ointment of his name,",
+        "Not life is half so dear."
+      ]
+    },
+    {
+      "lines": [
+        "And can you frown, my former friends,",
+        "Who knew what once I was;",
+        "And blame the song that thus commends",
+        "The man who bore the cross."
+      ]
+    },
+    {
+      "lines": [
+        "Trust me, I draw the likeness true,",
+        "And not as fancy paints,",
+        "Such honor may he give to you,",
+        "For such have all his saints."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:47"
+}

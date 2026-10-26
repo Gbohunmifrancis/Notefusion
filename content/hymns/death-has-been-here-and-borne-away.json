@@ -1,0 +1,62 @@
+{
+  "title": "Death Has Been Here, and Borne Away",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Death Has Been Here, and Borne Away in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 760 of its twenty-second edition (1853), “The Same”, where the book credits them to the Boston S. S. H. Book.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Death has been here, and borne a-way A bro-ther from our side: Just in the morn-ing of his day, As young as we he died.",
+  "verses": [
+    {
+      "lines": [
+        "Death has been here, and borne away",
+        "A brother from our side:",
+        "Just in the morning of his day,",
+        "As young as we he died."
+      ]
+    },
+    {
+      "lines": [
+        "We cannot tell who next may fall",
+        "Beneath thy chastening rod;",
+        "One must be first, but let us all",
+        "Prepare to meet our God."
+      ]
+    },
+    {
+      "lines": [
+        "May each attend with willing feet",
+        "The means of knowledge here;",
+        "And wait around thy mercy seat,",
+        "With hope as well as fear."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, to thy wisdom and thy care",
+        "May we resign our days;",
+        "Content to live and serve thee here,",
+        "Or die and sing thy praise."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:760"
+}

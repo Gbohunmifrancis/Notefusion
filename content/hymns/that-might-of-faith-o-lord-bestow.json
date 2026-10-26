@@ -1,0 +1,54 @@
+{
+  "title": "That Might of Faith, O Lord! Bestow",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "That Might of Faith, O Lord! Bestow in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 526, “Prayer for Faith”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "That might of faith, O Lord! be-stow, Which can-not ask in vain; Which will not let the an-gel go Un-til the prayer it gain.",
+  "verses": [
+    {
+      "lines": [
+        "That might of faith, O Lord! bestow,",
+        "Which cannot ask in vain;",
+        "Which will not let the angel go",
+        "Until the prayer it gain."
+      ]
+    },
+    {
+      "lines": [
+        "On me the faith divine bestow",
+        "Which doth the mountain move;",
+        "And all my spotless life shall show",
+        "The omnipotence of love."
+      ]
+    },
+    {
+      "lines": [
+        "And, Father, when I doubt that I",
+        "Can live, and sin no more;",
+        "Then if on Thee I dare rely,",
+        "The faith shall bring the power."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:526"
+}

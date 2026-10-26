@@ -1,0 +1,63 @@
+{
+  "title": "With Songs and Honors Sounding Loud",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "With Songs and Honors Sounding Loud in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 853 of its twenty-second edition (1853), “Seasons”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "With songs and hon-ors sound-ing loud, Ad-dress the Lord on high; O'er all the heavens he spreads his cloud, And wa-ters veil the sky.",
+  "verses": [
+    {
+      "lines": [
+        "With songs and honors sounding loud,",
+        "Address the Lord on high;",
+        "O'er all the heavens he spreads his cloud,",
+        "And waters veil the sky."
+      ]
+    },
+    {
+      "lines": [
+        "He sends his showers of blessings down,",
+        "To cheer the plains below;",
+        "He makes the grass the mountains crown,",
+        "And corn in valleys grow."
+      ]
+    },
+    {
+      "lines": [
+        "His steady councils change the face",
+        "Of each declining year;",
+        "He bids the sun cut short his race,",
+        "And wintry days appear."
+      ]
+    },
+    {
+      "lines": [
+        "On us his providence has shone,",
+        "With gentle, smiling rays;",
+        "O, may our lips and lives make known",
+        "His goodness and his praise."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:853"
+}

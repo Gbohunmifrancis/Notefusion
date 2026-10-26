@@ -1,0 +1,94 @@
+{
+  "title": "Let God Arise in All His Might",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Let God Arise in All His Might in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 68, part 1, headed “The vengeance and compassion of God”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Let God a-rise in all his might, And put the troops of hell to flight, As smoke that sought to cloud the skies Be-fore the ris-ing tem-pest flies.",
+  "verses": [
+    {
+      "lines": [
+        "Let God arise in all his might,",
+        "And put the troops of hell to flight,",
+        "As smoke that sought to cloud the skies",
+        "Before the rising tempest flies."
+      ]
+    },
+    {
+      "lines": [
+        "He comes array'd in burning flames;",
+        "Justice and vengeance are his names:",
+        "Behold his fainting foes expire",
+        "Like melting wax before the fire."
+      ]
+    },
+    {
+      "lines": [
+        "He rides and thunders thro' the sky;",
+        "His name Jehovah sounds on high:",
+        "Sing to his Name, ye sons of grace;",
+        "Ye saints, rejoice before his face."
+      ]
+    },
+    {
+      "lines": [
+        "The widow and the fatherless",
+        "Fly to his aid in sharp distress;",
+        "In him the poor and helpless find",
+        "A Judge that's just, a Father kind."
+      ]
+    },
+    {
+      "lines": [
+        "He breaks the captive's heavy chain,",
+        "And prisoners see the light again;",
+        "But rebels that dispute his will,",
+        "Shall dwell in chains and darkness still."
+      ]
+    },
+    {
+      "lines": [
+        "Kingdoms and thrones to God belong;",
+        "Crown him, ye nations, in your song;",
+        "His wondrous names and powers rehearse;",
+        "His honours shall enrich your verse."
+      ]
+    },
+    {
+      "lines": [
+        "He shakes the heavens with loud alarms;",
+        "How terrible is God in arms!",
+        "In Israel are his mercies known,",
+        "Israel is his peculiar throne."
+      ]
+    },
+    {
+      "lines": [
+        "Proclaim him King, pronounce him blest!",
+        "He's your defence, your joy, your rest:",
+        "When terrors rise and nations faint,",
+        "God is the strength of every saint."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 68:1"
+}

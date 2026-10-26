@@ -1,0 +1,87 @@
+{
+  "title": "Unbelief the Soul Dismays",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Unbelief the Soul Dismays in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 39, “Great effects by weak means”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Un-be-lief the soul dis-mays, What ob-jec-tions will it raise! But true faith se-cure-ly leans On the pro-mise, in the means.",
+  "verses": [
+    {
+      "lines": [
+        "Unbelief the soul dismays,",
+        "What objections will it raise!",
+        "But true faith securely leans",
+        "On the promise, in the means."
+      ]
+    },
+    {
+      "lines": [
+        "If to faith it once be known,",
+        "God has said, \"It shall be done,",
+        "And in this appointed way;\"",
+        "Faith has then no more to say."
+      ]
+    },
+    {
+      "lines": [
+        "Moses' rod, by faith upreared,",
+        "Through the sea a path prepared;",
+        "Jericho's devoted wall,",
+        "At the trumpet's sound must fall."
+      ]
+    },
+    {
+      "lines": [
+        "With a pitcher and a lamp,",
+        "Gideon overthrew a camp",
+        "And a stone, well aimed by faith,",
+        "Proved the armed Philistine's death."
+      ]
+    },
+    {
+      "lines": [
+        "Thus the Lord is pleased to try",
+        "Those who on his help rely;",
+        "By the means he makes it known,",
+        "That the pow'r is all his own."
+      ]
+    },
+    {
+      "lines": [
+        "Yet the means are not in vain,",
+        "If the end we would attain;",
+        "Though the breath of prayer be weak,",
+        "None shall find, but they who seek."
+      ]
+    },
+    {
+      "lines": [
+        "God alone the heart can reach;",
+        "Yet the ministers must preach;",
+        "'Tis their part the seed to sow,",
+        "And 'tis his to make it grow."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:39"
+}

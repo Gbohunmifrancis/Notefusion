@@ -1,0 +1,62 @@
+{
+  "title": "Lord of the Families Below",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Lord of the Families Below in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 504, “Peace Be Unto This House”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Lord of the fam-i-lies be-low! To Thee our prayers we send; Do Thou from dan-ger and from woe This dwell-ing place de-fend.",
+  "verses": [
+    {
+      "lines": [
+        "Lord of the families below!",
+        "To Thee our prayers we send;",
+        "Do Thou from danger and from woe",
+        "This dwelling-place defend."
+      ]
+    },
+    {
+      "lines": [
+        "Here let Thy peace, O Father, rest;",
+        "Here let Thy love abide!",
+        "Our every joy in Thee more blest,",
+        "Each sorrow sanctified."
+      ]
+    },
+    {
+      "lines": [
+        "May our petitions when we meet,",
+        "And every secret prayer,",
+        "Come up before Thy mercy-seat,",
+        "And find acceptance there."
+      ]
+    },
+    {
+      "lines": [
+        "Teach us, with hearts made one in love,",
+        "To do Thy pure commands;",
+        "And give us, in Thy time, above,",
+        "A house not made with hands."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:504"
+}

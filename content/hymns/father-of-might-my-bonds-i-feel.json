@@ -1,0 +1,62 @@
+{
+  "title": "Father of Might, My Bonds I Feel",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Father of Might, My Bonds I Feel in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 527, “For Self-Renunciation”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther of might, my bonds I feel, And long for per-fect lib-er-ty; I would de-ny my self-ish will, And, Fa-ther, give up all to Thee!",
+  "verses": [
+    {
+      "lines": [
+        "Father of might, my bonds I feel,",
+        "And long for perfect liberty;",
+        "I would deny my selfish will,",
+        "And, Father, give up all to Thee!"
+      ]
+    },
+    {
+      "lines": [
+        "O, with Thy strength my weakness fill!",
+        "That strength shall every foe subdue;",
+        "The doubts that tempt, the sins that kill,",
+        "The wishes to the cross untrue."
+      ]
+    },
+    {
+      "lines": [
+        "A sinless mind in me reveal,",
+        "Thy spirit's fulness, Lord, impart!",
+        "Till all my spotless life shall tell",
+        "The abundance of a loving heart."
+      ]
+    },
+    {
+      "lines": [
+        "So shall I own Thy perfect sway,",
+        "And, sitting humbly at Thy feet,",
+        "Thy law with all my heart obey,",
+        "And all my soul to Thee submit."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:527"
+}

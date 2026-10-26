@@ -1,0 +1,61 @@
+{
+  "title": "If Listening, as I Listen Still",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "John Bowring",
+      "born": 1792,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "If Listening, as I Listen Still in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Bowring wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 465 of its twenty-second edition (1853), “\"Help thou my unbelief.\"”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "If lis-tening, as I lis-ten still, O God! to thine in-struc-tive word, In spite of all my spi-rit's will, Some whis-pering voice of doubt is heard, That voice spon-ta-neous from the soul, Which nought can check and nought con-trol;",
+  "verses": [
+    {
+      "lines": [
+        "If listening, as I listen still,",
+        "O God! to thine instructive word,",
+        "In spite of all my spirit's will,",
+        "Some whispering voice of doubt is heard, —",
+        "That voice spontaneous from the soul,",
+        "Which nought can check and nought control;"
+      ]
+    },
+    {
+      "lines": [
+        "If when most earnestly I pray",
+        "For light, for aid, for strength from thee,",
+        "Some struggling thoughts will force their way,",
+        "And break my soul's serenity; —",
+        "If reason, thy best gift, will hold",
+        "The sceptre only half controlled: —"
+      ]
+    },
+    {
+      "lines": [
+        "Help and forgive! heaven's alphabet",
+        "Hath many a word of mystery;",
+        "I read not all thy record yet,",
+        "Though perseveringly I try;",
+        "But teach me, Lord! and none shall be",
+        "More prompt, more pleased to learn of thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Bowring died in 1872.",
+  "credits": "Words by John Bowring (1792–1872), public domain, as printed in Hymns for Christian Devotion (1853); set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:465"
+}

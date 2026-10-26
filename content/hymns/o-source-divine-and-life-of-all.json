@@ -1,0 +1,71 @@
+{
+  "title": "O Source Divine, and Life of All",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "John Sterling",
+      "born": 1806,
+      "died": 1844,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O Source Divine, and Life of All in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Sterling wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 75, “Love Supreme in God”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Source di-vine, and Life of all, The Fount of be-ing's won-drous sea! Thy depth would ev-ery heart ap-pall, That saw not Love su-preme in Thee.",
+  "verses": [
+    {
+      "lines": [
+        "O Source divine, and Life of all,",
+        "The Fount of being's wondrous sea!",
+        "Thy depth would every heart appall,",
+        "That saw not Love supreme in Thee."
+      ]
+    },
+    {
+      "lines": [
+        "We shrink before Thy vast abyss,",
+        "Where worlds on worlds eternal brood;",
+        "We know Thee truly but in this,",
+        "That Thou bestowest all our good."
+      ]
+    },
+    {
+      "lines": [
+        "And so, 'mid boundless time and space,",
+        "O, grant us still in Thee to dwell,",
+        "And through the ceaseless web to trace",
+        "Thy presence working all things well!"
+      ]
+    },
+    {
+      "lines": [
+        "Nor let Thou life's delightful play",
+        "Thy truth's transcendent vision hide;",
+        "Nor strength and gladness lead astray",
+        "From Thee, our nature's only guide."
+      ]
+    },
+    {
+      "lines": [
+        "Bestow on every joyous thrill",
+        "Thy deeper tone of reverent awe;",
+        "Make pure Thy children's erring will,",
+        "And teach their hearts to love Thy law!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Sterling died in 1844.",
+  "credits": "Words by John Sterling (1806–1844), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:75"
+}

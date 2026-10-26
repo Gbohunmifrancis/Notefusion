@@ -1,0 +1,63 @@
+{
+  "title": "O Spirit of the Living God",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "O Spirit of the Living God in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 587, “The Kingdom of God”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Spir-it of the liv-ing God, In all Thy plen-i-tude of grace, Wher-e'er the foot of man hath trod, De-scend on our be-night-ed race!",
+  "verses": [
+    {
+      "lines": [
+        "O Spirit of the living God,",
+        "In all Thy plenitude of grace,",
+        "Where'er the foot of man hath trod,",
+        "Descend on our benighted race!"
+      ]
+    },
+    {
+      "lines": [
+        "Be darkness, at Thy coming, light;",
+        "Confusion, order, in Thy path;",
+        "Souls without strength inspire with might;",
+        "Bid mercy triumph over wrath."
+      ]
+    },
+    {
+      "lines": [
+        "O spirit of the Lord! prepare",
+        "All the round earth her God to meet;",
+        "Breathe Thou abroad like morning air,",
+        "Till hearts of stone begin to beat."
+      ]
+    },
+    {
+      "lines": [
+        "Baptize the nations; far and nigh",
+        "The triumphs of the cross record;",
+        "Thy name, O Father, glorify,",
+        "Till every people call Thee Lord."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:587"
+}

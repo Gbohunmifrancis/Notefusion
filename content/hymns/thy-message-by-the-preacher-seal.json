@@ -1,0 +1,87 @@
+{
+  "title": "Thy Message, by the Preacher, Seal",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Thy Message, by the Preacher, Seal in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 27, “We are ambassadors for Christ 2 Cor 5:20”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Thy mes-sage, by the preach-er, seal, And let thy pow'r be known; That ev-ery sin-ner here, may feel The word is not his own.",
+  "verses": [
+    {
+      "lines": [
+        "Thy message, by the preacher, seal,",
+        "And let thy pow'r be known;",
+        "That every sinner here, may feel",
+        "The word is not his own."
+      ]
+    },
+    {
+      "lines": [
+        "Amongst the foremost of the throng",
+        "Who dare thee to thy face,",
+        "He in rebellion stood too long,",
+        "And fought against thy grace."
+      ]
+    },
+    {
+      "lines": [
+        "But grace prevailed, he mercy found,",
+        "And now by thee is sent,",
+        "To tell his fellow-rebels round,",
+        "And call them to repent."
+      ]
+    },
+    {
+      "lines": [
+        "In Jesus, God is reconciled,",
+        "The worst may be forgiv'n;",
+        "Come, and he'll own you as a child,",
+        "And make you heirs of heav'n."
+      ]
+    },
+    {
+      "lines": [
+        "O, may the word of gospel truth",
+        "Your chief desires engage",
+        "And Jesus be your guide in youth,",
+        "Your joy in hoary age."
+      ]
+    },
+    {
+      "lines": [
+        "Perhaps the year, that's now begun,",
+        "May prove to some their last;",
+        "The sands of life may soon be run,",
+        "The day of grace be past."
+      ]
+    },
+    {
+      "lines": [
+        "Think, if you slight this embassy,",
+        "And will not warning take;",
+        "When Jesus in the clouds you see,",
+        "What answer will you make?"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:27"
+}

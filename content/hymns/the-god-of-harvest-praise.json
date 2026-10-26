@@ -1,0 +1,64 @@
+{
+  "title": "The God of Harvest Praise",
+  "tune": "malvern-gwyllt",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "The God of Harvest Praise in Tonic Solfa to MALVERN (GWYLLT), doh is Bb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 876 of its twenty-second edition (1853), “Thanksgiving Hymn”.",
+    "The book printed the words without tunes, marked Sixes and Fours (6.6.4.6.6.6.4), to be sung to any tune of that metre. This page sets them to MALVERN (GWYLLT); any other Sixes and Fours tune fits them as well."
+  ],
+  "underlay": "The God of har-vest praise; In loud thanks-giv-ings raise Hand, heart, and voice; The val-leys smile and sing, Fo-rests and moun-tains ring, The plains their tri-bute bring, The streams re-joice.",
+  "verses": [
+    {
+      "lines": [
+        "The God of harvest praise;",
+        "In loud thanksgivings raise",
+        "Hand, heart, and voice;",
+        "The valleys smile and sing,",
+        "Forests and mountains ring,",
+        "The plains their tribute bring,",
+        "The streams rejoice."
+      ]
+    },
+    {
+      "lines": [
+        "Yea, bless his holy name,",
+        "And purest thanks proclaim",
+        "Through all the earth;",
+        "To glory in your lot",
+        "Is duty, — but be not",
+        "God's benefits forgot,",
+        "Amidst your mirth."
+      ]
+    },
+    {
+      "lines": [
+        "The God of harvest praise;",
+        "Hands, hearts, and voices raise,",
+        "With sweet accord;",
+        "From field to garner throng,",
+        "Bearing your sheaves along,",
+        "And in your harvest song",
+        "Bless ye the Lord."
+      ]
+    }
+  ],
+  "metre": "6 6 4 6 6 6 4",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to MALVERN (GWYLLT) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:876"
+}

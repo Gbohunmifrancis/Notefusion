@@ -1,0 +1,79 @@
+{
+  "title": "The Lord Receives His Highest Praise",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Lord Receives His Highest Praise in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 71, “A living and a dead faith”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The Lord re-ceives his high-est praise, From hum-ble minds and hearts sin-cere; While all the loud pro-fes-sor says, Of-fends the right-eous Jud-ge's ear.",
+  "verses": [
+    {
+      "lines": [
+        "The Lord receives his highest praise,",
+        "From humble minds and hearts sincere;",
+        "While all the loud professor says,",
+        "Offends the righteous Judge's ear."
+      ]
+    },
+    {
+      "lines": [
+        "To walk as children of the day",
+        "To mark the precepts' holy light",
+        "To wage the warfare, watch and pray,",
+        "Show who are pleasing in his sight."
+      ]
+    },
+    {
+      "lines": [
+        "Not words alone it cost the Lord,",
+        "To purchase pardon for his own;",
+        "Nor with a soul, by grace restored,",
+        "Return the Savior words alone."
+      ]
+    },
+    {
+      "lines": [
+        "With golden bells, the priestly vest,",
+        "And rich pomegranates bordered round,",
+        "The need of holiness expressed,",
+        "And called for fruit, as well as sound."
+      ]
+    },
+    {
+      "lines": [
+        "Easy, indeed, it were to reach",
+        "A mansion in the courts above,",
+        "If swelling words, and fluent speech",
+        "Might serve, instead of faith and love."
+      ]
+    },
+    {
+      "lines": [
+        "But none shall gain the blissful place,",
+        "Or God'S unclouded glory see;",
+        "Who talks of free and sovereign grace,",
+        "Unless that grace has made him free."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:71"
+}

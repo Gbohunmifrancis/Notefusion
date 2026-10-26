@@ -1,0 +1,71 @@
+{
+  "title": "Blest Are the Humble Souls That See",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Blest Are the Humble Souls That See in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 344 of its twenty-second edition (1853), “The Beatitudes”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Blest are the hum-ble souls that see Their emp-ti-ness and po-ver-ty; Trea-sures of grace to them are given, And crowns of joy laid up in heaven.",
+  "verses": [
+    {
+      "lines": [
+        "Blest are the humble souls that see",
+        "Their emptiness and poverty;",
+        "Treasures of grace to them are given,",
+        "And crowns of joy laid up in heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Blest are the souls that thirst for grace,",
+        "Hunger and long for righteousness;",
+        "They shall be well supplied and fed",
+        "With living streams and living bread."
+      ]
+    },
+    {
+      "lines": [
+        "Blest are the pure, whose hearts are clean",
+        "From the defiling power of sin;",
+        "With endless pleasure they shall see",
+        "A God of spotless purity."
+      ]
+    },
+    {
+      "lines": [
+        "Blest are the men of peaceful life,",
+        "Who quench the coals of growing strife;",
+        "They shall be called the heirs of bliss,",
+        "The sons of God, the God of peace."
+      ]
+    },
+    {
+      "lines": [
+        "Blest are the sufferers who partake",
+        "Of pain and shame for Jesus' sake;",
+        "Their souls shall triumph in the Lord;",
+        "Glory and joy are their reward."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:344"
+}

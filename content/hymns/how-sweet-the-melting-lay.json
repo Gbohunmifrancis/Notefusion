@@ -1,0 +1,62 @@
+{
+  "title": "How Sweet the Melting Lay",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "How Sweet the Melting Lay in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 919 of its twenty-second edition (1853), “Morning Prayer Meeting”, where the book credits them to the Sacred Lyrics.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "How sweet the melt-ing lay, Which breaks up-on the ear, When, at the hour of ris-ing day, Christ-ians u-nite in prayer!",
+  "verses": [
+    {
+      "lines": [
+        "How sweet the melting lay,",
+        "Which breaks upon the ear,",
+        "When, at the hour of rising day,",
+        "Christians unite in prayer!"
+      ]
+    },
+    {
+      "lines": [
+        "The breezes waft their cries",
+        "Up to Jehovah's throne;",
+        "He listens to their humble sighs,",
+        "And sends his blessings down."
+      ]
+    },
+    {
+      "lines": [
+        "So Jesus rose to pray",
+        "Before the morning light, —",
+        "Once on the chilling mount did stay,",
+        "And wrestle all the night."
+      ]
+    },
+    {
+      "lines": [
+        "Glory to God on high,",
+        "Who sends his blessings down",
+        "To rescue souls condemned to die,",
+        "And make his people one."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:919"
+}

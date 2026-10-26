@@ -1,0 +1,54 @@
+{
+  "title": "Now Is the Day of Grace",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Now Is the Day of Grace in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 265 of its twenty-second edition (1853), “Now is the Day of Grace”, where the book credits them to the Select Hymns.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Now is the day of grace; Now to the Fa-ther come; The Lord is call-ing, \"Seek my face, And I will guide you home.\"",
+  "verses": [
+    {
+      "lines": [
+        "Now is the day of grace;",
+        "Now to the Father come;",
+        "The Lord is calling, \"Seek my face,",
+        "And I will guide you home.\""
+      ]
+    },
+    {
+      "lines": [
+        "The Saviour bids you speed;",
+        "O, wherefore then delay?",
+        "He calls in love; he sees your need;",
+        "He bids you come to-day."
+      ]
+    },
+    {
+      "lines": [
+        "To-day the prize is won;",
+        "The promise is to save;",
+        "Then, O, be wise; to-morrow's sun",
+        "May shine upon your grave."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:265"
+}

@@ -1,0 +1,67 @@
+{
+  "title": "Herald of the Lord's Salvation",
+  "tune": "rustington",
+  "text": [
+    {
+      "name": "John Greenleaf Adams",
+      "born": 1810,
+      "died": 1887,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Herald of the Lord's Salvation in Tonic Solfa to RUSTINGTON, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Greenleaf Adams wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 712 of its twenty-second edition (1853), “Charge to a Pastor”.",
+    "The book printed the words without tunes, marked Eights and Sevens Double (8.7.8.7.8.7.8.7), to be sung to any tune of that metre. This page sets them to RUSTINGTON; any other Eights and Sevens Double tune fits them as well."
+  ],
+  "underlay": "Her-ald of the Lord's sal-va-tion, Watch-ful in thy sta-tion stand; Heed the heav-enly pro-cla-ma-tion, Heed the Mas-ter's great com-mand. Mark old er-ror's gath-ering for-ces Com-pass-ing our Zi-on round; Know in truth thine own re-sour-ces, Give the trum-pet's cer-tain sound!",
+  "verses": [
+    {
+      "lines": [
+        "Herald of the Lord's salvation,",
+        "Watchful in thy station stand;",
+        "Heed the heavenly proclamation,",
+        "Heed the Master's great command.",
+        "Mark old error's gathering forces",
+        "Compassing our Zion round;",
+        "Know in truth thine own resources,",
+        "Give the trumpet's certain sound!"
+      ]
+    },
+    {
+      "lines": [
+        "Christ proclaim in the new station,",
+        "Herald, now assigned to thee;",
+        "That the waiting congregation",
+        "God's salvation here may see.",
+        "Christ proclaim — no line abating",
+        "Of the counsel of the Lord;",
+        "From no promise deviating;",
+        "From no precept; \"preach the word.\""
+      ]
+    },
+    {
+      "lines": [
+        "Then, God's blessing resting o'er thee,",
+        "And his truth, by night, by day,",
+        "Cloud and pillar bright before thee,",
+        "Shall make glad thy gospel way;",
+        "Till thy work well done, the greeting",
+        "Of the Master will be given;",
+        "Till we rise to that one meeting —",
+        "Pastor — people — all — in heaven!"
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Greenleaf Adams died in 1887.",
+  "credits": "Words by John Greenleaf Adams (1810–1887), public domain, as printed in Hymns for Christian Devotion (1853); set to RUSTINGTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:712"
+}

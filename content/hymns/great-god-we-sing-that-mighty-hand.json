@@ -1,0 +1,71 @@
+{
+  "title": "Great God, We Sing That Mighty Hand",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Philip Doddridge",
+      "born": 1702,
+      "died": 1751,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Great God, We Sing That Mighty Hand in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Philip Doddridge wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 886 of its twenty-second edition (1853), “New Year's Day”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Great God, we sing that might-y hand, By which, sup-port-ed still, we stand: Th'o-pen-ing year thy mer-cy shows; Let mer-cy crown it till it close.",
+  "verses": [
+    {
+      "lines": [
+        "Great God, we sing that mighty hand,",
+        "By which, supported still, we stand:",
+        "The opening year thy mercy shows;",
+        "Let mercy crown it till it close."
+      ]
+    },
+    {
+      "lines": [
+        "By day, by night, at home, abroad,",
+        "Still we are guarded by our God;",
+        "By his incessant bounty fed,",
+        "By his unerring counsel led."
+      ]
+    },
+    {
+      "lines": [
+        "With grateful hearts the past we own:",
+        "The future, all to us unknown,",
+        "We to thy guardian care commit,",
+        "And peaceful leave before thy feet,"
+      ]
+    },
+    {
+      "lines": [
+        "In scenes exalted or depressed,",
+        "Be thou our joy, and thou our rest:",
+        "Thy goodness all our hopes shall raise,",
+        "Adored through all our changing days."
+      ]
+    },
+    {
+      "lines": [
+        "When death shall interrupt these songs,",
+        "And seal in silence mortal tongues,",
+        "Our Helper, God, in whom we trust,",
+        "In better worlds our souls shall boast."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Philip Doddridge died in 1751.",
+  "credits": "Words by Philip Doddridge (1702–1751), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:886"
+}

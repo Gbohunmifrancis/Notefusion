@@ -1,0 +1,39 @@
+{
+  "title": "Thy Praise Was Sung When Time Began",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Thy Praise Was Sung When Time Began in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 1 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 106, “Glory to God, the Father'S name, To Jesus, who for sinners died The holy Spirit claims the same, By whom our souls are sanctified”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thy praise was sung when time be-gan By an-gels, through the star-ry spheres; And shall, as now, be sung by man Through vast e-ter-ni-ty's long years.",
+  "verses": [
+    {
+      "lines": [
+        "Thy praise was sung when time began",
+        "By angels, through the starry spheres;",
+        "And shall, as now, be sung by man",
+        "Through vast eternity's long years."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:106"
+}

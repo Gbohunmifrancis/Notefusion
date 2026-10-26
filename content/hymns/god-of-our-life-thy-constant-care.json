@@ -1,0 +1,71 @@
+{
+  "title": "God of Our Life! Thy Constant Care",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Philip Doddridge",
+      "born": 1702,
+      "died": 1751,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "God of Our Life! Thy Constant Care in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Philip Doddridge wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 899 of its twenty-second edition (1853), “The Closing Year”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "God of our life! thy con-stant care With bless-ings crowns each open-ing year: These lives so frail thy love pro-longs; Be this the bur-den of our songs.",
+  "verses": [
+    {
+      "lines": [
+        "God of our life! thy constant care",
+        "With blessings crowns each opening year:",
+        "These lives so frail thy love prolongs;",
+        "Be this the burden of our songs."
+      ]
+    },
+    {
+      "lines": [
+        "How many precious souls are fled",
+        "To the vast regions of the dead,",
+        "Since, from this day, the changing sun",
+        "Through his last yearly course has run!"
+      ]
+    },
+    {
+      "lines": [
+        "We yet survive, but who can say,",
+        "Or through the year, or month, or day,",
+        "We shall retain this vital breath,",
+        "Secure from all the shafts of death?"
+      ]
+    },
+    {
+      "lines": [
+        "We hold our lives from thee alone,",
+        "On earth, or in the worlds unknown;",
+        "To thee our spirits we resign,",
+        "Make them and own them all as thine."
+      ]
+    },
+    {
+      "lines": [
+        "Great Source of wisdom, teach my heart",
+        "To know the price of every hour,",
+        "That time may bear me on to joys",
+        "Beyond its measure and its power."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Philip Doddridge died in 1751.",
+  "credits": "Words by Philip Doddridge (1702–1751), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:899"
+}

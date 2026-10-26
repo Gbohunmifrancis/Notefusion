@@ -1,0 +1,1991 @@
+{
+  "source": "Isaac Watts, The Psalms of David Imitated in the Language of the New Testament (1719), from an 1818 London printing",
+  "date": "2026-10-26",
+  "written": [
+    {
+      "ref": "Psalm 1:1",
+      "slug": "blest-is-the-man-who-shuns-the-place",
+      "metre": "CM",
+      "tune": "st-agnes"
+    },
+    {
+      "ref": "Psalm 1:2",
+      "slug": "the-man-is-ever-blest",
+      "metre": "SM",
+      "tune": "st-bride"
+    },
+    {
+      "ref": "Psalm 1:3",
+      "slug": "happy-the-man-whose-cautious-feet",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 2:2",
+      "slug": "why-did-the-nations-join-to-slay",
+      "metre": "CM",
+      "tune": "st-anne"
+    },
+    {
+      "ref": "Psalm 2:3",
+      "slug": "why-did-the-jews-proclaim-their-rage",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 3:1",
+      "slug": "my-god-how-many-are-my-fears",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 3:2",
+      "slug": "o-lord-how-many-are-my-foes",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 4:1",
+      "slug": "o-god-of-grace-and-righteousness",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 4:2",
+      "slug": "lord-thou-wilt-hear-me-when-i-pray",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 5",
+      "slug": "lord-in-the-morning-thou-shalt-hear",
+      "metre": "CM",
+      "tune": "st-anne"
+    },
+    {
+      "ref": "Psalm 6:1",
+      "slug": "in-anger-lord-rebuke-me-not",
+      "metre": "CM",
+      "tune": "winchester-old"
+    },
+    {
+      "ref": "Psalm 6:2",
+      "slug": "lord-i-can-suffer-thy-rebukes",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 7",
+      "slug": "my-trust-is-in-my-heavenly-friend",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 8:1",
+      "slug": "o-lord-our-heavenly-king",
+      "metre": "SM",
+      "tune": "st-bride"
+    },
+    {
+      "ref": "Psalm 8:2",
+      "slug": "o-lord-our-lord-how-wondrous-great",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 8:3",
+      "slug": "almighty-ruler-of-the-skies",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 8:4",
+      "slug": "lord-what-was-man-when-made-at-first",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 9:1",
+      "slug": "with-my-whole-heart-ill-raise-my-song",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 9:2",
+      "slug": "when-the-great-judge-supreme-and-just",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 10",
+      "slug": "why-doth-the-lord-stand-off-so-far",
+      "metre": "CM",
+      "tune": "st-anne"
+    },
+    {
+      "ref": "Psalm 11",
+      "slug": "my-refuge-is-the-god-of-love",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 12:1",
+      "slug": "lord-if-thou-dost-not-soon-appear",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 12:2",
+      "slug": "help-lord-for-men-of-virtue-fail",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 13:2",
+      "slug": "how-long-wilt-thou-conceal-thy-face",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 14:1",
+      "slug": "fools-in-their-hearts-believe-and-say",
+      "metre": "CM",
+      "tune": "st-anne"
+    },
+    {
+      "ref": "Psalm 14:2",
+      "slug": "are-sinners-now-so-senseless-grown",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 15:1",
+      "slug": "who-shall-inhabit-in-thy-hill",
+      "metre": "CM",
+      "tune": "winchester-old"
+    },
+    {
+      "ref": "Psalm 15:2",
+      "slug": "who-shall-ascend-thy-heavenly-place",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 16:1",
+      "slug": "preserve-me-lord-in-time-of-need",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 16:3",
+      "slug": "when-god-is-nigh-my-faith-is-strong",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 16:4",
+      "slug": "save-me-o-lord-from-every-foe",
+      "metre": "CM",
+      "tune": "st-agnes"
+    },
+    {
+      "ref": "Psalm 16:5",
+      "slug": "i-set-the-lord-before-my-face",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 17:1",
+      "slug": "arise-my-gracious-god",
+      "metre": "SM",
+      "tune": "southwell"
+    },
+    {
+      "ref": "Psalm 17:2",
+      "slug": "lord-i-am-thine-but-thou-wilt-prove",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 18:1",
+      "slug": "thee-will-i-love-o-lord-my-strength",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 18:2",
+      "slug": "lord-thou-hast-seen-my-soul-sincere",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 18:3",
+      "slug": "just-are-thy-ways-and-true-thy-word",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 18:4",
+      "slug": "we-love-thee-lord-and-we-adore",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 18:5",
+      "slug": "to-thine-almighty-arm-we-owe",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 19:1",
+      "slug": "behold-the-lofty-sky",
+      "metre": "SM",
+      "tune": "franconia"
+    },
+    {
+      "ref": "Psalm 19:2",
+      "slug": "behold-the-morning-sun",
+      "metre": "SM",
+      "tune": "southwell"
+    },
+    {
+      "ref": "Psalm 19:3",
+      "slug": "the-heavens-declare-thy-glory-lord",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 21:1",
+      "slug": "the-king-o-lord-with-songs-of-praise",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 21:2",
+      "slug": "david-rejoicd-in-god-his-strength",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 22:1",
+      "slug": "why-has-my-god-my-soul-forsook",
+      "metre": "CM",
+      "tune": "winchester-old"
+    },
+    {
+      "ref": "Psalm 22:2",
+      "slug": "now-from-the-roaring-lions-rage",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 22:3",
+      "slug": "now-let-our-mournful-songs-record",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 23:1",
+      "slug": "my-shepherd-is-the-living-lord",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 23:2",
+      "slug": "my-shepherd-will-supply-my-need",
+      "metre": "CM",
+      "tune": "st-anne"
+    },
+    {
+      "ref": "Psalm 23:3",
+      "slug": "the-lord-my-shepherd-is",
+      "metre": "SM",
+      "tune": "aylesbury"
+    },
+    {
+      "ref": "Psalm 24:1",
+      "slug": "the-earth-for-ever-is-the-lords",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 24:2",
+      "slug": "this-spacious-earth-is-all-the-lords",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 25:1",
+      "slug": "i-lift-my-soul-to-god",
+      "metre": "SM",
+      "tune": "boylston"
+    },
+    {
+      "ref": "Psalm 25:2",
+      "slug": "where-shall-the-man-be-found",
+      "metre": "SM",
+      "tune": "st-bride"
+    },
+    {
+      "ref": "Psalm 25:3",
+      "slug": "mine-eyes-and-my-desire",
+      "metre": "SM",
+      "tune": "aylesbury"
+    },
+    {
+      "ref": "Psalm 26",
+      "slug": "judge-me-o-lord-and-prove-my-ways",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 27:1",
+      "slug": "the-lord-of-glory-is-my-light",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 27:2",
+      "slug": "soon-as-i-heard-my-father-say",
+      "metre": "CM",
+      "tune": "st-anne"
+    },
+    {
+      "ref": "Psalm 29",
+      "slug": "give-to-the-lord-ye-sons-of-fame",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 30:1",
+      "slug": "i-will-extol-thee-lord-on-high",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 30:2",
+      "slug": "firm-was-my-health-my-day-was-bright",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 31:2",
+      "slug": "my-heart-rejoices-in-thy-name",
+      "metre": "CM",
+      "tune": "winchester-old"
+    },
+    {
+      "ref": "Psalm 32:1",
+      "slug": "o-blessed-souls-are-they",
+      "metre": "SM",
+      "tune": "st-bride"
+    },
+    {
+      "ref": "Psalm 32:2",
+      "slug": "happy-the-man-to-whom-his-god",
+      "metre": "CM",
+      "tune": "st-anne"
+    },
+    {
+      "ref": "Psalm 32:3",
+      "slug": "blest-is-the-man-for-ever-blest",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 32:4",
+      "slug": "while-i-keep-silence-and-conceal",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 33:1",
+      "slug": "rejoice-ye-righteous-in-the-lord",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 33:2",
+      "slug": "blest-is-the-nation-where-the-lord",
+      "metre": "CM",
+      "tune": "winchester-old"
+    },
+    {
+      "ref": "Psalm 34:1",
+      "slug": "lord-i-will-bless-thee-all-my-days",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 34:2",
+      "slug": "children-in-years-and-knowledge-young",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 34:3",
+      "slug": "ill-bless-the-lord-from-day-to-day",
+      "metre": "CM",
+      "tune": "st-agnes"
+    },
+    {
+      "ref": "Psalm 34:4",
+      "slug": "come-children-learn-to-fear-the-lord",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 35:1",
+      "slug": "now-plead-my-cause-almighty-god",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 35:2",
+      "slug": "behold-the-love-the-generous-love",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 36:1",
+      "slug": "high-in-the-heavens-eternal-god",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 36:2",
+      "slug": "while-men-grow-bold-in-wicked-ways",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 36:3",
+      "slug": "when-man-grows-bold-in-sin",
+      "metre": "SM",
+      "tune": "st-bride"
+    },
+    {
+      "ref": "Psalm 37:1",
+      "slug": "why-should-i-vex-my-soul-and-fret",
+      "metre": "CM",
+      "tune": "st-agnes"
+    },
+    {
+      "ref": "Psalm 37:2",
+      "slug": "why-do-the-wealthy-wicked-boast",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 37:3",
+      "slug": "my-god-the-steps-of-pious-men",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 38",
+      "slug": "amidst-thy-wrath-remember-love",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 39:1",
+      "slug": "thus-i-resolvd-before-the-lord",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 39:2",
+      "slug": "teach-me-the-measure-of-my-days",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 39:3",
+      "slug": "god-of-my-life-look-gently-down",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 40:1",
+      "slug": "i-waited-patient-for-the-lord",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 40:3",
+      "slug": "the-wonders-lord-thy-love-has-wrought",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 41",
+      "slug": "blest-is-the-man-whose-bowels-move",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 42:1",
+      "slug": "with-earnest-longings-of-the-mind",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 42:2",
+      "slug": "my-spirit-sinks-within-me-lord",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 44",
+      "slug": "lord-we-have-heard-thy-works-of-old",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 45:1",
+      "slug": "my-saviour-and-my-king",
+      "metre": "SM",
+      "tune": "st-bride"
+    },
+    {
+      "ref": "Psalm 45:2",
+      "slug": "ill-speak-the-honours-of-my-king",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 45:3",
+      "slug": "now-be-my-heart-inspird-to-sing",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 45:4",
+      "slug": "the-king-of-saints-how-fair-his-face",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 46:1",
+      "slug": "god-is-the-refuge-of-his-saints",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 48:1",
+      "slug": "great-is-the-lord-our-god",
+      "metre": "SM",
+      "tune": "southwell"
+    },
+    {
+      "ref": "Psalm 48:2",
+      "slug": "far-as-thy-name-is-known",
+      "metre": "SM",
+      "tune": "southwell"
+    },
+    {
+      "ref": "Psalm 49:1",
+      "slug": "why-doth-the-man-of-riches-grow",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 49:2",
+      "slug": "ye-sons-of-pride-that-hate-the-just",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 49:3",
+      "slug": "why-do-the-proud-insult-the-poor",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 50:1",
+      "slug": "the-lord-the-judge-before-his-throne",
+      "metre": "CM",
+      "tune": "st-anne"
+    },
+    {
+      "ref": "Psalm 50:2",
+      "slug": "thus-saith-the-lord-the-spacious-fields",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 50:3",
+      "slug": "when-christ-to-judgment-shall-descend",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 50:4",
+      "slug": "the-lord-the-judge-his-churches-warns",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 51:1",
+      "slug": "shew-pity-lord-o-lord-forgive",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 51:4",
+      "slug": "lord-i-would-spread-my-sore-distress",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 51:5",
+      "slug": "o-god-of-mercy-hear-my-call",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 55:1",
+      "slug": "o-god-my-refuge-hear-my-cries",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 55:2",
+      "slug": "let-sinners-take-their-course",
+      "metre": "SM",
+      "tune": "st-bride"
+    },
+    {
+      "ref": "Psalm 57",
+      "slug": "my-god-in-whom-are-all-the-springs",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 60",
+      "slug": "lord-hast-thou-cast-the-nation-off",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 61",
+      "slug": "when-overwhelmd-with-grief",
+      "metre": "SM",
+      "tune": "boylston"
+    },
+    {
+      "ref": "Psalm 62",
+      "slug": "my-spirit-looks-to-god-alone",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 63:1",
+      "slug": "early-my-god-without-delay",
+      "metre": "CM",
+      "tune": "st-anne"
+    },
+    {
+      "ref": "Psalm 63:2",
+      "slug": "twas-in-the-watches-of-the-night",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 63:3",
+      "slug": "great-god-indulge-my-humble-claim",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 63:4",
+      "slug": "my-god-permit-my-tongue",
+      "metre": "SM",
+      "tune": "southwell"
+    },
+    {
+      "ref": "Psalm 65:4",
+      "slug": "tis-by-thy-strength-the-mountains-stand",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 65:5",
+      "slug": "good-is-the-lord-the-heavenly-king",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 66:1",
+      "slug": "sing-all-ye-nations-to-the-lord",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 66:2",
+      "slug": "now-shall-my-solemn-vows-be-paid",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 67",
+      "slug": "shine-mighty-god-on-britain-shine",
+      "metre": "CM",
+      "tune": "winchester-old"
+    },
+    {
+      "ref": "Psalm 68:1",
+      "slug": "let-god-arise-in-all-his-might",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 68:2",
+      "slug": "lord-when-thou-didst-ascend-on-high",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 68:3",
+      "slug": "we-bless-the-lord-the-just-the-good",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 69:1",
+      "slug": "save-me-o-god-the-swelling-floods",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 69:3",
+      "slug": "father-i-sing-thy-wondrous-grace",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 69:4",
+      "slug": "deep-in-our-hearts-let-us-record",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 69:5",
+      "slug": "twas-for-thy-sake-eternal-god",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 71:1",
+      "slug": "my-god-my-everlasting-hope",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 71:2",
+      "slug": "my-saviour-my-almighty-friend",
+      "metre": "CM",
+      "tune": "st-agnes"
+    },
+    {
+      "ref": "Psalm 71:3",
+      "slug": "god-of-my-childhood-and-my-youth",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 72:1",
+      "slug": "great-god-whose-universal-sway",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 73:1",
+      "slug": "now-im-convincd-the-lord-is-kind",
+      "metre": "CM",
+      "tune": "st-anne"
+    },
+    {
+      "ref": "Psalm 73:2",
+      "slug": "god-my-supporter-and-my-hope",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 73:3",
+      "slug": "lord-what-a-thoughtless-wretch-was-i",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 73:4",
+      "slug": "sure-theres-a-righteous-god",
+      "metre": "SM",
+      "tune": "southwell"
+    },
+    {
+      "ref": "Psalm 74",
+      "slug": "will-god-for-ever-cast-us-off",
+      "metre": "CM",
+      "tune": "winchester-old"
+    },
+    {
+      "ref": "Psalm 75",
+      "slug": "to-thee-most-holy-and-most-high",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 77:1",
+      "slug": "to-god-i-cryd-with-mournful-voice",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 77:2",
+      "slug": "how-awful-is-thy-chastening-rod",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 78:3",
+      "slug": "when-israel-sins-the-lord-reproves",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 78:4",
+      "slug": "great-god-how-oft-did-israel-prove",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 80",
+      "slug": "great-shepherd-of-thine-israel",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 81",
+      "slug": "sing-to-the-lord-aloud",
+      "metre": "SM",
+      "tune": "aylesbury"
+    },
+    {
+      "ref": "Psalm 82",
+      "slug": "among-th-assemblies-of-the-great",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 83",
+      "slug": "and-will-the-god-of-grace",
+      "metre": "SM",
+      "tune": "aylesbury"
+    },
+    {
+      "ref": "Psalm 84:1",
+      "slug": "how-pleasant-how-divinely-fair",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 84:3",
+      "slug": "my-soul-how-lovely-is-the-place",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 85:1",
+      "slug": "lord-thou-hast-calld-thy-grace-to-mind",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 85:2",
+      "slug": "salvation-is-for-ever-nigh",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 86",
+      "slug": "among-the-princes-earthly-gods",
+      "metre": "CM",
+      "tune": "st-anne"
+    },
+    {
+      "ref": "Psalm 87",
+      "slug": "god-in-his-earthly-temple-lays",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 89:1",
+      "slug": "for-ever-shall-my-song-record",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 89:2",
+      "slug": "my-never-ceasing-songs-shall-show",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 89:4",
+      "slug": "blest-are-the-souls-that-hear-and-know",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 89:5",
+      "slug": "hear-what-the-lord-in-vision-said",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 89:6",
+      "slug": "yet-saith-the-lord-if-davids-race",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 89:7",
+      "slug": "remember-lord-our-mortal-state",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 90:1",
+      "slug": "thro-every-age-eternal-god",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 90:2",
+      "slug": "our-god-our-help-in-ages-past",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 90:3",
+      "slug": "lord-if-thine-eyes-survey-our-faults",
+      "metre": "CM",
+      "tune": "st-anne"
+    },
+    {
+      "ref": "Psalm 90:5",
+      "slug": "lord-what-a-feeble-piece",
+      "metre": "SM",
+      "tune": "st-bride"
+    },
+    {
+      "ref": "Psalm 91:1",
+      "slug": "he-that-hath-made-his-refuge-god",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 91:2",
+      "slug": "ye-sons-of-men-a-feeble-race",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 92:1",
+      "slug": "sweet-is-the-work-my-god-my-king",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 92:2",
+      "slug": "lord-tis-a-pleasant-thing-to-stand",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 93:1",
+      "slug": "jehovah-reigns-he-dwells-in-light",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 94:2",
+      "slug": "who-will-arise-and-plead-my-right",
+      "metre": "CM",
+      "tune": "winchester-old"
+    },
+    {
+      "ref": "Psalm 95:1",
+      "slug": "sing-to-the-lord-jehovahs-name",
+      "metre": "CM",
+      "tune": "st-agnes"
+    },
+    {
+      "ref": "Psalm 96:1",
+      "slug": "sing-to-the-lord-ye-distant-lands",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 97:2",
+      "slug": "the-lord-is-come-the-heavens-proclaim",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 97:3",
+      "slug": "th-almighty-reigns-exalted-high",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 97:4",
+      "slug": "ye-islands-of-the-northern-sea",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 98:1",
+      "slug": "to-our-almighty-maker-god",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 99:1",
+      "slug": "the-god-jehovah-reigns",
+      "metre": "SM",
+      "tune": "southwell"
+    },
+    {
+      "ref": "Psalm 99:2",
+      "slug": "exalt-the-lord-our-god",
+      "metre": "SM",
+      "tune": "st-bride"
+    },
+    {
+      "ref": "Psalm 100:2",
+      "slug": "sing-to-the-lord-with-joyful-voice",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 101:1",
+      "slug": "mercy-and-judgment-are-my-song",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 101:2",
+      "slug": "of-justice-and-of-grace-i-sing",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 102:1",
+      "slug": "hear-me-o-god-nor-hide-thy-face",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 102:2",
+      "slug": "let-zion-and-her-sons-rejoice",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 102:3",
+      "slug": "it-is-the-lord-our-saviours-hand",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 103:1",
+      "slug": "bless-o-my-soul-the-living-god",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 103:2",
+      "slug": "the-lord-how-wondrous-are-his-ways",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 103:3",
+      "slug": "o-bless-the-lord-my-soul",
+      "metre": "SM",
+      "tune": "aylesbury"
+    },
+    {
+      "ref": "Psalm 103:4",
+      "slug": "my-soul-repeat-his-praise",
+      "metre": "SM",
+      "tune": "st-bride"
+    },
+    {
+      "ref": "Psalm 104",
+      "slug": "my-soul-thy-great-creator-praise",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 105",
+      "slug": "give-thanks-to-god-invoke-his-name",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 106:1",
+      "slug": "to-god-the-great-the-ever-blest",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 106:2",
+      "slug": "god-of-eternal-love",
+      "metre": "SM",
+      "tune": "boylston"
+    },
+    {
+      "ref": "Psalm 107:1",
+      "slug": "give-thanks-to-god-he-reigns-above",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 107:2",
+      "slug": "from-age-to-age-exalt-his-name",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 107:3",
+      "slug": "vain-man-on-foolish-pleasures-bent",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 107:4",
+      "slug": "would-you-behold-the-works-of-god",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 107:5",
+      "slug": "thy-works-of-glory-mighty-lord",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 107:6",
+      "slug": "when-god-provokd-with-daring-crimes",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 109",
+      "slug": "god-of-my-mercy-and-my-praise",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 110:1",
+      "slug": "thus-the-eternal-father-spake",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 110:2",
+      "slug": "thus-the-great-lord-of-earth-and-sea",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 110:3",
+      "slug": "jesus-our-lord-ascend-thy-throne",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 111:1",
+      "slug": "songs-of-immortal-praise-belong",
+      "metre": "CM",
+      "tune": "st-agnes"
+    },
+    {
+      "ref": "Psalm 111:2",
+      "slug": "great-is-the-lord-his-works-of-might",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 112:2",
+      "slug": "thrice-happy-man-who-fears-the-lord",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 113:2",
+      "slug": "ye-servants-of-th-almighty-king",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 114",
+      "slug": "when-israel-freed-from-pharaohs-hand",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 115:1",
+      "slug": "not-to-ourselves-who-are-but-dust",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 116:1",
+      "slug": "i-love-the-lord-he-heard-my-cries",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 116:2",
+      "slug": "what-shall-i-render-to-my-god",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 117:2",
+      "slug": "from-all-that-dwell-below-the-skies",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 117:3",
+      "slug": "thy-name-almighty-lord",
+      "metre": "SM",
+      "tune": "aylesbury"
+    },
+    {
+      "ref": "Psalm 118:1",
+      "slug": "the-lord-appears-my-helper-now",
+      "metre": "CM",
+      "tune": "winchester-old"
+    },
+    {
+      "ref": "Psalm 118:2",
+      "slug": "lord-thou-hast-heard-thy-servant-cry",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 118:3",
+      "slug": "behold-the-sure-foundation-stone",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 118:4",
+      "slug": "this-is-the-day-the-lord-hath-made",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 118:5",
+      "slug": "see-what-a-living-stone",
+      "metre": "SM",
+      "tune": "aylesbury"
+    },
+    {
+      "ref": "Psalm 118:6",
+      "slug": "lo-what-a-glorious-corner-stone",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 119:1",
+      "slug": "blest-are-the-undefild-in-heart",
+      "metre": "CM",
+      "tune": "st-agnes"
+    },
+    {
+      "ref": "Psalm 119:2",
+      "slug": "to-thee-before-the-dawning-light",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 119:3",
+      "slug": "thou-art-my-portion-o-my-god",
+      "metre": "CM",
+      "tune": "st-agnes"
+    },
+    {
+      "ref": "Psalm 119:4",
+      "slug": "how-shall-the-young-secure-their-hearts",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 119:5",
+      "slug": "o-how-i-love-thy-holy-law",
+      "metre": "CM",
+      "tune": "st-agnes"
+    },
+    {
+      "ref": "Psalm 119:6",
+      "slug": "lord-i-esteem-thy-judgments-right",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 119:7",
+      "slug": "let-all-the-heathen-writers-join",
+      "metre": "CM",
+      "tune": "st-agnes"
+    },
+    {
+      "ref": "Psalm 119:8",
+      "slug": "lord-i-have-made-thy-word-my-choice",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 119:9",
+      "slug": "thy-mercies-fill-the-earth-o-lord",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 119:10",
+      "slug": "behold-thy-waiting-servant-lord",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 119:12",
+      "slug": "my-god-consider-my-distress",
+      "metre": "CM",
+      "tune": "st-agnes"
+    },
+    {
+      "ref": "Psalm 119:13",
+      "slug": "with-my-whole-heart-ive-sought-thy-face",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 119:15",
+      "slug": "to-meditate-thy-precepts-lord",
+      "metre": "CM",
+      "tune": "st-anne"
+    },
+    {
+      "ref": "Psalm 119:16",
+      "slug": "my-soul-lies-cleaving-to-the-dust",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 119:17",
+      "slug": "when-pain-and-anguish-seize-me-lord",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 119:18",
+      "slug": "father-i-bless-thy-gentle-hand",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 120",
+      "slug": "thou-god-of-love-thou-ever-blest",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 121:1",
+      "slug": "up-to-the-hills-i-lift-mine-eyes",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 121:2",
+      "slug": "to-heaven-i-lift-my-waiting-eyes",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 122:1",
+      "slug": "how-did-my-heart-rejoice-to-hear",
+      "metre": "CM",
+      "tune": "st-anne"
+    },
+    {
+      "ref": "Psalm 123",
+      "slug": "o-thou-whose-grace-and-justice-reign",
+      "metre": "CM",
+      "tune": "st-anne"
+    },
+    {
+      "ref": "Psalm 124",
+      "slug": "had-not-the-lord-may-israel-say",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 125:1",
+      "slug": "unshaken-as-the-sacred-hill",
+      "metre": "CM",
+      "tune": "winchester-old"
+    },
+    {
+      "ref": "Psalm 125:2",
+      "slug": "firm-and-unmovd-are-they",
+      "metre": "SM",
+      "tune": "southwell"
+    },
+    {
+      "ref": "Psalm 126:1",
+      "slug": "when-god-restord-our-captive-state",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 126:2",
+      "slug": "when-god-reveald-his-gracious-name",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 127:1",
+      "slug": "if-god-succeed-not-all-the-cost",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 127:2",
+      "slug": "if-god-to-build-the-house-deny",
+      "metre": "CM",
+      "tune": "st-agnes"
+    },
+    {
+      "ref": "Psalm 129",
+      "slug": "up-from-my-youth-may-israel-say",
+      "metre": "CM",
+      "tune": "winchester-old"
+    },
+    {
+      "ref": "Psalm 130:1",
+      "slug": "out-of-the-deeps-of-long-distress",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 130:2",
+      "slug": "from-deep-distress-and-troubled-thoughts",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 131",
+      "slug": "is-there-ambition-in-my-heart",
+      "metre": "CM",
+      "tune": "st-anne"
+    },
+    {
+      "ref": "Psalm 132:1",
+      "slug": "where-shall-we-go-to-seek-and-find",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 132:2",
+      "slug": "no-sleep-nor-slumber-to-his-eyes",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 133:2",
+      "slug": "blest-are-the-sons-of-peace",
+      "metre": "SM",
+      "tune": "southwell"
+    },
+    {
+      "ref": "Psalm 134",
+      "slug": "ye-that-obey-th-immortal-king",
+      "metre": "CM",
+      "tune": "st-agnes"
+    },
+    {
+      "ref": "Psalm 135:1",
+      "slug": "praise-ye-the-lord-exalt-his-name",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 135:2",
+      "slug": "great-is-the-lord-exalted-high",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 135:3",
+      "slug": "awake-ye-saints-to-praise-your-king",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 136:3",
+      "slug": "give-to-our-god-immortal-praise",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 138",
+      "slug": "with-all-my-powers-of-heart-and-tongue",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 139:1",
+      "slug": "lord-thou-hast-searchd-and-seen-me-thro",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 139:2",
+      "slug": "twas-from-thy-hand-my-god-i-came",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 139:3",
+      "slug": "my-god-what-inward-grief-i-feel",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 139:4",
+      "slug": "in-all-my-vast-concerns-with-thee",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "Psalm 139:5",
+      "slug": "when-i-with-pleasing-wonder-stand",
+      "metre": "CM",
+      "tune": "st-anne"
+    },
+    {
+      "ref": "Psalm 139:6",
+      "slug": "lord-when-i-count-thy-mercies-oer",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 141",
+      "slug": "my-god-accept-my-early-vows",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 142",
+      "slug": "to-god-i-made-my-sorrows-known",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 143",
+      "slug": "my-righteous-judge-my-gracious-god",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 144:1",
+      "slug": "for-ever-blessed-be-the-lord",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "Psalm 144:2",
+      "slug": "lord-what-is-man-poor-feeble-man",
+      "metre": "CM",
+      "tune": "st-agnes"
+    },
+    {
+      "ref": "Psalm 144:3",
+      "slug": "happy-the-city-where-their-sons",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 145:1",
+      "slug": "my-god-my-king-thy-various-praise",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "Psalm 145:2",
+      "slug": "long-as-i-live-ill-bless-thy-name",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
+      "ref": "Psalm 146:1",
+      "slug": "praise-ye-the-lord-my-heart-shall-join",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 147:1",
+      "slug": "praise-ye-the-lord-tis-good-to-raise",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "Psalm 147:2",
+      "slug": "o-britain-praise-thy-mighty-god",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
+      "ref": "Psalm 147:3",
+      "slug": "with-songs-and-honours-sounding-loud",
+      "metre": "CM",
+      "tune": "winchester-old"
+    },
+    {
+      "ref": "Psalm 148:2",
+      "slug": "loud-hallelujahs-to-the-lord",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "Psalm 148:3",
+      "slug": "let-every-creature-join",
+      "metre": "SM",
+      "tune": "franconia"
+    },
+    {
+      "ref": "Psalm 149",
+      "slug": "all-ye-that-love-the-lord-rejoice",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
+      "ref": "Psalm 150",
+      "slug": "in-gods-own-house-pronounce-his-praise",
+      "metre": "CM",
+      "tune": "winchester-old"
+    }
+  ],
+  "alreadyOurs": [
+    {
+      "ref": "Psalm 72:2",
+      "first": "Jesus shall reign where'er the sun",
+      "page": "jesus-shall-reign"
+    },
+    {
+      "ref": "Psalm 78:1",
+      "first": "Let children hear the mighty deeds,",
+      "page": "let-children-hear-the-mighty-deeds"
+    },
+    {
+      "ref": "Psalm 98:2",
+      "first": "Joy to the world; the Lord is come;",
+      "page": "joy-to-the-world"
+    },
+    {
+      "ref": "Psalm 119:11",
+      "first": "O that the Lord would guide my ways",
+      "page": "o-that-the-lord-would-guide-my-ways"
+    }
+  ],
+  "skipped": [
+    {
+      "ref": "Psalm 2:1",
+      "first": "Maker and sovereign Lord",
+      "why": "its first verse cannot be sung as Short Metre"
+    },
+    {
+      "ref": "Psalm 13:1",
+      "first": "How long, 0 Lord, shall I complain",
+      "why": "its first verse cannot be sung as Long Metre"
+    },
+    {
+      "ref": "Psalm 16:2",
+      "first": "How fast their guilt and sorrows rise",
+      "why": "its first verse cannot be sung as Long Metre"
+    },
+    {
+      "ref": "Psalm 19:4",
+      "first": "Great God, the heaven's well-order'd frame",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 20",
+      "first": "Now may the God of power and grace",
+      "why": "its first verse cannot be sung as Long Metre"
+    },
+    {
+      "ref": "Psalm 31:1",
+      "first": "Into thine hand, 0 God of truth,",
+      "why": "its first verse cannot be sung as Common Metre"
+    },
+    {
+      "ref": "Psalm 33:3",
+      "first": "Ye holy souls, in God rejoice,",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 33:4",
+      "first": "O Happy nation, where the Lord",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 40:2",
+      "first": "Thus saith the Lord,",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 46:2",
+      "first": "Let Sion in her King rejoice,",
+      "why": "its first verse cannot be sung as Long Metre"
+    },
+    {
+      "ref": "Psalm 47",
+      "first": "O for a shout of sacred joy",
+      "why": "its first verse cannot be sung as Common Metre"
+    },
+    {
+      "ref": "Psalm 50:5",
+      "first": "The Lord the Sovereign sends his summons forth,",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 50:6",
+      "first": "The God of glory sends his summons forth,",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 51:3",
+      "first": "O thou that hear'st when sinners cry,",
+      "why": "its first verse cannot be sung as Long Metre"
+    },
+    {
+      "ref": "Psalm 53",
+      "first": "Are all the foes of Sion fools,",
+      "why": "its first verse cannot be sung as Common Metre"
+    },
+    {
+      "ref": "Psalm 56",
+      "first": "Thou, whose justice reigns on high,",
+      "why": "its first verse cannot be sung as Common Metre"
+    },
+    {
+      "ref": "Psalm 58",
+      "first": "Judges, who rule the world by laws,",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 65:1",
+      "first": "The praise of Sion waits for thee,",
+      "why": "its first verse cannot be sung as Long Metre"
+    },
+    {
+      "ref": "Psalm 65:2",
+      "first": "The God of our salvation hears",
+      "why": "its first verse cannot be sung as Long Metre"
+    },
+    {
+      "ref": "Psalm 65:3",
+      "first": "Praise waits in Sion, Lord, for thee;",
+      "why": "its first verse cannot be sung as Common Metre"
+    },
+    {
+      "ref": "Psalm 69:2",
+      "first": "Now let our lips with holy fear",
+      "why": "its first verse cannot be sung as Common Metre"
+    },
+    {
+      "ref": "Psalm 76",
+      "first": "In Judah God of old was known;",
+      "why": "its first verse cannot be sung as Common Metre"
+    },
+    {
+      "ref": "Psalm 78:2",
+      "first": "What a stiff rebellious house",
+      "why": "its first verse cannot be sung as Common Metre"
+    },
+    {
+      "ref": "Psalm 84:2",
+      "first": "Great God, attend, while Sion sings",
+      "why": "its first verse cannot be sung as Long Metre"
+    },
+    {
+      "ref": "Psalm 84:4",
+      "first": "Lord of the worlds above,",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 89:3",
+      "first": "With reverence let the saints appear",
+      "why": "its first verse cannot be sung as Common Metre"
+    },
+    {
+      "ref": "Psalm 89:8",
+      "first": "Think, mighty God, on feeble man,",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 90:4",
+      "first": "Return, O God of love, return;",
+      "why": "its first verse cannot be sung as Common Metre"
+    },
+    {
+      "ref": "Psalm 93:2",
+      "first": "The Lord of glory reigns; he reigns on high;",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 93:3",
+      "first": "The Lord Jehovah reigns",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 94:1",
+      "first": "God, to whom revenge belongs,",
+      "why": "its first verse cannot be sung as Common Metre"
+    },
+    {
+      "ref": "Psalm 95:2",
+      "first": "Come, sound his praise abroad,",
+      "why": "its first verse cannot be sung as Short Metre"
+    },
+    {
+      "ref": "Psalm 95:3",
+      "first": "Come, let our voices join to raise",
+      "why": "its first verse cannot be sung as Long Metre"
+    },
+    {
+      "ref": "Psalm 96:2",
+      "first": "Let all the earth their voices raise",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 97:1",
+      "first": "He reigns; the Lord, the Saviour reigns;",
+      "why": "its first verse cannot be sung as Long Metre"
+    },
+    {
+      "ref": "Psalm 100:1",
+      "first": "Ye nations round the earth rejoice",
+      "why": "its first verse cannot be sung as Long Metre"
+    },
+    {
+      "ref": "Psalm 103:5",
+      "first": "The lord, the sovereign King,",
+      "why": "its first verse cannot be sung as Short Metre"
+    },
+    {
+      "ref": "Psalm 112:1",
+      "first": "That man is blest who stands in awe",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 112:3",
+      "first": "Happy is he that fears the Lord,",
+      "why": "its first verse cannot be sung as Common Metre"
+    },
+    {
+      "ref": "Psalm 113:1",
+      "first": "Ye that delight to serve the Lord,",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 115:2",
+      "first": "Not to our names, thou only Just and True,",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 117:1",
+      "first": "O all ye nations, praise the Lord,",
+      "why": "its first verse cannot be sung as Common Metre"
+    },
+    {
+      "ref": "Psalm 119",
+      "why": "no verses"
+    },
+    {
+      "ref": "Psalm 119:14",
+      "first": "Consider all my sorrows, Lord,",
+      "why": "its first verse cannot be sung as Common Metre"
+    },
+    {
+      "ref": "Psalm 121:3",
+      "first": "Upward I lift mine eyes,",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 122:2",
+      "first": "How pleas'd and blest was I",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 128",
+      "first": "O happy man, whose soul is fill'd",
+      "why": "its first verse cannot be sung as Common Metre"
+    },
+    {
+      "ref": "Psalm 133:1",
+      "first": "Lo! what an entertaining sight",
+      "why": "its first verse cannot be sung as Common Metre"
+    },
+    {
+      "ref": "Psalm 133:3",
+      "first": "How pleasant 'tis to see",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 136:1",
+      "first": "Give thanks to God the sovereign Lord;",
+      "why": "its first verse cannot be sung as Common Metre"
+    },
+    {
+      "ref": "Psalm 136:2",
+      "first": "Give thanks to God most high,",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 145:3",
+      "first": "Sweet is the memory of thy grace,",
+      "why": "its first verse cannot be sung as Common Metre"
+    },
+    {
+      "ref": "Psalm 145:4",
+      "first": "Let every tongue thy goodness speak,",
+      "why": "its first verse cannot be sung as Common Metre"
+    },
+    {
+      "ref": "Psalm 146:2",
+      "first": "I'll praise my Maker with my breath;",
+      "why": "verses that are not four lines"
+    },
+    {
+      "ref": "Psalm 148:1",
+      "first": "Ye tribes of Adam, join",
+      "why": "verses that are not four lines"
+    }
+  ],
+  "counts": {
+    "hymns": 339,
+    "written": 280,
+    "alreadyOurs": 4,
+    "skipped": 55,
+    "removed": 0
+  }
+}

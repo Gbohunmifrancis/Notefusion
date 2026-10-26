@@ -1,0 +1,55 @@
+{
+  "title": "Wide as His Vast Dominion Lies",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Wide as His Vast Dominion Lies in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 163 of its twenty-second edition (1853), “Universal Praise”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Wide as his vast do-min-ion lies, Make the Cre-a-tor's name be known; Loud as his thun-ders speak his praise, And sound it lof-ty as his throne.",
+  "verses": [
+    {
+      "lines": [
+        "Wide as his vast dominion lies,",
+        "Make the Creator's name be known;",
+        "Loud as his thunders speak his praise,",
+        "And sound it lofty as his throne."
+      ]
+    },
+    {
+      "lines": [
+        "Jehovah! — 'tis a glorious word;",
+        "O may it dwell on every tongue;",
+        "But saints, who best have known the Lord,",
+        "Are bound to raise the noblest song."
+      ]
+    },
+    {
+      "lines": [
+        "Speak of the wonders of that love",
+        "Which Gabriel plays on every chord;",
+        "From all below, and all above,",
+        "Loud hallelujahs to the Lord."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:163"
+}

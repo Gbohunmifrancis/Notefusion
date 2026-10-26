@@ -1,0 +1,110 @@
+{
+  "title": "Why Did the Jews Proclaim Their Rage",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Why Did the Jews Proclaim Their Rage in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 10 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 2, part 3, headed “Christ's death, resurrection, and ascension”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Why did the Jews pro-claim their rage? The Ro-mans why their swords em-ploy? A-gainst the Lord their powers en-gage His dear a-noint-ed to de-stroy?",
+  "verses": [
+    {
+      "lines": [
+        "Why did the Jews proclaim their rage?",
+        "The Romans why their swords employ?",
+        "Against the Lord their powers engage",
+        "His dear anointed to destroy?"
+      ]
+    },
+    {
+      "lines": [
+        "\"Come, let us break his bands,\" they say,",
+        "\"This man shall never give us laws ;\"",
+        "And thus they cast his yoke away,",
+        "And nail'd the monarch to the cross."
+      ]
+    },
+    {
+      "lines": [
+        "But God, who high in glory reigns,",
+        "Laughs at their pride, their rage controls;",
+        "He'll vex their hearts with inward pains,",
+        "And speak in thunder to their souls."
+      ]
+    },
+    {
+      "lines": [
+        "\"I will maintain the King I made",
+        "\"On Zion's everlasting hill,",
+        "\"My hand shall bring him from the dead,",
+        "\"And he shall stand your sovereign still.\""
+      ]
+    },
+    {
+      "lines": [
+        "His wondrous rising from the earth",
+        "Makes his eternal Godhead known!",
+        "The Lord declares his heavenly birth,",
+        "\"This day have I begot my Son."
+      ]
+    },
+    {
+      "lines": [
+        "\"Ascend, my Son, to my right hand,",
+        "\"There thou shalt ask, and I bestow",
+        "\"The utmost bounds of heathen lands;",
+        "\"To thee the northern isles shall bow.\""
+      ]
+    },
+    {
+      "lines": [
+        "But nations that resist his grace",
+        "Shall fall beneath his iron stroke;",
+        "His rod shall crush his foes with ease",
+        "As potters' earthen work is broke."
+      ]
+    },
+    {
+      "lines": [
+        "Now, ye that sit on earthly thrones,",
+        "Be wise, and serve the Lord, the Lamb;",
+        "at his feet submit your crowns,",
+        "Rejoice and tremble at his name."
+      ]
+    },
+    {
+      "lines": [
+        "With humble love address the Son,",
+        "Lest he grow angry and ye die;",
+        "His wrath will burn to worlds unknown",
+        "If ye provoke his jealousy."
+      ]
+    },
+    {
+      "lines": [
+        "His storms shall drive you quick to hell:",
+        "He is a God, and ye but dust:",
+        "Happy the souls that know him well,",
+        "And make his grace their only trust."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 2:3"
+}

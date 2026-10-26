@@ -1,0 +1,79 @@
+{
+  "title": "How Blest, Amid All Blessing",
+  "tune": "greenland",
+  "text": [
+    {
+      "name": "John Greenleaf Adams",
+      "born": 1810,
+      "died": 1887,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "How Blest, Amid All Blessing in Tonic Solfa to GREENLAND, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Greenleaf Adams wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 784 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to GREENLAND; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "How blest, a-mid all bless-ing This chang-ing world be-stows, That soul in truth pos-sess-ing Pi-ty for o-thers' woes; Rea-dy to move and light-en The load a-fflic-tion bears Want's face with joy to bright-en, In deed, as with its prayers.",
+  "verses": [
+    {
+      "lines": [
+        "How blest, amid all blessing",
+        "This changing world bestows,",
+        "That soul in truth possessing",
+        "Pity for others' woes;",
+        "Ready to move and lighten",
+        "The load affliction bears —",
+        "Want's face with joy to brighten,",
+        "In deed, as with its prayers."
+      ]
+    },
+    {
+      "lines": [
+        "Thus Christ, the Friend and Servant",
+        "Of man, depressed and poor —",
+        "With ready soul and fervent —",
+        "With patience to endure —",
+        "Lived, labored without measure",
+        "In mercy's holy name,",
+        "God's will his highest pleasure,",
+        "Our good his only fame."
+      ]
+    },
+    {
+      "lines": [
+        "And those who in his spirit",
+        "Would seek to live and move,",
+        "His virtue must inherit,",
+        "And labor in his love;",
+        "Labor where poor, forsaken,",
+        "And lowly, sufferers lie;",
+        "In faith and hope unshaken;",
+        "Celestial ministry!"
+      ]
+    },
+    {
+      "lines": [
+        "God of all times and stations!",
+        "Teach us this lesson true, —",
+        "Proclaim it to all nations",
+        "In life and power anew, —",
+        "That high above all praises —",
+        "All prayers — is that unfeigned,",
+        "Glad offering Mercy raises,",
+        "By living deeds sustained!"
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Greenleaf Adams died in 1887.",
+  "credits": "Words by John Greenleaf Adams (1810–1887), public domain, as printed in Hymns for Christian Devotion (1853); set to GREENLAND by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:784"
+}

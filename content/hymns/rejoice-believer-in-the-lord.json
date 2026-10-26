@@ -1,0 +1,71 @@
+{
+  "title": "Rejoice, Believer, in the Lord",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Rejoice, Believer, in the Lord in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 84, “Perseverance”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Re-joice, be-liev-er, in the Lord Who makes your cause his own; The hope that's built up-on his word, Can ne'er be o-ver-thrown.",
+  "verses": [
+    {
+      "lines": [
+        "Rejoice, believer, in the Lord",
+        "Who makes your cause his own;",
+        "The hope that's built upon his word,",
+        "Can ne'er be overthrown."
+      ]
+    },
+    {
+      "lines": [
+        "Though many foes beset your road,",
+        "And feeble is your arm;",
+        "Your life is hid with Christ in God",
+        "Beyond the reach of harm."
+      ]
+    },
+    {
+      "lines": [
+        "Weak as you are, you shall not faint,",
+        "Or fainting shall not die;",
+        "Jesus, the strength of every saint,",
+        "Will aid you from on high."
+      ]
+    },
+    {
+      "lines": [
+        "Though sometimes unperceived by sense,",
+        "Faith sees him always near;",
+        "A Guide, a Glory, a Defence,",
+        "Then what have you to fear?"
+      ]
+    },
+    {
+      "lines": [
+        "As surely as he overcame,",
+        "And triumphed once for you;",
+        "So surely you, that love his name,",
+        "Shall triumph in him too."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:84"
+}

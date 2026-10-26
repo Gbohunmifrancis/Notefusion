@@ -1,0 +1,55 @@
+{
+  "title": "Where Is Thy Sting, O Death",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "John Bowring",
+      "born": 1792,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Where Is Thy Sting, O Death in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Bowring wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 349, “O Death, Where Is Thy Sting?”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Where is thy sting, O death? Grave! where thy vic-to-ry? The clod may sleep in dust be-neath, The spir-it will be free!",
+  "verses": [
+    {
+      "lines": [
+        "Where is thy sting, O death?",
+        "Grave! where thy victory?",
+        "The clod may sleep in dust beneath,",
+        "The spirit will be free!"
+      ]
+    },
+    {
+      "lines": [
+        "Both man and time have power",
+        "O'er suffering, dying men;",
+        "But death arrives, and in that hour",
+        "The soul is freed again."
+      ]
+    },
+    {
+      "lines": [
+        "Then, death, where is thy sting?",
+        "And where thy victory, grave?",
+        "O'er your dark bourn the soul will spring",
+        "To Him who loves to save."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Bowring died in 1872.",
+  "credits": "Words by John Bowring (1792–1872), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:349"
+}

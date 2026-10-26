@@ -1,0 +1,62 @@
+{
+  "title": "Omniscient God, 'Tis Thine to Know",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Omniscient God, 'Tis Thine to Know in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 398 of its twenty-second edition (1853), “Charitable Judgment”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Om-ni-scient God, 'tis thine to know The springs whence wrong o-pin-ions flow; To judge from prin-ci-ples with-in, When frail-ty errs, and when we sin.",
+  "verses": [
+    {
+      "lines": [
+        "Omniscient God, 'tis thine to know",
+        "The springs whence wrong opinions flow;",
+        "To judge from principles within,",
+        "When frailty errs, and when we sin."
+      ]
+    },
+    {
+      "lines": [
+        "Who with another's eye can read,",
+        "Or worship by another's creed?",
+        "Revering thy command alone,",
+        "We humbly seek and use our own."
+      ]
+    },
+    {
+      "lines": [
+        "If wrong, forgive; accept, if right,",
+        "Whilst faithful, we obey our light,",
+        "And judging none, are zealous still",
+        "To follow, as to learn, thy will."
+      ]
+    },
+    {
+      "lines": [
+        "When shall our happy eyes behold",
+        "Thy people, fashioned in thy mould?",
+        "And charity our kindred prove",
+        "Derived from thee, O God of love?"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:398"
+}

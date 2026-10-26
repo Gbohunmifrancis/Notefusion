@@ -1,0 +1,95 @@
+{
+  "title": "The God Who Once to Israel Spoke",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The God Who Once to Israel Spoke in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 17, “God speaking from mount Zion”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The God who once to Is-rael spoke From Si-nai's top, in fire and smoke, In gen-tler strains of gos-pel grace In-vites us, now, to seek his face.",
+  "verses": [
+    {
+      "lines": [
+        "The God who once to Israel spoke",
+        "From Sinai's top, in fire and smoke,",
+        "In gentler strains of gospel grace",
+        "Invites us, now, to seek his face."
+      ]
+    },
+    {
+      "lines": [
+        "He wears no terrors on his brow,",
+        "He speaks, in love, from Zion, now;",
+        "It is the voice of Jesus' blood",
+        "Calling poor wand'rers home to God."
+      ]
+    },
+    {
+      "lines": [
+        "The holy Moses quaked and feared",
+        "When Sinai's thund'ring law he heard;",
+        "But reigning grace, with accents mild,",
+        "Speaks to the sinner, as a child."
+      ]
+    },
+    {
+      "lines": [
+        "Hark! how from Calvary it sounds;",
+        "From the Redeemer's bleeding wounds!",
+        "\"Pardon and grace, I freely give,",
+        "Poor sinner, look to me, and live.\""
+      ]
+    },
+    {
+      "lines": [
+        "What other arguments can move",
+        "The heart, that slights a Savior's love!",
+        "Yet till Almighty pow'r constrain,",
+        "This matchless love is preached in vain."
+      ]
+    },
+    {
+      "lines": [
+        "O Savior let that pow'r be felt,",
+        "And cause each stony heart to melt!",
+        "Deeply impress upon our youth",
+        "The light, and force, of gospel truth."
+      ]
+    },
+    {
+      "lines": [
+        "With this new-year may they begin",
+        "To live to thee, and die to sin,",
+        "To enter by the narrow way",
+        "Which leads to everlasting day."
+      ]
+    },
+    {
+      "lines": [
+        "How will they else thy presence bear",
+        "When as a Judge thou shalt appear!",
+        "When slighted love to wrath shall turn,",
+        "And the whole earth like Sinai burn!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:17"
+}

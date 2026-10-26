@@ -1,0 +1,87 @@
+{
+  "title": "Beneath the Tyrant Satan's Yoke",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Beneath the Tyrant Satan's Yoke in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 25, “We were Pharaoh's bondmen. Deut 6:20-23”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Be-neath the ty-rant Sa-tan's yoke Our souls were long op-pressed; Till grace our gal-ling fet-ters broke, And gave the wea-ry rest.",
+  "verses": [
+    {
+      "lines": [
+        "Beneath the tyrant Satan's yoke",
+        "Our souls were long oppressed;",
+        "Till grace our galling fetters broke,",
+        "And gave the weary rest."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, in that important hour,",
+        "His mighty arm made known;",
+        "He ransomed us by price, and pow'r,",
+        "And claimed us for his own."
+      ]
+    },
+    {
+      "lines": [
+        "Now, freed from bondage, sin, and death,",
+        "We walk in Wisdom's ways;",
+        "And wish to spend our every breath,",
+        "In wonder, love, and praise."
+      ]
+    },
+    {
+      "lines": [
+        "Ere long, we hope with him to dwell",
+        "In yonder world above;",
+        "And now, we only live to tell",
+        "The riches of his love."
+      ]
+    },
+    {
+      "lines": [
+        "O might we, ere we hence remove,",
+        "Prevail upon our youth",
+        "To seek, that they may likewise prove,",
+        "His mercy and his truth,"
+      ]
+    },
+    {
+      "lines": [
+        "Like Simeon, we shall gladly go,",
+        "When Jesus calls us home;",
+        "If they are left a seed below,",
+        "To serve him in our room."
+      ]
+    },
+    {
+      "lines": [
+        "Lord hear our prayer, indulge our hope,",
+        "On these thy Spirit pour;",
+        "That they may take our story up,",
+        "When we can speak no more."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:25"
+}

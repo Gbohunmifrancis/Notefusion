@@ -1,0 +1,63 @@
+{
+  "title": "Stretched on the Cross, the Saviour Dies",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Anne Steele",
+      "born": 1717,
+      "died": 1778,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Stretched on the Cross, the Saviour Dies in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Anne Steele wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 232 of its twenty-second edition (1853), “A Dying Saviour”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Stretched on the cross, the Sa-viour dies, Hark! his ex-pir-ing groans a-rise; See, from his hands, his feet, his side, De-scends the sa-cred, crim-son tide.",
+  "verses": [
+    {
+      "lines": [
+        "Stretched on the cross, the Saviour dies,",
+        "Hark! his expiring groans arise;",
+        "See, from his hands, his feet, his side,",
+        "Descends the sacred, crimson tide."
+      ]
+    },
+    {
+      "lines": [
+        "And didst thou bleed? — for sinners bleed?",
+        "And could the sun behold the deed?",
+        "No; he withdrew his cheering ray,",
+        "And darkness veiled the mourning day."
+      ]
+    },
+    {
+      "lines": [
+        "Can I survey this scene of woe,",
+        "Where mingling grief and mercy flow,",
+        "And yet my heart so hard remain, —",
+        "Unmoved by either love or pain!"
+      ]
+    },
+    {
+      "lines": [
+        "Come, dearest Lord, thy grace impart,",
+        "To warm this cold, this stupid heart,",
+        "Till all its powers and passions move,",
+        "In melting grief and ardent love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Anne Steele died in 1778.",
+  "credits": "Words by Anne Steele (1717–1778), public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:232"
+}

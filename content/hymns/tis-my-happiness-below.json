@@ -1,0 +1,67 @@
+{
+  "title": "'Tis My Happiness Below",
+  "tune": "messiah-herald",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "'Tis My Happiness Below in Tonic Solfa to MESSIAH (HERALD), doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 16, “Welcome cross”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to MESSIAH (HERALD); any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "'Tis my happ-i-ness be-low Not to live with-out the cross; But the Sa-vior's pow'r to know, Sanc-ti-fying ev-e-ry loss: Tri-als must and will be-fall; But with hum-ble faith to see Love in-scribed up-on them all, This is happ-i-ness to me.",
+  "verses": [
+    {
+      "lines": [
+        "'Tis my happiness below",
+        "Not to live without the cross;",
+        "But the Savior's pow'r to know,",
+        "Sanctifying every loss:",
+        "Trials must and will befall;",
+        "But with humble faith to see",
+        "Love inscribed upon them all,",
+        "This is happiness to me."
+      ]
+    },
+    {
+      "lines": [
+        "God, in Israel, sows the seeds",
+        "Of affliction, pain, and toil;",
+        "These spring up, and choke the weeds",
+        "Which would else o'erspread the soil:",
+        "Trials make the promise sweet,",
+        "Trials give hew life to prayer;",
+        "Trials bring me to his feet,",
+        "Lay me low, and keep me there."
+      ]
+    },
+    {
+      "lines": [
+        "Did I meet no trials here,",
+        "No chastisement by the way;",
+        "Might I not, with reason, fear",
+        "I should prove a cast-away:",
+        "Bastards may escape the rod,",
+        "Sunk in earthly, vain delight;",
+        "But the true-born child of God,",
+        "Must not, would not, if he might."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to MESSIAH (HERALD) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:16"
+}

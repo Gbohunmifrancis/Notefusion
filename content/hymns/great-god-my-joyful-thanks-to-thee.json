@@ -1,0 +1,63 @@
+{
+  "title": "Great God! My Joyful Thanks to Thee",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Simon Browne",
+      "born": 1680,
+      "died": 1732,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Great God! My Joyful Thanks to Thee in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Simon Browne wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 444 of its twenty-second edition (1853), “\"Giving thanks to God in all things.\"”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Great God! my joy-ful thanks to thee Shall, like thy gifts, con-tin-ual be: In con-stant streams thy boun-ty flows, Nor end nor in-ter-mis-sion knows.",
+  "verses": [
+    {
+      "lines": [
+        "Great God! my joyful thanks to thee",
+        "Shall, like thy gifts, continual be:",
+        "In constant streams thy bounty flows,",
+        "Nor end nor intermission knows."
+      ]
+    },
+    {
+      "lines": [
+        "Thy kindness all my comforts gives;",
+        "My numerous wants thy hand relieves;",
+        "Nor can I ever, Lord, be poor,",
+        "Who live on thy exhaustless store."
+      ]
+    },
+    {
+      "lines": [
+        "If what I wish thy will denies,",
+        "It is that thou art good and wise;",
+        "Afflictions, which may make me mourn,",
+        "Thou canst, thou dost, to blessings turn."
+      ]
+    },
+    {
+      "lines": [
+        "Deep, Lord, upon my thankful breast,",
+        "Let all thy favors be imprest;",
+        "And though withdrawn thy gifts should be",
+        "In all things I'll give thanks to thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Simon Browne died in 1732.",
+  "credits": "Words by Simon Browne (1680–1732), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:444"
+}

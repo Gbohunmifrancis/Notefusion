@@ -1,0 +1,71 @@
+{
+  "title": "My God, Thy Service Well Demands",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Philip Doddridge",
+      "born": 1702,
+      "died": 1751,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "My God, Thy Service Well Demands in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Philip Doddridge wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 932 of its twenty-second edition (1853), “Sickness and Recovery”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "My God, thy ser-vice well de-mands The rem-nant of my days; Why was this fleet-ing breath re-newed, But to re-new thy praise?",
+  "verses": [
+    {
+      "lines": [
+        "My God, thy service well demands",
+        "The remnant of my days;",
+        "Why was this fleeting breath renewed,",
+        "But to renew thy praise?"
+      ]
+    },
+    {
+      "lines": [
+        "Thine arms of everlasting love",
+        "Did this weak frame sustain,",
+        "When life was hovering o'er the grave,",
+        "And nature sunk with pain."
+      ]
+    },
+    {
+      "lines": [
+        "I calmly bowed my fainting head",
+        "On thy dear, faithful breast,",
+        "And waited for my Father's call",
+        "To his eternal rest."
+      ]
+    },
+    {
+      "lines": [
+        "Back from the borders of the grave,",
+        "At thy command, I come;",
+        "Nor will I ask a speedier flight",
+        "To my celestial home."
+      ]
+    },
+    {
+      "lines": [
+        "Where thou appointest mine abode",
+        "There would I choose to be;",
+        "For in thy presence death is life,",
+        "And earth is heaven with thee."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Philip Doddridge died in 1751.",
+  "credits": "Words by Philip Doddridge (1702–1751), public domain, as printed in Hymns for Christian Devotion (1853); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:932"
+}

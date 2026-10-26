@@ -1,0 +1,87 @@
+{
+  "title": "By the Poor Widow's Oil and Meal",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "By the Poor Widow's Oil and Meal in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 36, “The meal and Cruse of oil. 1Ki 17:16”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "By the poor wid-ow's oil and meal E-li-jah was sus-tained; Though small the stock it last-ed well, For God the store main-tained.",
+  "verses": [
+    {
+      "lines": [
+        "By the poor widow's oil and meal",
+        "Elijah was sustained;",
+        "Though small the stock it lasted well,",
+        "For God the store maintained."
+      ]
+    },
+    {
+      "lines": [
+        "It seemed as if from day to day,",
+        "They were to eat and die;",
+        "But still, though in a secret way,",
+        "He sent a fresh supply."
+      ]
+    },
+    {
+      "lines": [
+        "Thus to his poor he still will give",
+        "Just for the present hour;",
+        "But for tomorrow they must live",
+        "Upon his word and power."
+      ]
+    },
+    {
+      "lines": [
+        "No barn or storehouse they possess",
+        "On which they can depend;",
+        "Yet have no cause to fear distress,",
+        "For Jesus is their friend."
+      ]
+    },
+    {
+      "lines": [
+        "Then let not doubts your mind assail,",
+        "Remember, God has said,",
+        "\"The cruse and barrel shall not fail,",
+        "\"My people shall be fed.\""
+      ]
+    },
+    {
+      "lines": [
+        "And thus though faint it often seems,",
+        "He keeps their grace alive;",
+        "Supplied by his refreshing streams,",
+        "Their dying hopes revive."
+      ]
+    },
+    {
+      "lines": [
+        "Though in ourselves we have no stock,",
+        "The Lord is nigh to save;",
+        "His door flies open when we knock,",
+        "And 'tis but ask and have."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:36"
+}

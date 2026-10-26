@@ -1,0 +1,71 @@
+{
+  "title": "Beneath Our Feet and O'er Our Head",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Reginald Heber",
+      "born": 1783,
+      "died": 1826,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Beneath Our Feet and O'er Our Head in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Reginald Heber wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 531 of its twenty-second edition (1853), “Universal Warning of Death”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Be-neath our feet and o'er our head Is e-qual warn-ing given: Be-neath us lie the count-less dead, A-bove us is the heaven!",
+  "verses": [
+    {
+      "lines": [
+        "Beneath our feet and o'er our head",
+        "Is equal warning given:",
+        "Beneath us lie the countless dead,",
+        "Above us is the heaven!"
+      ]
+    },
+    {
+      "lines": [
+        "Their names are graven on the stone,",
+        "Their bones are in the clay;",
+        "And ere another day is done,",
+        "Ourselves may be as they."
+      ]
+    },
+    {
+      "lines": [
+        "Our eyes have seen the rosy light",
+        "Of youth's soft cheek decay,",
+        "And fate descend in sudden night",
+        "On manhood's middle day."
+      ]
+    },
+    {
+      "lines": [
+        "Our eyes have seen the steps of age",
+        "Halt feebly towards the tomb;",
+        "And yet shall earth our hearts engage,",
+        "And dreams of days to come?"
+      ]
+    },
+    {
+      "lines": [
+        "Death rides on every passing breeze,",
+        "He lurks in every flower;",
+        "Each season has its own disease,",
+        "Its peril every hour."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Reginald Heber died in 1826.",
+  "credits": "Words by Reginald Heber (1783–1826), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:531"
+}

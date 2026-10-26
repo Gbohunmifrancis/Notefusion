@@ -1,0 +1,55 @@
+{
+  "title": "From Early Dawning Light",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "From Early Dawning Light in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 618 of its twenty-second edition (1853), “Trusting in God”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "From ear-ly daw-ning light Till eve-ning shades a-rise, For thy sal-va-tion, Lord, I wait, With ev-er long-ing eyes.",
+  "verses": [
+    {
+      "lines": [
+        "From early dawning light",
+        "Till evening shades arise,",
+        "For thy salvation, Lord, I wait,",
+        "With ever-longing eyes."
+      ]
+    },
+    {
+      "lines": [
+        "Remember all thy grace,",
+        "And lead me in thy truth;",
+        "Forgive the sins of riper days,",
+        "And follies of my youth."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord is just and kind;",
+        "The meek shall learn his ways,",
+        "And every humble sinner find",
+        "The blessings of his grace."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:618"
+}

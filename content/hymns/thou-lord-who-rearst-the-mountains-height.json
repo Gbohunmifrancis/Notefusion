@@ -1,0 +1,63 @@
+{
+  "title": "Thou, Lord, Who Rear'st the Mountain's Height",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "John Sterling",
+      "born": 1806,
+      "died": 1844,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Thou, Lord, Who Rear'st the Mountain's Height in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Sterling wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 303, “Divine Meaning in Humble Things”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thou, Lord, who rear'st the moun-tain's height, And mak'st the cliffs with sun-shine bright; O, grant that we may own Thy hand No less in ev-ery grain of sand!",
+  "verses": [
+    {
+      "lines": [
+        "Thou, Lord, who rear'st the mountain's height,",
+        "And mak'st the cliffs with sunshine bright;",
+        "O, grant that we may own Thy hand",
+        "No less in every grain of sand!"
+      ]
+    },
+    {
+      "lines": [
+        "With forests huge, of dateless time,",
+        "Thy will has hung each peak sublime;",
+        "But withered leaves beneath the tree",
+        "Have tongues that tell as loud of Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Teach us that not a leaf can grow,",
+        "Till life from Thee within it flow;",
+        "That not a grain of dust can be,",
+        "O Fount of being! save by Thee;"
+      ]
+    },
+    {
+      "lines": [
+        "That every human word and deed,",
+        "Each flash of feeling, will, or creed,",
+        "Hath solemn meaning from above,",
+        "Begun and ended all in love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Sterling died in 1844.",
+  "credits": "Words by John Sterling (1806–1844), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:303"
+}

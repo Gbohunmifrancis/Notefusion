@@ -1,0 +1,81 @@
+{
+  "title": "Jesus, While He Dwelt Below",
+  "tune": "ratisbon-werner",
+  "text": [
+    {
+      "name": "Robert Grant",
+      "born": 1779,
+      "died": 1838,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Jesus, While He Dwelt Below in Tonic Solfa to RATISBON (WERNER), doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Robert Grant wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 452, “The Garden of Gethsemane”.",
+    "The book printed the words without tunes, marked Sevens, six lines (7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to RATISBON (WERNER); any other Sevens, six lines tune fits them as well."
+  ],
+  "underlay": "Je-sus, while he dwelt be-low, As di-vine his-to-rians say, To a place would of-ten go, Near to Ke-dron's brook that lay: In this place he loved to be, And 'twas named Geth-se-ma-ne.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, while he dwelt below,",
+        "As divine historians say,",
+        "To a place would often go,",
+        "Near to Kedron's brook that lay:",
+        "In this place he loved to be,",
+        "And 'twas named Gethsemane."
+      ]
+    },
+    {
+      "lines": [
+        "'Twas a garden, as we read,",
+        "At the foot of Olivet,",
+        "Low and proper to be made",
+        "The Redeemer's lone retreat:",
+        "When from noise he would be free,",
+        "Then he sought Gethsemane."
+      ]
+    },
+    {
+      "lines": [
+        "Thither, by their Master brought,",
+        "His disciples likewise came;",
+        "There the heavenly truths he taught",
+        "Often set their hearts on flame:",
+        "Therefore they, as well as he,",
+        "Visited Gethsemane."
+      ]
+    },
+    {
+      "lines": [
+        "Oft conversing here they sat;",
+        "Or might join with Christ in prayer;",
+        "O, what blest devotion that,",
+        "When the Lord himself is there!",
+        "All things there did so agree",
+        "To endear Gethsemane."
+      ]
+    },
+    {
+      "lines": [
+        "Full of love to man's lost race,",
+        "On the conflict much he thought;",
+        "This he knew the destined place,",
+        "And he loved the sacred spot:",
+        "Therefore Jesus chose to be",
+        "Often in Gethsemane."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Robert Grant died in 1838.",
+  "credits": "Words by Robert Grant (1779–1838), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to RATISBON (WERNER) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:452"
+}

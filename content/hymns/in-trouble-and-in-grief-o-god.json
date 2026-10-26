@@ -1,0 +1,62 @@
+{
+  "title": "In Trouble and in Grief, O God",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "In Trouble and in Grief, O God in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 334, “Resignation”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "In trou-ble and in grief, O God, Thy smile hath cheered my way; And joy hath bud-ded from each thorn That round my foot-steps lay.",
+  "verses": [
+    {
+      "lines": [
+        "In trouble and in grief, O God,",
+        "Thy smile hath cheered my way;",
+        "And joy hath budded from each thorn",
+        "That round my footsteps lay."
+      ]
+    },
+    {
+      "lines": [
+        "The hours of pain have yielded good",
+        "Which prosperous days refused;",
+        "As herbs, though scentless when entire,",
+        "Spread fragrance when they're bruised."
+      ]
+    },
+    {
+      "lines": [
+        "The oak strikes deeper as its boughs",
+        "By furious blasts are driven;",
+        "So life's tempestuous storms the more",
+        "Have fixed my heart in heaven."
+      ]
+    },
+    {
+      "lines": [
+        "All gracious Lord! whate'er my lot",
+        "In other times may be,",
+        "I'll welcome still the heaviest grief",
+        "That brings me near to Thee."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:334"
+}

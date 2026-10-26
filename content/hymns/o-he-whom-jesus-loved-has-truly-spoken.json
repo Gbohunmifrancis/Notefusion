@@ -1,0 +1,63 @@
+{
+  "title": "O, He Whom Jesus Loved Has Truly Spoken",
+  "tune": "henley",
+  "text": [
+    {
+      "name": "John Greenleaf Whittier",
+      "born": 1807,
+      "died": 1892,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "O, He Whom Jesus Loved Has Truly Spoken in Tonic Solfa to HENLEY, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Greenleaf Whittier wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 578, “True Worship and Undefiled”.",
+    "The book printed the words without tunes, marked Elevens and Tens (11.10.11.10), to be sung to any tune of that metre. This page sets them to HENLEY; any other Elevens and Tens tune fits them as well."
+  ],
+  "underlay": "O, he whom Je-sus loved has tru-ly spo-ken! The holi-er wor-ship, which God deigns to bless, Re-stores the lost, and heals the spir-it bro-ken, And feeds the wid-ow and the fa-ther-less.",
+  "verses": [
+    {
+      "lines": [
+        "O, he whom Jesus loved has truly spoken!",
+        "The holier worship, which God deigns to bless,",
+        "Restores the lost, and heals the spirit-broken,",
+        "And feeds the widow and the fatherless."
+      ]
+    },
+    {
+      "lines": [
+        "Then, brother man, fold to thy heart thy brother!",
+        "For where love dwells, the peace of God is there;",
+        "To worship rightly is to love each other;",
+        "Each smile a hymn, each kindly deed a prayer."
+      ]
+    },
+    {
+      "lines": [
+        "Follow, with reverent steps, the great example",
+        "Of him whose holy work was doing good:",
+        "So shall the wide earth seem our Father's temple,",
+        "Each loving life a psalm of gratitude."
+      ]
+    },
+    {
+      "lines": [
+        "Thus shall all shackles fall; the stormy clangor",
+        "Of wild war-music o'er the earth shall cease;",
+        "Love shall tread out the baleful fire of anger,",
+        "And in its ashes plant the tree of peace."
+      ]
+    }
+  ],
+  "metre": "11 10 11 10",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Greenleaf Whittier died in 1892.",
+  "credits": "Words by John Greenleaf Whittier (1807–1892), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to HENLEY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:578"
+}

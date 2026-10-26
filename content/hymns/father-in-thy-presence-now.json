@@ -1,0 +1,70 @@
+{
+  "title": "Father, in Thy Presence Now",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Father, in Thy Presence Now in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 381, “Marriage Hymn”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Fa-ther, in Thy pre-sence now Has been pledged the nu-ptial vow; Heart to heart, as hand in hand, Linked in one Thy child-ren stand.",
+  "verses": [
+    {
+      "lines": [
+        "Father, in Thy presence now",
+        "Has been pledged the nuptial vow;",
+        "Heart to heart, as hand in hand,",
+        "Linked in one Thy children stand."
+      ]
+    },
+    {
+      "lines": [
+        "God of love! this union bless,",
+        "Not with earth's low happiness;",
+        "But with joys whose heavenly spring",
+        "Shall diviner raptures bring."
+      ]
+    },
+    {
+      "lines": [
+        "May these blended souls be found",
+        "Firm in duty's active round;",
+        "Daily every burden share,",
+        "Nightly seek Thy shadowing care."
+      ]
+    },
+    {
+      "lines": [
+        "When against their trembling forms",
+        "Shoot the arrows of life's storms;",
+        "Or when age and sickness wait",
+        "Heralds at life's parting gate; —"
+      ]
+    },
+    {
+      "lines": [
+        "In the fulness of belief,",
+        "May they look beyond the grief;",
+        "And together fearless tread",
+        "In the path where Thou shall lead."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:381"
+}

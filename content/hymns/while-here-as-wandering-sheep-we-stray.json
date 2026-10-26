@@ -1,0 +1,61 @@
+{
+  "title": "While Here as Wandering Sheep We Stray",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "James Merrick",
+      "born": 1720,
+      "died": 1769,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "While Here as Wandering Sheep We Stray in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "James Merrick wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 458 of its twenty-second edition (1853), “For the Understanding and Influence of God's Word”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "While here as wan-dering sheep we stray, Teach us, O teach us, Lord, thy way! Dis-pose our hearts, with will-ing awe, To love thy word, to keep thy law; That, by thy gui-ding pre-cepts led, Our feet the paths of truth may tread.",
+  "verses": [
+    {
+      "lines": [
+        "While here as wandering sheep we stray,",
+        "Teach us, O teach us, Lord, thy way!",
+        "Dispose our hearts, with willing awe,",
+        "To love thy word, to keep thy law;",
+        "That, by thy guiding precepts led,",
+        "Our feet the paths of truth may tread."
+      ]
+    },
+    {
+      "lines": [
+        "Great Source of light to all below!",
+        "Teach us thy holy will to know:",
+        "Teach us to read thy word aright,",
+        "And make it our supreme delight;",
+        "That, purged from vain desires, our mind",
+        "In thee its only good may find."
+      ]
+    },
+    {
+      "lines": [
+        "Maker, instructer, judge of all,",
+        "O hear us when on thee we call!",
+        "To us, all-bounteous Lord, dispense",
+        "Thy grace, and guiding influence!",
+        "Preserve us in thy holy ways,",
+        "And teach our hearts to speak thy praise!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Merrick died in 1769.",
+  "credits": "Words by James Merrick (1720–1769), public domain, as printed in Hymns for Christian Devotion (1853); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:458"
+}

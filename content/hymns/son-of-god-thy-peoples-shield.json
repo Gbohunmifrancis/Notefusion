@@ -1,0 +1,87 @@
+{
+  "title": "Son of God! Thy People's Shield",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Son of God! Thy People's Shield in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 76, “Prayer for the Lord's promised presence. Zech 2:10”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Son of God! thy peo-ple's shield! Must we still thine ab-sence mourn? Let thy pro-mise be ful-filled, Thou hast said, \"I will re-turn!\"",
+  "verses": [
+    {
+      "lines": [
+        "Son of God! thy people's shield!",
+        "Must we still thine absence mourn?",
+        "Let thy promise be fulfilled,",
+        "Thou hast said, \"I will return!\""
+      ]
+    },
+    {
+      "lines": [
+        "Gracious Leader now appear,",
+        "Shine upon us with thy light!",
+        "Like the spring, when thou art near,",
+        "Days and suns are doubly bright."
+      ]
+    },
+    {
+      "lines": [
+        "As a mother counts the days",
+        "Till her absent son she see;",
+        "Longs and watches, weeps and prays,",
+        "So our spirits long for thee."
+      ]
+    },
+    {
+      "lines": [
+        "Come, and let us feel thee nigh,",
+        "Then thy sheep shall feed in peace;",
+        "Plenty bless us from on high,",
+        "Evil from amongst us cease."
+      ]
+    },
+    {
+      "lines": [
+        "With thy love, and voice, and aid,",
+        "Thou canst every care assuage;",
+        "Then we shall not be afraid,",
+        "Though the world and Satan rage."
+      ]
+    },
+    {
+      "lines": [
+        "Thus each day for thee we'll spend,",
+        "While our callings we pursue;",
+        "And the thoughts of such a friend",
+        "Shall each night our joy renew."
+      ]
+    },
+    {
+      "lines": [
+        "Let thy light be ne'er withdrawn,",
+        "Golden days afford us long!",
+        "Thus we pray at early dawn,",
+        "This shall be our evening song."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:76"
+}

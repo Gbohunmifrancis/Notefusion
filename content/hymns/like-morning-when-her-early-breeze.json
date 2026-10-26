@@ -1,0 +1,63 @@
+{
+  "title": "Like Morning, When Her Early Breeze",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Thomas Moore",
+      "born": 1779,
+      "died": 1852,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Like Morning, When Her Early Breeze in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Thomas Moore wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 510, “The Spirit of God Moved Upon the Waters”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Like morn-ing, when her ear-ly breeze Breaks up the sur-face of the seas, That, in their fur-rows, dark with night, Her hand may sow the seeds of light;",
+  "verses": [
+    {
+      "lines": [
+        "Like morning, when her early breeze",
+        "Breaks up the surface of the seas,",
+        "That, in their furrows, dark with night,",
+        "Her hand may sow the seeds of light;"
+      ]
+    },
+    {
+      "lines": [
+        "Thy grace can send its breathings o'er",
+        "The spirit, dark and lost before;",
+        "And freshening all its depths, prepare",
+        "For truth divine to enter there!"
+      ]
+    },
+    {
+      "lines": [
+        "Till David touched his sacred lyre,",
+        "In silence lay the unbreathing wire,",
+        "But when he swept its chords along,",
+        "E'en angels stooped to hear the song."
+      ]
+    },
+    {
+      "lines": [
+        "So sleeps the soul, till Thou, O Lord,",
+        "Shall deign to touch its lifeless chord;",
+        "Till, waked by Thee, its breath shall rise",
+        "In music worthy of the skies."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Thomas Moore died in 1852.",
+  "credits": "Words by Thomas Moore (1779–1852), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:510"
+}

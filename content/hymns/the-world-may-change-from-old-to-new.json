@@ -1,0 +1,67 @@
+{
+  "title": "The World May Change from Old to New",
+  "tune": "materna",
+  "text": [
+    {
+      "name": "Sarah Flower Adams",
+      "born": 1805,
+      "died": 1848,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "The World May Change from Old to New in Tonic Solfa to MATERNA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Sarah Flower Adams wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 274, “The Strength of Hope”.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to MATERNA; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "The world may change from old to new, From new to old a-gain; Yet hope and heaven, for-ev-er true, With-in man's heart re-main. The dreams that bless the wea-ry soul, The strug-gles of the strong, Are steps to-wards some hap-py goal, The sto-ry of hope's song.",
+  "verses": [
+    {
+      "lines": [
+        "The world may change from old to new,",
+        "From new to old again;",
+        "Yet hope and heaven, forever true,",
+        "Within man's heart remain.",
+        "The dreams that bless the weary soul,",
+        "The struggles of the strong,",
+        "Are steps towards some happy goal,",
+        "The story of hope's song."
+      ]
+    },
+    {
+      "lines": [
+        "Hope leads the child to plant the flower,",
+        "The man to sow the seed;",
+        "Nor leaves fulfilment to her hour, —",
+        "But prompts again to deed.",
+        "And ere upon the old man's dust",
+        "The grass is seen to wave,",
+        "We look through falling tears, to trust",
+        "Hope's sunshine on the grave."
+      ]
+    },
+    {
+      "lines": [
+        "O, no! it is no flattering lure,",
+        "No fancy weak or fond,",
+        "When hope would bid us rest secure",
+        "In better life beyond.",
+        "Nor love, nor shame, nor grief, nor sin,",
+        "Her promise may gainsay;",
+        "The voice divine hath spoke within,",
+        "And God did ne'er betray."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Sarah Flower Adams died in 1848.",
+  "credits": "Words by Sarah Flower Adams (1805–1848), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MATERNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:274"
+}

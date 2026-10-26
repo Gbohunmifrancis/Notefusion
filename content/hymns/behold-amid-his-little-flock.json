@@ -1,0 +1,63 @@
+{
+  "title": "Behold, Amid His Little Flock",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Thomas Dale",
+      "born": 1797,
+      "died": 1870,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Behold, Amid His Little Flock in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Thomas Dale wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 683 of its twenty-second edition (1853), “Christ Blessing the Bread”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Be-hold, a-mid his lit-tle flock, The Sa-viour stands se-rene, Un-awed by suf-fering yet to be, Un-changed by what hath been.",
+  "verses": [
+    {
+      "lines": [
+        "Behold, amid his little flock,",
+        "The Saviour stands serene,",
+        "Unawed by suffering yet to be,",
+        "Unchanged by what hath been."
+      ]
+    },
+    {
+      "lines": [
+        "Still beams the light of love undimmed",
+        "In that benignant eye,",
+        "Nor, save his own prophetic word,",
+        "Aught speaks him soon to die."
+      ]
+    },
+    {
+      "lines": [
+        "He pours within the votive cup",
+        "The rich blood of the vine,",
+        "And \"Drink ye all the hallowed draught,\"",
+        "He cries, \"This blood is mine.\""
+      ]
+    },
+    {
+      "lines": [
+        "He breaks the bread; then clasps his hands,",
+        "And lifts his eyes in prayer,",
+        "Receive ye this and view by faith",
+        "My body symbolled there."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Thomas Dale died in 1870.",
+  "credits": "Words by Thomas Dale (1797–1870), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:683"
+}

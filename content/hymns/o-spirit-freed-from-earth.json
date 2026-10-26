@@ -1,0 +1,71 @@
+{
+  "title": "O Spirit, Freed from Earth",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Mary Howitt",
+      "born": 1799,
+      "died": 1888,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O Spirit, Freed from Earth in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Mary Howitt wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 351, “He is Risen”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "O spir-it, freed from earth, Re-joice, thy work is done! The wea-ry world's be-neath thy feet, Thou bright-er than the sun!",
+  "verses": [
+    {
+      "lines": [
+        "O spirit, freed from earth,",
+        "Rejoice, thy work is done!",
+        "The weary world's beneath thy feet,",
+        "Thou brighter than the sun!"
+      ]
+    },
+    {
+      "lines": [
+        "Arise, put on the robes",
+        "That the redeemed win;",
+        "Now sorrow hath no part in thee,",
+        "Thou sanctified within!"
+      ]
+    },
+    {
+      "lines": [
+        "Awake, and breathe the air",
+        "Of the celestial clime!",
+        "Awake to love which knows no change,",
+        "Thou who hast done with time!"
+      ]
+    },
+    {
+      "lines": [
+        "Awake, lift up thine eyes!",
+        "See, all heaven's host appears!",
+        "And be thou glad exceedingly, —",
+        "Thou, who hast done with tears."
+      ]
+    },
+    {
+      "lines": [
+        "Ascend! thou art not now",
+        "With those of mortal birth;",
+        "The living God hath touched thy lips,",
+        "Thou who hast done with earth!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Mary Howitt died in 1888.",
+  "credits": "Words by Mary Howitt (1799–1888), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:351"
+}

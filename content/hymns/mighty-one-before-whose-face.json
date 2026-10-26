@@ -1,0 +1,55 @@
+{
+  "title": "Mighty One, Before Whose Face",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "William Cullen Bryant",
+      "born": 1794,
+      "died": 1878,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Mighty One, Before Whose Face in Tonic Solfa to HEINLEIN, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "William Cullen Bryant wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 724 of its twenty-second edition (1853), “A Blessing invoked on Christian Teachers”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to HEINLEIN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Might-y One, be-fore whose face, Wis-dom had her glo-rious seat, When the orbs that peo-ple space Sprang to birth be-neath thy feet;",
+  "verses": [
+    {
+      "lines": [
+        "Mighty One, before whose face,",
+        "Wisdom had her glorious seat,",
+        "When the orbs that people space",
+        "Sprang to birth beneath thy feet;"
+      ]
+    },
+    {
+      "lines": [
+        "Source of truth, whose rays alone",
+        "Light the mighty world of mind;",
+        "God of love, who from thy throne",
+        "Kindly watchest all mankind;"
+      ]
+    },
+    {
+      "lines": [
+        "Shed on those, who in thy name",
+        "Teach the way of truth and right,",
+        "Shed that love's undying flame,",
+        "Shed that wisdom's guiding light."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: William Cullen Bryant died in 1878.",
+  "credits": "Words by William Cullen Bryant (1794–1878), public domain, as printed in Hymns for Christian Devotion (1853); set to HEINLEIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:724"
+}

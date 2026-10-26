@@ -1,0 +1,67 @@
+{
+  "title": "All Nature's Works His Praise Declare",
+  "tune": "all-saints-new",
+  "text": [
+    {
+      "name": "Henry Ware Jr.",
+      "born": 1794,
+      "died": 1843,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "All Nature's Works His Praise Declare in Tonic Solfa to ALL SAINTS, NEW, doh is Bb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Henry Ware Jr. wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 984 of its twenty-second edition (1853), “On Opening an Organ”.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to ALL SAINTS, NEW; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "All na-ture's works his praise de-clare To whom they all be-long; There is a voice in ev-ery star, In ev-ery breeze a song. Sweet mu-sic fills the world a-broad With strains of love and power; The storm-y sea sings praise to God The thun-der and the shower.",
+  "verses": [
+    {
+      "lines": [
+        "All nature's works his praise declare",
+        "To whom they all belong;",
+        "There is a voice in every star,",
+        "In every breeze a song.",
+        "Sweet music fills the world abroad",
+        "With strains of love and power;",
+        "The stormy sea sings praise to God —",
+        "The thunder and the shower."
+      ]
+    },
+    {
+      "lines": [
+        "To God the tribes of ocean cry,",
+        "And birds upon the wing;",
+        "To God, the powers that dwell on high",
+        "Their tuneful tribute bring.",
+        "Like them let man the throne surround,",
+        "With them loud chorus raise,",
+        "While instruments of loftiest sound",
+        "Assist his feeble praise."
+      ]
+    },
+    {
+      "lines": [
+        "Great God! to thee we consecrate",
+        "Our voices and our skill;",
+        "We bid the pealing organ wait",
+        "To speak alone thy will.",
+        "Oh, teach its rich and swelling notes",
+        "To lift our souls on high;",
+        "And while the music round us floats,",
+        "Let earth-born passion die."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Henry Ware Jr. died in 1843.",
+  "credits": "Words by Henry Ware Jr. (1794–1843), public domain, as printed in Hymns for Christian Devotion (1853); set to ALL SAINTS, NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:984"
+}

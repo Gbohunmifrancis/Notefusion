@@ -1,0 +1,79 @@
+{
+  "title": "As Some Tall Rock Amidst the Waves",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "As Some Tall Rock Amidst the Waves in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 120, “The death of Stephen. Acts 7:54-60”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "As some tall rock a-midst the waves, The fu-ry of the tem-pest braves; While the fierce bil-lows toil-ing high, Break at its foot and mur-m'ring die:",
+  "verses": [
+    {
+      "lines": [
+        "As some tall rock amidst the waves,",
+        "The fury of the tempest braves;",
+        "While the fierce billows toiling high,",
+        "Break at its foot and murm'ring die:"
+      ]
+    },
+    {
+      "lines": [
+        "Thus they, who in the Lord confide,",
+        "Though foes assault on every side;",
+        "Cannot he moved or overthrown,",
+        "For Jesus makes their cause his own."
+      ]
+    },
+    {
+      "lines": [
+        "So faithful Stephen, undismayed,",
+        "The malice of the Jews surveyed;",
+        "The holy joy which filled his breast",
+        "A lustre on his face impressed."
+      ]
+    },
+    {
+      "lines": [
+        "\"Behold! he said, the world of light",
+        "Is opened to my strengthened sight;",
+        "My glorious Lord appears in view,",
+        "That Jesus, whom ye lately slew.\""
+      ]
+    },
+    {
+      "lines": [
+        "With such a friend and witness near,",
+        "No form of death could make him fear;",
+        "Calm, amidst show'rs of stones, he kneels,",
+        "And only for his murd'rers feels."
+      ]
+    },
+    {
+      "lines": [
+        "May we, by faith, perceive thee thus,",
+        "Dear Saviour, ever near to us!",
+        "This fight our peace, through life, shall keep,",
+        "And death be feared no more than sleep."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:120"
+}

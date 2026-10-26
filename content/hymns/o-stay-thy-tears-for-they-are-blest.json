@@ -1,0 +1,71 @@
+{
+  "title": "O, Stay Thy Tears! for They Are Blest",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Andrews Norton",
+      "born": 1786,
+      "died": 1853,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O, Stay Thy Tears! for They Are Blest in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Andrews Norton wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 346, “O, Stay Thy Tears!”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O, stay thy tears! for they are blest Whose days are past, whose toil is done; Here mid-night care dis-turbs our rest, Here sor-row dims the morn-ing sun.",
+  "verses": [
+    {
+      "lines": [
+        "O, stay thy tears! for they are blest",
+        "Whose days are past, whose toil is done;",
+        "Here midnight care disturbs our rest,",
+        "Here sorrow dims the morning sun."
+      ]
+    },
+    {
+      "lines": [
+        "For laboring virtue's anxious toil,",
+        "For patient sorrow's stifled sigh,",
+        "For faith that marks the conqueror's spoil,",
+        "Heaven grants the recompense, — to die."
+      ]
+    },
+    {
+      "lines": [
+        "How blest are they whose transient years",
+        "Pass like an evening meteor's flight,",
+        "Not dark with guilt, nor dim with tears,",
+        "Whose course is short, unclouded, bright!"
+      ]
+    },
+    {
+      "lines": [
+        "O, cheerless were our lengthened way,",
+        "But heaven's own light dispels the gloom,",
+        "Streams downward from eternal day,",
+        "And sheds a glory round the tomb!"
+      ]
+    },
+    {
+      "lines": [
+        "Then stay thy tears, — the blest above",
+        "Have hailed a spirit's heavenly birth,",
+        "Sung a new song of joy and love;",
+        "Then why should anguish reign on earth?"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Andrews Norton died in 1853.",
+  "credits": "Words by Andrews Norton (1786–1853), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:346"
+}

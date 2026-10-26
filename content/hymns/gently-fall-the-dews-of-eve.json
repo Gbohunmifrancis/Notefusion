@@ -1,0 +1,47 @@
+{
+  "title": "Gently Fall the Dews of Eve",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "Sarah Flower Adams",
+      "born": 1805,
+      "died": 1848,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Gently Fall the Dews of Eve in Tonic Solfa to HEINLEIN, doh is F: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Sarah Flower Adams wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 335, “Dews and Tears”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to HEINLEIN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Gen-tly fall the dews of eve, Rais-ing still the lan-guid flowers; Sweet-ly flow the tears that grieve O'er a mourn-er's strick-en hours.",
+  "verses": [
+    {
+      "lines": [
+        "Gently fall the dews of eve,",
+        "Raising still the languid flowers;",
+        "Sweetly flow the tears that grieve",
+        "O'er a mourner's stricken hours."
+      ]
+    },
+    {
+      "lines": [
+        "Blessed dews and tears that yet",
+        "Lift us nearer unto heaven!",
+        "Let us still His praise repeat,",
+        "Who in mercy all hath given."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Sarah Flower Adams died in 1848.",
+  "credits": "Words by Sarah Flower Adams (1805–1848), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to HEINLEIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:335"
+}

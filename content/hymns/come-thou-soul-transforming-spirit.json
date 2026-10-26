@@ -1,0 +1,51 @@
+{
+  "title": "Come, Thou Soul-transforming Spirit",
+  "tune": "st-austin",
+  "text": [
+    {
+      "name": "William Jay",
+      "born": 1769,
+      "died": 1853,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Come, Thou Soul-transforming Spirit in Tonic Solfa to ST. AUSTIN, doh is F: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "William Jay wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 82 of its twenty-second edition (1853), “Prayer for a Blessing”.",
+    "The book printed the words without tunes, marked 8.7.8.7.4.7, to be sung to any tune of that metre. This page sets them to ST. AUSTIN; any other 8.7.8.7.4.7 tune fits them as well."
+  ],
+  "underlay": "Come, thou soul trans-form-ing Spir-it, Bless the sow-er and the seed; Let each heart thy grace in-her-it; Raise the weak, the hun-gry feed; From the gos-pel Now sup-ply thy peo-ple's need.",
+  "verses": [
+    {
+      "lines": [
+        "Come, thou soul-transforming Spirit,",
+        "Bless the sower and the seed;",
+        "Let each heart thy grace inherit;",
+        "Raise the weak, the hungry feed;",
+        "From the gospel",
+        "Now supply thy people's need."
+      ]
+    },
+    {
+      "lines": [
+        "O, may all enjoy the blessing",
+        "Which thy word's designed to give,",
+        "Let us all, thy love possessing,",
+        "Joyfully the truth receive,",
+        "And forever",
+        "To thy praise and glory live."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 4 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: William Jay died in 1853.",
+  "credits": "Words by William Jay (1769–1853), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AUSTIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:82"
+}

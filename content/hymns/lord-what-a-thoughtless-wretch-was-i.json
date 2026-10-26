@@ -1,0 +1,70 @@
+{
+  "title": "Lord, What a Thoughtless Wretch Was I",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Lord, What a Thoughtless Wretch Was I in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 73, part 3, headed “The prosperity of sinners cursed”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Lord, what a thought-less wretch was I, To mourn, and mur-mur, and re-pine To see the wi-cked plac'd on high, In pride and robes of hon-our shine!",
+  "verses": [
+    {
+      "lines": [
+        "Lord, what a thoughtless wretch was I,",
+        "To mourn, and murmur, and repine",
+        "To see the wicked plac'd on high,",
+        "In pride and robes of honour shine!"
+      ]
+    },
+    {
+      "lines": [
+        "But O their end, their dreadful end!",
+        "Thy sanctuary taught me so:",
+        "On slippery rocks I see them stand,",
+        "And fiery billows roll below."
+      ]
+    },
+    {
+      "lines": [
+        "Now let them boast how tall they rise,",
+        "I'll never envy them again;",
+        "There they may stand with haughty eyes,",
+        "Till they plunge deep in endless pain."
+      ]
+    },
+    {
+      "lines": [
+        "Their fancy'd joys, how fast they flee!",
+        "Just like a dream when man awakes;",
+        "Their songs of softest harmony",
+        "Are but a preface to their plagues."
+      ]
+    },
+    {
+      "lines": [
+        "Now I esteem their mirth and wine",
+        "Too dear to purchase with my blood;",
+        "Lord, 'tis enough that thou art mine,",
+        "My life, my portion, and my God."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 73:3"
+}

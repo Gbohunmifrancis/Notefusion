@@ -1,0 +1,79 @@
+{
+  "title": "O God, Whose Favorable Eye",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "O God, Whose Favorable Eye in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 69, “True and false comforts”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O God, whose fa-vor-a-ble eye The sin sick soul re-vives; Ho-ly and heav'n-ly is the joy Thy shin-ing pre-sence gives.",
+  "verses": [
+    {
+      "lines": [
+        "O God, whose favorable eye",
+        "The sin-sick soul revives;",
+        "Holy and heav'nly is the joy",
+        "Thy shining presence gives."
+      ]
+    },
+    {
+      "lines": [
+        "Not such as hypocrites suppose,",
+        "Who with a graceless heart,",
+        "Taste not of thee, but drink a dose",
+        "Prepared by Satan's art."
+      ]
+    },
+    {
+      "lines": [
+        "Intoxicating joys are theirs,",
+        "Who while they boast their light,",
+        "And seem to soar above the stars,",
+        "Are plunging into night."
+      ]
+    },
+    {
+      "lines": [
+        "Lulled in a soft and fatal sleep,",
+        "They sin, and yet rejoice;",
+        "Were they indeed the Savior's sheep,",
+        "Would they not hear his voice?"
+      ]
+    },
+    {
+      "lines": [
+        "Be mine the comforts, that reclaim",
+        "The soul from Satan's pow'r;",
+        "That make me blush for what I am,",
+        "And hate my sin the more."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis joy enough, my All in All,",
+        "At thy dear feet to lie;",
+        "Thou wilt not let me lower fall,",
+        "And none can higher fly."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:69"
+}

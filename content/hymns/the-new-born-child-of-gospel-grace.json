@@ -1,0 +1,71 @@
+{
+  "title": "The New-born Child of Gospel-grace",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The New-born Child of Gospel-grace in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 68, “The new convert”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The new born child of gos-pel grace, Like some fair tree when sum-mer's nigh, Be-neath Em-ma-nuel's shin-ing face, Lifts up his bloom-ing branch on high.",
+  "verses": [
+    {
+      "lines": [
+        "The new-born child of gospel-grace,",
+        "Like some fair tree when summer's nigh,",
+        "Beneath Emmanuel's shining face,",
+        "Lifts up his blooming branch on high."
+      ]
+    },
+    {
+      "lines": [
+        "No fears he feels, he sees no foes,",
+        "No conflict yet his faith employs,",
+        "Nor has he learnt to whom he owes,",
+        "The strength and peace his soul enjoys."
+      ]
+    },
+    {
+      "lines": [
+        "But sin soon darts its cruel sting,",
+        "And comforts sinking day by day;",
+        "What seemed his own, a self-fed spring,",
+        "Proves but a brook that glides away."
+      ]
+    },
+    {
+      "lines": [
+        "When Gideon armed his num'rous host,",
+        "The Lord soon made his numbers less;",
+        "And said, lest Israel vainly boast,",
+        "\"My arm procured me this success.\""
+      ]
+    },
+    {
+      "lines": [
+        "Thus will he bring our spirits down,",
+        "And draw our ebbing comforts low;",
+        "That saved by grace, but not our own,",
+        "We may not claim the praise we owe."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:68"
+}

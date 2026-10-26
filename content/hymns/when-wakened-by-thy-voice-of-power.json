@@ -1,0 +1,71 @@
+{
+  "title": "When, Wakened by Thy Voice of Power",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Bowring",
+      "born": 1792,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "When, Wakened by Thy Voice of Power in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Bowring wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 423 of its twenty-second edition (1853), “Perpetual Praise”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When, wak-ened by thy voice of power, The hour of morn-ing beams in light, My voice shall sing that morn-ing hour, And thee, who mad'st that hour so bright.",
+  "verses": [
+    {
+      "lines": [
+        "When, wakened by thy voice of power,",
+        "The hour of morning beams in light,",
+        "My voice shall sing that morning hour,",
+        "And thee, who mad'st that hour so bright."
+      ]
+    },
+    {
+      "lines": [
+        "The morning strengthens into noon;",
+        "Earth's fairest beauties shine more fair;",
+        "And noon and morning shall attune",
+        "My grateful heart to praise and prayer."
+      ]
+    },
+    {
+      "lines": [
+        "When 'neath the evening western gate",
+        "The sun's retiring rays are hid,",
+        "My joy shall be to meditate,",
+        "E'en as the pious patriarch did."
+      ]
+    },
+    {
+      "lines": [
+        "As twilight wears a darker hue,",
+        "And gathering night creation dims,",
+        "The twilight and the midnight, too,",
+        "Shall have their harmonies and hymns."
+      ]
+    },
+    {
+      "lines": [
+        "So shall sweet thoughts, and thoughts sublime,",
+        "My constant inspirations be;",
+        "And every shifting scene of time",
+        "Reflect, my God, a light from thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Bowring died in 1872.",
+  "credits": "Words by John Bowring (1792–1872), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:423"
+}

@@ -1,0 +1,94 @@
+{
+  "title": "And Will the God of Grace",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "And Will the God of Grace in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 83, headed “A complaint against persecutors”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "And will the God of grace Per-pet-ual si-lence keep? The God of jus-tice hold his peace, And let his ven-geance sleep?",
+  "verses": [
+    {
+      "lines": [
+        "And will the God of grace",
+        "Perpetual silence keep?",
+        "The God of justice hold his peace,",
+        "And let his vengeance sleep?"
+      ]
+    },
+    {
+      "lines": [
+        "Behold what cursed snares",
+        "The men of mischief spread;",
+        "The men that hate thy saints and thee",
+        "Lift up their threatening head."
+      ]
+    },
+    {
+      "lines": [
+        "Against thy hidden ones",
+        "Their counsels they employ,",
+        "And malice with her watchful eye,",
+        "Pursues them to destroy."
+      ]
+    },
+    {
+      "lines": [
+        "The noble and the base",
+        "Into thy pastures leap;",
+        "The lion and the stupid ass",
+        "Conspire to vex thy sheep."
+      ]
+    },
+    {
+      "lines": [
+        "\"Come, let us join,\" they cry,",
+        "\"To root them from the ground,",
+        "\"Till not the name of saints remain,",
+        "\"Nor memory shall be found.\""
+      ]
+    },
+    {
+      "lines": [
+        "Awake, almighty God,",
+        "And call thy wrath to mind;",
+        "Give them like forests to the fire,",
+        "Or stubble to the wind."
+      ]
+    },
+    {
+      "lines": [
+        "Convince their madness, Lord,",
+        "And make them seek thy Name",
+        "Or else their stubborn rage confound,",
+        "That they may die in shame."
+      ]
+    },
+    {
+      "lines": [
+        "Then shall the nations know",
+        "That glorious dreadful word,",
+        "Jehovah is thy name alone,",
+        "And thou the sovereign Lord."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 83"
+}

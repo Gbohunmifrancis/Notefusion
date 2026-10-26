@@ -1,0 +1,75 @@
+{
+  "title": "Thou, Whose Almighty Word",
+  "tune": "dort",
+  "text": [
+    {
+      "name": "John Marriott",
+      "born": 1780,
+      "died": 1825,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Thou, Whose Almighty Word in Tonic Solfa to DORT, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Marriott wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 174, “Let There Be Light”.",
+    "The book printed the words without tunes, marked Sixes and Fours (6.6.4.6.6.6.4), to be sung to any tune of that metre. This page sets them to DORT; any other Sixes and Fours tune fits them as well."
+  ],
+  "underlay": "Thou, whose al-might-y word Cha-os and dark-ness heard, And took their flight! Hear us, we hum-bly pray, And where the gos-pel day Sheds not its glo-rious ray, Let there be light!",
+  "verses": [
+    {
+      "lines": [
+        "Thou, whose almighty word",
+        "Chaos and darkness heard,",
+        "And took their flight!",
+        "Hear us, we humbly pray,",
+        "And where the gospel day",
+        "Sheds not its glorious ray,",
+        "Let there be light!"
+      ]
+    },
+    {
+      "lines": [
+        "Thou, who didst come to bring,",
+        "On Thy redeeming wing,",
+        "Healing and sight!",
+        "Health to the sick in mind,",
+        "Light to the inly blind,",
+        "O, now to all mankind",
+        "Let there be light!"
+      ]
+    },
+    {
+      "lines": [
+        "Descend Thou from above,",
+        "Spirit of truth and love,",
+        "Speed on Thy flight!",
+        "Move o'er the waters' face,",
+        "Spirit of hope and grace,",
+        "And in earth's darkest place",
+        "Let there be light!"
+      ]
+    },
+    {
+      "lines": [
+        "Blessed and glorious three,",
+        "Thrice holy trinity,",
+        "Wisdom, love, might!",
+        "Boundless as ocean's tide,",
+        "Rolling in fullest pride,",
+        "Through the world, far and wide,",
+        "Let there be light!"
+      ]
+    }
+  ],
+  "metre": "6 6 4 6 6 6 4",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Marriott died in 1825.",
+  "credits": "Words by John Marriott (1780–1825), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to DORT by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:174"
+}

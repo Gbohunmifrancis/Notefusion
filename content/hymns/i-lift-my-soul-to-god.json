@@ -1,0 +1,78 @@
+{
+  "title": "I Lift My Soul to God",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "I Lift My Soul to God in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 25, part 1, headed “Waiting for pardon and direction”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "I Lift my soul to God, My trust is in his name; Let not my foes that seek my blood Still tri-umph in my shame.",
+  "verses": [
+    {
+      "lines": [
+        "I Lift my soul to God,",
+        "My trust is in his name;",
+        "Let not my foes that seek my blood",
+        "Still triumph in my shame."
+      ]
+    },
+    {
+      "lines": [
+        "Sin and the powers of hell",
+        "Persuade me to despair;",
+        "Lord, make me know thy covenant well,",
+        "That I may 'scape the snare."
+      ]
+    },
+    {
+      "lines": [
+        "From the first dawning light",
+        "Till the dark evening rise,",
+        "For thy salvation, Lord, I wait",
+        "With ever-longing eyes."
+      ]
+    },
+    {
+      "lines": [
+        "Remember all thy grace,",
+        "And lead me in thy truth;",
+        "Forgive the sins of riper days,",
+        "And follies of my youth."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord is just and kind,",
+        "The meek shall learn his ways;",
+        "And every humble sinner find",
+        "The methods of his grace."
+      ]
+    },
+    {
+      "lines": [
+        "For his own goodness' sake",
+        "He saves my soul from shame;",
+        "He pardons (tho' my guilt be great)",
+        "Thro' my Redeemer's name."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 25:1"
+}

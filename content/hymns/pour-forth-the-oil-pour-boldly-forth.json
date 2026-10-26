@@ -1,0 +1,63 @@
+{
+  "title": "Pour Forth the Oil, — Pour Boldly Forth",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Richard Chenevix Trench",
+      "born": 1807,
+      "died": 1886,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Pour Forth the Oil, — Pour Boldly Forth in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Richard Chenevix Trench wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 294, “The Law of Love. 2 Kings, iv. 3”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Pour forth the oil, pour bold-ly forth; It will not fail, un-til Thou fai-lest ves-sels to pro-vide Which it may large-ly fill.",
+  "verses": [
+    {
+      "lines": [
+        "Pour forth the oil, — pour boldly forth;",
+        "It will not fail, until",
+        "Thou failest vessels to provide",
+        "Which it may largely fill."
+      ]
+    },
+    {
+      "lines": [
+        "Make channels for the streams of love,",
+        "Where they may broadly run;",
+        "And love has overflowing streams,",
+        "To fill them every one."
+      ]
+    },
+    {
+      "lines": [
+        "But if at any time we cease",
+        "Such channels to provide,",
+        "The very founts of love for us",
+        "Will soon be parched and dried."
+      ]
+    },
+    {
+      "lines": [
+        "For we must share, if we would keep",
+        "That blessing from above;",
+        "Ceasing to give, we cease to have; —",
+        "Such is the law of love."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Richard Chenevix Trench died in 1886.",
+  "credits": "Words by Richard Chenevix Trench (1807–1886), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:294"
+}

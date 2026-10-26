@@ -1,0 +1,66 @@
+{
+  "title": "God of Love, We Look to Thee",
+  "tune": "messiah-herald",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "God of Love, We Look to Thee in Tonic Solfa to MESSIAH (HERALD), doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 908 of its twenty-second edition (1853), “For Brotherly Love”, where the book credits them to Wesley's Collection.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to MESSIAH (HERALD); any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "God of love, we look to thee; Let us in thy Son a-gree; Show to us the Prince of Peace; Bid our jars for-ev-er cease. By thy rec-on-cil-ing love, Ev-ery stum-bling block re-move; Each to each u-nite, en-dear; Come, and spread thy ban-ner here.",
+  "verses": [
+    {
+      "lines": [
+        "God of love, we look to thee;",
+        "Let us in thy Son agree;",
+        "Show to us the Prince of Peace;",
+        "Bid our jars forever cease.",
+        "By thy reconciling love,",
+        "Every stumbling-block remove;",
+        "Each to each unite, endear;",
+        "Come, and spread thy banner here."
+      ]
+    },
+    {
+      "lines": [
+        "Make us of one heart and mind,",
+        "Courteous, pitiful, and kind;",
+        "Lowly, meek, in thought and word,",
+        "Altogether like our Lord.",
+        "Let us for each other care;",
+        "Each the other's burden bear;",
+        "To thy church the pattern give;",
+        "Show how true believers live."
+      ]
+    },
+    {
+      "lines": [
+        "Free from anger and from pride,",
+        "Let us thus in God abide;",
+        "All the depths of love express,",
+        "All the heights of holiness.",
+        "Let us, then, with joy remove",
+        "To the family above;",
+        "On the wings of angels fly;",
+        "Show how true believers die."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to MESSIAH (HERALD) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:908"
+}

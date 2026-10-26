@@ -1,0 +1,87 @@
+{
+  "title": "As the Sun's Enliv'ning Eye",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "As the Sun's Enliv'ning Eye in Tonic Solfa to HEINLEIN, doh is F: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 71, “At parting”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to HEINLEIN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "As the sun's en-liv'n-ing eye Shines on ev-ery place the same; So the Lord is al-ways nigh To the souls that love his name.",
+  "verses": [
+    {
+      "lines": [
+        "As the sun's enliv'ning eye",
+        "Shines on every place the same;",
+        "So the Lord is always nigh",
+        "To the souls that love his name."
+      ]
+    },
+    {
+      "lines": [
+        "When they move at duty's call,",
+        "He is with them by the way;",
+        "He is ever with them all,",
+        "Those who go, and those who stay."
+      ]
+    },
+    {
+      "lines": [
+        "From his holy mercy-seat",
+        "Nothing can their souls confine;",
+        "Still in spirit they may meet,",
+        "And in sweet communion join."
+      ]
+    },
+    {
+      "lines": [
+        "For a season called to part,",
+        "Let us then ourselves commend",
+        "To the gracious eye and heart,",
+        "Of our ever-present Friend."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, hear our humble prayer!",
+        "Tender Shepherd of thy sheep!",
+        "Let thy mercy and thy care",
+        "All our souls in safety keep."
+      ]
+    },
+    {
+      "lines": [
+        "In thy strength may we be strong,",
+        "Sweeten every cross and pain;",
+        "Give us, if we live, ere long",
+        "Here to meet in peace again."
+      ]
+    },
+    {
+      "lines": [
+        "Then, if thou thy help afford,",
+        "Ebenezers shall be reared;",
+        "And our souls shall praise the Lord",
+        "Who our poor petitions heard."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to HEINLEIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:71"
+}

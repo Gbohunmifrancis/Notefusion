@@ -1,0 +1,46 @@
+{
+  "title": "Prepare Us, Lord, to View Thy Cross",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Prepare Us, Lord, to View Thy Cross in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 675 of its twenty-second edition (1853), “Before Communion”, where the book credits them to Pratt's Collection.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Pre-pare us, Lord, to view thy cross, Who all our griefs hast borne; To look on thee, whom we have pierced, To look on thee, and mourn.",
+  "verses": [
+    {
+      "lines": [
+        "Prepare us, Lord, to view thy cross,",
+        "Who all our griefs hast borne;",
+        "To look on thee, whom we have pierced, —",
+        "To look on thee, and mourn."
+      ]
+    },
+    {
+      "lines": [
+        "While thus we mourn we would rejoice;",
+        "And, as thy cross we see,",
+        "Let each exclaim in faith and hope,",
+        "\"The Saviour died for me!\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:675"
+}

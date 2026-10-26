@@ -1,0 +1,54 @@
+{
+  "title": "From Every Fear and Doubt, O Lord",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "From Every Fear and Doubt, O Lord in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 35, “Drawing Near to God”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "From ev-ery fear and doubt, O Lord, In mer-cy set us free, While in the con-fi-dence of prayer Our hearts draw near to Thee!",
+  "verses": [
+    {
+      "lines": [
+        "From every fear and doubt, O Lord,",
+        "In mercy set us free,",
+        "While in the confidence of prayer",
+        "Our hearts draw near to Thee!"
+      ]
+    },
+    {
+      "lines": [
+        "In all our trials, struggles, joys,",
+        "Teach us Thy love to see,",
+        "Which by the discipline of life",
+        "Would draw us unto Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Our lives, devoted to Thy will,",
+        "Our sacrifice shall be,",
+        "And then will death, whene'er it come,",
+        "But draw us nearer Thee."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:35"
+}

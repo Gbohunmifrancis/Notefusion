@@ -1,0 +1,71 @@
+{
+  "title": "My God! How Perfect Are Thy Ways",
+  "tune": "york",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "My God! How Perfect Are Thy Ways in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 67, “Jehovah our righteousness. Jer 23:6”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "My God! how per-fect are thy ways! But mine pol-lut-ed are; Sin twines it-self a-bout my praise, And slides in-to my prayer.",
+  "verses": [
+    {
+      "lines": [
+        "My God! how perfect are thy ways!",
+        "But mine polluted are;",
+        "Sin twines itself about my praise,",
+        "And slides into my prayer."
+      ]
+    },
+    {
+      "lines": [
+        "When I would speak what thou hast done",
+        "To save me from my sin;",
+        "I cannot make thy mercies known",
+        "But self-applause creeps in."
+      ]
+    },
+    {
+      "lines": [
+        "Divine desire, that holy flame",
+        "Thy grace creates in me;",
+        "Alas! impatience is its name,",
+        "When it returns to thee."
+      ]
+    },
+    {
+      "lines": [
+        "This heart, a fountain of vile thoughts,",
+        "How does it overflow?",
+        "While self upon the surface floats",
+        "Still bubbling from below."
+      ]
+    },
+    {
+      "lines": [
+        "Let others in the gaudy dress",
+        "Of fancied merit shine;",
+        "The Lord shall be my righteousness",
+        "The Lord for ever mine."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:67"
+}

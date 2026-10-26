@@ -1,0 +1,54 @@
+{
+  "title": "To Thee, O God in Heaven",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "To Thee, O God in Heaven in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 378, “Baptism of a Child”, where the book credits them to Disciples' H. B.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "To Thee, O God in heaven, This lit-tle one we bring, Giv-ing to Thee what Thou hast given, Our dear-est of-fer-ing.",
+  "verses": [
+    {
+      "lines": [
+        "To Thee, O God in heaven,",
+        "This little one we bring,",
+        "Giving to Thee what Thou hast given,",
+        "Our dearest offering."
+      ]
+    },
+    {
+      "lines": [
+        "Into a world of toil",
+        "These little feet will roam,",
+        "Where sin its purity may soil,",
+        "Where care and grief may come."
+      ]
+    },
+    {
+      "lines": [
+        "O, then, let Thy pure love,",
+        "With influence serene,",
+        "Come down, like water, from above,",
+        "To comfort and make clean!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:378"
+}

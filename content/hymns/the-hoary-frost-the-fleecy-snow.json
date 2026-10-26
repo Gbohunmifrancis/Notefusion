@@ -1,0 +1,63 @@
+{
+  "title": "The Hoary Frost, the Fleecy Snow",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "The Hoary Frost, the Fleecy Snow in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 866 of its twenty-second edition (1853), “Winter”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The hoa-ry frost, the flee-cy snow, De-scend, and clothe the ground; The liq-uid streams for-bear to flow, In i-cy fet-ters bound.",
+  "verses": [
+    {
+      "lines": [
+        "The hoary frost, the fleecy snow,",
+        "Descend, and clothe the ground;",
+        "The liquid streams forbear to flow,",
+        "In icy fetters bound."
+      ]
+    },
+    {
+      "lines": [
+        "When, from his dreadful stores on high,",
+        "God pours the sounding hail,",
+        "The man that does his power defy",
+        "Shall find his courage fail."
+      ]
+    },
+    {
+      "lines": [
+        "God sends his word and melts the snow;",
+        "The fields no longer mourn;",
+        "He calls the warmer gales to blow,",
+        "And bids the spring return."
+      ]
+    },
+    {
+      "lines": [
+        "The changing wind, the flying cloud,",
+        "Obey his mighty word;",
+        "With songs and honors sounding loud,",
+        "Praise ye the sovereign Lord."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:866"
+}

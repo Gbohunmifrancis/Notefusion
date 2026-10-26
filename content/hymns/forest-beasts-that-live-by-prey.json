@@ -1,0 +1,87 @@
+{
+  "title": "Forest Beasts, That Live by Prey",
+  "tune": "innocents",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Forest Beasts, That Live by Prey in Tonic Solfa to INNOCENTS, doh is D: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 33, “The benighted traveller”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to INNOCENTS; any other Sevens tune fits them as well."
+  ],
+  "underlay": "For-est beasts, that live by prey, Sel-dom show them-selves by day; But when day light is with-drawn, Then they rove and roar till dawn.",
+  "verses": [
+    {
+      "lines": [
+        "Forest beasts, that live by prey,",
+        "Seldom show themselves by day;",
+        "But when day-light is withdrawn,",
+        "Then they rove and roar till dawn."
+      ]
+    },
+    {
+      "lines": [
+        "Who can tell the traveller's fears,",
+        "When their horrid yells he hears?",
+        "Terror almost stops his breath,",
+        "While each step he looks for death."
+      ]
+    },
+    {
+      "lines": [
+        "Thus when Jesus is in view,",
+        "Cheerful I my way pursue;",
+        "Walking by my Savior's light,",
+        "Nothing can my soul affright."
+      ]
+    },
+    {
+      "lines": [
+        "But when he forbears to shine,",
+        "Soon the travell'rs case is mine;",
+        "Lost, benighted, struck with dread,",
+        "What a painful path I tread!"
+      ]
+    },
+    {
+      "lines": [
+        "Then, my soul with terror hears",
+        "Worse than lions, wolves, or bears,",
+        "Roaring loud in every part,",
+        "Through the forest of my heart."
+      ]
+    },
+    {
+      "lines": [
+        "Wrath, impatience, envy, pride,",
+        "Satan and his host beside,",
+        "Press around me to devour;",
+        "How can I escape their pow'r?"
+      ]
+    },
+    {
+      "lines": [
+        "Gracious Lord afford me light,",
+        "Put these beasts of prey to flight;",
+        "Let thy pow'r and love be shown,",
+        "Save me, for I am thine own."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to INNOCENTS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:33"
+}

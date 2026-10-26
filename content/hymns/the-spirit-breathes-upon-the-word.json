@@ -1,0 +1,71 @@
+{
+  "title": "The Spirit Breathes upon the Word",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Spirit Breathes upon the Word in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 62, “The light and glory of the word”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The Spir-it breathes up-on the word, And brings the truth to sight; Pre-cepts and prom-is-es af-ford A sanc-ti-fy-ing light.",
+  "verses": [
+    {
+      "lines": [
+        "The Spirit breathes upon the word,",
+        "And brings the truth to sight;",
+        "Precepts and promises afford",
+        "A sanctifying light."
+      ]
+    },
+    {
+      "lines": [
+        "A glory gilds the sacred page,",
+        "Majestic like the sun",
+        "It gives a light to every age,",
+        "It gives, but borrows none."
+      ]
+    },
+    {
+      "lines": [
+        "The hand that gave it, still supplies",
+        "The gracious light and heat;",
+        "His truths upon the nations rise,",
+        "They rise, but never set."
+      ]
+    },
+    {
+      "lines": [
+        "Let everlasting thanks be thine",
+        "For such a bright display,",
+        "As makes a world of darkness shine",
+        "With beams of heav'nly day."
+      ]
+    },
+    {
+      "lines": [
+        "My soul rejoices to pursue",
+        "The steps of him I love;",
+        "Till glory breaks upon my view",
+        "In brighter worlds above."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:62"
+}

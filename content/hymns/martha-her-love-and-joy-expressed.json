@@ -1,0 +1,87 @@
+{
+  "title": "Martha Her Love and Joy Expressed",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Martha Her Love and Joy Expressed in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 100, “Martha and Mary. Lk 10:38-42”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Mar-tha her love and joy ex-pressed By care to en-ter-tain her guest; While Ma-ry sat to hear her Lord, And could not bear to lose a word.",
+  "verses": [
+    {
+      "lines": [
+        "Martha her love and joy expressed",
+        "By care to entertain her guest;",
+        "While Mary sat to hear her Lord,",
+        "And could not bear to lose a word."
+      ]
+    },
+    {
+      "lines": [
+        "The principle in both the same,",
+        "Produced in each a different aim;",
+        "The one to feast the Lord was led,",
+        "The other waited to be fed."
+      ]
+    },
+    {
+      "lines": [
+        "But Mary chose the better part,",
+        "Her Savior's words refreshed her heart;",
+        "While busy Martha angry grew,",
+        "And lost her time and temper too."
+      ]
+    },
+    {
+      "lines": [
+        "With warmth she to her sister spoke,",
+        "But brought upon herself rebuke;",
+        "One thing is needful, and but one,",
+        "Why do thy thoughts on many run?"
+      ]
+    },
+    {
+      "lines": [
+        "How oft are we like Martha vexed,",
+        "Encumbered, hurried, and perplexed!",
+        "While trifles so engross our thought,",
+        "The one thing needful is forgot."
+      ]
+    },
+    {
+      "lines": [
+        "Lord teach us this one thing to choose,",
+        "Which they who gain can never lose;",
+        "Sufficient in itself alone,",
+        "And needful, were the world our own."
+      ]
+    },
+    {
+      "lines": [
+        "Let groveling hearts the world admire,",
+        "Thy love is all that I require!",
+        "Gladly I may the rest resign,",
+        "If the one needful thing be mine!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:100"
+}

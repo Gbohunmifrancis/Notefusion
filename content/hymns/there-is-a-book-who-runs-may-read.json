@@ -1,0 +1,79 @@
+{
+  "title": "There Is a Book, Who Runs May Read",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "John Keble",
+      "born": 1792,
+      "died": 1866,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "There Is a Book, Who Runs May Read in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Keble wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 476, “The Elder Scripture”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "There is a book, who runs may read, Which heav-enly truth im-parts; And all the lore its schol-ars need, Pure eyes and lov-ing hearts.",
+  "verses": [
+    {
+      "lines": [
+        "There is a book, who runs may read,",
+        "Which heavenly truth imparts;",
+        "And all the lore its scholars need,",
+        "Pure eyes and loving hearts."
+      ]
+    },
+    {
+      "lines": [
+        "The works of God, above, below,",
+        "Within us, and around,",
+        "Are pages in that book, to show",
+        "How God himself is found."
+      ]
+    },
+    {
+      "lines": [
+        "The glorious sky, embracing all,",
+        "Is like the Father's love;",
+        "Wherewith encompassed, great and small",
+        "In peace and order move."
+      ]
+    },
+    {
+      "lines": [
+        "The dew of heaven is like His grace;",
+        "It steals in silence down;",
+        "But where it lights, the favored place",
+        "By richest fruits is known."
+      ]
+    },
+    {
+      "lines": [
+        "Two worlds are ours; 'tis only sin",
+        "Forbids us to descry",
+        "The mystic heaven and earth within,",
+        "Plain as the earth and sky."
+      ]
+    },
+    {
+      "lines": [
+        "Thou, who hast given me eyes to see",
+        "And love this sight so fair,",
+        "Give me a heart to find out Thee,",
+        "And read Thee everywhere!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Keble died in 1866.",
+  "credits": "Words by John Keble (1792–1866), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:476"
+}

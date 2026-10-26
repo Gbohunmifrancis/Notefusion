@@ -1,0 +1,95 @@
+{
+  "title": "Uncertain How the Way to Find",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Uncertain How the Way to Find in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 35, “Perplexity relieved”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Un-cer-tain how the way to find Which to sal-va-tion led; I lis-tened long, with anx-ious mind, To hear what o-thers said.",
+  "verses": [
+    {
+      "lines": [
+        "Uncertain how the way to find",
+        "Which to salvation led;",
+        "I listened long, with anxious mind,",
+        "To hear what others said."
+      ]
+    },
+    {
+      "lines": [
+        "When some of joys and comforts told",
+        "I feared that I was wrong;",
+        "For I was stupid, dead, and cold,",
+        "Had neither joy nor song."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord my lab'ring heart relieved,",
+        "And made my burden light;",
+        "Then for a moment I believed,",
+        "Supposing all was right."
+      ]
+    },
+    {
+      "lines": [
+        "Of fierce temptations others talked,",
+        "Of anguish and dismay;",
+        "Through what distresses they had walked,",
+        "Before they found the way."
+      ]
+    },
+    {
+      "lines": [
+        "Ah! then I thought my hopes were vain,",
+        "For I had lived at ease;",
+        "I wished for all my fears again,",
+        "To make me more like these."
+      ]
+    },
+    {
+      "lines": [
+        "I had my wish, the Lord disclosed",
+        "The evils of my heart;",
+        "And left my naked soul, exposed",
+        "To Satan's fiery dart."
+      ]
+    },
+    {
+      "lines": [
+        "Alas! \"I now must give it up,\"",
+        "I cried in deep despair;",
+        "How could I dream of drawing hope,",
+        "From what I cannot bear!"
+      ]
+    },
+    {
+      "lines": [
+        "Again my Savior brought me aid,",
+        "And when he set me free;",
+        "\"Trust simply on my word, he said,",
+        "And leave the rest to me.\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:35"
+}

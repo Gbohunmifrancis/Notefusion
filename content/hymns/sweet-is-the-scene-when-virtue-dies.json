@@ -1,0 +1,63 @@
+{
+  "title": "Sweet Is the Scene When Virtue Dies",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Anna Laetitia Barbauld",
+      "born": 1743,
+      "died": 1825,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Sweet Is the Scene When Virtue Dies in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Anna Laetitia Barbauld wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 543 of its twenty-second edition (1853), “Death of the Righteous”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Sweet is the scene when vir-tue dies! When sinks a right-eous soul to rest; How mild-ly beam the clos-ing eyes, How gen-tly heaves th'ex-pir-ing breast!",
+  "verses": [
+    {
+      "lines": [
+        "Sweet is the scene when virtue dies!",
+        "When sinks a righteous soul to rest;",
+        "How mildly beam the closing eyes,",
+        "How gently heaves th' expiring breast!"
+      ]
+    },
+    {
+      "lines": [
+        "So fades a summer cloud away,",
+        "So sinks the gale when storms are o'er,",
+        "So gently shuts the eye of day,",
+        "So dies a wave along the shore."
+      ]
+    },
+    {
+      "lines": [
+        "Farewell, conflicting hopes and fears,",
+        "Where lights and shades alternate dwell;",
+        "How bright th' unchanging morn appears!",
+        "Farewell, inconstant world, farewell!"
+      ]
+    },
+    {
+      "lines": [
+        "Life's duty done, as sinks the clay,",
+        "Light from its load the spirit flies;",
+        "While heaven and earth combine to say,",
+        "\"How blessed the righteous when he dies!\""
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Anna Laetitia Barbauld died in 1825.",
+  "credits": "Words by Anna Laetitia Barbauld (1743–1825), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:543"
+}

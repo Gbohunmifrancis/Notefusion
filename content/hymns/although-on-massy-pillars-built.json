@@ -1,0 +1,95 @@
+{
+  "title": "Although on Massy Pillars Built",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Although on Massy Pillars Built in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 68, “On the earthquake. September 8, 1775”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Al-though on mas-sy pil-lars built, The earth has late-ly shook; It trem-bled un-der Bri-tain's guilt, Be-fore its Mak-er's look.",
+  "verses": [
+    {
+      "lines": [
+        "Although on massy pillars built,",
+        "The earth has lately shook;",
+        "It trembled under Britain's guilt,",
+        "Before its Maker's look."
+      ]
+    },
+    {
+      "lines": [
+        "Swift as the shock amazement spreads,",
+        "And sinners tremble too;",
+        "What flight can screen their guilty heads,",
+        "If earth itself pursue."
+      ]
+    },
+    {
+      "lines": [
+        "But mercy spared us while it warned,",
+        "The shock is felt no more;",
+        "And mercy, now, alas! is scorned",
+        "By sinners, as before."
+      ]
+    },
+    {
+      "lines": [
+        "But if these warnings prove in vain,",
+        "Say, sinner, canst thou tell,",
+        "How soon the earth may quake again,",
+        "And open wide to hell."
+      ]
+    },
+    {
+      "lines": [
+        "Repent before the Judge draws nigh;",
+        "Or else when he comes down,",
+        "Thou wilt in vain for earthquakes cry,",
+        "To hide thee from his frown."
+      ]
+    },
+    {
+      "lines": [
+        "But happy they who love the Lord",
+        "And his salvation know;",
+        "The hope that's founded on his word,",
+        "No change can overthrow."
+      ]
+    },
+    {
+      "lines": [
+        "Should the deep-rooted hills be hurled,",
+        "And plunged beneath the seas;",
+        "And strong convulsions shake the world,",
+        "Your hearts may rest in peace."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, your Shepherd, Lord, and Chief,",
+        "Shall shelter you from ill;",
+        "And not a worm or shaking leaf",
+        "Can move, but at his will."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:68"
+}

@@ -1,0 +1,103 @@
+{
+  "title": "'Tis a Point I Long to Know",
+  "tune": "st-bees",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "'Tis a Point I Long to Know in Tonic Solfa to ST. BEES, doh is Ab: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 119, “Lovest thou me? Jn 21:16”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to ST. BEES; any other Sevens tune fits them as well."
+  ],
+  "underlay": "'Tis a point I long to know, Oft it caus-es anx-ious thought; Do I love the Lord, or no? Am I his, or am I not?",
+  "verses": [
+    {
+      "lines": [
+        "'Tis a point I long to know,",
+        "Oft it causes anxious thought;",
+        "Do I love the Lord, or no?",
+        "Am I his, or am I not?"
+      ]
+    },
+    {
+      "lines": [
+        "If I love, why am I thus?",
+        "Why this dull and lifeless frame?",
+        "Hardly, sure, can they be worse,",
+        "Who have never heard his name!"
+      ]
+    },
+    {
+      "lines": [
+        "Could my heart so hard remain,",
+        "Prayer a task and burden prove;",
+        "Every trifle give me pain,",
+        "If I knew a Savior's love?"
+      ]
+    },
+    {
+      "lines": [
+        "When I turn my eyes within,",
+        "All is dark, and vain, and wild;",
+        "Filled with unbelief and sin,",
+        "Can I deem myself a child?"
+      ]
+    },
+    {
+      "lines": [
+        "If I pray, or hear, or read,",
+        "Sin is mixed with all I do;",
+        "You that love the Lord indeed,",
+        "Tell me, Is it thus with you?"
+      ]
+    },
+    {
+      "lines": [
+        "Yet I mourn my stubborn will,",
+        "Find my sin, a grief, and thrall;",
+        "Should I grieve for what I feel,",
+        "If I did not love at all?"
+      ]
+    },
+    {
+      "lines": [
+        "Could I joy his saints to meet,",
+        "Choose the ways I once abhorred,",
+        "Find, at times, the promise sweet,",
+        "If I did not love the Lord?"
+      ]
+    },
+    {
+      "lines": [
+        "Lord decide the doubtful case!",
+        "Thou who art thy people's sun;",
+        "Shine upon thy work of grace,",
+        "If it be indeed begun."
+      ]
+    },
+    {
+      "lines": [
+        "Let me love thee more and more,",
+        "If I love at all, I pray;",
+        "If I have not loved before,",
+        "Help me to begin today."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. BEES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:119"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "A Believer, Free from Care",
+  "tune": "hollingside",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "A Believer, Free from Care in Tonic Solfa to HOLLINGSIDE, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 123, “The trembling jailer. Acts 16:29,30”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to HOLLINGSIDE; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "A Be-liev-er, free from care, May in chains, or dun-geons, sing, If the Lord be with him there; And he hap-pier than a king: Paul and Si-las thus con-fined, Though their backs were torn by whips, Yet pos-sess-ing peace of mind, Sung his praise wish joy-ful lips.",
+  "verses": [
+    {
+      "lines": [
+        "A Believer, free from care,",
+        "May in chains, or dungeons, sing,",
+        "If the Lord be with him there;",
+        "And he happier than a king:",
+        "Paul and Silas thus confined,",
+        "Though their backs were torn by whips,",
+        "Yet possessing peace of mind,",
+        "Sung his praise wish joyful lips."
+      ]
+    },
+    {
+      "lines": [
+        "Suddenly the prison shook,",
+        "Open flew the iron doors;",
+        "And the jailer, terror-struck,",
+        "Now his captives' help implores:",
+        "Trembling at their feet he fell,",
+        "\"Tell me, Sirs, what must I do",
+        "To be saved from guilt and hell?",
+        "None can tell me this but you.\""
+      ]
+    },
+    {
+      "lines": [
+        "\"Look to Jesus, they replied,",
+        "If on Him thou canst believe;",
+        "By the death which he has died,",
+        "Thou salvation shalt receive:\"",
+        "While the living word he heard,",
+        "Faith sprung up within his heart;",
+        "And released from all he feared,",
+        "In their joy his soul had part."
+      ]
+    },
+    {
+      "lines": [
+        "Sinners, Christ is still the same,",
+        "O that you could likewise fear!",
+        "Then the mention of his name",
+        "Would be music to your ear:",
+        "Jesus rescues Satan's slaves,",
+        "His dear wounds still plead, \"Forgive!\"",
+        "Jesus to the utmost saves;",
+        "Sinners, look to him and live."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to HOLLINGSIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:123"
+}

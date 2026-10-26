@@ -1,0 +1,63 @@
+{
+  "title": "Thy Presence, Ever Living God",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Philip Doddridge",
+      "born": 1702,
+      "died": 1751,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Thy Presence, Ever Living God in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Philip Doddridge wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 67, “Christian Farewell”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thy pre-sence, ev-er liv-ing God! Wide through all na-ture spreads a-broad; Thy watch-ful eyes, which nev-er sleep, In ev-ery place Thy child-ren keep.",
+  "verses": [
+    {
+      "lines": [
+        "Thy presence, ever living God!",
+        "Wide through all nature spreads abroad;",
+        "Thy watchful eyes, which never sleep,",
+        "In every place Thy children keep."
+      ]
+    },
+    {
+      "lines": [
+        "While near each other we remain,",
+        "Thou dost our lives and powers sustain;",
+        "When separate, we rejoice to share",
+        "Thy counsels, and Thy gracious care."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee we now commit our ways,",
+        "And still implore Thy heavenly grace;",
+        "Still cause Thy face on us to shine,",
+        "And guard and guide us still as Thine."
+      ]
+    },
+    {
+      "lines": [
+        "Give us within Thy house to raise",
+        "Again united songs of praise;",
+        "Or, if that joy no more be known,",
+        "Give us to meet around Thy throne."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Philip Doddridge died in 1751.",
+  "credits": "Words by Philip Doddridge (1702–1751), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:67"
+}

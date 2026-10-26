@@ -1,0 +1,94 @@
+{
+  "title": "I'll Bless the Lord from Day to Day",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "I'll Bless the Lord from Day to Day in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 34, part 3, headed “Prayer and Praise for eminent deliverance”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "I'll bless the Lord from day to day; How good are all his ways! Ye hum-ble souls that use to pray, Come, help my lips to praise.",
+  "verses": [
+    {
+      "lines": [
+        "I'll bless the Lord from day to day;",
+        "How good are all his ways!",
+        "Ye humble souls that use to pray,",
+        "Come, help my lips to praise."
+      ]
+    },
+    {
+      "lines": [
+        "Sing to the honour of his name,",
+        "How a poor sufferer cry'd,",
+        "Nor was his hope expos'd to shame,",
+        "Nor was his suit deny'd."
+      ]
+    },
+    {
+      "lines": [
+        "When threatening sorrows round me stood,",
+        "And endless fears arose,",
+        "Like the loud billows of a flood,",
+        "Redoubling all my woes;"
+      ]
+    },
+    {
+      "lines": [
+        "I told the Lord my sore distress",
+        "With heavy groans and tears,",
+        "He gave my sharpest torments ease,",
+        "And silenc'd all my fears."
+      ]
+    },
+    {
+      "lines": [
+        "O sinners, come and taste his love,",
+        "Come, learn his pleasant ways,",
+        "And let your own experience prove",
+        "The sweetness of his grace."
+      ]
+    },
+    {
+      "lines": [
+        "He bids his angels pitch their tents",
+        "Round where his children dwell",
+        "What ills their heavenly care prevents",
+        "No earthly tongue can tell."
+      ]
+    },
+    {
+      "lines": [
+        "O love the Lord, ye saints of his;",
+        "His eye regards the just;",
+        "How richly blest their portion is",
+        "Who make the Lord their trust!"
+      ]
+    },
+    {
+      "lines": [
+        "Young lions pinch'd with hunger roar,",
+        "And famish in the wood;",
+        "But God supplies his holy poor",
+        "With every needful good."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 34:3"
+}

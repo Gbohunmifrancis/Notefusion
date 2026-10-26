@@ -1,0 +1,63 @@
+{
+  "title": "Faith, Hope, and Charity, These Three",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Faith, Hope, and Charity, These Three in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 388 of its twenty-second edition (1853), “The Christian Graces”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Faith, hope, and char-i-ty, these three, Yet is the great-est char-i-ty; Fa-ther of lights, these gifts im-part To mine and ev-ery hu-man heart.",
+  "verses": [
+    {
+      "lines": [
+        "Faith, hope, and charity, these three,",
+        "Yet is the greatest charity;",
+        "Father of lights, these gifts impart",
+        "To mine and every human heart."
+      ]
+    },
+    {
+      "lines": [
+        "Faith, that in prayer can never fail,",
+        "Hope, that o'er doubting must prevail,",
+        "And charity, whose name above",
+        "Is God's own name, for God is love."
+      ]
+    },
+    {
+      "lines": [
+        "The morning star is lost in light,",
+        "Faith vanishes at perfect sight,",
+        "The rainbow passes with the storm",
+        "And hope with sorrow's fading form."
+      ]
+    },
+    {
+      "lines": [
+        "But charity, serene, sublime,",
+        "Beyond the reach of death and time,",
+        "Like the blue sky's all-bounding space,",
+        "Holds heaven and earth in its embrace."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:388"
+}

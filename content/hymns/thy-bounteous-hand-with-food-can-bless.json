@@ -1,0 +1,55 @@
+{
+  "title": "Thy Bounteous Hand with Food Can Bless",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Reginald Heber",
+      "born": 1783,
+      "died": 1826,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Thy Bounteous Hand with Food Can Bless in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Reginald Heber wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 492, “Give Us Each Day Our Daily Bread”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thy boun-teous hand with food can bless The bleak and bar-ren wild-er-ness, And Thou hast taught us, Lord, to pray For dail-y bread from day to day.",
+  "verses": [
+    {
+      "lines": [
+        "Thy bounteous hand with food can bless",
+        "The bleak and barren wilderness,",
+        "And Thou hast taught us, Lord, to pray",
+        "For daily bread from day to day."
+      ]
+    },
+    {
+      "lines": [
+        "And O, when through the wilds we roam",
+        "That part us from our heavenly home;",
+        "When, lost in danger, want, and woe,",
+        "Our faithless tears begin to flow;"
+      ]
+    },
+    {
+      "lines": [
+        "Do Thou Thy gracious comfort give,",
+        "By which alone the soul can live;",
+        "And grant Thy children, Lord, we pray,",
+        "The bread of life from day to day!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Reginald Heber died in 1826.",
+  "credits": "Words by Reginald Heber (1783–1826), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:492"
+}

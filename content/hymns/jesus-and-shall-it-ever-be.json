@@ -1,0 +1,63 @@
+{
+  "title": "Jesus! and Shall It Ever Be",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Joseph Grigg",
+      "born": 1720,
+      "died": 1768,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Jesus! and Shall It Ever Be in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Joseph Grigg wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 504 of its twenty-second edition (1853), “Not Ashamed of Christ”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus! and shall it ev-er be! A mor-tal man a-shamed of thee; A-shamed of thee, whom an-gels praise, Whose glo-ries shine through end-less days!",
+  "verses": [
+    {
+      "lines": [
+        "Jesus! and shall it ever be!",
+        "A mortal man ashamed of thee;",
+        "Ashamed of thee, whom angels praise,",
+        "Whose glories shine through endless days!"
+      ]
+    },
+    {
+      "lines": [
+        "Ashamed of Jesus! just as soon",
+        "Let midnight be ashamed of noon;",
+        "'Tis midnight with my soul, till he,",
+        "Bright morning star, bid darkness flee."
+      ]
+    },
+    {
+      "lines": [
+        "Ashamed of Jesus! yes I may,",
+        "When I've no guilt to wash away,",
+        "No tear to wipe — no good to crave,",
+        "No fears to quell — no soul to save."
+      ]
+    },
+    {
+      "lines": [
+        "Till then — nor is my boasting vain —",
+        "Till then, I boast a Saviour slain;",
+        "And oh! may this my glory be,",
+        "That Christ is not ashamed of me."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Joseph Grigg died in 1768.",
+  "credits": "Words by Joseph Grigg (1720–1768), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:504"
+}

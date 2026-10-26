@@ -1,0 +1,63 @@
+{
+  "title": "We Bless Thee for This Sacred Day",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Caroline Gilman",
+      "born": 1794,
+      "died": 1888,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "We Bless Thee for This Sacred Day in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Caroline Gilman wrote these words. They were printed in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 484, “The Day of Rest”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "We bless Thee for this sa-cred day, Thou who hast ev-ery bless-ing given, Which sends the dreams of earth a-way, And yields a glimpse of open-ing heaven.",
+  "verses": [
+    {
+      "lines": [
+        "We bless Thee for this sacred day,",
+        "Thou who hast every blessing given,",
+        "Which sends the dreams of earth away,",
+        "And yields a glimpse of opening heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Rich day of holy, thoughtful rest,",
+        "We would improve the calm repose;",
+        "And, in God's service truly blest,",
+        "Forget the world, its joys and woes."
+      ]
+    },
+    {
+      "lines": [
+        "Lord! may Thy truth, upon the heart,",
+        "Now fall and dwell as heavenly dew,",
+        "And flowers of grace in freshness start",
+        "Where once the weeds of error grew."
+      ]
+    },
+    {
+      "lines": [
+        "May prayer now lift her sacred wings,",
+        "Contented with that aim alone",
+        "Which bears her to the King of kings,",
+        "And rests her at his sheltering throne."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Caroline Gilman died in 1888.",
+  "credits": "Words by Caroline Gilman (1794–1888), public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:484"
+}

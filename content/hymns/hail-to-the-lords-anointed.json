@@ -1,0 +1,67 @@
+{
+  "title": "Hail to the Lord's Anointed",
+  "tune": "ewing",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Hail to the Lord's Anointed in Tonic Solfa to EWING, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 288 of its twenty-second edition (1853), “Blessings of Christ's Kingdom”.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to EWING; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "Hail to the Lord's A-noint-ed, Great Da-vid's great-er Son! Hail! in the time ap-point-ed His reign on earth be-gun! He comes to break op-pres-sion, To set the cap-tive free, To take a-way trans-gres-sion, And rule in eq-ui-ty.",
+  "verses": [
+    {
+      "lines": [
+        "Hail to the Lord's Anointed,",
+        "Great David's greater Son!",
+        "Hail! in the time appointed",
+        "His reign on earth begun!",
+        "He comes to break oppression,",
+        "To set the captive free,",
+        "To take away transgression,",
+        "And rule in equity."
+      ]
+    },
+    {
+      "lines": [
+        "He shall descend like showers",
+        "Upon the fruitful earth,",
+        "And love and joy, like flowers,",
+        "Spring in his path to birth;",
+        "Before him, on the mountains,",
+        "Shall peace, the herald, go;",
+        "And righteousness, in fountains,",
+        "From hill to valley flow."
+      ]
+    },
+    {
+      "lines": [
+        "For him shall prayer unceasing",
+        "And daily vows ascend,",
+        "His kingdom still increasing, —",
+        "A kingdom without end:",
+        "The tide of time shall never",
+        "His covenant remove:",
+        "His name shall stand forever; —",
+        "That name to us is love."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in Hymns for Christian Devotion (1853); set to EWING by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:288"
+}

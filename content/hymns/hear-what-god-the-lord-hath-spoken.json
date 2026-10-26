@@ -1,0 +1,67 @@
+{
+  "title": "Hear What God the Lord Hath Spoken",
+  "tune": "lux-eoi",
+  "text": [
+    {
+      "name": "William Cowper",
+      "born": 1731,
+      "died": 1800,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Hear What God the Lord Hath Spoken in Tonic Solfa to LUX EOI, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "William Cowper wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 65, “The future peace and glory of the church. Isa 60:15-20”.",
+    "The book printed the words without tunes, marked Eights and Sevens Double (8.7.8.7.8.7.8.7), to be sung to any tune of that metre. This page sets them to LUX EOI; any other Eights and Sevens Double tune fits them as well."
+  ],
+  "underlay": "Hear what God the Lord hath spo-ken, O my peo-ple, faint and few; Com-fort-less, a-fflic-ted, bro-ken, Fair a-bodes I build for you: Themes of heart felt tri-bu-la-tion Shall no more per-plex your ways; You shall name your walls, Sal-va-tion, And your gates shall all be praise.",
+  "verses": [
+    {
+      "lines": [
+        "Hear what God the Lord hath spoken,",
+        "O my people, faint and few;",
+        "Comfortless, afflicted, broken,",
+        "Fair abodes I build for you:",
+        "Themes of heart-felt tribulation",
+        "Shall no more perplex your ways;",
+        "You shall name your walls, Salvation,",
+        "And your gates shall all be praise."
+      ]
+    },
+    {
+      "lines": [
+        "There, like streams that feed the garden,",
+        "Pleasures, without end, shall flow;",
+        "For the Lord, your faith rewarding,",
+        "All his bounty shall bestow:",
+        "Still in undisturbed possession,",
+        "Peace and righteousness shall reign;",
+        "Never shall you feel oppression,",
+        "Hear the voice of war again."
+      ]
+    },
+    {
+      "lines": [
+        "Ye no more your suns descending,",
+        "Waning moons no more shall see,",
+        "But your griefs, for ever ending,",
+        "Find eternal noon in me:",
+        "God shall rise, and shining o'er you,",
+        "Change to day the gloom of night;",
+        "He, the Lord, shall be your glory,",
+        "God your everlasting light."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: William Cowper died in 1800.",
+  "credits": "Words by William Cowper (1731–1800), public domain, as printed in Olney Hymns (1779); set to LUX EOI by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:65"
+}

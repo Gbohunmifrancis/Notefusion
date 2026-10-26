@@ -1,0 +1,62 @@
+{
+  "title": "Now from the Altar of Our Hearts",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Now from the Altar of Our Hearts in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 508, “Family Evening Worship”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Now from the al-tar of our hearts Let war-mest thanks a-rise; As-sist us, Lord, to o-ffer up Our eve-ning sac-ri-fice.",
+  "verses": [
+    {
+      "lines": [
+        "Now from the altar of our hearts",
+        "Let warmest thanks arise;",
+        "Assist us, Lord, to offer up",
+        "Our evening sacrifice."
+      ]
+    },
+    {
+      "lines": [
+        "This day our God has been our sun,",
+        "Our keeper and our guide,",
+        "His arm around our weakness thrown,",
+        "His angels at our side."
+      ]
+    },
+    {
+      "lines": [
+        "Moments and mercies multiplied",
+        "Have made up all the day;",
+        "Moments came fast, but mercies were",
+        "More swift and free than they."
+      ]
+    },
+    {
+      "lines": [
+        "New hours, new blessings, and new joys,",
+        "Do a new song require;",
+        "Till we can praise Thee as we should,",
+        "Accept our hearts' desire!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:508"
+}

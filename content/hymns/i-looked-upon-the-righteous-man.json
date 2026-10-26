@@ -1,0 +1,66 @@
+{
+  "title": "I Looked upon the Righteous Man",
+  "tune": "all-saints-new",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "I Looked upon the Righteous Man in Tonic Solfa to ALL SAINTS, NEW, doh is Bb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 577 of its twenty-second edition (1853), “Peaceful Death of the Righteous”.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to ALL SAINTS, NEW; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "I looked up-on the right-eous man, And saw his part-ing breath, With-out a strug-gle or a sigh, Se-rene-ly yield to death: There was no an-guish on his brow, Nor ter-ror in his eye; The spoil-er aimed a fa-tal dart, But lost the vic-to-ry.",
+  "verses": [
+    {
+      "lines": [
+        "I looked upon the righteous man,",
+        "And saw his parting breath,",
+        "Without a struggle or a sigh,",
+        "Serenely yield to death:",
+        "There was no anguish on his brow,",
+        "Nor terror in his eye;",
+        "The spoiler aimed a fatal dart,",
+        "But lost the victory."
+      ]
+    },
+    {
+      "lines": [
+        "I looked upon the righteous man,",
+        "And heard the holy prayer",
+        "Which rose above that breathless form,",
+        "To soothe the mourners' care,",
+        "And felt how precious was the gift",
+        "He to his loved ones gave, —",
+        "The stainless memory of the just,",
+        "The wealth beyond the grave."
+      ]
+    },
+    {
+      "lines": [
+        "I looked upon the righteous man;",
+        "And all our earthly trust",
+        "Of pleasure, vanity, or pride,",
+        "Seemed lighter than the dust,",
+        "Compared with his celestial gain, —",
+        "A home above the sky:",
+        "O, grant us, Lord, his life to live,",
+        "That we like him may die."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ALL SAINTS, NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:577"
+}

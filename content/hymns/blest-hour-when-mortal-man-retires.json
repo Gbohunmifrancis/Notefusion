@@ -1,0 +1,63 @@
+{
+  "title": "Blest Hour, When Mortal Man Retires",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Thomas Raffles",
+      "born": 1788,
+      "died": 1863,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Blest Hour, When Mortal Man Retires in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Thomas Raffles wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 44 of its twenty-second edition (1853), “The Hour of Prayer”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Blest hour, when mor-tal man re-tires To hold com-mu-nion with his God, To send to heaven his warm de-sires, And lis-ten to the sa-cred word.",
+  "verses": [
+    {
+      "lines": [
+        "Blest hour, when mortal man retires",
+        "To hold communion with his God,",
+        "To send to heaven his warm desires,",
+        "And listen to the sacred word."
+      ]
+    },
+    {
+      "lines": [
+        "Blest hour, when earthly cares resign",
+        "Their empire o'er his anxious breast,",
+        "While, all around, the calm divine",
+        "Proclaims the holy day of rest."
+      ]
+    },
+    {
+      "lines": [
+        "Blest hour, when God himself draws nigh,",
+        "Well pleased his people's voice to hear,",
+        "To hush the penitential sigh,",
+        "And wipe away the mourner's tear."
+      ]
+    },
+    {
+      "lines": [
+        "Blest hour! for, where the Lord resorts,",
+        "Foretastes of future bliss are given,",
+        "And mortals find his earthly courts",
+        "The house of God, the gate of heaven."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Thomas Raffles died in 1863.",
+  "credits": "Words by Thomas Raffles (1788–1863), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:44"
+}

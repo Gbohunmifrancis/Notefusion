@@ -1,0 +1,94 @@
+{
+  "title": "How Shall the Young Secure Their Hearts",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "How Shall the Young Secure Their Hearts in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 119, part 4, headed “Instruction from scripture”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How shall the young se-cure their hearts, And guard their lives from sin? Thy word the choic-est rules im-parts To keep the con-science clean.",
+  "verses": [
+    {
+      "lines": [
+        "How shall the young secure their hearts,",
+        "And guard their lives from sin?",
+        "Thy word the choicest rules imparts",
+        "To keep the conscience clean."
+      ]
+    },
+    {
+      "lines": [
+        "When once it enters to the mind,",
+        "It spreads such light abroad,",
+        "The meanest souls instruction find,",
+        "And raise their thoughts to God."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis like the sun, a heavenly light,",
+        "That guides us all the day;",
+        "And thro' the dangers of the night,",
+        "A lamp to lead our way."
+      ]
+    },
+    {
+      "lines": [
+        "The men that keep thy law with care,",
+        "And meditate thy word,",
+        "Grow wiser than their teachers are,",
+        "And better know the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "Thy precepts make me truly wise:",
+        "I hate the sinner's road;",
+        "I hate my own vain thoughts that rise,",
+        "But love thy law, my God."
+      ]
+    },
+    {
+      "lines": [
+        "The starry heavens thy rule obey,",
+        "The earth maintains her place;",
+        "And these thy servants night and day",
+        "Thy skill and power express!"
+      ]
+    },
+    {
+      "lines": [
+        "But still thy law and gospel, Lord,",
+        "Have lessons more divine;",
+        "Not earth stands firmer than thy word,",
+        "Nor stars so nobly shine."
+      ]
+    },
+    {
+      "lines": [
+        "Thy word is everlasting truth;",
+        "How pure is every page!",
+        "That holy book shall guide our youth,",
+        "And well support our age."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 119:4"
+}

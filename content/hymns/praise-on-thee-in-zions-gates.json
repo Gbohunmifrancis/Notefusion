@@ -1,0 +1,62 @@
+{
+  "title": "Praise on Thee, in Zion's Gates",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Praise on Thee, in Zion's Gates in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 882 of its twenty-second edition (1853), “\"Thou crownest the year with goodness.\"”, where the book credits them to the Ev. Magazine.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Praise on thee, in Zi-on's gates, Dail-y, O Je-ho-vah! waits; Un-to thee, O God! be-long Grate-ful words and ho-ly song.",
+  "verses": [
+    {
+      "lines": [
+        "Praise on thee, in Zion's gates,",
+        "Daily, O Jehovah! waits;",
+        "Unto thee, O God! belong",
+        "Grateful words and holy song."
+      ]
+    },
+    {
+      "lines": [
+        "Thou the hope and refuge art",
+        "Of remotest lands apart,",
+        "Distant isles and tribes unknown,",
+        "'Mid the ocean-waste, and lone."
+      ]
+    },
+    {
+      "lines": [
+        "Thou dost visit earth, and rain",
+        "Blessings on the thirsty plain,",
+        "From the copious founts on high,",
+        "From the rivers of the sky."
+      ]
+    },
+    {
+      "lines": [
+        "Thus the clouds thy power confess,",
+        "And thy paths drop fruitfulness:",
+        "And the voice of song and mirth",
+        "Rises from the tribes of earth."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:882"
+}

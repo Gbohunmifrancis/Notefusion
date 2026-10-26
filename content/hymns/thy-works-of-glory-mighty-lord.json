@@ -1,0 +1,94 @@
+{
+  "title": "Thy Works of Glory, Mighty Lord",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Thy Works of Glory, Mighty Lord in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 107, part 5, headed “The Mariner's psalm”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Thy works of glo-ry, might-y Lord, Thy won-ders in the deeps, The sons of cou-rage shall re-cord Who trade in float-ing ships.",
+  "verses": [
+    {
+      "lines": [
+        "Thy works of glory, mighty Lord,",
+        "Thy wonders in the deeps,",
+        "The sons of courage shall record",
+        "Who trade in floating ships."
+      ]
+    },
+    {
+      "lines": [
+        "At thy command the winds arise,",
+        "And swell the towering waves;",
+        "The men astonish'd mount the skies",
+        "And sink in gaping graves."
+      ]
+    },
+    {
+      "lines": [
+        "Again they climb the watery hills,",
+        "And plunge in deeps again;",
+        "Each like a tottering drunkard reels,",
+        "And finds his courage vain."
+      ]
+    },
+    {
+      "lines": [
+        "Frighted to hear the tempest roar,",
+        "They pant with fluttering breath,",
+        "And, hopeless of the distant shore,",
+        "Expect immediate death."
+      ]
+    },
+    {
+      "lines": [
+        "Then to the Lord they raise their cries,",
+        "He hears the loud request,",
+        "And orders silence thro' the skies,",
+        "And lays the floods to rest."
+      ]
+    },
+    {
+      "lines": [
+        "Sailors rejoice to lose their fears,",
+        "And see the storm allay'd:",
+        "Now to their eyes the port appears;",
+        "There let their vows be paid."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis God that brings them safe to land;",
+        "Let stupid mortals know",
+        "That waves are under his command,",
+        "And all the winds that blow,"
+      ]
+    },
+    {
+      "lines": [
+        "O that the sons of men would praise",
+        "The goodness of the Lord!",
+        "And those that see thy wondrous ways,",
+        "Thy wondrous love record."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 107:5"
+}

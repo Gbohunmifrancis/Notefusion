@@ -1,0 +1,78 @@
+{
+  "title": "Let Sinners Take Their Course",
+  "tune": "st-bride",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Let Sinners Take Their Course in Tonic Solfa to ST. BRIDE, doh is Bb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 55, part 2, headed “Dangerous prosperity; or, Daily devotions encouraged”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to ST. BRIDE; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Let sin-ners take their course, And choose the road to death; But in the wor-ship of my God I'll spend my dail-y breath.",
+  "verses": [
+    {
+      "lines": [
+        "Let sinners take their course,",
+        "And choose the road to death;",
+        "But in the worship of my God",
+        "I'll spend my daily breath."
+      ]
+    },
+    {
+      "lines": [
+        "My thoughts address his throne",
+        "When morning brings the light;",
+        "I seek his blessing every noon,",
+        "And pay my vows at night."
+      ]
+    },
+    {
+      "lines": [
+        "Thou wilt regard my cries,",
+        "O my eternal God,",
+        "While sinners perish in surprise",
+        "Beneath thine angry rod."
+      ]
+    },
+    {
+      "lines": [
+        "Because they dwell at ease,",
+        "And no sad changes feel,",
+        "They neither fear nor trust thy Name,",
+        "Nor learn to do thy will."
+      ]
+    },
+    {
+      "lines": [
+        "But I with all my cares",
+        "Will call upon the Lord,",
+        "I'll cast my burdens on his arm,",
+        "And rest upon his word,"
+      ]
+    },
+    {
+      "lines": [
+        "His arm shall well sustain",
+        "The children of his love;",
+        "The ground on which their safety stands",
+        "No earthly power can move."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. BRIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 55:2"
+}

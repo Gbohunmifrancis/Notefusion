@@ -1,0 +1,66 @@
+{
+  "title": "Let Us Join, as God Commands",
+  "tune": "hollingside",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Let Us Join, as God Commands in Tonic Solfa to HOLLINGSIDE, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 905 of its twenty-second edition (1853), “Call to Social Worship”, where the book credits them to the Methodist Collection.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to HOLLINGSIDE; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Let us join, as God com-mands, Let us join our hearts and hands, Help to gain our call-ing's hope; Help to build each oth-er up; Car-ry on the Christ-ian's strife; Walk in ho-li-ness of life; Faith-ful-ly our gifts im-prove For the sake of him we love;",
+  "verses": [
+    {
+      "lines": [
+        "Let us join, as God commands,",
+        "Let us join our hearts and hands,",
+        "Help to gain our calling's hope;",
+        "Help to build each other up;",
+        "Carry on the Christian's strife;",
+        "Walk in holiness of life;",
+        "Faithfully our gifts improve",
+        "For the sake of him we love; —"
+      ]
+    },
+    {
+      "lines": [
+        "Still forget the things behind;",
+        "Follow Christ in heart and mind;",
+        "Toward the mark unwearied press;",
+        "Seize the crown of righteousness,",
+        "While we walk with God in light,",
+        "God our hearts will still unite;",
+        "Dearest fellowship we prove —",
+        "Fellowship in Jesus, love."
+      ]
+    },
+    {
+      "lines": [
+        "Still, O Lord, our faith increase;",
+        "Cleanse from all unrighteousness:",
+        "Thee th' unholy cannot see:",
+        "Make, O make us meet for thee:",
+        "Every vile affection kill;",
+        "Root out every seed of ill;",
+        "Utterly abolish sin;",
+        "Write thy law of love within."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to HOLLINGSIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:905"
+}

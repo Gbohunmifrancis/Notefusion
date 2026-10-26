@@ -1,0 +1,62 @@
+{
+  "title": "Behold the Sure Foundation-stone",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Behold the Sure Foundation-stone in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 118, part 3, headed “Christ the foundation of his church”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Be-hold the sure foun-da-tion stone Which God in Zi-on lays To build our heav-enly hopes up-on, And his e-ter-nal praise.",
+  "verses": [
+    {
+      "lines": [
+        "Behold the sure foundation-stone",
+        "Which God in Zion lays",
+        "To build our heavenly hopes upon,",
+        "And his eternal praise."
+      ]
+    },
+    {
+      "lines": [
+        "Chosen of God, to sinners dear,",
+        "And saints adore the Name,",
+        "They trust their whole salvation here,",
+        "Nor shall they suffer shame."
+      ]
+    },
+    {
+      "lines": [
+        "The foolish builders, scribe and priest,",
+        "Reject it with disdain;",
+        "Yet on this rock the church shall rest,",
+        "And envy rage in vain."
+      ]
+    },
+    {
+      "lines": [
+        "What tho' the gates of hell withstood,",
+        "Yet must this building rise:",
+        "'Tis thy own work, almighty God,",
+        "And wondrous in our eyes."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 118:3"
+}

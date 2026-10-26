@@ -1,0 +1,55 @@
+{
+  "title": "Heaven Is a State of Rest from Sin",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Heaven Is a State of Rest from Sin in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 232, “Heaven”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Heaven is a state of rest from sin; But all who hope to en-ter there Must here that ho-ly course be-gin, Which shall their souls for rest pre-pare.",
+  "verses": [
+    {
+      "lines": [
+        "Heaven is a state of rest from sin;",
+        "But all who hope to enter there",
+        "Must here that holy course begin,",
+        "Which shall their souls for rest prepare."
+      ]
+    },
+    {
+      "lines": [
+        "Clean hearts, O God, in us create!",
+        "Right spirits, Lord, in us renew!",
+        "Commence we now that higher state,",
+        "Now do Thy will as angels do."
+      ]
+    },
+    {
+      "lines": [
+        "In Jesus' footsteps may we tread,",
+        "Learn every lesson of his love;",
+        "And be from grace to glory led,",
+        "From heaven below to heaven above."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:232"
+}

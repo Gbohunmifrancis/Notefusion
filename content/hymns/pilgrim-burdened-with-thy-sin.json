@@ -1,0 +1,67 @@
+{
+  "title": "Pilgrim, Burdened with Thy Sin",
+  "tune": "hollingside",
+  "text": [
+    {
+      "name": "John Bowring",
+      "born": 1792,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Pilgrim, Burdened with Thy Sin in Tonic Solfa to HOLLINGSIDE, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Bowring wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 270 of its twenty-second edition (1853), “Invitation”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to HOLLINGSIDE; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Pil-grim, bur-dened with thy sin, Come the way to Zi-on's gate, There, till mer-cy speaks with-in, Knock, and weep, and watch and wait Knock he knows the sin-ner's cry, Weep he loves the mourn-er's tears, Watch for sa-ving grace is nigh, Wait till heav-enly grace ap-pears.",
+  "verses": [
+    {
+      "lines": [
+        "Pilgrim, burdened with thy sin,",
+        "Come the way to Zion's gate,",
+        "There, till mercy speaks within,",
+        "Knock, and weep, and watch and wait —",
+        "Knock — he knows the sinner's cry,",
+        "Weep — he loves the mourner's tears,",
+        "Watch — for saving grace is nigh,",
+        "Wait — till heavenly grace appears."
+      ]
+    },
+    {
+      "lines": [
+        "Hark, it is thy Saviour's voice!",
+        "\"Welcome, pilgrim, to thy rest.\"",
+        "Now within the gate rejoice,",
+        "Safe, and owned, and bought and blest —",
+        "Safe — from all the lures of vice,",
+        "Owned — by joys the contrite know,",
+        "Bought — by love and life the price,",
+        "Blest — the mighty debt to owe!"
+      ]
+    },
+    {
+      "lines": [
+        "Holy pilgrim! what for thee,",
+        "In a world like this, remains?",
+        "From thy guarded breast shall flee",
+        "Fear, and shame, and doubt and pains —",
+        "Fear — the hope of heaven shall fly,",
+        "Shame — from glory's view retire,",
+        "Doubt — in full belief shall die,",
+        "Pain — in endless bliss expire."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Bowring died in 1872.",
+  "credits": "Words by John Bowring (1792–1872), public domain, as printed in Hymns for Christian Devotion (1853); set to HOLLINGSIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:270"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "Servants of Christ, Arise",
+  "tune": "st-bride",
+  "text": [
+    {
+      "name": "Lydia Sigourney",
+      "born": 1791,
+      "died": 1865,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Servants of Christ, Arise in Tonic Solfa to ST. BRIDE, doh is Bb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Lydia Sigourney wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 356 of its twenty-second edition (1853), “Active Piety”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to ST. BRIDE; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Ser-vants of Christ, a-rise, And gird you for the toil; The dew of pro-mise from the skies Al-rea-dy cheers the soil.",
+  "verses": [
+    {
+      "lines": [
+        "Servants of Christ, arise,",
+        "And gird you for the toil;",
+        "The dew of promise from the skies",
+        "Already cheers the soil."
+      ]
+    },
+    {
+      "lines": [
+        "Go where the sick recline,",
+        "Where mourning hearts deplore;",
+        "And where the sons of sorrow pine,",
+        "Dispense your hallowed lore."
+      ]
+    },
+    {
+      "lines": [
+        "Urge, with a tender zeal,",
+        "The erring child along,",
+        "Where peaceful congregations kneel,",
+        "And pious teachers throng."
+      ]
+    },
+    {
+      "lines": [
+        "Be faith, which looks above,",
+        "With prayer, your constant guest,",
+        "And wrap the Saviour's changeless love",
+        "A mantle round your breast."
+      ]
+    },
+    {
+      "lines": [
+        "So shall you share the wealth,",
+        "That earth may ne'er despoil,",
+        "And the blest gospel's saving health",
+        "Repay your arduous toil."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Lydia Sigourney died in 1865.",
+  "credits": "Words by Lydia Sigourney (1791–1865), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. BRIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:356"
+}

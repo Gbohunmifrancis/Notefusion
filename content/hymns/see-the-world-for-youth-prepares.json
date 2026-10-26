@@ -1,0 +1,95 @@
+{
+  "title": "See, the World for Youth Prepares",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "See, the World for Youth Prepares in Tonic Solfa to HEINLEIN, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 99, “The world”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to HEINLEIN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "See, the world for youth pre-pares, Har-lot like, her gau-dy snares! Plea-sures round her seem to wait, But 'tis all a paint-ed cheat.",
+  "verses": [
+    {
+      "lines": [
+        "See, the world for youth prepares,",
+        "Harlot like, her gaudy snares!",
+        "Pleasures round her seem to wait,",
+        "But 'tis all a painted cheat."
+      ]
+    },
+    {
+      "lines": [
+        "Rash and unsuspecting youth",
+        "Thinks to find thee always smooth,",
+        "Always kind, till better taught,",
+        "By experience dearly bought."
+      ]
+    },
+    {
+      "lines": [
+        "So the calm, but faithless sea,",
+        "(Lively emblem, world, of thee)",
+        "Tempts the shepherd from the shore,",
+        "Foreign regions to explore."
+      ]
+    },
+    {
+      "lines": [
+        "While no wrinkled wave is seen,",
+        "While the sky remains serene;",
+        "Filled with hopes, and golden schemes,",
+        "Of a storm he little dreams."
+      ]
+    },
+    {
+      "lines": [
+        "But ere long the tempest raves,",
+        "Then he trembles at the waves;",
+        "Wishes then he had been wise,",
+        "But too late-he sinks and dies."
+      ]
+    },
+    {
+      "lines": [
+        "Hapless thus, are they, vain world,",
+        "Soon on rocks of ruin hurled;",
+        "Who admiring thee, untried,",
+        "Court thy pleasure, wealth, or pride."
+      ]
+    },
+    {
+      "lines": [
+        "Such a shipwreck had been mine,",
+        "Had not Jesus (Name Divine!)",
+        "Saved me with a mighty hand,",
+        "And restored my soul to land."
+      ]
+    },
+    {
+      "lines": [
+        "Now, with gratitude I raise",
+        "Ebenezers to his praise;",
+        "Now my rash pursuits are o'er,",
+        "I can trust thee, world, no more."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to HEINLEIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:99"
+}

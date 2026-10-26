@@ -1,0 +1,55 @@
+{
+  "title": "Am I an Israelite Indeed",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Benjamin Beddome",
+      "born": 1717,
+      "died": 1795,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Am I an Israelite Indeed in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Benjamin Beddome wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 502 of its twenty-second edition (1853), “For Inward Truth”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Am I an Is-rae-lite in-deed. With-out a false dis-guise? Have I re-nounced my sins, and left My re-fu-ges of lies?",
+  "verses": [
+    {
+      "lines": [
+        "Am I an Israelite indeed.",
+        "Without a false disguise?",
+        "Have I renounced my sins, and left",
+        "My refuges of lies?"
+      ]
+    },
+    {
+      "lines": [
+        "Say, does my heart unchanged remain,",
+        "Or is it formed anew?",
+        "What is the rule by which I walk,",
+        "The object I pursue?"
+      ]
+    },
+    {
+      "lines": [
+        "Cause me, O God of truth and grace,",
+        "My real state to know;",
+        "If I am wrong, O set me right!",
+        "If right, preserve me so!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Benjamin Beddome died in 1795.",
+  "credits": "Words by Benjamin Beddome (1717–1795), public domain, as printed in Hymns for Christian Devotion (1853); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:502"
+}

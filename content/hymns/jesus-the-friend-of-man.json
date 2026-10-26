@@ -1,0 +1,62 @@
+{
+  "title": "Jesus, the Friend of Man",
+  "tune": "franconia",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Jesus, the Friend of Man in Tonic Solfa to FRANCONIA, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 685 of its twenty-second edition (1853), “The Saviour Commemorated”, where the book credits them to the Paradise St. Collection.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to FRANCONIA; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus, the Friend of man. In-vites us to his board: The wel-come sum-mons we o-bey, And own our gra-cious Lord.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, the Friend of man.",
+        "Invites us to his board:",
+        "The welcome summons we obey,",
+        "And own our gracious Lord."
+      ]
+    },
+    {
+      "lines": [
+        "Here we survey that love",
+        "Which spoke in every breath,",
+        "Which crowned each action of his life,",
+        "And triumphed in his death."
+      ]
+    },
+    {
+      "lines": [
+        "Then let our powers unite,",
+        "His sacred name to raise;",
+        "Let grateful joy fill every mind,",
+        "And every voice be praise."
+      ]
+    },
+    {
+      "lines": [
+        "And while we share the gifts",
+        "Which from his gospel flow,",
+        "O, may our hearts to all mankind",
+        "With warm affection glow."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to FRANCONIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:685"
+}

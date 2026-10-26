@@ -1,0 +1,63 @@
+{
+  "title": "O Thou, at Whose Dread Name We Bend",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Charles Sprague",
+      "born": 1791,
+      "died": 1875,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O Thou, at Whose Dread Name We Bend in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Sprague wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 987 of its twenty-second edition (1853), “For the Blessing of Schools”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Thou, at whose dread name we bend, To whom our pu-rest vows we pay, God o-ver all, in love de-scend, And bless the la-bors of this day.",
+  "verses": [
+    {
+      "lines": [
+        "O Thou, at whose dread name we bend,",
+        "To whom our purest vows we pay,",
+        "God over all, in love descend,",
+        "And bless the labors of this day."
+      ]
+    },
+    {
+      "lines": [
+        "Our fathers here, a pilgrim band,",
+        "Fixed the proud empire of the free;",
+        "Art moved in gladness o'er the land,",
+        "And Faith her altars reared to thee."
+      ]
+    },
+    {
+      "lines": [
+        "Here, too, to guard, through every age,",
+        "The sacred rights their valor won,",
+        "They bade instruction spread her page,",
+        "And send down truth from sire to son."
+      ]
+    },
+    {
+      "lines": [
+        "Here still, through all succeeding time,",
+        "Their stores may truth and learning bring",
+        "And still the anthem-note sublime",
+        "To thee from children's children sing."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Charles Sprague died in 1875.",
+  "credits": "Words by Charles Sprague (1791–1875), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:987"
+}

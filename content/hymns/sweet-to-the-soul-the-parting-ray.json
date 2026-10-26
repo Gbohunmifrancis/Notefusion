@@ -1,0 +1,60 @@
+{
+  "title": "Sweet to the Soul the Parting Ray",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Sweet to the Soul the Parting Ray in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 958 of its twenty-second edition (1853), “The Same”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Sweet to the soul the part-ing ray, That ush-ers pla-cid eve-ning in, When with the still, ex-pir-ing day, The Sab-bath's peace-ful hours be-gin; How grate-ful to the anx-ious breast, The sa-cred hours of ho-ly rest.",
+  "verses": [
+    {
+      "lines": [
+        "Sweet to the soul the parting ray,",
+        "That ushers placid evening in,",
+        "When with the still, expiring day,",
+        "The Sabbath's peaceful hours begin;",
+        "How grateful to the anxious breast,",
+        "The sacred hours of holy rest."
+      ]
+    },
+    {
+      "lines": [
+        "Hushed is the tumult of this day,",
+        "And worldly cares and business cease;",
+        "While soft the vesper breezes play,",
+        "To hymn the glad return of peace.",
+        "O season blest! O moment given",
+        "To turn the vagrant thoughts to heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Oft as this hallowed hour shall come,",
+        "O raise my thoughts from earthly things,",
+        "And bear them to my heavenly home,",
+        "On living faith's immortal wings —",
+        "Till the last gleam of life decay,",
+        "In one eternal Sabbath day."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:958"
+}

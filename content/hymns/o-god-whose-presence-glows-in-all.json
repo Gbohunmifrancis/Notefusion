@@ -1,0 +1,63 @@
+{
+  "title": "O God, Whose Presence Glows in All",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Nathaniel Langdon Frothingham",
+      "born": 1793,
+      "died": 1870,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O God, Whose Presence Glows in All in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Nathaniel Langdon Frothingham wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 23, “For Spiritual Influences”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O God, whose pre-sence glows in all With-in, a-round us, and a-bove! Thy word we bless, Thy name we call, Whose word is Truth, whose name is Love.",
+  "verses": [
+    {
+      "lines": [
+        "O God, whose presence glows in all",
+        "Within, around us, and above!",
+        "Thy word we bless, Thy name we call,",
+        "Whose word is Truth, whose name is Love."
+      ]
+    },
+    {
+      "lines": [
+        "That truth be with the heart believed",
+        "Of all who seek this sacred place;",
+        "With power proclaimed, in peace received,",
+        "Our spirit's light, Thy spirit's grace."
+      ]
+    },
+    {
+      "lines": [
+        "That love its holy influence pour,",
+        "To keep us meek, and make us free;",
+        "And throw its binding blessing more",
+        "Round each with all, and all with Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Send down its angel to our side;",
+        "Send in its calm upon the breast;",
+        "For we would know no other guide,",
+        "And we can need no other rest."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Nathaniel Langdon Frothingham died in 1870.",
+  "credits": "Words by Nathaniel Langdon Frothingham (1793–1870), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:23"
+}

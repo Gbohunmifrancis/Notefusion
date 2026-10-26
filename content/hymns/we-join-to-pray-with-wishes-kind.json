@@ -1,0 +1,63 @@
+{
+  "title": "We Join to Pray, with Wishes Kind",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "William Gaskell",
+      "born": 1805,
+      "died": 1884,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "We Join to Pray, with Wishes Kind in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Gaskell wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 380, “Marriage Hymn”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "We join to pray, with wish-es kind, A bless-ing, Lord, from Thee, On those who now the bands have twined, Which ne'er may bro-ken be.",
+  "verses": [
+    {
+      "lines": [
+        "We join to pray, with wishes kind,",
+        "A blessing, Lord, from Thee,",
+        "On those who now the bands have twined,",
+        "Which ne'er may broken be."
+      ]
+    },
+    {
+      "lines": [
+        "We know that scenes not always bright",
+        "Must unto them be given;",
+        "But let there shine o'er all the light",
+        "Of love, and truth, and heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Still hand in hand, their journey through,",
+        "Meek pilgrims may they go;",
+        "Mingling their joys as helpers true,",
+        "And sharing every woe."
+      ]
+    },
+    {
+      "lines": [
+        "In faith, and trust, and heart, the same,",
+        "The same their home above;",
+        "May each in each still feed the flame",
+        "Of pure and holy love."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Gaskell died in 1884.",
+  "credits": "Words by William Gaskell (1805–1884), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:380"
+}

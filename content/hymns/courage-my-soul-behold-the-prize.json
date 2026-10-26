@@ -1,0 +1,79 @@
+{
+  "title": "Courage, My Soul! Behold the Prize",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Courage, My Soul! Behold the Prize in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 76, “There the weary are at rest”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Cou-rage, my soul! be-hold the prize The Sa-vior's love pro-vides; E-ter-nal life be-yond the skies, For all whom here he guides.",
+  "verses": [
+    {
+      "lines": [
+        "Courage, my soul! behold the prize",
+        "The Savior's love provides;",
+        "Eternal life beyond the skies,",
+        "For all whom here he guides."
+      ]
+    },
+    {
+      "lines": [
+        "The wicked cease from troubling there,",
+        "The weary are at rest;",
+        "Sorrow and sin, and pain and care,",
+        "No more approach the blest."
+      ]
+    },
+    {
+      "lines": [
+        "A wicked world and wicked heart,",
+        "With Satan now are joined;",
+        "Each acts a too successful part",
+        "In harassing my mind."
+      ]
+    },
+    {
+      "lines": [
+        "In conflict with this threefold troop,",
+        "How weary, Lord, am I?",
+        "Did not thy promise bear me up,",
+        "My soul must faint and die."
+      ]
+    },
+    {
+      "lines": [
+        "But fighting in my Savior's strength,",
+        "Though mighty are my foes,",
+        "I shall a conqu'ror be at length,",
+        "O'er all that can oppose."
+      ]
+    },
+    {
+      "lines": [
+        "Then why, my soul, complain or fear?",
+        "The crown of glory see!",
+        "The more I toil and suffer here,",
+        "The sweeter rest will be."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:76"
+}

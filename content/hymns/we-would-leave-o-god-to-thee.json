@@ -1,0 +1,55 @@
+{
+  "title": "We Would Leave, O God, to Thee",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "William Gaskell",
+      "born": 1805,
+      "died": 1884,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "We Would Leave, O God, to Thee in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "William Gaskell wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 324, “Refuge in God”.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "We would leave, O God, to Thee, Ev-ery anx-ious care and fear; Thou the trou-bled thought canst see, Thou canst dry the bit-ter tear.",
+  "verses": [
+    {
+      "lines": [
+        "We would leave, O God, to Thee,",
+        "Every anxious care and fear;",
+        "Thou the troubled thought canst see,",
+        "Thou canst dry the bitter tear."
+      ]
+    },
+    {
+      "lines": [
+        "Thou dost care for us, we know, —",
+        "Care with all a Father's love;",
+        "Thou canst make each earthly woe",
+        "Work to higher bliss above."
+      ]
+    },
+    {
+      "lines": [
+        "On this faith we fain would rest;",
+        "Strengthen Thou its blessed power!",
+        "Steadfast keep it in our breast,",
+        "Through each dark and trying hour."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: William Gaskell died in 1884.",
+  "credits": "Words by William Gaskell (1805–1884), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:324"
+}

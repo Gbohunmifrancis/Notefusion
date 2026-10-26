@@ -1,0 +1,62 @@
+{
+  "title": "Blest Is the Man Whose Bowels Move",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Blest Is the Man Whose Bowels Move in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 41, headed “Charity to the poor; or, Pity to the afflicted”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Blest is the man whose bow-els move, And melt with pi-ty to the poor, Whose soul, by sym-pa-this-ing love, Feels what his fel-low saints en-dure.",
+  "verses": [
+    {
+      "lines": [
+        "Blest is the man whose bowels move,",
+        "And melt with pity to the poor,",
+        "Whose soul, by sympathising love,",
+        "Feels what his fellow-saints endure."
+      ]
+    },
+    {
+      "lines": [
+        "His heart contrives for their relief",
+        "More good than his own hands can do;",
+        "He, in the time of general grief,",
+        "Shall find the Lord has bowels too."
+      ]
+    },
+    {
+      "lines": [
+        "His soul shall live secure on earth,",
+        "With secret blessings on his head,",
+        "When drought, and pestilence, and dearth",
+        "Around him multiply their dead."
+      ]
+    },
+    {
+      "lines": [
+        "Or if he languish on his couch,",
+        "God will pronounce his sins forgiv'n,",
+        "Will save him with a healing touch,",
+        "Or take his willing soul to heaven."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 41"
+}

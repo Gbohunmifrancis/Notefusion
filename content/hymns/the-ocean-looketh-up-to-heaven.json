@@ -1,0 +1,71 @@
+{
+  "title": "The Ocean Looketh Up to Heaven",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "John Greenleaf Whittier",
+      "born": 1807,
+      "died": 1892,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "The Ocean Looketh Up to Heaven in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Greenleaf Whittier wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 85, “Nature's Worship”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Th'o-cean loo-keth up to hea-ven, As 'twere a liv-ing thing; The hom-age of its waves is given, In cease-less wor-ship-ping.",
+  "verses": [
+    {
+      "lines": [
+        "The ocean looketh up to heaven,",
+        "As 'twere a living thing;",
+        "The homage of its waves is given,",
+        "In ceaseless worshipping."
+      ]
+    },
+    {
+      "lines": [
+        "They kneel upon the sloping sand",
+        "As bends the human knee;",
+        "A beautiful and tireless band,",
+        "The priesthood of the sea."
+      ]
+    },
+    {
+      "lines": [
+        "The mists are lifted from the rills,",
+        "Like the white wing of prayer;",
+        "They kneel above the ancient hills,",
+        "As doing homage there."
+      ]
+    },
+    {
+      "lines": [
+        "The forest-tops are lowly cast",
+        "O'er breezy hill and glen,",
+        "As if a prayerful spirit passed",
+        "On nature as on men."
+      ]
+    },
+    {
+      "lines": [
+        "The sky is as a temple's arch:",
+        "The blue and wavy air",
+        "Is glorious with the spirit march",
+        "Of messengers at prayer."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: John Greenleaf Whittier died in 1892.",
+  "credits": "Words by John Greenleaf Whittier (1807–1892), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:85"
+}

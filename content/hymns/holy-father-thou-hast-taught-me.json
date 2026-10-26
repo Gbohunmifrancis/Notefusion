@@ -1,0 +1,66 @@
+{
+  "title": "Holy Father, Thou Hast Taught Me",
+  "tune": "lux-eoi",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Holy Father, Thou Hast Taught Me in Tonic Solfa to LUX EOI, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 528, “Dedication to God”.",
+    "The book printed the words without tunes, marked Eights and Sevens Double (8.7.8.7.8.7.8.7), to be sung to any tune of that metre. This page sets them to LUX EOI; any other Eights and Sevens Double tune fits them as well."
+  ],
+  "underlay": "Ho-ly Fa-ther, Thou hast taught me I should live to Thee a-lone; Year by year, Thy hand hath brought me On through dan-gers oft un-known. When I wan-dered, Thou hast found me; When I doubt-ed, sent me light; Still Thine arm has been a-round me, All my paths were in Thy sight.",
+  "verses": [
+    {
+      "lines": [
+        "Holy Father, Thou hast taught me",
+        "I should live to Thee alone;",
+        "Year by year, Thy hand hath brought me",
+        "On through dangers oft unknown.",
+        "When I wandered, Thou hast found me;",
+        "When I doubted, sent me light;",
+        "Still Thine arm has been around me,",
+        "All my paths were in Thy sight."
+      ]
+    },
+    {
+      "lines": [
+        "In the world will foes assail me,",
+        "Craftier, stronger far than I;",
+        "And the strife may never fail me,",
+        "Well I know, before I die.",
+        "Therefore, Lord, I come, believing",
+        "Thou canst give the power I need;",
+        "Through the prayer of faith receiving",
+        "Strength, — the spirit's strength indeed."
+      ]
+    },
+    {
+      "lines": [
+        "I would trust in Thy protecting,",
+        "Wholly rest upon Thine arm,",
+        "Follow wholly Thy directing,",
+        "Thou mine only guard from harm!",
+        "Keep me from mine own undoing,",
+        "Help me turn to Thee when tried,",
+        "Still my footsteps, Father, viewing,",
+        "Keep me ever at Thy side!"
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to LUX EOI by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:528"
+}

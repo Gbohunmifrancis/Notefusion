@@ -1,0 +1,78 @@
+{
+  "title": "Teach Me the Measure of My Days",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Teach Me the Measure of My Days in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 39, part 2, headed “The vanity of man as mortal”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Teach me the mea-sure of my days, Thou mak-er of my frame; I would sur-vey life's nar-row space, And learn' how frail I am.",
+  "verses": [
+    {
+      "lines": [
+        "Teach me the measure of my days,",
+        "Thou maker of my frame;",
+        "I would survey life's narrow space,",
+        "And learn' how frail I am."
+      ]
+    },
+    {
+      "lines": [
+        "A span is all that we can boast,",
+        "An inch or two of time;",
+        "Man is but vanity and dust",
+        "In all his flower and prime."
+      ]
+    },
+    {
+      "lines": [
+        "See the vain race of mortals move",
+        "Like shadows o'er the plain;",
+        "They rage and strive, desire and love,",
+        "But all the noise is vain."
+      ]
+    },
+    {
+      "lines": [
+        "Some walk in honour's gaudy show,",
+        "Some dig for golden ore,",
+        "They toil for heirs, they know not who,",
+        "And straight are seen no more."
+      ]
+    },
+    {
+      "lines": [
+        "What should I wish or wait for then",
+        "From creatures, earth and dust?",
+        "They make our expectations vain,",
+        "And disappoint our trust."
+      ]
+    },
+    {
+      "lines": [
+        "Now I forbid my carnal hope,",
+        "My fond desires recall;",
+        "I give my mortal interest up,",
+        "And make my God my all."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 39:2"
+}

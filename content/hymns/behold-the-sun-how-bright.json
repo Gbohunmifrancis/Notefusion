@@ -1,0 +1,63 @@
+{
+  "title": "Behold the Sun, How Bright",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Thomas Moore",
+      "born": 1779,
+      "died": 1852,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Behold the Sun, How Bright in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Thomas Moore wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 170, “Christianity”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Be-hold the sun, how bright From yon-der east he springs, As if the soul of life and light Were breath-ing from his wings.",
+  "verses": [
+    {
+      "lines": [
+        "Behold the sun, how bright",
+        "From yonder east he springs,",
+        "As if the soul of life and light",
+        "Were breathing from his wings."
+      ]
+    },
+    {
+      "lines": [
+        "So bright the gospel broke",
+        "Upon the souls of men;",
+        "So fresh the dreaming world awoke",
+        "In truth's full radiance then."
+      ]
+    },
+    {
+      "lines": [
+        "Before yon sun arose,",
+        "Stars clustered through the sky;",
+        "But, O, how dim, how pale, were those,",
+        "To his one burning eye!"
+      ]
+    },
+    {
+      "lines": [
+        "So truth lent many a ray,",
+        "To bless the Pagan's night;",
+        "But, Lord, how faint, how cold, were they,",
+        "To Thy one glorious light!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Thomas Moore died in 1852.",
+  "credits": "Words by Thomas Moore (1779–1852), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:170"
+}

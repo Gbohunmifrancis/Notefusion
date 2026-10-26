@@ -1,0 +1,86 @@
+{
+  "title": "The Wonders, Lord, Thy Love Has Wrought",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "The Wonders, Lord, Thy Love Has Wrought in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 40, part 3, headed “Christ our sacrifice”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The won-ders, Lord, thy love has wrought, Ex-ceed our praise, sur-mount our thought; Should I at-tempt the long de-tail, My speech would faint, my num-bers fail.",
+  "verses": [
+    {
+      "lines": [
+        "The wonders, Lord, thy love has wrought,",
+        "Exceed our praise, surmount our thought;",
+        "Should I attempt the long detail,",
+        "My speech would faint, my numbers fail."
+      ]
+    },
+    {
+      "lines": [
+        "No blood of beasts on altars spilt,",
+        "Can cleanse the souls of men from guilt,",
+        "But thou hast set before our eyes",
+        "An all-sufficient sacrifice."
+      ]
+    },
+    {
+      "lines": [
+        "Lo! thine eternal Son appears,",
+        "To thy designs he bows his ears,",
+        "Assumes a body, well prepar'd,",
+        "And well performs a work so hard."
+      ]
+    },
+    {
+      "lines": [
+        "\"Behold, I come,\" (the Saviour cries,",
+        "With love and duty in his eyes)",
+        "\"I come to bear the heavy load",
+        "\"Of sins, and do thy will, my God."
+      ]
+    },
+    {
+      "lines": [
+        "\"'Tis written in thy great decree,",
+        "\"'Tis in thy book foretold of me,",
+        "\"I must fulfil the Saviour's part,",
+        "\"And, lo! thy law is in my heart!"
+      ]
+    },
+    {
+      "lines": [
+        "\"I'll magnify thy holy law,",
+        "\"And rebels to obedience draw,",
+        "\"'When on my cross I'm lifted high,",
+        "\"Or to my crown above the sky."
+      ]
+    },
+    {
+      "lines": [
+        "\"The Spirit shall descend, and show",
+        "\"What thou hast done, and what I do;",
+        "\"The wond'ring world shall learn thy grace,",
+        "\"Thy wisdom and thy righteousness.\""
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 40:3"
+}

@@ -1,0 +1,70 @@
+{
+  "title": "Father! We Look Up to Thee",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Father! We Look Up to Thee in Tonic Solfa to HEINLEIN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 539, “Christian Love”, where the book credits them to a Wesleyan source.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to HEINLEIN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Fa-ther! we look up to Thee; Let us in Thy love a-gree; Thou, who art the God of peace, Bid con-ten-tion ev-er cease.",
+  "verses": [
+    {
+      "lines": [
+        "Father! we look up to Thee;",
+        "Let us in Thy love agree;",
+        "Thou, who art the God of peace,",
+        "Bid contention ever cease."
+      ]
+    },
+    {
+      "lines": [
+        "Make us of one heart and mind,",
+        "Self-forgetful, true and kind;",
+        "Strong, yet meek in thought and word,",
+        "Like Thy Son, our blessed Lord."
+      ]
+    },
+    {
+      "lines": [
+        "Let us for each other care,",
+        "Each the other's burden bear;",
+        "Ready, when reviled, to bless;",
+        "Studious of the law of peace."
+      ]
+    },
+    {
+      "lines": [
+        "Father! all our souls inspire,",
+        "Fill us with love's sacred fire;",
+        "Guided by that blessed light,",
+        "Order all our steps aright."
+      ]
+    },
+    {
+      "lines": [
+        "Free from anger, free from pride,",
+        "Let us thus in Thee abide;",
+        "All the depths of love express, —",
+        "All the heights of holiness."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to HEINLEIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:539"
+}

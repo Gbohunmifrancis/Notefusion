@@ -1,0 +1,71 @@
+{
+  "title": "On This Fair Spot Where Nature Pays",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "John Greenleaf Adams",
+      "born": 1810,
+      "died": 1887,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "On This Fair Spot Where Nature Pays in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Greenleaf Adams wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 702 of its twenty-second edition (1853), “Dedication of a Country Church”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "On this fair spot where na-ture pays From hill, and vale, and flower, and tree, In morn-ing beams, in eve-ning rays, Its hom-age, God of all, to thee;",
+  "verses": [
+    {
+      "lines": [
+        "On this fair spot where nature pays",
+        "From hill, and vale, and flower, and tree,",
+        "In morning beams, in evening rays,",
+        "Its homage, God of all, to thee; —"
+      ]
+    },
+    {
+      "lines": [
+        "Thy children meet to dedicate",
+        "This temple to thy gracious name;",
+        "Our hearts and songs to elevate, —",
+        "Thy grace and glory to proclaim."
+      ]
+    },
+    {
+      "lines": [
+        "Descend — and with thy spirit bless",
+        "The offering; may it ever be",
+        "Sacred to truth and righteousness,",
+        "From error's dread dominion free."
+      ]
+    },
+    {
+      "lines": [
+        "Here let the standard of thy word",
+        "Be raised and held by gospel hands;",
+        "Hither bring hearts with one accord,",
+        "To learn and do thy great commands."
+      ]
+    },
+    {
+      "lines": [
+        "And when we leave these courts below,",
+        "To join the hosts in praise above,",
+        "May others here rejoice to know",
+        "Thy boundless, everlasting love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Greenleaf Adams died in 1887.",
+  "credits": "Words by John Greenleaf Adams (1810–1887), public domain, as printed in Hymns for Christian Devotion (1853); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:702"
+}

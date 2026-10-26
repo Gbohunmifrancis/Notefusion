@@ -1,0 +1,103 @@
+{
+  "title": "I Would, but Cannot Sing",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "I Would, but Cannot Sing in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 126, “The good that I would I do not. Rom 7”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "I would, but can-not sing, Guilt has un-tuned my voice; The ser-pent sin's en-ven-omed sting Has poi-soned all my joys.",
+  "verses": [
+    {
+      "lines": [
+        "I would, but cannot sing,",
+        "Guilt has untuned my voice;",
+        "The serpent sin's envenomed sting",
+        "Has poisoned all my joys."
+      ]
+    },
+    {
+      "lines": [
+        "I know the Lord is nigh,",
+        "And would, but cannot, pray;",
+        "For Satan meets me when I try,",
+        "And frights my soul away."
+      ]
+    },
+    {
+      "lines": [
+        "I would but can't repent",
+        "Though I endeavor oft;",
+        "This stony heart can ne'er relent",
+        "Till Jesus make it soft."
+      ]
+    },
+    {
+      "lines": [
+        "I would but cannot love,",
+        "Though wooed by love divine;",
+        "No arguments have pow'r to move",
+        "A soul so base as mine."
+      ]
+    },
+    {
+      "lines": [
+        "I would, but cannot rest",
+        "In God'S most holy will;",
+        "I know what he appoints is best,",
+        "Yet murmur at it still!"
+      ]
+    },
+    {
+      "lines": [
+        "Oh could I but believe!",
+        "Then all would easy be;",
+        "I would, but cannot, Lord relieve,",
+        "My help must come from thee!"
+      ]
+    },
+    {
+      "lines": [
+        "But if indeed I would,",
+        "Though I can nothing do,",
+        "Yet the desire is something good,",
+        "For which my praise is due."
+      ]
+    },
+    {
+      "lines": [
+        "By nature prone to ill,",
+        "Till thine appointed hour",
+        "I was as destitute of will,",
+        "As now I am of pow'r."
+      ]
+    },
+    {
+      "lines": [
+        "Wilt thou not crown, at length,",
+        "The work thou hast begun?",
+        "And with a will, afford me strength",
+        "In all thy ways to run."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:126"
+}

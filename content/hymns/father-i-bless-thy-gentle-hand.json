@@ -1,0 +1,78 @@
+{
+  "title": "Father, I Bless Thy Gentle Hand",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Father, I Bless Thy Gentle Hand in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 119, part 18, headed “Sanctified afflictions; or, Delight in the word of God”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther, I bless thy gen-tle hand; How kind was thy cha-stis-ing rod, That forc'd my con-science to a stand, And brought my wan-dering soul to God!",
+  "verses": [
+    {
+      "lines": [
+        "Father, I bless thy gentle hand;",
+        "How kind was thy chastising rod,",
+        "That forc'd my conscience to a stand,",
+        "And brought my wandering soul to God!"
+      ]
+    },
+    {
+      "lines": [
+        "Foolish and vain I went astray",
+        "Ere I had felt thy scourges, Lord,",
+        "I left my guide, and lost my way;",
+        "But now I love and keep thy word."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis good for me to wear the yoke,",
+        "For pride is apt to rise and swell;",
+        "'Tis good to bear my Father's stroke,",
+        "That I might learn his statutes well."
+      ]
+    },
+    {
+      "lines": [
+        "The law that issues from thy mouth",
+        "Shall raise my cheerful passions more",
+        "Than all the treasures of the south,",
+        "Or western hills of golden ore."
+      ]
+    },
+    {
+      "lines": [
+        "Thy hands have made my mortal frame,",
+        "Thy spirit form'd my soul within;",
+        "Teach me to know thy wondrous Name,",
+        "And guard me safe from death and sin."
+      ]
+    },
+    {
+      "lines": [
+        "Then all that love and fear the Lord",
+        "At my salvation shall rejoice;",
+        "For I have hoped in thy word,",
+        "And made thy grace my only choice."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 119:18"
+}

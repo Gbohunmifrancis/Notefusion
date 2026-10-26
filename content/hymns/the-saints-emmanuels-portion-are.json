@@ -1,0 +1,47 @@
+{
+  "title": "The Saints Emmanuel'S Portion Are",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "The Saints Emmanuel'S Portion Are in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 99, “Deut 32:9,10”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The saints Em-ma-nuel'S por-tion are, Re-deemed by price, re-claimed by pow'r; His spe-cial choice, and ten-der care, Owns them and guards them ev-ery hour.",
+  "verses": [
+    {
+      "lines": [
+        "The saints Emmanuel'S portion are,",
+        "Redeemed by price, reclaimed by pow'r;",
+        "His special choice, and tender care,",
+        "Owns them and guards them every hour."
+      ]
+    },
+    {
+      "lines": [
+        "He finds them in a barren land",
+        "Beset with sins, and fears, and woes;",
+        "He leads and guides them by his hand,",
+        "And bears them safe from all their foes."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:99"
+}

@@ -1,0 +1,87 @@
+{
+  "title": "By Faith in Christ I Walk with God",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "By Faith in Christ I Walk with God in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 4, “Walking with God”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "By faith in Christ I walk with God, With heav'n, my jour-neys'--end, in view; Sup-port-ed by his staff and rod, My road is safe and plea-sant too,",
+  "verses": [
+    {
+      "lines": [
+        "By faith in Christ I walk with God,",
+        "With heav'n, my journeys'-end, in view;",
+        "Supported by his staff and rod,",
+        "My road is safe and pleasant too,"
+      ]
+    },
+    {
+      "lines": [
+        "I travel through a desert wide",
+        "Where many round me blindly stray;",
+        "But He vouchsafes to be my guide,",
+        "And will not let me miss my way."
+      ]
+    },
+    {
+      "lines": [
+        "Though snares and dangers throng my path,",
+        "And earth and hell my course withstand;",
+        "I triumph over all by faith,",
+        "Guarded by his Almighty hand."
+      ]
+    },
+    {
+      "lines": [
+        "The wilderness affords no food,",
+        "But God for my support prepares;",
+        "Provides me every needful good,",
+        "And frees my soul from wants and cares."
+      ]
+    },
+    {
+      "lines": [
+        "With him sweet converse I maintain,",
+        "Great as he is I dare be free;",
+        "I tell him all my grief and pain,",
+        "And he reveals his love to me."
+      ]
+    },
+    {
+      "lines": [
+        "Some cordial from his word he brings,",
+        "Whene'er my feeble spirit faints;",
+        "At once my soul revives and sings,",
+        "And yields no more to sad complaints."
+      ]
+    },
+    {
+      "lines": [
+        "I pity all that worldlings talk",
+        "Of pleasures that will quickly end;",
+        "Be this my choice, O Lord, to walk",
+        "With thee, my Guide, my Guard, my Friend."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:4"
+}

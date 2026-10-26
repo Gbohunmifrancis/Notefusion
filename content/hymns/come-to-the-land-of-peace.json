@@ -1,0 +1,62 @@
+{
+  "title": "Come to the Land of Peace",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Come to the Land of Peace in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 360, “The Angels' Call”, where the book credits them to Briggs' Collection.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Come to the land of peace! From sha-dows come a-way; Where all the sounds of weep-ing cease, And storms no more have sway!",
+  "verses": [
+    {
+      "lines": [
+        "Come to the land of peace!",
+        "From shadows come away;",
+        "Where all the sounds of weeping cease,",
+        "And storms no more have sway!"
+      ]
+    },
+    {
+      "lines": [
+        "Fear hath no dwelling here;",
+        "But pure repose and love",
+        "Breathe through the bright, celestial air",
+        "The spirit of the dove."
+      ]
+    },
+    {
+      "lines": [
+        "Come to the bright and blest,",
+        "Gathered from every land;",
+        "For here thy soul shall find its rest,",
+        "Amidst the shining band."
+      ]
+    },
+    {
+      "lines": [
+        "In this divine abode",
+        "Change leaves no saddening trace;",
+        "Come, trusting spirit, to thy God,",
+        "Thy holy resting-place!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:360"
+}

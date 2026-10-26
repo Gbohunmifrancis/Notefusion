@@ -1,0 +1,79 @@
+{
+  "title": "If Love, the Noblest, Purest, Best",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Emily Taylor",
+      "born": 1795,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "If Love, the Noblest, Purest, Best in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Emily Taylor wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 146, “Looking to Jesus”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "If love, the no-blest, pu-rest, best, If truth, all oth-er truth a-bove, May claim re-turn from ev-ery breast, O, sure-ly Je-sus claims our love!",
+  "verses": [
+    {
+      "lines": [
+        "If love, the noblest, purest, best,",
+        "If truth, all other truth above,",
+        "May claim return from every breast,",
+        "O, surely Jesus claims our love!"
+      ]
+    },
+    {
+      "lines": [
+        "There's not a hope with comfort fraught,",
+        "Triumphant over death and time,",
+        "But Jesus mingles in that thought,",
+        "Forerunner of our course sublime."
+      ]
+    },
+    {
+      "lines": [
+        "His image meets us in the hour",
+        "Of joy, and brightens every smile;",
+        "We see him, when the tempests lower,",
+        "Each terror soothe, each grief beguile."
+      ]
+    },
+    {
+      "lines": [
+        "We see him in the daily round",
+        "Of social duty, mild and meek;",
+        "With him we tread the hallowed ground,",
+        "Communion with our God to seek."
+      ]
+    },
+    {
+      "lines": [
+        "We see his pitying, gentle eye,",
+        "When lonely want appeals for aid;",
+        "We hear him in the frequent sigh,",
+        "That mourns the waste that sin has made."
+      ]
+    },
+    {
+      "lines": [
+        "We meet him at the lowly tomb,",
+        "And weep where Jesus wept before;",
+        "And there, above the grave's dark gloom,",
+        "We see him rise, — and weep no more."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Emily Taylor died in 1872.",
+  "credits": "Words by Emily Taylor (1795–1872), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:146"
+}

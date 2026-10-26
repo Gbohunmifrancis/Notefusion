@@ -1,0 +1,79 @@
+{
+  "title": "Within Thy Courts Have Millions Met",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Within Thy Courts Have Millions Met in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 375, “Sabbath Evening”. The compilers changed some of the words, and this is their version.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "With-in Thy courts have mil-lions met, Mil-lions this day be-fore Thee bowed; Their fa-ces heav-en-ward were set, Their vows to Thee, O God! they vowed.",
+  "verses": [
+    {
+      "lines": [
+        "Within Thy courts have millions met,",
+        "Millions this day before Thee bowed;",
+        "Their faces heavenward were set,",
+        "Their vows to Thee, O God! they vowed."
+      ]
+    },
+    {
+      "lines": [
+        "Still as the light of morning broke",
+        "O'er island, continent, and deep,",
+        "Thy far-spread family awoke,",
+        "Sabbath all round the world to keep."
+      ]
+    },
+    {
+      "lines": [
+        "From east to west the sun surveyed,",
+        "From north to south, adoring throngs;",
+        "And still where evening stretched her shade",
+        "The stars came forth to hear their songs."
+      ]
+    },
+    {
+      "lines": [
+        "And not a prayer, a tear, a sigh,",
+        "Hath failed this day some suit to gain;",
+        "To hearts that sought Thee Thou wast nigh",
+        "Nor hath one sought Thy face in vain."
+      ]
+    },
+    {
+      "lines": [
+        "The poor in spirit Thou hast fed,",
+        "The feeble soul hath strengthened been.",
+        "The mourner Thou hast comforted,",
+        "The pure in heart their God have seen."
+      ]
+    },
+    {
+      "lines": [
+        "And Thou, soul-searching God! hast known",
+        "The hearts of all that bent the knee,",
+        "And all their prayers have reached Thy throne,",
+        "In soul and truth who worshipped Thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:375"
+}

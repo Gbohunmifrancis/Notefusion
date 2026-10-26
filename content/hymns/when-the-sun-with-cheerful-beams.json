@@ -1,0 +1,71 @@
+{
+  "title": "When the Sun, with Cheerful Beams",
+  "tune": "spanish-hymn",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "When the Sun, with Cheerful Beams in Tonic Solfa to SPANISH HYMN, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 82, “The rainbow”.",
+    "The book printed the words without tunes, marked Sevens, six lines (7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to SPANISH HYMN; any other Sevens, six lines tune fits them as well."
+  ],
+  "underlay": "When the sun, with cheer-ful beams, Smiles up-on a low'-ring sky; Soon its as-pect soft-ened seems, And a rain-bow meets the eye: While the sky re-mains se-rene, This bright arch is nev-er seen.",
+  "verses": [
+    {
+      "lines": [
+        "When the sun, with cheerful beams,",
+        "Smiles upon a low'ring sky;",
+        "Soon its aspect softened seems,",
+        "And a rainbow meets the eye:",
+        "While the sky remains serene,",
+        "This bright arch is never seen."
+      ]
+    },
+    {
+      "lines": [
+        "Thus the Lord's supporting pow'r",
+        "Brightest to his saints appears,",
+        "When affliction's threat'ning hour",
+        "Fills their sky with clouds and fears.",
+        "He can wonders then perform,",
+        "Paint a rainbow on the storm."
+      ]
+    },
+    {
+      "lines": [
+        "All their graces doubly shine",
+        "When their troubles press them fore;",
+        "And the promises divine",
+        "Give them joys unknown before:",
+        "As the colors of the bow,",
+        "To the cloud their brightness owe."
+      ]
+    },
+    {
+      "lines": [
+        "Favored John a rainbow saw",
+        "Circling round the throne above;",
+        "Hence the saints a pledge may draw",
+        "Of unchanging cov'nant love:",
+        "Clouds awhile may intervene,",
+        "But the bow will still be seen."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to SPANISH HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:82"
+}

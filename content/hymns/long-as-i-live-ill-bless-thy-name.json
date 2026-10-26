@@ -1,0 +1,78 @@
+{
+  "title": "Long as I Live I'll Bless Thy Name",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Long as I Live I'll Bless Thy Name in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 145, part 2, headed “The greatness of God”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Long as I live I'll bless thy Name, My King, my God of love; My work and joy shall be the same In the bright world a-bove.",
+  "verses": [
+    {
+      "lines": [
+        "Long as I live I'll bless thy Name,",
+        "My King, my God of love;",
+        "My work and joy shall be the same",
+        "In the bright world above."
+      ]
+    },
+    {
+      "lines": [
+        "Great is the Lord, his power unknown,",
+        "And let his praise be great:",
+        "I'll sing the honours of thy throne,",
+        "Thy works of grace repeat."
+      ]
+    },
+    {
+      "lines": [
+        "Thy grace shall dwell upon my tongue;",
+        "And while my lips rejoice,",
+        "The men that hear my sacred song",
+        "Shall join their cheerful voice."
+      ]
+    },
+    {
+      "lines": [
+        "Fathers to Sons shall teach thy Name,",
+        "And children learn thy ways;",
+        "Ages to come thy truth proclaim,",
+        "And nations sound thy praise."
+      ]
+    },
+    {
+      "lines": [
+        "Thy glorious deeds of ancient date",
+        "Shall thro' the world be known;",
+        "Thine arm of power, thy heavenly state,",
+        "With public splendor shown."
+      ]
+    },
+    {
+      "lines": [
+        "The world is manag'd by thy hands,",
+        "Thy saints are rul'd by love;",
+        "And thine eternal kingdom stands,",
+        "Tho' rocks and hills remove."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 145:2"
+}

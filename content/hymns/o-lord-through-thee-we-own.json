@@ -1,0 +1,63 @@
+{
+  "title": "O Lord! Through Thee We Own",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Stephen Greenleaf Bulfinch",
+      "born": 1809,
+      "died": 1870,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O Lord! Through Thee We Own in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Stephen Greenleaf Bulfinch wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 246, “Born Again”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "O Lord! through Thee we own A new and heav-enly birth, Kin-dred to spi-rits round Thy throne, Though so-journ-ers of earth.",
+  "verses": [
+    {
+      "lines": [
+        "O Lord! through Thee we own",
+        "A new and heavenly birth,",
+        "Kindred to spirits round Thy throne,",
+        "Though sojourners of earth."
+      ]
+    },
+    {
+      "lines": [
+        "How glorious is the hour,",
+        "When first our souls awake,",
+        "Through Thy mysterious spirit's power,",
+        "And of new life partake."
+      ]
+    },
+    {
+      "lines": [
+        "With richer beauty glows",
+        "The world, before so fair;",
+        "Her holy light religion throws,",
+        "Reflected everywhere."
+      ]
+    },
+    {
+      "lines": [
+        "The life which Thou hast given,",
+        "O Lord! shall never end;",
+        "The grave is but the path to heaven,",
+        "And death is now our friend."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Stephen Greenleaf Bulfinch died in 1870.",
+  "credits": "Words by Stephen Greenleaf Bulfinch (1809–1870), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:246"
+}

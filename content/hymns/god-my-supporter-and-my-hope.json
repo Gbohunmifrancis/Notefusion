@@ -1,0 +1,78 @@
+{
+  "title": "God My Supporter and My Hope",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "God My Supporter and My Hope in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 73, part 2, headed “God our portion here and hereafter”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "God my sup-port-er and my hope, My help for ev-er near, Thine arm of mer-cy held me up When sink-ing in de-spair.",
+  "verses": [
+    {
+      "lines": [
+        "God my supporter and my hope,",
+        "My help for ever near,",
+        "Thine arm of mercy held me up",
+        "When sinking in despair."
+      ]
+    },
+    {
+      "lines": [
+        "Thy counsels, Lord, shall guide my feet",
+        "Thro' this dark wilderness;",
+        "Thine hand conduct me near thy seat",
+        "To dwell before thy face."
+      ]
+    },
+    {
+      "lines": [
+        "Were I in heaven without my God,",
+        "'Twould be no joy to me;",
+        "And whilst this earth is my abode,",
+        "I long for none but thee."
+      ]
+    },
+    {
+      "lines": [
+        "What if the springs of life were broke,",
+        "And flesh and heart should faint!",
+        "God is my soul's eternal rock,",
+        "The strength of every saint."
+      ]
+    },
+    {
+      "lines": [
+        "Behold the sinners that remove",
+        "Far from thy presence die;",
+        "Not all the idol gods they love",
+        "Can save them when they cry."
+      ]
+    },
+    {
+      "lines": [
+        "But to draw near to thee, my God,",
+        "Shall be my sweet employ;",
+        "My tongue shall sound thy works abroad,",
+        "And tell the world my joy."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 73:2"
+}

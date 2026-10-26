@@ -1,0 +1,63 @@
+{
+  "title": "Life Is a Span, — a Fleeting Hour",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Anne Steele",
+      "born": 1717,
+      "died": 1778,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Life Is a Span, — a Fleeting Hour in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Anne Steele wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 584 of its twenty-second edition (1853), “Death of a Child”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Life is a span, a fleet-ing hour: How soon the va-por flies! Man is a ten-der, tran-sient flower, That e'en in bloom-ing dies.",
+  "verses": [
+    {
+      "lines": [
+        "Life is a span, — a fleeting hour:",
+        "How soon the vapor flies!",
+        "Man is a tender, transient flower,",
+        "That e'en in blooming dies."
+      ]
+    },
+    {
+      "lines": [
+        "The once-loved form, now cold and dead,",
+        "Each mournful thought employs;",
+        "And nature weeps, her comforts fled,",
+        "And withered all her joys."
+      ]
+    },
+    {
+      "lines": [
+        "Hope looks beyond the bounds of time,",
+        "When what we now deplore",
+        "Shall rise in full, immortal prime,",
+        "And bloom to fade no more."
+      ]
+    },
+    {
+      "lines": [
+        "Cease, then, fond nature, cease thy tears;",
+        "Thy Saviour dwells on high;",
+        "There everlasting spring appears;",
+        "There joy shall never die."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Anne Steele died in 1778.",
+  "credits": "Words by Anne Steele (1717–1778), public domain, as printed in Hymns for Christian Devotion (1853); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:584"
+}

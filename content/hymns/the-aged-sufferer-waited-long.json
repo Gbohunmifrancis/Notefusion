@@ -1,0 +1,67 @@
+{
+  "title": "The Aged Sufferer Waited Long",
+  "tune": "all-saints-new",
+  "text": [
+    {
+      "name": "Stephen Greenleaf Bulfinch",
+      "born": 1809,
+      "died": 1870,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "The Aged Sufferer Waited Long in Tonic Solfa to ALL SAINTS, NEW, doh is Bb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Stephen Greenleaf Bulfinch wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 116, “The Pool of Bethesda”.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to ALL SAINTS, NEW; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "The aged suf-fer-er wait-ed long Up-on Be-thes-da's brink; Till hopes, once ris-ing warm and strong, Be-gan in fears to sink; And hea-vy were the sighs he drew, And fer-vent was his prayer, For he, with safe-ty full in view, Still lan-guished help-less there.",
+  "verses": [
+    {
+      "lines": [
+        "The aged sufferer waited long",
+        "Upon Bethesda's brink;",
+        "Till hopes, once rising warm and strong,",
+        "Began in fears to sink;",
+        "And heavy were the sighs he drew,",
+        "And fervent was his prayer,",
+        "For he, with safety full in view,",
+        "Still languished helpless there."
+      ]
+    },
+    {
+      "lines": [
+        "His hope grew dim; but one was nigh",
+        "Who saw the sufferer's grief;",
+        "That gentle voice, that pitying eye,",
+        "Gave promise of relief.",
+        "Each pang that human weakness knows",
+        "Obeyed that powerful word;",
+        "He spake, and lo! the sick arose,",
+        "Rejoicing in his Lord."
+      ]
+    },
+    {
+      "lines": [
+        "Father of Jesus, when oppressed",
+        "With grief and pain we lie,",
+        "And, longing for Thy heavenly rest,",
+        "Despair to look on high,",
+        "O, may the Saviour's words of peace",
+        "Within the wounded heart",
+        "Bid every doubt and suffering cease,",
+        "And strength and joy impart!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: Stephen Greenleaf Bulfinch died in 1870.",
+  "credits": "Words by Stephen Greenleaf Bulfinch (1809–1870), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to ALL SAINTS, NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:116"
+}

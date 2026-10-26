@@ -1,0 +1,63 @@
+{
+  "title": "God Is Love; His Mercy Brightens",
+  "tune": "st-oswald",
+  "text": [
+    {
+      "name": "John Bowring",
+      "born": 1792,
+      "died": 1872,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "God Is Love; His Mercy Brightens in Tonic Solfa to ST. OSWALD, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Bowring wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 114 of its twenty-second edition (1853), “God is Love”.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to ST. OSWALD; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "God is love; his mer-cy bright-ens All the path in which we rove; Bliss he wakes, and woe he light-ens; God is wis-dom, God is love.",
+  "verses": [
+    {
+      "lines": [
+        "God is love; his mercy brightens",
+        "All the path in which we rove;",
+        "Bliss he wakes, and woe he lightens;",
+        "God is wisdom, God is love."
+      ]
+    },
+    {
+      "lines": [
+        "Chance and change are busy ever;",
+        "Man decays, and ages move;",
+        "But his mercy waneth never;",
+        "God is wisdom, God is love."
+      ]
+    },
+    {
+      "lines": [
+        "E'en the hour that darkest seemeth",
+        "Will his changeless goodness prove;",
+        "From the gloom his brightness streameth,",
+        "God is wisdom, God is love."
+      ]
+    },
+    {
+      "lines": [
+        "He with earthly cares entwineth",
+        "Hope and comfort from above:",
+        "Everywhere his glory shineth;",
+        "God is wisdom, God is love."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Bowring died in 1872.",
+  "credits": "Words by John Bowring (1792–1872), public domain, as printed in Hymns for Christian Devotion (1853); set to ST. OSWALD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:114"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "Our Heavenly Father, Hear",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "Our Heavenly Father, Hear in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 28, “\"After This Manner Pray Ye.\"”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Our Heav-enly Fa-ther, hear The prayer we o-ffer now: Thy name be hal-lowed far and near, To Thee all na-tions bow.",
+  "verses": [
+    {
+      "lines": [
+        "Our Heavenly Father, hear",
+        "The prayer we offer now:",
+        "Thy name be hallowed far and near,",
+        "To Thee all nations bow."
+      ]
+    },
+    {
+      "lines": [
+        "Thy kingdom come; Thy will",
+        "On earth be done in love,",
+        "As saints and seraphim fulfil",
+        "Thy perfect law above."
+      ]
+    },
+    {
+      "lines": [
+        "Our daily bread supply,",
+        "While by Thy word we live;",
+        "The guilt of our iniquity",
+        "Forgive as we forgive."
+      ]
+    },
+    {
+      "lines": [
+        "From dark temptation's power",
+        "Our feeble hearts defend;",
+        "Deliver in the evil hour,",
+        "And guide us to the end."
+      ]
+    },
+    {
+      "lines": [
+        "Thine, then, forever be",
+        "Glory and power divine;",
+        "The sceptre, throne, and majesty",
+        "Of heaven and earth are Thine."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:28"
+}

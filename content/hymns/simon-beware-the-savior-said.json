@@ -1,0 +1,87 @@
+{
+  "title": "\"Simon, Beware! the Savior Said",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "\"Simon, Beware! the Savior Said in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 108, “The believer's danger, safety, and duty. Lk 22:31,32”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "\"Si-mon, be-ware! the Sa-vior said, Sa-tan, your sub-tle foe, Al-rea-dy has his mea-sures laid Your soul to ov-er-throw.",
+  "verses": [
+    {
+      "lines": [
+        "\"Simon, beware! the Savior said,",
+        "Satan, your subtle foe,",
+        "Already has his measures laid",
+        "Your soul to overthrow."
+      ]
+    },
+    {
+      "lines": [
+        "He wants to sift you all, as wheat,",
+        "And thinks his vict'ry sure;",
+        "But I his malice will defeat,",
+        "My prayer shall faith secure.\""
+      ]
+    },
+    {
+      "lines": [
+        "Believers, tremble and rejoice,",
+        "Your help and danger view;",
+        "This warning has to you a voice,",
+        "This promise speaks to you."
+      ]
+    },
+    {
+      "lines": [
+        "Satan beholds, with jealous eye,",
+        "Your privilege and joy;",
+        "He's always watchful, always nigh,",
+        "To tear and to destroy."
+      ]
+    },
+    {
+      "lines": [
+        "But Jesus lives to intercede,",
+        "That faith may still prevail,",
+        "He will support in time of need,",
+        "And Satan's arts shall fail."
+      ]
+    },
+    {
+      "lines": [
+        "Yet, let us not the warning slight,",
+        "But watchful still be found;",
+        "Though faith cannot be slain in fight,",
+        "It may receive a wound."
+      ]
+    },
+    {
+      "lines": [
+        "While Satan watches, dare we sleep?",
+        "We must our guard maintain;",
+        "But, Lord, do thou the city keep,",
+        "Or else we watch in vain."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:108"
+}

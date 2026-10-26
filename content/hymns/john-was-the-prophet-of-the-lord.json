@@ -1,0 +1,63 @@
+{
+  "title": "John Was the Prophet of the Lord",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "John Was the Prophet of the Lord in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 214 of its twenty-second edition (1853), “John the Herald of Christ”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "John was the pro-phet of the Lord To go be-fore his face; The her-ald which the Prince of Peace Sent to pre-pare his ways.",
+  "verses": [
+    {
+      "lines": [
+        "John was the prophet of the Lord",
+        "To go before his face;",
+        "The herald which the Prince of Peace",
+        "Sent to prepare his ways."
+      ]
+    },
+    {
+      "lines": [
+        "\"Behold the Lamb of God,\" he cries,",
+        "\"That takes our guilt away;",
+        "I saw the Spirit o'er his head,",
+        "On his baptizing day."
+      ]
+    },
+    {
+      "lines": [
+        "\"Be every vale exalted high,",
+        "Sink every mountain low;",
+        "The proud must stoop, and humble souls",
+        "Shall his salvation know."
+      ]
+    },
+    {
+      "lines": [
+        "\"Behold the Morning Star arise,",
+        "Ye that in darkness sit;",
+        "He marks the path that leads to peace,",
+        "And guides our doubtful feet.\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:214"
+}

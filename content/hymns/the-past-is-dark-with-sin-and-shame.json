@@ -1,0 +1,70 @@
+{
+  "title": "The Past Is Dark with Sin and Shame",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "The Past Is Dark with Sin and Shame in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 999 of its twenty-second edition (1853), “The Cause of Humanity Hopeful”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The past is dark with sin and shame, The fu-ture dim with doubt and fear; But, Fa-ther, yet we praise thy name, Whose guar-dian love is al-ways near!",
+  "verses": [
+    {
+      "lines": [
+        "The past is dark with sin and shame,",
+        "The future dim with doubt and fear;",
+        "But, Father, yet we praise thy name,",
+        "Whose guardian love is always near!"
+      ]
+    },
+    {
+      "lines": [
+        "For man has striven ages long",
+        "With faltering steps to come to thee,",
+        "And in each purpose high and strong",
+        "The influence of thy grace could see."
+      ]
+    },
+    {
+      "lines": [
+        "He could not breathe an earnest prayer",
+        "But thou wert kinder than he dreamed,",
+        "As age by age brought hopes more fair,",
+        "And nearer still thy kingdom seemed."
+      ]
+    },
+    {
+      "lines": [
+        "But never rose within his breast,",
+        "A trust so calm and deep as now;",
+        "Shall not the weary find a rest?",
+        "Father! Preserver! answer thou!"
+      ]
+    },
+    {
+      "lines": [
+        "'Tis dark around, 'tis dark above,",
+        "But through the shadow streams the sun;",
+        "We cannot doubt thy certain love,",
+        "And man's great aim shall yet be won!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:999"
+}

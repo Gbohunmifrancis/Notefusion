@@ -1,0 +1,79 @@
+{
+  "title": "Return to Bless My Waiting Eyes",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Return to Bless My Waiting Eyes in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 31, “Return, O Lord, how long”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Re-turn to bless my wait-ing eyes, And cheer my mourn-ing heart, O Lord! With-out thee, all be-neath the skies No re-al plea-sure can af-ford.",
+  "verses": [
+    {
+      "lines": [
+        "Return to bless my waiting eyes,",
+        "And cheer my mourning heart, O Lord!",
+        "Without thee, all beneath the skies",
+        "No real pleasure can afford."
+      ]
+    },
+    {
+      "lines": [
+        "When thy loved presence meets my sight,",
+        "It softens care, and sweetens toil;",
+        "The sun shines forth with double light,",
+        "The whole creation wears a smile."
+      ]
+    },
+    {
+      "lines": [
+        "Upon thine arm of love I rest,",
+        "Thy gracious voice forbids my fear;",
+        "No storms disturb my peaceful breast,",
+        "No foes assault when thou art near."
+      ]
+    },
+    {
+      "lines": [
+        "But ah! since thou hast been away,",
+        "Nothing but trouble have I known;",
+        "And Satan marks me for his prey",
+        "Because he sees me left alone."
+      ]
+    },
+    {
+      "lines": [
+        "My sun is hid, my comforts lost,",
+        "My graces droop, my sins revive;",
+        "Distressed, dismayed, and tempest-tossed,",
+        "My soul is only just alive!"
+      ]
+    },
+    {
+      "lines": [
+        "Lord, hear my cry and come again!",
+        "Put all mine enemies to shame,",
+        "And let them see, 'tis not in vain",
+        "That I have trusted in thy name."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:31"
+}

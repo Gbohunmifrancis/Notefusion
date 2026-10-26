@@ -1,0 +1,60 @@
+{
+  "title": "O, Still Trust on, If in the Heart",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O, Still Trust on, If in the Heart in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 299, “Not Faithless, But Believing”.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "O, still trust on, if in the heart A ho-ly in-spi-ra-tion rest, Though pain-ful be the cho-sen part, With doubts, and fears, and cares op-prest! O, shrink not, broth-ers, though Christ's call De-mand our youth, our strength, our all!",
+  "verses": [
+    {
+      "lines": [
+        "O, still trust on, if in the heart",
+        "A holy inspiration rest, —",
+        "Though painful be the chosen part,",
+        "With doubts, and fears, and cares opprest!",
+        "O, shrink not, brothers, though Christ's call",
+        "Demand our youth, our strength, our all!"
+      ]
+    },
+    {
+      "lines": [
+        "No offering is made in vain;",
+        "Some human soul shall feel our love;",
+        "E'en weary hours of toil and pain",
+        "Shall help to lift our souls above:",
+        "And may our recompense be given,",
+        "In leading many souls to heaven!"
+      ]
+    },
+    {
+      "lines": [
+        "And still trust on! with trembling hand,",
+        "'Tis ours a little seed to sow;",
+        "It springs at the divine command, —",
+        "Shall, if God will, to ripeness grow;",
+        "Beauty and fragrance it shall bring,",
+        "And breathe an everlasting spring."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:299"
+}

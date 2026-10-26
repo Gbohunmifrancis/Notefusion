@@ -1,0 +1,94 @@
+{
+  "title": "Thy Mercies Fill the Earth, O Lord",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Thy Mercies Fill the Earth, O Lord in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 119, part 9, headed “Desire of knowledge; or, The teachings of the Spirit with the word”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Thy mer-cies fill the earth, O Lord, How good thy works ap-pear! O-pen mine eyes to read thy word, And see thy won-ders there.",
+  "verses": [
+    {
+      "lines": [
+        "Thy mercies fill the earth, O Lord,",
+        "How good thy works appear!",
+        "Open mine eyes to read thy word,",
+        "And see thy wonders there."
+      ]
+    },
+    {
+      "lines": [
+        "My heart was fashion'd by thy hand,",
+        "My service is thy due:",
+        "O make thy servant understand",
+        "The duties he must do."
+      ]
+    },
+    {
+      "lines": [
+        "Since I'm a stranger here below,",
+        "Let not thy path be hid;",
+        "But mark the road my feet should go,",
+        "And be my constant guide."
+      ]
+    },
+    {
+      "lines": [
+        "When I confess'd my wandering ways,",
+        "Thou heardst my soul complain;",
+        "Grant me the teachings of thy grace,",
+        "Or I shall stray again."
+      ]
+    },
+    {
+      "lines": [
+        "If God to me his statutes shew,",
+        "And heavenly truth impart,",
+        "His work for ever I'll pursue,",
+        "His laws shall rule my heart."
+      ]
+    },
+    {
+      "lines": [
+        "This was my comfort when I bore",
+        "Variety of grief;",
+        "It made me learn thy word the more,",
+        "And fly to that relief."
+      ]
+    },
+    {
+      "lines": [
+        "In vain the proud deride me now;",
+        "I'll ne'er forget thy law,",
+        "Nor let that blessed gospel go",
+        "Whence all my hopes I draw."
+      ]
+    },
+    {
+      "lines": [
+        "When I have learn'd my Father's will",
+        "I'll teach the world his ways;",
+        "My thankful lips inspir'd with zeal",
+        "Shall loud pronounce his praise."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 119:9"
+}

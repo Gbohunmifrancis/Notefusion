@@ -1,0 +1,78 @@
+{
+  "title": "Soldier, to the Contest Pressing",
+  "tune": "galilee-jude",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Soldier, to the Contest Pressing in Tonic Solfa to GALILEE (JUDE), doh is Ab: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 992 of its twenty-second edition (1853), “The Soldier of the Cross”.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to GALILEE (JUDE); any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Sol-dier, to the con-test press-ing, On-ward, let thy watch-word be; God up-on thee pours his bless-ing; What though man de-ri-deth thee!",
+  "verses": [
+    {
+      "lines": [
+        "Soldier, to the contest pressing,",
+        "Onward, let thy watchword be;",
+        "God upon thee pours his blessing;",
+        "What though man derideth thee!"
+      ]
+    },
+    {
+      "lines": [
+        "Onward, though the fagot's burning",
+        "By thy pathway's only light;",
+        "Onward, death and danger spurning;",
+        "Onward in the path of right!"
+      ]
+    },
+    {
+      "lines": [
+        "God, for all thy wants providing,",
+        "Armor trusty hath for thee;",
+        "Gird thyself, in him confiding,",
+        "With the goodly panoply:"
+      ]
+    },
+    {
+      "lines": [
+        "Righteousness thy breast defending,",
+        "And thy feet with justice shod:",
+        "Onward; with the foe contending,",
+        "Wield thy sword, the word of God."
+      ]
+    },
+    {
+      "lines": [
+        "Thine the helmet of salvation,",
+        "Faith thy mighty shield shall be;",
+        "And let prayer and supplication,",
+        "Lance and glorious falchion be;"
+      ]
+    },
+    {
+      "lines": [
+        "Onward then, with bold contending,",
+        "In the path the martyrs trod:",
+        "God to thee his strength is lending;",
+        "Onward, in the strength of God."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to GALILEE (JUDE) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:992"
+}

@@ -1,0 +1,79 @@
+{
+  "title": "Saved by Blood I Live to Tell",
+  "tune": "martyn",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Saved by Blood I Live to Tell in Tonic Solfa to MARTYN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 54, “Hear what he has done for my soul!”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to MARTYN; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Saved by blood I live to tell, What the love of Christ hath done; He re-deemed my soul from hell, Of a re-bel made a son: O, I trem-ble still, to think How se-cure I lived in sin; Sport-ing on de-struc-tion's brink, Yet pre-served from fall-ing in.",
+  "verses": [
+    {
+      "lines": [
+        "Saved by blood I live to tell,",
+        "What the love of Christ hath done;",
+        "He redeemed my soul from hell,",
+        "Of a rebel made a son:",
+        "O, I tremble still, to think",
+        "How secure I lived in sin;",
+        "Sporting on destruction's brink,",
+        "Yet preserved from falling in."
+      ]
+    },
+    {
+      "lines": [
+        "In his own appointed hour,",
+        "To my heart the Savior spoke,",
+        "Touched me by his Spirit's pow'r,",
+        "And my dang'rous slumber broke.",
+        "Then I saw and owned my guilt,",
+        "Soon my gracious Lord replied;",
+        "\"Fear not, I my blood have spilt,",
+        "'Twas for such as thee I died.\""
+      ]
+    },
+    {
+      "lines": [
+        "Shame and wonder, joy and love,",
+        "All at once possessed my heart;",
+        "Can I hope thy grace to prove,",
+        "After acting such a part?",
+        "\"Thou hast greatly sinned, he said,",
+        "But I freely all forgive;",
+        "I myself thy debt have paid,",
+        "Now I bid thee rise and live.\""
+      ]
+    },
+    {
+      "lines": [
+        "Come, my fellow-sinners, try,",
+        "Jesus' heart is full of love;",
+        "Oh that you, as well as I,",
+        "May his wondrous mercy prove!",
+        "He has sent me to declare,",
+        "All is ready, all is free;",
+        "Why should any soul despair,",
+        "When he saved a wretch like me?"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MARTYN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:54"
+}

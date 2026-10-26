@@ -1,0 +1,66 @@
+{
+  "title": "God, from Whom All Blessings Flow",
+  "tune": "martyn",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "God, from Whom All Blessings Flow in Tonic Solfa to MARTYN, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 913 of its twenty-second edition (1853), “For Union of Heart”, where the book credits them to the Methodist Collection.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to MARTYN; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "God, from whom all bless-ings flow, Per-fect-ing the saints be-low, Hear us, who thy na-ture share, Who thy lov-ing child-ren are. Join us, in one spir-it join, Let us still re-ceive of thine: Still for more on thee we call, Thou who fil-lest all in all!",
+  "verses": [
+    {
+      "lines": [
+        "God, from whom all blessings flow,",
+        "Perfecting the saints below,",
+        "Hear us, who thy nature share,",
+        "Who thy loving children are.",
+        "Join us, in one spirit join,",
+        "Let us still receive of thine:",
+        "Still for more on thee we call,",
+        "Thou who fillest all in all!"
+      ]
+    },
+    {
+      "lines": [
+        "Closer knit us to our Head;",
+        "Nourish us, in Christ, and feed;",
+        "Let us daily growth receive,",
+        "More and more in Jesus live.",
+        "Move, and actuate, and guide;",
+        "Divers gifts to each divide:",
+        "Placed according to thy will,",
+        "Let us all our work fulfil;"
+      ]
+    },
+    {
+      "lines": [
+        "Sweetly may we all agree,",
+        "Touched with softest sympathy;",
+        "Kindly for each other care;",
+        "Every member feel its share.",
+        "Love, like death, hath all destroyed,",
+        "Rendered our distinctions void!",
+        "Names, and sects, and parties fall:",
+        "Thou, O God, art all in all!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to MARTYN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:913"
+}

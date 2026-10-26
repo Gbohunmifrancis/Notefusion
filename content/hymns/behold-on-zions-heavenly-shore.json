@@ -1,0 +1,63 @@
+{
+  "title": "Behold, on Zion's Heavenly Shore",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Hosea Ballou",
+      "born": 1771,
+      "died": 1852,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Behold, on Zion's Heavenly Shore in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Hosea Ballou wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 561 of its twenty-second edition (1853), “Heavenly Zion”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Be-hold, on Zi-on's heav-enly shore, A pure and count-less band, Whose con-flicts and whose toils are o'er, In glo-rious or-der stand.",
+  "verses": [
+    {
+      "lines": [
+        "Behold, on Zion's heavenly shore,",
+        "A pure and countless band,",
+        "Whose conflicts and whose toils are o'er,",
+        "In glorious order stand."
+      ]
+    },
+    {
+      "lines": [
+        "From earth's remotest bounds they came,",
+        "From tribulations great,",
+        "And, through the victories of the Lamb,",
+        "Have reached the heavenly state."
+      ]
+    },
+    {
+      "lines": [
+        "Hunger and thirst they know no more,",
+        "From burning heats refreshed;",
+        "The Lamb shall feed them from his store,",
+        "And give them endless rest."
+      ]
+    },
+    {
+      "lines": [
+        "God all their tears shall wipe away,",
+        "And they his wonders tell,",
+        "While in his temple they shall stay,",
+        "And God with them shall dwell."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Hosea Ballou died in 1852.",
+  "credits": "Words by Hosea Ballou (1771–1852), public domain, as printed in Hymns for Christian Devotion (1853); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:561"
+}

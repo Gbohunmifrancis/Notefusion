@@ -1,0 +1,79 @@
+{
+  "title": "From Egypt Lately Freed",
+  "tune": "franconia",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "From Egypt Lately Freed in Tonic Solfa to FRANCONIA, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 42, “The Pilgrim' song”.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to FRANCONIA; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "From E-gypt late-ly freed By the Re-deem-er's grace; A rough and thor-ny path we tread, In hopes to see his face.",
+  "verses": [
+    {
+      "lines": [
+        "From Egypt lately freed",
+        "By the Redeemer's grace;",
+        "A rough and thorny path we tread,",
+        "In hopes to see his face."
+      ]
+    },
+    {
+      "lines": [
+        "The flesh dislikes the way,",
+        "But faith approves it well;",
+        "This only leads to endless day,",
+        "All others lead to hell."
+      ]
+    },
+    {
+      "lines": [
+        "The promised land of peace",
+        "Faith keeps in constant view;",
+        "How different from the wilderness",
+        "We now are passing through!"
+      ]
+    },
+    {
+      "lines": [
+        "Here often from our eyes",
+        "Clouds hide the light divine;",
+        "There we shall have unclouded skies,",
+        "Our Sun will always shine."
+      ]
+    },
+    {
+      "lines": [
+        "Here griefs, and cares, and pains,",
+        "And fears, distress us sore;",
+        "But there eternal pleasure reigns,",
+        "And we shall weep no more."
+      ]
+    },
+    {
+      "lines": [
+        "Lord pardon our complaints,",
+        "We follow at thy call;",
+        "The joy, prepared for suff'ring saints,",
+        "Will make amends for all."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to FRANCONIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:42"
+}

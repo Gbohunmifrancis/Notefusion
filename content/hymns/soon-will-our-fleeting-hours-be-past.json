@@ -1,0 +1,54 @@
+{
+  "title": "Soon Will Our Fleeting Hours Be Past",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Soon Will Our Fleeting Hours Be Past in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 92 of its twenty-second edition (1853), “Close of Evening Worship”, where the book credits them to Kippis' Collection.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Soon will our fleet-ing hours be past; And, as the set-ting sun Sinks down-ward in the ra-diant west, Our part-ing beams be gone.",
+  "verses": [
+    {
+      "lines": [
+        "Soon will our fleeting hours be past;",
+        "And, as the setting sun",
+        "Sinks downward in the radiant west,",
+        "Our parting beams be gone."
+      ]
+    },
+    {
+      "lines": [
+        "May He, from whom all blessings flow,",
+        "Our sacred rites attend,",
+        "Uniting all in wisdom's ways,",
+        "Till life's short journey end;"
+      ]
+    },
+    {
+      "lines": [
+        "And as the rapid sands run down,",
+        "Our virtue still improve,",
+        "Till each receive the glorious crown",
+        "Of never-fading love."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:92"
+}

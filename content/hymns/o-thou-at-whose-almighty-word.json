@@ -1,0 +1,87 @@
+{
+  "title": "O Thou, at Whose Almighty Word",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "O Thou, at Whose Almighty Word in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 18, “A prayer for power on the means of grace”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Thou, at whose al-might-y word, The glo-rious light from dark-ness sprung! Thy quick'n-ing in-flu-ence af-ford, And clothe with pow'r the prea-cher's tongue.",
+  "verses": [
+    {
+      "lines": [
+        "O Thou, at whose almighty word,",
+        "The glorious light from darkness sprung!",
+        "Thy quick'ning influence afford,",
+        "And clothe with pow'r the preacher's tongue."
+      ]
+    },
+    {
+      "lines": [
+        "Though 'tis thy truth he hopes to speak,",
+        "He cannot give the hearing ear;",
+        "'Tis thine, the stubborn heart to break,",
+        "And make the careless sinner fear."
+      ]
+    },
+    {
+      "lines": [
+        "As when of old, the water flowed",
+        "Forth from the rock at thy command;",
+        "Moses in vain had waved the rod,",
+        "Without thy wonder-working hand."
+      ]
+    },
+    {
+      "lines": [
+        "As when the walls of Jericho",
+        "Down to the earth at once were cast;",
+        "It was thy pow'r that brought them low,",
+        "And not the trumpets' feeble blast."
+      ]
+    },
+    {
+      "lines": [
+        "Thus we would in the means be found,",
+        "And thus, on thee alone, depend;",
+        "To make the gospel's joyful sound",
+        "Effectual, to the promised end."
+      ]
+    },
+    {
+      "lines": [
+        "Now, while we hear thy word of grace,",
+        "Let self and pride before it fall;",
+        "And rocky hearts dissolve apace,",
+        "In streams of sorrow at thy call."
+      ]
+    },
+    {
+      "lines": [
+        "On all our youth assembled here",
+        "The unction of thy Spirit pour;",
+        "Nor let them lose another year,",
+        "Lest thou shouldst strive and call no more."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:18"
+}

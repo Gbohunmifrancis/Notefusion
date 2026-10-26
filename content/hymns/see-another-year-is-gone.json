@@ -1,0 +1,79 @@
+{
+  "title": "See! Another Year Is Gone",
+  "tune": "martyn",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "See! Another Year Is Gone in Tonic Solfa to MARTYN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 3, “Uncertainty of life”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to MARTYN; any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "See! an-oth-er year is gone! Quick-ly have the sea-sons past! This we en-ter now up-on May to man-y prove our last. Mer-cy hith-er-to has spared, But have mer-cies been im-proved? Let us ask, am I pre-pared Should I be this year re-moved?",
+  "verses": [
+    {
+      "lines": [
+        "See! another year is gone!",
+        "Quickly have the seasons past!",
+        "This we enter now upon",
+        "May to many prove our last.",
+        "Mercy hitherto has spared,",
+        "But have mercies been improved?",
+        "Let us ask, am I prepared",
+        "Should I be this year removed?"
+      ]
+    },
+    {
+      "lines": [
+        "Some we now no longer see,",
+        "Who their mortal race have run;",
+        "Seemed as fair for life as we,",
+        "When the former year begun",
+        "Some, but who God only knows,",
+        "Who are here assembled now;",
+        "Ere the present year shall close,",
+        "To the stroke of death must bow."
+      ]
+    },
+    {
+      "lines": [
+        "Life a field of battle is,",
+        "Thousands fall within our view;",
+        "And the next death-bolt that flies,",
+        "May be sent to me or you:",
+        "While we preach, and while we hear,",
+        "Help us, Lord, each one, to think,",
+        "Vast eternity is near,",
+        "I am standing on the brink."
+      ]
+    },
+    {
+      "lines": [
+        "If from guilt and sin set free,",
+        "By the knowledge of thy grace;",
+        "Welcome, then, the call will be",
+        "To depart and see thy face:",
+        "To thy saints, while here below,",
+        "With new years, new mercies come;",
+        "But the happiest year they know",
+        "Is their last, which leads them home."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MARTYN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:3"
+}

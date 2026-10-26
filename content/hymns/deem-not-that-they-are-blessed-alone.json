@@ -1,0 +1,71 @@
+{
+  "title": "Deem Not That They Are Blessed Alone",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "William Cullen Bryant",
+      "born": 1794,
+      "died": 1878,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Deem Not That They Are Blessed Alone in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Cullen Bryant wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 566 of its twenty-second edition (1853), “\"Blessed are they that mourn.\"”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Deem not that they are blessed a-lone, Whose days a peace-ful te-nor keep; The God, who loves our race, has shown A bless-ing for the eyes that weep.",
+  "verses": [
+    {
+      "lines": [
+        "Deem not that they are blessed alone,",
+        "Whose days a peaceful tenor keep;",
+        "The God, who loves our race, has shown",
+        "A blessing for the eyes that weep."
+      ]
+    },
+    {
+      "lines": [
+        "The light of smiles shall fill again",
+        "The lids that overflow with tears,",
+        "And weary hours of woe and pain",
+        "Are earnests of serener years."
+      ]
+    },
+    {
+      "lines": [
+        "O, there are days of sunny rest",
+        "For every dark and troubled night!",
+        "Grief may abide, an evening guest,",
+        "But joy shall come with early light."
+      ]
+    },
+    {
+      "lines": [
+        "And thou, who o'er thy friend's low bier",
+        "Sheddest the bitter drops like rain,",
+        "Hope that a brighter, happier sphere",
+        "Will give him to thy arms again."
+      ]
+    },
+    {
+      "lines": [
+        "For God hath marked each anguished day,",
+        "And numbered every secret tear;",
+        "And heaven's long age of bliss shall pay",
+        "For all his children suffer here."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: William Cullen Bryant died in 1878.",
+  "credits": "Words by William Cullen Bryant (1794–1878), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:566"
+}

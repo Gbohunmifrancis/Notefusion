@@ -1,0 +1,62 @@
+{
+  "title": "Thy Ways, O Lord, with Wise Design",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Thy Ways, O Lord, with Wise Design in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 148 of its twenty-second edition (1853), “Providence Mysterious”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thy ways, O Lord, with wise de-sign, Are framed up-on thy throne a-bove, And ev-ery dark or bend-ing line Meets in the cen-tre of thy love.",
+  "verses": [
+    {
+      "lines": [
+        "Thy ways, O Lord, with wise design,",
+        "Are framed upon thy throne above,",
+        "And every dark or bending line",
+        "Meets in the centre of thy love."
+      ]
+    },
+    {
+      "lines": [
+        "With feeble light, and half obscure,",
+        "Poor mortals thine arrangements view,",
+        "Not knowing that the least are sure,",
+        "And the mysterious just and true."
+      ]
+    },
+    {
+      "lines": [
+        "They neither know nor trace the way;",
+        "But, trusting to thy piercing eye,",
+        "None of their feet to ruin stray,",
+        "Nor shall the weakest fail or die."
+      ]
+    },
+    {
+      "lines": [
+        "My favored soul shall meekly learn",
+        "To lay her reason at thy throne;",
+        "Too weak thy secrets to discern,",
+        "I'll trust thee for my guide alone."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:148"
+}

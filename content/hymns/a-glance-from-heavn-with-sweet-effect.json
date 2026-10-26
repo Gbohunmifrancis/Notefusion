@@ -1,0 +1,87 @@
+{
+  "title": "A Glance from Heav'n, with Sweet Effect",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "A Glance from Heav'n, with Sweet Effect in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 84, “Lightning in the night”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "A Glance from heav'n, with sweet ef-fect, So-me-times my pen-sive spirit cheers; But, ere I can my thoughts col-lect, As sud-den-ly it dis-ap-pears.",
+  "verses": [
+    {
+      "lines": [
+        "A Glance from heav'n, with sweet effect,",
+        "Sometimes my pensive spirit cheers;",
+        "But, ere I can my thoughts collect,",
+        "As suddenly it disappears."
+      ]
+    },
+    {
+      "lines": [
+        "So lightning in the gloom of night,",
+        "Affords a momentary day;",
+        "Disclosing objects full in sight,",
+        "Which soon as seen, are snatched away."
+      ]
+    },
+    {
+      "lines": [
+        "Ah! what avail these pleasing scenes!",
+        "They do but aggravate my pain;",
+        "While darkness quickly intervenes,",
+        "And swallows up my joys again."
+      ]
+    },
+    {
+      "lines": [
+        "But shall I murmur at relief?",
+        "Though short, it was a precious view;",
+        "Sent to control my unbelief,",
+        "And prove that what I read is true."
+      ]
+    },
+    {
+      "lines": [
+        "The lightning's flash did not create",
+        "The op'ning prospect it revealed;",
+        "But only showed the real state",
+        "Of what the darkness had concealed."
+      ]
+    },
+    {
+      "lines": [
+        "Just so, we by a glimpse discern",
+        "The glorious things within the veil;",
+        "That when in darkness, we may learn",
+        "To live by faith, till light prevail."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord's great day will soon advance,",
+        "Dispersing all the shades of night;",
+        "Then we no more shall need a glance,",
+        "But see by an eternal Light."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:84"
+}

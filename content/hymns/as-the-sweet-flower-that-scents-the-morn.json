@@ -1,0 +1,62 @@
+{
+  "title": "As the Sweet Flower That Scents the Morn",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "As the Sweet Flower That Scents the Morn in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 582 of its twenty-second edition (1853), “Death of an Infant”, where the book credits them to the Epis. Collection.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "As the sweet flower that scents the morn, But with-ers in the ris-ing day, Thus love-ly was this in-fant's dawn, Thus swift-ly fled its life a-way.",
+  "verses": [
+    {
+      "lines": [
+        "As the sweet flower that scents the morn,",
+        "But withers in the rising day,",
+        "Thus lovely was this infant's dawn,",
+        "Thus swiftly fled its life away."
+      ]
+    },
+    {
+      "lines": [
+        "It died ere its expanding soul",
+        "Had ever burnt with wrong desires,",
+        "Had ever spurned at Heaven's control,",
+        "Or ever quenched its sacred fires."
+      ]
+    },
+    {
+      "lines": [
+        "Yet the sad hour that took the boy",
+        "Perhaps has spared a heavier doom, —",
+        "Snatched him from scenes of guilty joy,",
+        "Or from the pangs of ills to come."
+      ]
+    },
+    {
+      "lines": [
+        "He died to sin; he died to care;",
+        "But for a moment felt the rod;",
+        "Then, rising on the viewless air,",
+        "Spread his light wings, and soared to God."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:582"
+}

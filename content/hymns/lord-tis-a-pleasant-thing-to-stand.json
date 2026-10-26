@@ -1,0 +1,62 @@
+{
+  "title": "Lord, 'Tis a Pleasant Thing to Stand",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Lord, 'Tis a Pleasant Thing to Stand in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 92, part 2, headed “The church is the garden of God”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Lord, 'tis a plea-sant thing to stand In gar-dens plant-ed by thine hand; Let me with-in thy courts be seen Like a young ce-dar fresh and green.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, 'tis a pleasant thing to stand",
+        "In gardens planted by thine hand;",
+        "Let me within thy courts be seen",
+        "Like a young cedar fresh and green."
+      ]
+    },
+    {
+      "lines": [
+        "There grow thy saints in faith and love,",
+        "Blest with thine influence from above;",
+        "Not Lebanon with all its trees",
+        "Yields such a comely sight as these."
+      ]
+    },
+    {
+      "lines": [
+        "The plants of grace shall ever live;",
+        "(Nature decays but grace must thrive)",
+        "Time, that doth all things else impair,",
+        "Still makes them flourish strong and fair."
+      ]
+    },
+    {
+      "lines": [
+        "Laden with fruits of age, they shew",
+        "The Lord is holy, just, and true;",
+        "None that attend his gates shall find",
+        "A God unfaithful or unkind."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 92:2"
+}

@@ -1,0 +1,54 @@
+{
+  "title": "Faint the Earth, and Parched with Drought",
+  "tune": "messiah-herald",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1866,
+  "textPublishedBy": true,
+  "description": "Faint the Earth, and Parched with Drought in Tonic Solfa to MESSIAH (HERALD), doh is F: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in the supplement of the 1866 edition of A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1866), as hymn 598, “The Prophet's Vision”.",
+    "The book printed the words without tunes, marked Sevens Double (7.7.7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to MESSIAH (HERALD); any other Sevens Double tune fits them as well."
+  ],
+  "underlay": "Faint the earth, and parched with drought, Make the wa-ters, Lord, gush out! Streams of love our thirst to bless, Start-ing in the wild-er-ness. Long we wait Thy peace to know: Fa-ther, bid the wa-ters flow, Make the thirst-y land a pool, Make man's suf-fering spi-rit whole.",
+  "verses": [
+    {
+      "lines": [
+        "Faint the earth, and parched with drought,",
+        "Make the waters, Lord, gush out!",
+        "Streams of love our thirst to bless,",
+        "Starting in the wilderness.",
+        "Long we wait Thy peace to know:",
+        "Father, bid the waters flow,",
+        "Make the thirsty land a pool,",
+        "Make man's suffering spirit whole."
+      ]
+    },
+    {
+      "lines": [
+        "Hark! the wastes have found a voice;",
+        "Loneliest deserts now rejoice,",
+        "When the Lord His presence shows,",
+        "Lo, they blossom like the rose;",
+        "See! this barren earth of ours",
+        "Buds and puts forth fruits and flowers,",
+        "Flowers of Eden, fruits of peace,",
+        "Love and Joy and Righteousness!"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1866.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1866); set to MESSIAH (HERALD) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:598"
+}

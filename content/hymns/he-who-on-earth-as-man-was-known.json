@@ -1,0 +1,87 @@
+{
+  "title": "He Who on Earth as Man Was Known",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "He Who on Earth as Man Was Known in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book I, hymn 59, “The Refuge, River, and Rock of the Church. Isa 32:2”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "He who on earth as man was known, And bore our sins and pains; Now, seat-ed on th'e-ter-nal throne, The God of glo-ry reigns.",
+  "verses": [
+    {
+      "lines": [
+        "He who on earth as man was known,",
+        "And bore our sins and pains;",
+        "Now, seated on th' eternal throne,",
+        "The God of glory reigns."
+      ]
+    },
+    {
+      "lines": [
+        "His hands the wheels of nature guide",
+        "With an unerring skill;",
+        "And countless worlds extended wide,",
+        "Obey his sovereign will."
+      ]
+    },
+    {
+      "lines": [
+        "While harps unnumbered sound his praise,",
+        "In yonder world above;",
+        "His saints on earth admire his ways,",
+        "And glory in his love."
+      ]
+    },
+    {
+      "lines": [
+        "His righteousness, to faith revealed,",
+        "Wrought out for guilty worms,",
+        "Affords a hiding place and shield,",
+        "From enemies and storms."
+      ]
+    },
+    {
+      "lines": [
+        "This land, through which his pilgrims go,",
+        "Is desolate and dry;",
+        "But streams of grace from him o'erflow",
+        "Their thirst to satisfy."
+      ]
+    },
+    {
+      "lines": [
+        "When troubles, like a burning sun,",
+        "Beat heavy on their head;",
+        "To this almighty Rock they run,",
+        "And find a pleasing shade."
+      ]
+    },
+    {
+      "lines": [
+        "How glorious he! how happy they",
+        "In such a glorious friend!",
+        "Whose love secures them all the way,",
+        "And crowns them at the end."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:1:59"
+}

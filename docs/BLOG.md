@@ -422,6 +422,9 @@ not the transcription.
 mkdir -p /tmp/watts && curl -L -o /tmp/watts/watts.txt https://www.gutenberg.org/cache/epub/13341/pg13341.txt
 node tools/blog/import/watts.mjs --src /tmp/watts/watts.txt --date 2026-10-26             # drafts; --dry-run for the counts
 node tools/blog/import/watts.mjs --src /tmp/watts/watts.txt --date 2026-10-26 --publish   # once a person has read them
+# His Psalms of David Imitated (1719), eBook #13166, the same way: pages "watts-1719:Psalm 23:2", watts-psalms-report.json
+mkdir -p /tmp/watts-psalms && curl -L -o /tmp/watts-psalms/psalms.txt https://www.gutenberg.org/cache/epub/13166/pg13166.txt
+node tools/blog/import/watts.mjs --book psalms --src /tmp/watts-psalms/psalms.txt --date 2026-10-26 --publish
 ```
 
 Each hymn's metre is read off its lines (Common, Long or Short; four-line verses only), and its first verse is laid under a
@@ -433,6 +436,44 @@ one read short ("a-broad"), "the" may run into a word beginning with a vowel ("t
 and a line that cannot be fitted honestly refuses the hymn (listed in `watts-report.json`, nothing written). A hymn we
 already have (first line, title or other title) is left alone. The pages carry `"setByMetre": true`, which keeps them out
 of hymn recognition (a hummed ST ANNE is offered "O God, Our Help", not every text sung to it) and out of the app's pack.
+
+### Words set by metre: books that print the metre and the author
+
+`tools/blog/import/words-books.mjs` does the same for words-only books that print each hymn's metre and author:
+`--book 1848`, *A Book of Hymns for Public and Private Devotion* (Samuel Longfellow and Samuel Johnson, Boston 1848; Project
+Gutenberg eBook #33180, the fifteenth edition of 1866 with its supplement), `--book 1846`, *Hymns for Christian
+Devotion* (John G. Adams and Edwin H. Chapin, Boston 1846; eBook #20476, the twenty-second edition of 1853), and
+`--book olney`, the *Olney Hymns* of John Newton and William Cowper (London 1779, the first edition, from the Christian
+Classics Ethereal Library's plain text, marked public domain: `parseOlney`, the metre printed as "8,6,8,6", the margin's
+scripture and the capitals of the divine names left out, each of its three books from Hymn 1):
+
+```bash
+mkdir -p /tmp/hymns-1848 && curl -L -o /tmp/hymns-1848/book.txt https://www.gutenberg.org/cache/epub/33180/pg33180.txt
+mkdir -p /tmp/hymns-1846 && curl -L -o /tmp/hymns-1846/book.txt https://www.gutenberg.org/cache/epub/20476/pg20476.txt
+node tools/blog/import/words-books.mjs --book 1848 --src /tmp/hymns-1848/book.txt --date 2026-10-26 [--publish] [--dry-run]
+node tools/blog/import/words-books.mjs --book 1846 --src /tmp/hymns-1846/book.txt --date 2026-10-26 [--publish] [--dry-run]
+mkdir -p /tmp/olney && curl -L -o /tmp/olney/olney.txt https://www.ccel.org/ccel/n/newton/olneyhymns/cache/olneyhymns.txt
+node tools/blog/import/words-books.mjs --book olney --src /tmp/olney/olney.txt --date 2026-10-26 [--publish] [--dry-run]
+```
+
+The metre is the book's label read with the verse's length ("8 & 7s" or "8s. & 7s." in eight lines is 8.7.8.7 D; "L. M.
+6l." is 8.8.8.8.8.8; "P. M." and "(Peculiar.)" give none), set to a tune of that metre from `METRES` in the importer
+(Common, Long and Short Metre share Watts' tunes; 7s, 8.7s, 7.6 D, 10s, 11.10s, 6.6.4.6.6.6.4, H.M. and the doubles have
+their own). The books name most authors by surname: `AUTHORS` names those we can place, in full with their dates,
+matching the people already on our pages ("Tate & Brady" is both; ", alt." marks words the compilers changed); a surname
+that could be more than one writer, and a hymn translated by someone the book does not name (Breviary, German, Luther,
+Neale…), is left out. "Anonymous" and the collections the books cite stand as `Anonymous`, and the page says which
+collection. The books give only the year of their printing, so the pages carry `"textPublishedBy": true`: their
+public-domain answer says the words were "in print by" 1848 (1866 for that book's supplement, hymns 480–600), 1853 or 1779,
+never a made-up first publication. A header the transcription spaced oddly is still read as a header, so no hymn's verses
+run into the one before. Skipped hymns and why are in `hymns-<book>-report.json`.
+
+A hymn several books print is the first book's page, in `SET_BY_METRE_ORDER` (watts.mjs): Watts' hymns, his psalms,
+Olney, the 1848 book, the 1846 book. Each importer leaves alone what is hand-set or in a book before it and takes no notice of the
+books after it, so the pages do not depend on which ran last; run them in that order.
+
+*The Christian Hymn Book* (Campbell, 1865) prints no authors and the *St. Gregory Hymnal* (1920) gives each hymn its own
+tune, so neither is imported this way.
 
 ### Status of the seeded hymns
 

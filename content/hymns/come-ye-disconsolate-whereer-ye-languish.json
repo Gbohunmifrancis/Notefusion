@@ -1,0 +1,46 @@
+{
+  "title": "Come, Ye Disconsolate, Where'er Ye Languish",
+  "tune": "henley",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "Come, Ye Disconsolate, Where'er Ye Languish in Tonic Solfa to HENLEY, doh is Eb: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 575 of its twenty-second edition (1853), “Invitation to the Mercy-seat”, where the book credits them to the Spiritual Songs.",
+    "The book printed the words without tunes, marked Elevens and Tens (11.10.11.10), to be sung to any tune of that metre. This page sets them to HENLEY; any other Elevens and Tens tune fits them as well."
+  ],
+  "underlay": "Come, ye dis-con-so-late, wher-e'er ye lan-guish; Come, at the mer-cy seat fer-vent-ly kneel: Here bring your woun-ded hearts, here tell your an-guish; Earth has no sor-row that heaven can-not heal.",
+  "verses": [
+    {
+      "lines": [
+        "Come, ye disconsolate, where'er ye languish;",
+        "Come, at the mercy-seat fervently kneel:",
+        "Here bring your wounded hearts, here tell your anguish;",
+        "Earth has no sorrow that heaven cannot heal."
+      ]
+    },
+    {
+      "lines": [
+        "Joy of the desolate, light of the straying,",
+        "Hope of the penitent, fadeless and pure,",
+        "Here speaks the Comforter, tenderly saying,",
+        "Earth has no sorrow that heaven cannot cure."
+      ]
+    }
+  ],
+  "metre": "11 10 11 10",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: anonymous words in print by 1853.",
+  "credits": "Words anonymous, public domain, as printed in Hymns for Christian Devotion (1853); set to HENLEY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:575"
+}

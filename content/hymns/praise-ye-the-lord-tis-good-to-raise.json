@@ -1,0 +1,94 @@
+{
+  "title": "Praise Ye the Lord; 'Tis Good to Raise",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Praise Ye the Lord; 'Tis Good to Raise in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 147, part 1, headed “The divine nature, providence and grace”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Praise ye the Lord; 'tis good to raise Our hearts and voi-ces in his praise; His na-ture and his works in-vite To make this du-ty our de-light.",
+  "verses": [
+    {
+      "lines": [
+        "Praise ye the Lord; 'tis good to raise",
+        "Our hearts and voices in his praise;",
+        "His nature and his works invite",
+        "To make this duty our delight."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord builds up Jerusalem,",
+        "And gathers nations to his Name:",
+        "His mercy melts the stubborn soul,",
+        "And makes the broken spirit whole."
+      ]
+    },
+    {
+      "lines": [
+        "He form'd the stars, those heavenly flames,",
+        "He counts their numbers, calls their names:",
+        "His wisdom's vast, and knows no bound,",
+        "A deep where all our thoughts are drown'd."
+      ]
+    },
+    {
+      "lines": [
+        "Great is our Lord, and great his might;",
+        "And all his glories infinite:",
+        "He crowns the meek, rewards the just,",
+        "And treads the wicked to the dust."
+      ]
+    },
+    {
+      "lines": [
+        "Sing to the Lord, exalt him high,",
+        "Who spreads his cloud all round the sky,",
+        "There he prepares the fruitful rain,",
+        "Nor lets the drops descend in vain."
+      ]
+    },
+    {
+      "lines": [
+        "He makes the grass the hills adorn,",
+        "And clothes the smiling fields with corn,",
+        "The beasts with food his hands supply,",
+        "And the young ravens when they cry."
+      ]
+    },
+    {
+      "lines": [
+        "What is the creature's skill or force,",
+        "The sprightly man, the warlike horse,",
+        "The nimble wit, the active limb?",
+        "All are too mean delights for him."
+      ]
+    },
+    {
+      "lines": [
+        "But saints are lovely in his sight;",
+        "He views his children with delight:",
+        "He sees their hope, he knows their fear,",
+        "And looks and loves his image there."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 147:1"
+}

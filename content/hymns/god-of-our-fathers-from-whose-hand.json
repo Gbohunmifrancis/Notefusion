@@ -1,0 +1,63 @@
+{
+  "title": "God of Our Fathers! from Whose Hand",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "John Greenleaf Adams",
+      "born": 1810,
+      "died": 1887,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "God of Our Fathers! from Whose Hand in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Greenleaf Adams wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 988 of its twenty-second edition (1853), “Dedication of a School-house”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "God of our fa-thers! from whose hand Came all our lights and bless-ings down, Who this de-vot-ed, fa-vored land Dost with thy choic-est mer-cy crown!",
+  "verses": [
+    {
+      "lines": [
+        "God of our fathers! from whose hand",
+        "Came all our lights and blessings down, —",
+        "Who this devoted, favored land",
+        "Dost with thy choicest mercy crown!"
+      ]
+    },
+    {
+      "lines": [
+        "To Learning and to Knowledge reared —",
+        "We dedicate with prayer and praise",
+        "This edifice, to thee, revered",
+        "Above all gods, through endless days!"
+      ]
+    },
+    {
+      "lines": [
+        "Accept the offering — deign to dwell",
+        "With thy confiding children here;",
+        "The shades of Ignorance dispel, —",
+        "In Truth's omnipotence appear!"
+      ]
+    },
+    {
+      "lines": [
+        "Here through successive years may come",
+        "The youthful mind — fair Wisdom's guest;",
+        "Long be this house Instruction's home,",
+        "When those who reared it sink to rest."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: John Greenleaf Adams died in 1887.",
+  "credits": "Words by John Greenleaf Adams (1810–1887), public domain, as printed in Hymns for Christian Devotion (1853); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:988"
+}

@@ -1,0 +1,94 @@
+{
+  "title": "With Songs and Honours Sounding Loud",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "With Songs and Honours Sounding Loud in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for The Psalms of David Imitated in the Language of the New Testament (1719): Psalm 147, part 3, headed “The seasons of the year”.",
+    "Watts' psalms were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "With songs and hon-ours sound-ing loud Ad-dress the Lord on high; O-ver the heavens he spreads his cloud, And wa-ters veil the sky.",
+  "verses": [
+    {
+      "lines": [
+        "With songs and honours sounding loud",
+        "Address the Lord on high;",
+        "Over the heavens he spreads his cloud,",
+        "And waters veil the sky."
+      ]
+    },
+    {
+      "lines": [
+        "He sends his showers of blessing down",
+        "To cheer the plains below;",
+        "He makes the grass the mountains crown,",
+        "And corn in vallies grow."
+      ]
+    },
+    {
+      "lines": [
+        "He gives the grazing ox his meat,",
+        "He hears the ravens cry;",
+        "But man, who tastes his finest wheat,",
+        "Should raise his honours high."
+      ]
+    },
+    {
+      "lines": [
+        "His steady counsels change the face",
+        "Of the declining year;",
+        "He bids the sun cut short his race,",
+        "And wintry days appear."
+      ]
+    },
+    {
+      "lines": [
+        "His hoary frost, his fleecy snow",
+        "Descend and clothe the ground;",
+        "The liquid streams forbear to flow,",
+        "In icy fetters bound."
+      ]
+    },
+    {
+      "lines": [
+        "When from his dreadful stores on high",
+        "He pours the rattling hail,",
+        "The wretch that dares this God defy",
+        "Shall find his courage fail."
+      ]
+    },
+    {
+      "lines": [
+        "He sends his word and melts the snow,",
+        "The fields no longer mourn;",
+        "He calls the warmer gales to blow,",
+        "And bids the spring return."
+      ]
+    },
+    {
+      "lines": [
+        "The changing wind, the flying cloud,",
+        "Obey his mighty word:",
+        "With songs and honours sounding loud,",
+        "Praise ye the sovereign Lord."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, The Psalms of David Imitated (1719)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1719:Psalm 147:3"
+}

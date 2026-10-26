@@ -1,0 +1,63 @@
+{
+  "title": "At God's Command, the Morning Ray",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "At God's Command, the Morning Ray in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 857 of its twenty-second edition (1853), “The Goodness of God in the Seasons. Ps. 65”.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "At God's com-mand, the morn-ing ray Smiles in the east, and leads the day; He guides the sun's de-clin-ing wheels O-ver the tops of west-ern hills.",
+  "verses": [
+    {
+      "lines": [
+        "At God's command, the morning ray",
+        "Smiles in the east, and leads the day;",
+        "He guides the sun's declining wheels",
+        "Over the tops of western hills."
+      ]
+    },
+    {
+      "lines": [
+        "Seasons and times obey his voice;",
+        "The evening and the morn rejoice",
+        "To see the earth made soft with showers,",
+        "Laden with fruit, and dressed in flowers."
+      ]
+    },
+    {
+      "lines": [
+        "The desert grows a fruitful field;",
+        "Abundant food the valleys yield;",
+        "The valleys shout with cheerful voice,",
+        "And neighboring hills repeat their joys."
+      ]
+    },
+    {
+      "lines": [
+        "Thy works pronounce thy power divine;",
+        "O'er every field thy glories shine;",
+        "Through every month thy gifts appear:",
+        "Great God! thy goodness crowns the year."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in Hymns for Christian Devotion (1853); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:857"
+}

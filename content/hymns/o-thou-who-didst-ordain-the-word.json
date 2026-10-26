@@ -1,0 +1,67 @@
+{
+  "title": "O Thou, Who Didst Ordain the Word",
+  "tune": "materna",
+  "text": [
+    {
+      "name": "Edwin Hubbell Chapin",
+      "born": 1814,
+      "died": 1880,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1853,
+  "textPublishedBy": true,
+  "description": "O Thou, Who Didst Ordain the Word in Tonic Solfa to MATERNA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Edwin Hubbell Chapin wrote these words. They were printed in Hymns for Christian Devotion, compiled by John G. Adams and Edwin H. Chapin (Boston, 1846), as hymn 710 of its twenty-second edition (1853), “Ordination Hymn”.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to MATERNA; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "O Thou, who didst or-dain the Word, And its strong her-alds send, We draw the ho-ly veil of prayer, And in thy pre-sence bend. To this young war-rior of the cross, Who takes his sta-tion here, Be thou a tea-cher and a guide, And be thy Spir-it near.",
+  "verses": [
+    {
+      "lines": [
+        "O Thou, who didst ordain the Word,",
+        "And its strong heralds send,",
+        "We draw the holy veil of prayer,",
+        "And in thy presence bend.",
+        "To this young warrior of the cross,",
+        "Who takes his station here,",
+        "Be thou a teacher and a guide,",
+        "And be thy Spirit near."
+      ]
+    },
+    {
+      "lines": [
+        "A pure disciple, let him tread",
+        "The ways his Master trod —",
+        "Giving the weary spirits rest,",
+        "Leading the lost to God —",
+        "Stooping to lend the sufferer aid,",
+        "Crushed sorrow's wail to hear,",
+        "To bind the widow's broken heart,",
+        "And dry the orphan's tear."
+      ]
+    },
+    {
+      "lines": [
+        "For war with error, make him strong,",
+        "And sin, the soul's dark foe —",
+        "But let him humbly seek for truth,",
+        "Where'er its waters flow.",
+        "And when, O Father, at the grave",
+        "He lays his armor down,",
+        "Give him the victor's glistening robe,",
+        "The palm-wreath and the crown."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "Hymns for Christian Devotion (1846)",
+  "licence": "Public domain: Edwin Hubbell Chapin died in 1880.",
+  "credits": "Words by Edwin Hubbell Chapin (1814–1880), public domain, as printed in Hymns for Christian Devotion (1853); set to MATERNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1846:710"
+}

@@ -1,0 +1,70 @@
+{
+  "title": "O, If Thy Brow, Serene and Calm",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1848,
+  "textPublishedBy": true,
+  "description": "O, If Thy Brow, Serene and Calm in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "These words were printed without an author's name in A Book of Hymns for Public and Private Devotion, compiled by Samuel Longfellow and Samuel Johnson (Boston, 1848), as hymn 287, “\"Neither Do I Condemn Thee.\"”.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O, if thy brow, se-rene and calm, From earth-ly stain is free, View not with scorn the err-ing one, He once was pure like thee.",
+  "verses": [
+    {
+      "lines": [
+        "O, if thy brow, serene and calm,",
+        "From earthly stain is free,",
+        "View not with scorn the erring one, —",
+        "He once was pure like thee."
+      ]
+    },
+    {
+      "lines": [
+        "O, if the smiles of love are thine,",
+        "Its joyous ecstasy,",
+        "Shun not the poor forsaken one, —",
+        "He once was loved like thee!"
+      ]
+    },
+    {
+      "lines": [
+        "And still, 'mid shame, and guilt, and woe,",
+        "One Being loves him still,",
+        "Who, blessing thee, hath poured on him",
+        "The world's extremest ill."
+      ]
+    },
+    {
+      "lines": [
+        "He knows the secret lure which led",
+        "Those youthful steps astray;",
+        "He knows that they who holiest are",
+        "Might fall from Him away."
+      ]
+    },
+    {
+      "lines": [
+        "Then, with the love of him who said",
+        "\"Go thou, and sin no more,\"",
+        "Save, save, the sinner from despair,",
+        "And peace and hope restore."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "A Book of Hymns for Public and Private Devotion (1848)",
+  "licence": "Public domain: anonymous words in print by 1848.",
+  "credits": "Words anonymous, public domain, as printed in A Book of Hymns for Public and Private Devotion (1848); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "hymns-1848:287"
+}
