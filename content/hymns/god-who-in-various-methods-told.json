@@ -1,0 +1,62 @@
+{
+  "title": "God Who in Various Methods Told",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "God Who in Various Methods Told in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 53, headed “The Holy Scriptures, Heb. 1. 1 2. 2 Tim. 3. 15 16. Psalm 147. 19 20”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "God who in var-ious meth-ods told His mind and will to saints of old, Sent down his Son, with truth and grace, To teach us in these lat-ter days.",
+  "verses": [
+    {
+      "lines": [
+        "God who in various methods told",
+        "His mind and will to saints of old,",
+        "Sent down his Son, with truth and grace,",
+        "To teach us in these latter days."
+      ]
+    },
+    {
+      "lines": [
+        "Our nation reads the written word,",
+        "That book of life, that sure record:",
+        "The bright inheritance of heaven",
+        "Is by the sweet conveyance given."
+      ]
+    },
+    {
+      "lines": [
+        "God's kindest thoughts are here express'd,",
+        "Able to make us wise and bless'd;",
+        "The doctrines are divinely true,",
+        "Fit for reproof, and comfort too."
+      ]
+    },
+    {
+      "lines": [
+        "Ye British isles, who read his love",
+        "In long epistles from above,",
+        "(He hath not sent his sacred word",
+        "To every land) Praise ye the Lord."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:53"
+}

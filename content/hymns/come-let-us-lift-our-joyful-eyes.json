@@ -1,0 +1,78 @@
+{
+  "title": "Come, Let Us Lift Our Joyful Eyes",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Come, Let Us Lift Our Joyful Eyes in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 108, headed “Access to the throne of grace by a Mediator”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Come, let us lift our joy-ful eyes Up to the courts a-bove, And smile to see our Fa-ther there Up-on a throne of love.",
+  "verses": [
+    {
+      "lines": [
+        "Come, let us lift our joyful eyes",
+        "Up to the courts above,",
+        "And smile to see our Father there",
+        "Upon a throne of love."
+      ]
+    },
+    {
+      "lines": [
+        "Once 'twas a seat of dreadful wrath,",
+        "And shot devouring flame;",
+        "Our God appear'd consuming fire,",
+        "And vengeance was his name."
+      ]
+    },
+    {
+      "lines": [
+        "Rich were the drops of Jesus' blood,",
+        "That calm'd his frowning face,",
+        "That sprinkled o'er the burning throne,",
+        "And turn'd the wrath to grace."
+      ]
+    },
+    {
+      "lines": [
+        "Now we may bow before his feet,",
+        "And venture near the Lord;",
+        "No fiery cherub guards his seat,",
+        "Nor double-flaming sword."
+      ]
+    },
+    {
+      "lines": [
+        "The peaceful gates of heavenly bliss",
+        "Are open'd by the Son;",
+        "High let us raise our notes of praise,",
+        "And reach th' Almighty throne."
+      ]
+    },
+    {
+      "lines": [
+        "To thee ten thousand thanks we bring",
+        "Great Advocate on high:",
+        "And glory to th' eternal King",
+        "That lays his fury by."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:108"
+}

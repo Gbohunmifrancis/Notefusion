@@ -1,0 +1,110 @@
+{
+  "title": "Great God, Thy Glories Shall Employ",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Great God, Thy Glories Shall Employ in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 10 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 167, headed “The divine perfections”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Great God, thy glo-ries shall em-ploy My ho-ly fear, my hum-ble joy; My lips in songs of hon-our bring Their tri-bute to th'e-ter-nal King.",
+  "verses": [
+    {
+      "lines": [
+        "Great God, thy glories shall employ",
+        "My holy fear, my humble joy;",
+        "My lips in songs of honour bring",
+        "Their tribute to th' eternal King."
+      ]
+    },
+    {
+      "lines": [
+        "Earth and the stars and worlds unknown,",
+        "Depend precarious on his throne,",
+        "All nature hangs upon his word,",
+        "And grace and glory own their Lord."
+      ]
+    },
+    {
+      "lines": [
+        "His sovereign power what mortal knows?",
+        "If he command who dares oppose?",
+        "With strength he girds himself around,",
+        "And treads the rebels to the ground."
+      ]
+    },
+    {
+      "lines": [
+        "Who shall pretend to teach him skill?",
+        "Or guide the counsels of his will?",
+        "His wisdom like a sea divine,",
+        "Flows deep and high beyond our line."
+      ]
+    },
+    {
+      "lines": [
+        "His Name is holy, and his eye",
+        "Burns with immortal jealousy;",
+        "He hates the sons of pride, and sheds",
+        "His fiery vengeance on their heads."
+      ]
+    },
+    {
+      "lines": [
+        "The beamings of his piercing sight",
+        "Bring dark hypocrisy to light;",
+        "Death and destruction naked lie,",
+        "And hell uncover'd to his eye."
+      ]
+    },
+    {
+      "lines": [
+        "Th' eternal law before him stands;",
+        "His justice with impartial hands",
+        "Divides to all their due reward,",
+        "Or by the sceptre or the sword."
+      ]
+    },
+    {
+      "lines": [
+        "His mercy like a boundless sea",
+        "Washes our loads of guilt away,",
+        "While his own Son came down and dy'd,",
+        "T' engage his justice on our side."
+      ]
+    },
+    {
+      "lines": [
+        "Each of his words demands my faith,",
+        "My soul can rest on all he saith;",
+        "His truth inviolably keeps",
+        "The largest promise of his lips."
+      ]
+    },
+    {
+      "lines": [
+        "O tell me with a gentle voice,",
+        "\"Thou art my God,\" and I'll rejoice!",
+        "Fill'd with thy love, I dare proclaim",
+        "The brightest honours of thy Name."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:167"
+}

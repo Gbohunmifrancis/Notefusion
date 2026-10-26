@@ -1,0 +1,78 @@
+{
+  "title": "Great Was the Day, the Joy Was Great",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Great Was the Day, the Joy Was Great in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 144, headed “The effusion of the Spirit; or, The success of the gospel”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Great was the day, the joy was great, When the di-vine dis-ci-ples met; Whilst on their heads the Spir-it came, And sat like tongues of clo-ven flame.",
+  "verses": [
+    {
+      "lines": [
+        "Great was the day, the joy was great,",
+        "When the divine disciples met;",
+        "Whilst on their heads the Spirit came,",
+        "And sat like tongues of cloven flame."
+      ]
+    },
+    {
+      "lines": [
+        "What gifts, what miracles he gave!",
+        "And power to kill, and power to save!",
+        "Furnish'd their tongues with wondrous words,",
+        "Instead of shields, and spears, and swords."
+      ]
+    },
+    {
+      "lines": [
+        "Thus arm'd, he sent the champions forth",
+        "From east to west, from south to north;",
+        "\"Go, and assert your Saviour's cause,",
+        "\"Go, spread the mystery of his cross.\""
+      ]
+    },
+    {
+      "lines": [
+        "These weapons of the holy war,",
+        "Of what almighty force they are",
+        "To make our stubborn passions bow,",
+        "And lay the proudest rebel low!"
+      ]
+    },
+    {
+      "lines": [
+        "Nations, the learned and the rude,",
+        "Are by these heavenly arms subdu'd;",
+        "While Satan rages at his loss,",
+        "And hates the doctrine of the cross."
+      ]
+    },
+    {
+      "lines": [
+        "Great King of Grace, my heart subdue,",
+        "I would be led in triumph too,",
+        "A willing captive to my Lord,",
+        "And sing the victories of his word."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:144"
+}

@@ -1,0 +1,78 @@
+{
+  "title": "Attend While God's Exalted Son",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Attend While God's Exalted Son in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 130, headed “The new creation”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "At-tend while God's ex-alt-ed Son Doth his own glo-ries shew; \"Be-hold I sit up-on my throne Cre-a-ting all things new.",
+  "verses": [
+    {
+      "lines": [
+        "Attend while God's exalted Son",
+        "Doth his own glories shew;",
+        "\"Behold I sit upon my throne",
+        "Creating all things new."
+      ]
+    },
+    {
+      "lines": [
+        "\"Nature and sin are pass'd away,",
+        "And the old Adam dies;",
+        "\"My hands a new foundation lay,",
+        "\"See the new world arise."
+      ]
+    },
+    {
+      "lines": [
+        "\"I'll be a sun of righteousness",
+        "\"To the new-heavens I make;",
+        "\"None but the new-born heirs of grace",
+        "\"My glories shall partake.\""
+      ]
+    },
+    {
+      "lines": [
+        "Mighty Redeemer, set me free",
+        "From my old state of sin;",
+        "O make my soul alive to thee,",
+        "Create new powers within."
+      ]
+    },
+    {
+      "lines": [
+        "Renew mine eyes, and form mine ears,",
+        "And mould my heart afresh;",
+        "Give me new passions, joys and fears,",
+        "And turn the stone to flesh."
+      ]
+    },
+    {
+      "lines": [
+        "Far from the regions of the dead,",
+        "From sin, and earth, and hell,",
+        "In the new-world that grace has made",
+        "I would for ever dwell."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:130"
+}

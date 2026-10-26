@@ -1,0 +1,78 @@
+{
+  "title": "How Shall My Inward Joys Arise",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "How Shall My Inward Joys Arise in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 39, headed “God's tender care of his church, Isa. 13 &c”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How shall my in-ward joys a-rise And burst in-to a song, Al-might-y love in-spires my heart, And plea-sure tunes my tongue.",
+  "verses": [
+    {
+      "lines": [
+        "How shall my inward joys arise",
+        "And burst into a song,",
+        "Almighty love inspires my heart,",
+        "And pleasure tunes my tongue."
+      ]
+    },
+    {
+      "lines": [
+        "God on his thirsty Sion-hill",
+        "Some mercy-drops has thrown,",
+        "And solemn oaths have bound his love",
+        "To shower salvation down."
+      ]
+    },
+    {
+      "lines": [
+        "Why do we then indulge our fears,",
+        "Suspicions and complaints?",
+        "Is he a God, and shall his grace",
+        "Grow weary of his saints?"
+      ]
+    },
+    {
+      "lines": [
+        "Can a kind woman e'er forget",
+        "The infant of her womb,",
+        "And 'mongst a thousand tender thoughts",
+        "Her suckling have no room?"
+      ]
+    },
+    {
+      "lines": [
+        "\"Yet (saith the Lord) should nature change,",
+        "\"And mothers monsters prove,",
+        "\"Sion still dwells upon the heart",
+        "\"Of everlasting love."
+      ]
+    },
+    {
+      "lines": [
+        "\"Deep on the palms of both my hands",
+        "\"I have engrav'd her name,",
+        "\"My hands shall raise her ruin'd walls,",
+        "\"And build her broken frame.\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:39"
+}

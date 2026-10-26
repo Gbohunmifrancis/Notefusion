@@ -1,0 +1,78 @@
+{
+  "title": "Behold What Wondrous Grace",
+  "tune": "st-bride",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Behold What Wondrous Grace in Tonic Solfa to ST. BRIDE, doh is Bb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 64, headed “Adoption, 1 John 3. 1 &c. Gal. 4. 6”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to ST. BRIDE; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Be-hold what won-drous grace The Fa-ther hath be-stow'd On sin-ners of a mor-tal race, To call them sons of God!",
+  "verses": [
+    {
+      "lines": [
+        "Behold what wondrous grace",
+        "The Father hath bestow'd",
+        "On sinners of a mortal race,",
+        "To call them sons of God!"
+      ]
+    },
+    {
+      "lines": [
+        "'Tis no surprising thing",
+        "That we should be unknown;",
+        "The Jewish world knew not their King,",
+        "God's everlasting Son."
+      ]
+    },
+    {
+      "lines": [
+        "Nor doth it yet appear",
+        "How great we must be made;",
+        "But when we see our Saviour here,",
+        "We shall be like our head."
+      ]
+    },
+    {
+      "lines": [
+        "A hope so much divine",
+        "May trials well endure,",
+        "May purge our souls from sense and sin,",
+        "As Christ the Lord is pure."
+      ]
+    },
+    {
+      "lines": [
+        "If in my Father's love",
+        "I share a filial part,",
+        "Send down thy Spirit like a dove",
+        "To rest upon my heart."
+      ]
+    },
+    {
+      "lines": [
+        "We would no longer lie",
+        "Like slaves beneath the throne;",
+        "My faith shall Abba, Father, cry,",
+        "And thou the kindred own."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. BRIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:64"
+}

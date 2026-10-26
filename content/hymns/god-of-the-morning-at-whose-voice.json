@@ -1,0 +1,78 @@
+{
+  "title": "God of the Morning, at Whose Voice",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "God of the Morning, at Whose Voice in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 79, headed “A morning hymn, Psalm 19. 5 8 and 73. 24 25”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "God of the morn-ing, at whose voice The cheer-ful sun makes haste to rise, And, like a gi-ant doth re-joice To run his jour-ney thro' the skies;",
+  "verses": [
+    {
+      "lines": [
+        "God of the morning, at whose voice",
+        "The cheerful sun makes haste to rise,",
+        "And, like a giant doth rejoice",
+        "To run his journey thro' the skies;"
+      ]
+    },
+    {
+      "lines": [
+        "From the fair chambers of the east",
+        "The circuit of his race begins,",
+        "And without weariness or rest,",
+        "Round the whole earth he flies and shines."
+      ]
+    },
+    {
+      "lines": [
+        "O like the sun may I fulfil",
+        "Th' appointed duties of the day,",
+        "With ready mind and active will",
+        "March on and keep my heavenly way."
+      ]
+    },
+    {
+      "lines": [
+        "But I shall rove and lose the race,",
+        "If God my sun should disappear,",
+        "And leave me in this world's wild maze,",
+        "To follow every wandering star."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, thy commands are clean and pure,",
+        "Enlightening our beclouded eyes,",
+        "Thy threatenings just, thy promise sure,",
+        "Thy gospel makes the simple wise."
+      ]
+    },
+    {
+      "lines": [
+        "Give me thy counsels for my guide,",
+        "And then receive me to thy bliss;",
+        "All my desires and hopes beside",
+        "Are faint and cold compar'd to this."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:79"
+}

@@ -1,0 +1,94 @@
+{
+  "title": "Praise, Everlasting Praise Be Paid",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Praise, Everlasting Praise Be Paid in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 60, headed “The truth of God the promiser; or, The promises are our security”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Praise, ev-er-last-ing praise be paid To him that earth's foun-da-tions laid; Praise to the God whose strong de-crees Sway the cre-a-tion as he please.",
+  "verses": [
+    {
+      "lines": [
+        "Praise, everlasting praise be paid",
+        "To him that earth's foundations laid;",
+        "Praise to the God whose strong decrees",
+        "Sway the creation as he please."
+      ]
+    },
+    {
+      "lines": [
+        "Praise to the goodness of the Lord",
+        "Who rules his people by his word,",
+        "And there as strong as his decrees",
+        "He sets his kindest promises."
+      ]
+    },
+    {
+      "lines": [
+        "Firm are the words his prophets give,",
+        "Sweet words on which his children live;",
+        "Each of them is the voice of God,",
+        "Who spoke and spread the skies abroad."
+      ]
+    },
+    {
+      "lines": [
+        "Each of them powerful as that sound",
+        "That bid the new-made heavens go round;",
+        "And stronger than the solid poles,",
+        "On which the wheel of nature rolls."
+      ]
+    },
+    {
+      "lines": [
+        "Whence then should doubts and fears arise,",
+        "Why trickling sorrows drown our eyes?",
+        "Slowly, alas, our mind receives",
+        "The comforts that our Maker gives."
+      ]
+    },
+    {
+      "lines": [
+        "O for a strong, a lasting faith",
+        "To credit what th' almighty saith!",
+        "T' embrace the message of his Son,",
+        "And call the joys of heaven our own."
+      ]
+    },
+    {
+      "lines": [
+        "Then should the earth's old pillars shake,",
+        "And all the wheels of nature break,",
+        "Our steady souls should fear no more",
+        "Than solid rocks when billows roar."
+      ]
+    },
+    {
+      "lines": [
+        "Our everlasting hopes arise",
+        "Above the ruinable skies,",
+        "Where the eternal Builder reigns,",
+        "And his own courts his power sustains."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:60"
+}

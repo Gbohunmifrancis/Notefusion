@@ -1,0 +1,102 @@
+{
+  "title": "Let Every Mortal Ear Attend",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Let Every Mortal Ear Attend in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 7, headed “The invitation of the gospel; or, Spiritual food and clothing, Isa. 55. 1 &c”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Let ev-ery mor-tal ear at-tend, And ev-ery heart re-joice, The trum-pet of the gos-pel sounds With an in-vit-ing voice.",
+  "verses": [
+    {
+      "lines": [
+        "Let every mortal ear attend,",
+        "And every heart rejoice,",
+        "The trumpet of the gospel sounds",
+        "With an inviting voice."
+      ]
+    },
+    {
+      "lines": [
+        "Ho, all ye hungry starving souls,",
+        "That feed upon the wind,",
+        "And vainly strive with earthly toys",
+        "To fill an empty mind,"
+      ]
+    },
+    {
+      "lines": [
+        "Eternal wisdom has prepar'd",
+        "A soul reviving feast,",
+        "And bids your longing appetites",
+        "The rich provision taste."
+      ]
+    },
+    {
+      "lines": [
+        "Ho, ye that pant for living streams,",
+        "And pine away and die,",
+        "Here you may quench your raging thirst",
+        "With springs that never dry."
+      ]
+    },
+    {
+      "lines": [
+        "Rivers of love and mercy here",
+        "In a rich ocean join;",
+        "Salvation in abundance flows,",
+        "Like floods of milk and wine."
+      ]
+    },
+    {
+      "lines": [
+        "Ye perishing and naked poor,",
+        "Who work with mighty pain",
+        "To weave a garment of your own",
+        "That will not hide your sin,"
+      ]
+    },
+    {
+      "lines": [
+        "Come naked, and adorn your souls",
+        "In robes prepar'd by God,",
+        "Wrought by the labours of his Son,",
+        "And dy'd in his own blood."
+      ]
+    },
+    {
+      "lines": [
+        "Dear God, the treasures of thy love",
+        "Are everlasting mines,",
+        "Deep as our helpless miseries are,",
+        "And boundless as our sins."
+      ]
+    },
+    {
+      "lines": [
+        "The happy gates of gospel grace",
+        "Stand open night and day,",
+        "Lord, we are come to seek supplies,",
+        "And drive our wants away."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:7"
+}

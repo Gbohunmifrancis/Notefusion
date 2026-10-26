@@ -1,0 +1,86 @@
+{
+  "title": "Now for a Tune of Lofty Praise",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Now for a Tune of Lofty Praise in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 43, headed “Christ's sufferings and glory”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Now for a tune of lof-ty praise To great Je-ho-vah's e-qual Son! A-wake, my voice, in heav-enly lays, Tell the loud won-ders he hath done.",
+  "verses": [
+    {
+      "lines": [
+        "Now for a tune of lofty praise",
+        "To great Jehovah's equal Son!",
+        "Awake, my voice, in heavenly lays,",
+        "Tell the loud wonders he hath done."
+      ]
+    },
+    {
+      "lines": [
+        "Sing how he left the worlds of light",
+        "And the bright robes he wore above,",
+        "How swift and joyful was his flight",
+        "On wings of everlasting love."
+      ]
+    },
+    {
+      "lines": [
+        "Down to this base, this sinful earth",
+        "He came to raise our nature high;",
+        "He came t' atone almighty wrath;",
+        "Jesus the God was born to die."
+      ]
+    },
+    {
+      "lines": [
+        "Hell and its lions roar'd around,",
+        "His precious blood the monsters spilt,",
+        "While weighty sorrows press'd him down,",
+        "Large as the loads of all our guilt."
+      ]
+    },
+    {
+      "lines": [
+        "Deep in the shades of gloomy death",
+        "Th' almighty Captive pris'ner lay;",
+        "Th' almighty Captive left the earth,",
+        "And rose to everlasting day."
+      ]
+    },
+    {
+      "lines": [
+        "Lift up your eyes, ye sons of light,",
+        "Up to his throne of shining grace,",
+        "See what immortal glories sit",
+        "Round the sweet beauties of his face."
+      ]
+    },
+    {
+      "lines": [
+        "Amongst a thousand harps and songs",
+        "Jesus the God exalted reigns,",
+        "His sacred Name fills all their tongues",
+        "And echoes thro' the heavenly plains!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:43"
+}

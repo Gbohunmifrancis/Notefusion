@@ -1,0 +1,78 @@
+{
+  "title": "Lord, We Adore Thy Bounteous Hand",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Lord, We Adore Thy Bounteous Hand in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book III, prepared for the Lord's Supper, hymn 20, headed “The provisions for the table of our Lord; or, The tree of life, and river of love”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Lord, we a-dore thy boun-teous hand, And sing the sol-emn feast Where sweet ce-les-tial dain-ties stand For ev-ery will-ing guest.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, we adore thy bounteous hand,",
+        "And sing the solemn feast",
+        "Where sweet celestial dainties stand",
+        "For every willing guest."
+      ]
+    },
+    {
+      "lines": [
+        "The tree of life adorns the board",
+        "With rich immortal fruit,",
+        "And ne'er an angry flaming sword",
+        "To guard the passage to't."
+      ]
+    },
+    {
+      "lines": [
+        "The cup stands crown'd with living juice;",
+        "The fountain flows above,",
+        "And runs down streaming for our use",
+        "In rivulets of love."
+      ]
+    },
+    {
+      "lines": [
+        "The food's prepar'd by heavenly art,",
+        "The pleasure's well refin'd,",
+        "They spread new life thro' every heart,",
+        "And cheer the drooping mind."
+      ]
+    },
+    {
+      "lines": [
+        "Shout and proclaim the Saviour's love,",
+        "Ye saints that taste his wine,",
+        "Join with your kindred saints above,",
+        "In loud hosannas join."
+      ]
+    },
+    {
+      "lines": [
+        "A thousand glories to the God",
+        "That gives such joy as this;",
+        "Hosanna! let it sound abroad,",
+        "And reach where Jesus is."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:3:20"
+}

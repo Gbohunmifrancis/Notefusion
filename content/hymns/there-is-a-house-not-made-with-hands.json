@@ -1,0 +1,70 @@
+{
+  "title": "There Is a House Not Made with Hands",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "There Is a House Not Made with Hands in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 110, headed “Death and immediate glory, 2 Cor. 5. 1 5-8”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "There is a house not made with hands, E-ter-nal and on high: And here my spir-it wait-ing stands Till God shall bid it fly.",
+  "verses": [
+    {
+      "lines": [
+        "There is a house not made with hands,",
+        "Eternal and on high:",
+        "And here my spirit waiting stands",
+        "Till God shall bid it fly."
+      ]
+    },
+    {
+      "lines": [
+        "Shortly this prison of my clay",
+        "Must be dissolv'd and fall,",
+        "Then, O my soul, with joy obey",
+        "Thy heavenly Father's call."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis he by his almighty grace",
+        "That forms thee fit for heaven,",
+        "And as an earnest of the place,",
+        "Has his own Spirit given."
+      ]
+    },
+    {
+      "lines": [
+        "We walk by faith of joys to come,",
+        "Faith lives upon his word;",
+        "But while the body is our home",
+        "We're absent from the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis pleasant to believe thy grace,",
+        "But we had rather see;",
+        "We would be absent from the flesh,",
+        "And present, Lord, with thee."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:110"
+}

@@ -1,0 +1,62 @@
+{
+  "title": "Hark! from the Tombs a Doleful Sound",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Hark! from the Tombs a Doleful Sound in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 63, headed “A funeral thought”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Hark! from the tombs a dole-ful sound, My ears at-tend the cry, \"Ye liv-ing men, come view the ground \"Where you must short-ly lie.",
+  "verses": [
+    {
+      "lines": [
+        "Hark! from the tombs a doleful sound,",
+        "My ears attend the cry,",
+        "\"Ye living men, come view the ground",
+        "\"Where you must shortly lie."
+      ]
+    },
+    {
+      "lines": [
+        "\"Princes, this clay must be your bed,",
+        "\"In spite of all your towers;",
+        "\"The tall, the wise, the reverend head",
+        "\"Must lie as low as ours.\""
+      ]
+    },
+    {
+      "lines": [
+        "Great God, is this our certain doom?",
+        "And are we still secure?",
+        "Still walking downward to our tomb,",
+        "And yet prepare no more?"
+      ]
+    },
+    {
+      "lines": [
+        "Grant us the powers of quickening grace",
+        "To fit our souls to fly,",
+        "Then, when we drop this dying flesh,",
+        "We'll rise above the sky."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:63"
+}

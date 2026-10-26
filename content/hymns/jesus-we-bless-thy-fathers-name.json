@@ -1,0 +1,70 @@
+{
+  "title": "Jesus, We Bless Thy Father's Name",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Jesus, We Bless Thy Father's Name in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 54, headed “Electing grace; or, Saints beloved in Christ, Eph. 1. 3 &c”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus, we bless thy Fa-ther's Name; Thy God and ours are both the same: What heav-enly bless-ings from his throne Flow down to sin-ners thro' his Son!",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, we bless thy Father's Name;",
+        "Thy God and ours are both the same:",
+        "What heavenly blessings from his throne",
+        "Flow down to sinners thro' his Son!"
+      ]
+    },
+    {
+      "lines": [
+        "\"Christ be my first elect,\" he said,",
+        "Then chose our souls in Christ our head,",
+        "Before he gave the mountains birth,",
+        "Or laid foundations for the earth."
+      ]
+    },
+    {
+      "lines": [
+        "Thus did eternal love begin",
+        "To raise us up from death and sin;",
+        "Our characters were then decreed,",
+        "\"Blameless in love, a holy seed.\""
+      ]
+    },
+    {
+      "lines": [
+        "Predestinated to be sons,",
+        "Born by degrees, but chose at once;",
+        "A new regenerated race",
+        "To praise the glory of his grace."
+      ]
+    },
+    {
+      "lines": [
+        "With Christ our Lord we share our part",
+        "In the affections of his heart,",
+        "Nor shall our souls be thence remov'd",
+        "Till he forgets his first belov'd."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:54"
+}

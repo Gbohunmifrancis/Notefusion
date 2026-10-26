@@ -1,0 +1,86 @@
+{
+  "title": "'Tis from the Treasures of His Word",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "'Tis from the Treasures of His Word in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 147, headed “The names and titles of Christ, from several scriptures”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "'Tis from the trea-sures of his word I bor-row ti-tles for my Lord? Nor art, nor na-ture can sup-ply Su-ffic-ient forms of maj-es-ty.",
+  "verses": [
+    {
+      "lines": [
+        "'Tis from the treasures of his word",
+        "I borrow titles for my Lord?",
+        "Nor art, nor nature can supply",
+        "Sufficient forms of majesty."
+      ]
+    },
+    {
+      "lines": [
+        "Bright image of the Father's face,",
+        "Shining with undiminish'd rays;",
+        "Th' eternal God's eternal Son,",
+        "The heir, and partner of his throne."
+      ]
+    },
+    {
+      "lines": [
+        "The King of kings, the Lord most high,",
+        "Writes his own Name upon his thigh:",
+        "He wears a garment dipt in blood,",
+        "And breaks the nations with his rod."
+      ]
+    },
+    {
+      "lines": [
+        "Where grace can neither melt nor move",
+        "The Lamb resents his injur'd love,",
+        "Awakes his wrath without delay,",
+        "And Judah's Lion tears the prey."
+      ]
+    },
+    {
+      "lines": [
+        "But when for works of peace he comes,",
+        "What winning titles he assumes!",
+        "\"Light of the World, and Life of Men;\"",
+        "Nor bears those characters in vain."
+      ]
+    },
+    {
+      "lines": [
+        "With tender pity in his heart",
+        "He acts the Mediator's part;",
+        "A friend and brother he appears,",
+        "And well fulfils the names he wears."
+      ]
+    },
+    {
+      "lines": [
+        "At length the Judge his throne ascends,",
+        "Divides the rebels from his friends,",
+        "And saints in full fruition prove",
+        "His rich variety of love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:147"
+}

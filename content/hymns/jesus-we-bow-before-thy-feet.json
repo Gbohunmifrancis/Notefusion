@@ -1,0 +1,70 @@
+{
+  "title": "Jesus, We Bow Before Thy Feet",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Jesus, We Bow Before Thy Feet in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book III, prepared for the Lord's Supper, hymn 18, headed “The same”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus, we bow be-fore thy feet, Thy ta-ble is di-vine-ly stor'd: Thy sa-cred flesh our souls have eat, 'Tis liv-ing bread; we thank thee, Lord!",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, we bow before thy feet,",
+        "Thy table is divinely stor'd:",
+        "Thy sacred flesh our souls have eat,",
+        "'Tis living bread; we thank thee, Lord!"
+      ]
+    },
+    {
+      "lines": [
+        "And here we drink our Saviour's blood,",
+        "We thank thee, Lord, 'tis generous wine;",
+        "Mingled with love the fountain flow'd",
+        "From that dear bleeding heart of thine."
+      ]
+    },
+    {
+      "lines": [
+        "On earth is no such sweetness found,",
+        "For the Lamb's flesh is heavenly food;",
+        "In vain we search the globe around",
+        "For bread so fine, or wine so good."
+      ]
+    },
+    {
+      "lines": [
+        "Carnal provisions can at best",
+        "But cheer the heart, or warm the head,",
+        "But the rich cordial that we taste",
+        "Gives life eternal to the dead."
+      ]
+    },
+    {
+      "lines": [
+        "Joy to the Master of the feast,",
+        "His name our souls for ever bless:",
+        "To God the King, and God the Priest,",
+        "A loud Hosanna round the place."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:3:18"
+}

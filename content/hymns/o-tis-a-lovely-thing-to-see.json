@@ -1,0 +1,78 @@
+{
+  "title": "O 'Tis a Lovely Thing to See",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "O 'Tis a Lovely Thing to See in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 36, headed “[Supplement.] A lovely carriage”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O 'tis a love-ly thing to see A man of pru-dent heart, Whose thoughts, and lips, and life a-gree To act a use-ful part.",
+  "verses": [
+    {
+      "lines": [
+        "O 'tis a lovely thing to see",
+        "A man of prudent heart,",
+        "Whose thoughts, and lips, and life agree",
+        "To act a useful part."
+      ]
+    },
+    {
+      "lines": [
+        "When envy, strife, and wars begin,",
+        "In little angry souls,",
+        "Mark how the sons of peace come in,",
+        "And quench the kindling coals."
+      ]
+    },
+    {
+      "lines": [
+        "Their minds are humble, mild, and meek,",
+        "Nor let their fury rise;",
+        "Nor passion moves their lips to speak,",
+        "Nor pride exalts their eyes."
+      ]
+    },
+    {
+      "lines": [
+        "Their frame is prudence mix'd with love,",
+        "Good works fulfil their day:",
+        "They join the serpent with the dove,",
+        "But cast the sting away."
+      ]
+    },
+    {
+      "lines": [
+        "Such was the Saviour of mankind;",
+        "Such pleasures he pursu'd;",
+        "His flesh and blood were all refin'd,",
+        "His soul divinely good."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, can these plants of virtue grow",
+        "In such a heart as mine?",
+        "Thy grace my nature can renew,",
+        "And make my soul like thine."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:36"
+}

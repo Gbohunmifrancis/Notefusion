@@ -1,0 +1,78 @@
+{
+  "title": "Sin Like a Venomous Disease",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Sin Like a Venomous Disease in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 153, headed “The distemper, folly, and madness of sin”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Sin like a ven-o-mous di-sease In-fects our vi-tal blood; Th'on-ly balm is sov-er-eign grace, And the phy-si-cian, God.",
+  "verses": [
+    {
+      "lines": [
+        "Sin like a venomous disease",
+        "Infects our vital blood;",
+        "The only balm is sovereign grace,",
+        "And the physician, God."
+      ]
+    },
+    {
+      "lines": [
+        "Our beauty and our strength are fled,",
+        "And we draw near to death;",
+        "But Christ the Lord recalls the dead",
+        "With his almighty breath."
+      ]
+    },
+    {
+      "lines": [
+        "Madness by nature reigns within,",
+        "The passions burn and rage;",
+        "Till God's own Son with skill divine",
+        "The inward fire assuage."
+      ]
+    },
+    {
+      "lines": [
+        "We lick the dust, we grasp the wind,",
+        "And solid good despise;",
+        "Such is the folly of the mind,",
+        "Till Jesus makes us wise."
+      ]
+    },
+    {
+      "lines": [
+        "We give our souls the wounds they feel,",
+        "We drink the poisonous gall,",
+        "And rush with fury down to hell;",
+        "But heaven prevents the fall."
+      ]
+    },
+    {
+      "lines": [
+        "The man possess'd amongst the tombs,",
+        "Cuts his own flesh and cries;",
+        "He foams, and raves, till Jesus comes,",
+        "And the foul spirit flies."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:153"
+}

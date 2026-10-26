@@ -7,11 +7,14 @@ import fs from "node:fs";
 import path from "node:path";
 import { buildSite } from "../build.mjs";
 import { SITE_DIR } from "../lib/site.mjs";
+import { loadAll } from "../lib/content.mjs";
 import { hymnPackFiles, packErrors, PACK_PATH, PACK_VERSION_PATH, PACK_FORMAT } from "../lib/hymn-pack.mjs";
 
 const { files, hymnIndex, summary } = buildSite();
 const packText = files.get(PACK_PATH);
 const versionText = files.get(PACK_VERSION_PATH);
+// Words set by metre to a tune we hold (import/watts.mjs) are pages, but not in the pack.
+const setByMetre = loadAll().hymns.filter((h) => h.setByMetre).length;
 const pack = JSON.parse(packText);
 const meta = JSON.parse(versionText);
 const index = JSON.parse(hymnIndex);
@@ -25,8 +28,8 @@ test("the build writes the pack and its version file, and the committed copies a
 
 test("every published hymn and tune page is in it, and nothing else", () => {
   assert.equal(pack.format, PACK_FORMAT);
-  assert.equal(pack.hymnCount, summary.hymns);
-  assert.equal(pack.count, summary.hymns + summary.tunes);
+  assert.equal(pack.hymnCount, summary.hymns - setByMetre);
+  assert.equal(pack.count, summary.hymns - setByMetre + summary.tunes);
   const scoreSlugs = new Set(index.entries.filter((e) => e.kind === "score").map((e) => e.slug));
   assert.deepEqual(new Set(pack.hymns.map((h) => h.slug)), scoreSlugs);
 });

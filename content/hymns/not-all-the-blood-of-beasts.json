@@ -1,0 +1,70 @@
+{
+  "title": "Not All the Blood of Beasts",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Not All the Blood of Beasts in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 142, headed “Faith in Christ our sacrifice”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Not all the blood of beasts On Jew-ish al-tars slain Could give the guilt-y con-science peace, Or wash a-way the stain.",
+  "verses": [
+    {
+      "lines": [
+        "Not all the blood of beasts",
+        "On Jewish altars slain",
+        "Could give the guilty conscience peace,",
+        "Or wash away the stain."
+      ]
+    },
+    {
+      "lines": [
+        "But Christ the heavenly Lamb",
+        "Takes all our sins away;",
+        "A sacrifice of nobler name",
+        "And richer blood than they."
+      ]
+    },
+    {
+      "lines": [
+        "My faith would lay her hand",
+        "On that dear head of thine,",
+        "While like a penitent I stand",
+        "And there confess my sin."
+      ]
+    },
+    {
+      "lines": [
+        "My soul looks back to see",
+        "The burdens thou didst bear",
+        "When hanging on the cursed tree,",
+        "And hopes her guilt was there."
+      ]
+    },
+    {
+      "lines": [
+        "Believing we rejoice",
+        "To see the curse remove;",
+        "We bless the Lamb with cheerful voice,",
+        "And sing his bleeding love."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:142"
+}

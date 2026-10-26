@@ -1,0 +1,86 @@
+{
+  "title": "How Sweet and Awful Is the Place",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "How Sweet and Awful Is the Place in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book III, prepared for the Lord's Supper, hymn 13, headed “Divine love making a feast, and calling in the guests, Luke 14. 17 22 23”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How sweet and aw-ful is the place With Christ with-in the doors, While ev-er-last-ing love dis-plays The choic-est of her stores!",
+  "verses": [
+    {
+      "lines": [
+        "How sweet and awful is the place",
+        "With Christ within the doors,",
+        "While everlasting love displays",
+        "The choicest of her stores!"
+      ]
+    },
+    {
+      "lines": [
+        "Here every bowel of our God",
+        "With soft compassion rolls",
+        "Here peace and pardon bought with blood",
+        "Is food for dying souls."
+      ]
+    },
+    {
+      "lines": [
+        "While all our hearts and all our songs",
+        "Join to admire the feast,",
+        "Each of us cry with thankful tongues,",
+        "\"Lord, why was I a guest?"
+      ]
+    },
+    {
+      "lines": [
+        "\"Why was I made to hear thy voice,",
+        "\"And enter while there's room?",
+        "\"When thousands make a wretched choice,",
+        "\"And rather starve than come.\""
+      ]
+    },
+    {
+      "lines": [
+        "'Twas the same love that spread the feast,",
+        "That sweetly forc'd us in,",
+        "Else we had still refus'd to taste,",
+        "And perish'd in our sin."
+      ]
+    },
+    {
+      "lines": [
+        "Pity the nations, O our God,",
+        "Constrain the earth to come;",
+        "Send thy victorious word abroad,",
+        "And bring the strangers home."
+      ]
+    },
+    {
+      "lines": [
+        "We long to see thy churches full,",
+        "That all the chosen race",
+        "May with one voice and heart and soul,",
+        "Sing thy redeeming grace."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:3:13"
+}

@@ -1,0 +1,78 @@
+{
+  "title": "Often I Seek My Lord by Night",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Often I Seek My Lord by Night in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 71, headed “Christ found in the street, and brought to the church, Cant. 3. 1-5”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Of-ten I seek my Lord by night, Je-sus, my love, my soul's de-light; With warm de-sire and rest-less thought I seek him oft, but find him not.",
+  "verses": [
+    {
+      "lines": [
+        "Often I seek my Lord by night,",
+        "Jesus, my love, my soul's delight;",
+        "With warm desire and restless thought",
+        "I seek him oft, but find him not."
+      ]
+    },
+    {
+      "lines": [
+        "Then I arise, and search the street",
+        "Till I my Lord, my Saviour meet;",
+        "I ask the watchmen of the night,",
+        "\"Where did you see my soul's delight?\""
+      ]
+    },
+    {
+      "lines": [
+        "Sometimes I find him in the way,",
+        "Directed by a heavenly ray;",
+        "I leap for joy to see his face,",
+        "And hold him fast in mine embrace."
+      ]
+    },
+    {
+      "lines": [
+        "I bring him to my mother's home,",
+        "Nor does my Lord refuse to come,",
+        "To Sion's sacred chambers, where",
+        "My soul first drew the vital air."
+      ]
+    },
+    {
+      "lines": [
+        "He gives me there his bleeding heart,",
+        "Pierc'd for my sake with deadly smart;",
+        "I give my soul to him, and there",
+        "Our loves their mutual tokens share."
+      ]
+    },
+    {
+      "lines": [
+        "I charge you all, ye earthly toys,",
+        "Approach not to disturb my joys;",
+        "Nor sin, nor hell come near my heart,",
+        "Nor cause my Saviour to depart."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:71"
+}

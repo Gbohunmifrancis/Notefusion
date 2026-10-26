@@ -1,0 +1,78 @@
+{
+  "title": "Let Others Boast How Strong They Be",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Let Others Boast How Strong They Be in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 19, headed “Our frail bodies, and God our preserver”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Let o-thers boast how strong they be, Nor death, nor dan-ger fear; But we'll con-fess, O Lord, to thee, What fee-ble things we are.",
+  "verses": [
+    {
+      "lines": [
+        "Let others boast how strong they be,",
+        "Nor death, nor danger fear;",
+        "But we'll confess, O Lord, to thee,",
+        "What feeble things we are."
+      ]
+    },
+    {
+      "lines": [
+        "Fresh as the grass our bodies stand,",
+        "And flourish bright and gay,",
+        "A blasting wind sweeps o'er the land,",
+        "And fades the grass away."
+      ]
+    },
+    {
+      "lines": [
+        "Our life contains a thousand springs,",
+        "And dies if one be gone;",
+        "Strange! that a harp of thousand strings",
+        "Should keep in tune so long."
+      ]
+    },
+    {
+      "lines": [
+        "But 'tis our God supports our frame,",
+        "The God that built us first;",
+        "Salvation to th' Almighty Name,",
+        "That rear'd us from the dust."
+      ]
+    },
+    {
+      "lines": [
+        "He spoke, and straight our hearts and brains",
+        "In all their motions rose;",
+        "\"Let blood, (said he) flow round the veins,\"",
+        "And round the veins it flows."
+      ]
+    },
+    {
+      "lines": [
+        "While we have breath, or use our tongues,",
+        "Our Maker we'll adore;",
+        "His Spirit moves our heaving lungs",
+        "Or they would breathe no more."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:19"
+}

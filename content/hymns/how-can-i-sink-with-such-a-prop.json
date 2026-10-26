@@ -1,0 +1,62 @@
+{
+  "title": "How Can I Sink with Such a Prop",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "How Can I Sink with Such a Prop in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 116, headed “Mercies and thanks”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How can I sink with such a prop As my e-ter-nal God, Who bears the earth's huge pil-lars up, And spreads the heavens a-broad?",
+  "verses": [
+    {
+      "lines": [
+        "How can I sink with such a prop",
+        "As my eternal God,",
+        "Who bears the earth's huge pillars up,",
+        "And spreads the heavens abroad?"
+      ]
+    },
+    {
+      "lines": [
+        "How can I die while Jesus lives,",
+        "Who rose and left the dead?",
+        "Pardon and grace my soul receives",
+        "From mine exalted head."
+      ]
+    },
+    {
+      "lines": [
+        "All that I am, and all I have",
+        "Shall be for ever thine,",
+        "Whate'er my duty bids me give",
+        "My cheerful hands resign."
+      ]
+    },
+    {
+      "lines": [
+        "Yet if I might make some reserve,",
+        "And duty did not call,",
+        "I love my God with zeal so great",
+        "That I should give him all."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:116"
+}

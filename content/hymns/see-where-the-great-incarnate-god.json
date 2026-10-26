@@ -1,0 +1,94 @@
+{
+  "title": "See Where the Great Incarnate God",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "See Where the Great Incarnate God in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 45, headed “The last judgment, Rev. 21. 5-8”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "See where the great in-car-nate God Fills a ma-jes-tic throne, While from the skies his aw-ful voice Bears the last judg-ment down.",
+  "verses": [
+    {
+      "lines": [
+        "See where the great incarnate God",
+        "Fills a majestic throne,",
+        "While from the skies his awful voice",
+        "Bears the last judgment down."
+      ]
+    },
+    {
+      "lines": [
+        "\"I am the first, and I the last,",
+        "\"Thro' endless years the same;",
+        "\"I AM is my memorial still,",
+        "\"And my eternal name."
+      ]
+    },
+    {
+      "lines": [
+        "\"Such favours as a God can give",
+        "\"My royal grace bestows;",
+        "\"Ye thirsty souls come taste the streams",
+        "\"Where life and pleasure flows."
+      ]
+    },
+    {
+      "lines": [
+        "\"The saint that triumphs o'er his sins,",
+        "\"I'll own him for a son,",
+        "\"The whole creation shall reward",
+        "\"The conquests he has won."
+      ]
+    },
+    {
+      "lines": [
+        "\"But bloody hands and hearts unclean,",
+        "\"And all the lying race,",
+        "\"The faithless and the scoffing crew,",
+        "\"That spurn at offer'd grace,"
+      ]
+    },
+    {
+      "lines": [
+        "\"They shall be taken from my sight,",
+        "\"Bound fast in iron chains,",
+        "\"And headlong plung'd into the lake",
+        "\"Where fire and darkness reigns.\""
+      ]
+    },
+    {
+      "lines": [
+        "O may I stand before the Lamb,",
+        "When earth and seas are fled!",
+        "And hear the Judge pronounce my name",
+        "With blessings on my head!"
+      ]
+    },
+    {
+      "lines": [
+        "May I with those for ever dwell",
+        "Who here were my delight,",
+        "While sinners banish'd down to hell,",
+        "No more offend my sight."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:45"
+}

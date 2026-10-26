@@ -1,0 +1,78 @@
+{
+  "title": "Let Pharisees of High Esteem",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Let Pharisees of High Esteem in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 133, headed “Love and charity, 1 Cor. 13. 2-7 13”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Let Phar-i-sees of high es-teem Their faith and zeal de-clare, All their re-li-gion is a dream If love be want-ing there.",
+  "verses": [
+    {
+      "lines": [
+        "Let Pharisees of high esteem",
+        "Their faith and zeal declare,",
+        "All their religion is a dream",
+        "If love be wanting there."
+      ]
+    },
+    {
+      "lines": [
+        "Love suffers long with patient eye,",
+        "Nor is provok'd in haste;",
+        "She lets the present injury die,",
+        "And long forgets the past."
+      ]
+    },
+    {
+      "lines": [
+        "Malice and rage, those fires of hell,",
+        "She quenches with her tongue;",
+        "Hopes, and believes, and thinks no ill,",
+        "Tho' she endure the wrong."
+      ]
+    },
+    {
+      "lines": [
+        "She nor desires nor seeks to know",
+        "The scandals of the time;",
+        "Nor looks with pride on those below,",
+        "Nor envies those that climb."
+      ]
+    },
+    {
+      "lines": [
+        "She lays her own advantage by",
+        "To seek her neighbour's good;",
+        "So God's own Son came down to die,",
+        "And bought our lives with blood."
+      ]
+    },
+    {
+      "lines": [
+        "Love is the grace that keeps her power",
+        "In all the realms above;",
+        "There faith and hope are known no more,",
+        "But saints for ever love."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:133"
+}

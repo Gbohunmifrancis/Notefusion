@@ -1,0 +1,62 @@
+{
+  "title": "Must Friends and Kindred Drop and Die",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Must Friends and Kindred Drop and Die in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 47, headed “[Supplement.] Death of kindred improved”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Must friends and kin-dred drop and die? And help-ers be with-drawn? While sor-row with a weep-ing eye Counts up our com-forts gone?",
+  "verses": [
+    {
+      "lines": [
+        "Must friends and kindred drop and die?",
+        "And helpers be withdrawn?",
+        "While sorrow with a weeping eye",
+        "Counts up our comforts gone?"
+      ]
+    },
+    {
+      "lines": [
+        "Be thou our comfort, mighty God!",
+        "Our helper and our friend:",
+        "Nor leave us in this dangerous road,",
+        "Till all our trials end."
+      ]
+    },
+    {
+      "lines": [
+        "O may our feet pursue the way",
+        "Our pious fathers led!",
+        "With love and holy zeal obey",
+        "The counsels of the dead."
+      ]
+    },
+    {
+      "lines": [
+        "Let us be wean'd from all below,",
+        "Let hope our grief expel,",
+        "While death invites our souls to go",
+        "Where our best kindred dwell."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:47"
+}

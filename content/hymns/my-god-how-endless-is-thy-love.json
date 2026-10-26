@@ -1,0 +1,54 @@
+{
+  "title": "My God, How Endless Is Thy Love",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "My God, How Endless Is Thy Love in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 81, headed “A song for morning or evening, Lam. 3. 23. Isa. 45. 7”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "My God, how end-less is thy love! Thy gifts are ev-ery eve-ning new; And morn-ing mer-cies from a-bove Gen-tly dis-til like ear-ly dew.",
+  "verses": [
+    {
+      "lines": [
+        "My God, how endless is thy love!",
+        "Thy gifts are every evening new;",
+        "And morning mercies from above",
+        "Gently distil like early dew."
+      ]
+    },
+    {
+      "lines": [
+        "Thou spreadst the curtains of the night,",
+        "Great guardian of my sleeping hours;",
+        "Thy sovereign word restores the light,",
+        "And quickens all my drowsy powers."
+      ]
+    },
+    {
+      "lines": [
+        "I yield my powers to thy command,",
+        "To thee I consecrate my days;",
+        "Perpetual blessings from thine hand",
+        "Demand perpetual songs of praise."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:81"
+}

@@ -1,0 +1,70 @@
+{
+  "title": "Thou Whom My Soul Admires Above",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Thou Whom My Soul Admires Above in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 67, headed “Seeking the pastures of Christ the Shepherd, Cant. 1.7”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thou whom my soul ad-mires a-bove All earth-ly joy, and earth-ly love, Tell me, dear shep-herd, let me know, Where doth thy sweet-est pas-ture grow?",
+  "verses": [
+    {
+      "lines": [
+        "Thou whom my soul admires above",
+        "All earthly joy, and earthly love,",
+        "Tell me, dear shepherd, let me know,",
+        "Where doth thy sweetest pasture grow?"
+      ]
+    },
+    {
+      "lines": [
+        "Where is the shadow of that rock",
+        "That from the son defends thy flock?",
+        "Fain would I feed among thy sheep,",
+        "Among them rest, among them sleep."
+      ]
+    },
+    {
+      "lines": [
+        "Why should thy bride appear like one",
+        "That turns aside to paths unknown?",
+        "My constant feet would never rove,",
+        "Would never seek another love."
+      ]
+    },
+    {
+      "lines": [
+        "The footsteps of thy flock I see;",
+        "Thy sweetest pastures here they be;",
+        "A wondrous feast thy love prepares,",
+        "Bought with thy wounds, and groans, and tears."
+      ]
+    },
+    {
+      "lines": [
+        "His dearest flesh he makes my food,",
+        "And bids me drink his richest blood;",
+        "Here to these hills my soul will come,",
+        "To my beloved lead me home."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:67"
+}

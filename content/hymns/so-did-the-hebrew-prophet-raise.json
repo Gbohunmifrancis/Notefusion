@@ -1,0 +1,62 @@
+{
+  "title": "So Did the Hebrew Prophet Raise",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "So Did the Hebrew Prophet Raise in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 112, headed “The brazen serpent; or, Looking to Jesus, John 3. 14 15 16”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "So did the He-brew pro-phet raise The bra-zen ser-pent high, The woun-ded felt im-me-diate ease, The camp for-bore to die.",
+  "verses": [
+    {
+      "lines": [
+        "So did the Hebrew prophet raise",
+        "The brazen serpent high,",
+        "The wounded felt immediate ease,",
+        "The camp forbore to die."
+      ]
+    },
+    {
+      "lines": [
+        "\"Look upward in the dying hour,",
+        "And live,\" the prophet cries;",
+        "But Christ performs a nobler cure,",
+        "When Faith lifts up her eyes."
+      ]
+    },
+    {
+      "lines": [
+        "High on the cross the Saviour hung,",
+        "High in the heavens he reigns:",
+        "Here sinners by th' old serpent stung",
+        "Look, and forget their pains."
+      ]
+    },
+    {
+      "lines": [
+        "When God's own Son is lifted up,",
+        "A dying world revives,",
+        "The Jew beholds the glorious hope,",
+        "Th' expiring Gentile lives."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:112"
+}

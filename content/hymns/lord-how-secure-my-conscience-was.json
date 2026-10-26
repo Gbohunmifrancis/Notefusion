@@ -1,0 +1,78 @@
+{
+  "title": "Lord, How Secure My Conscience Was",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Lord, How Secure My Conscience Was in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 115, headed “Conviction of sin by the law, Rom. 7. 8 9 14 24”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Lord, how se-cure my con-science was, And felt no in-ward dread! I was a-live with-out the law, And thought my sins were dead.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, how secure my conscience was,",
+        "And felt no inward dread!",
+        "I was alive without the law,",
+        "And thought my sins were dead."
+      ]
+    },
+    {
+      "lines": [
+        "My hopes of heaven were firm and bright,",
+        "But since the precept came",
+        "With a convincing power and light,",
+        "I find how vile I am."
+      ]
+    },
+    {
+      "lines": [
+        "My guilt appear'd but small before,",
+        "Till terribly I saw",
+        "How perfect, holy, just, and pure,",
+        "Was thine eternal law."
+      ]
+    },
+    {
+      "lines": [
+        "Then felt my soul the heavy load,",
+        "My sins reviv'd again,",
+        "I had provok'd a dreadful God,",
+        "And all my hopes were slain."
+      ]
+    },
+    {
+      "lines": [
+        "I'm like a helpless captive sold",
+        "Under the power of sin;",
+        "I cannot do the good I would,",
+        "Nor keep my conscience clean."
+      ]
+    },
+    {
+      "lines": [
+        "My God, I cry with every breath",
+        "For some kind power to save,",
+        "To break the yoke of sin and death,",
+        "And thus redeem the slave."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:115"
+}

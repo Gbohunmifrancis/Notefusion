@@ -78,7 +78,7 @@ export function loadIncipits(dir = INCIPITS_DIR) {
 
 /** The index as committed: one entry a line, sorted by slug, so a change to one hymn is a one-line diff. */
 export function hymnIndexJson(hymns, incipits = loadIncipits(), tunes = []) {
-  const entries = [...hymns.filter((h) => !h.draft).map(scoreEntry), ...tunes.map(tuneMatcherEntry), ...incipits].sort((a, b) => a.slug.localeCompare(b.slug));
+  const entries = [...hymns.filter((h) => !h.draft && !h.setByMetre).map(scoreEntry), ...tunes.map(tuneMatcherEntry), ...incipits].sort((a, b) => a.slug.localeCompare(b.slug));
   const slugs = new Set();
   for (const e of entries) {
     if (slugs.has(e.slug)) throw new Error(`hymn index: two entries are called "${e.slug}"`);

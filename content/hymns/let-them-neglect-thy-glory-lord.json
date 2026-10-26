@@ -1,0 +1,62 @@
+{
+  "title": "Let Them Neglect Thy Glory, Lord",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Let Them Neglect Thy Glory, Lord in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 35, headed “Praise to God for creation and redemption”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Let them ne-glect thy glo-ry, Lord, Who nev-er knew thy grace, But our loud songs shall still re-cord The won-ders of thy praise.",
+  "verses": [
+    {
+      "lines": [
+        "Let them neglect thy glory, Lord,",
+        "Who never knew thy grace,",
+        "But our loud songs shall still record",
+        "The wonders of thy praise."
+      ]
+    },
+    {
+      "lines": [
+        "We raise our shouts, O God, to thee,",
+        "And send them to thy throne,",
+        "All glory to th' united Three,",
+        "The undivided One."
+      ]
+    },
+    {
+      "lines": [
+        "'Twas he (and we'll adore his Name)",
+        "That form'd us by a word,",
+        "'Tis he restores our ruin'd frame;",
+        "Salvation to the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "Hosanna! let the earth and skies",
+        "Repeat the joyful sound,",
+        "Rocks, hills, and vales, reflect the voice",
+        "In one eternal round."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:35"
+}

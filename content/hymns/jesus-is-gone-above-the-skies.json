@@ -1,0 +1,78 @@
+{
+  "title": "Jesus Is Gone Above the Skies",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Jesus Is Gone Above the Skies in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book III, prepared for the Lord's Supper, hymn 6, headed “The memorial of our absent Lord, John 16. 16. Luke 22. 19. John 14. 3”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus is gone a-bove the skies, Where our weak sens-es reach him not And car-nal ob-jects court our eyes To thrust our Sa-viour from our thought.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus is gone above the skies,",
+        "Where our weak senses reach him not",
+        "And carnal objects court our eyes",
+        "To thrust our Saviour from our thought."
+      ]
+    },
+    {
+      "lines": [
+        "He knows what wandering hearts we have,",
+        "Apt to forget his lovely face;",
+        "And to refresh our minds he gave",
+        "These kind memorials of his grace."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord of life this table spread",
+        "With his own flesh and dying blood;",
+        "We on the rich provision feed,",
+        "And taste the wine, and bless the God."
+      ]
+    },
+    {
+      "lines": [
+        "Let sinful sweets be all forgot,",
+        "And earth grow less in our esteem;",
+        "Christ and his love fill every thought,",
+        "And faith and hope be fix'd on him."
+      ]
+    },
+    {
+      "lines": [
+        "While he is absent from our sight",
+        "'Tis to prepare our souls a place,",
+        "That we may dwell in heavenly light,",
+        "And live for ever near his face."
+      ]
+    },
+    {
+      "lines": [
+        "Our eyes look upwards to the hills",
+        "Whence our returning Lord shall come;",
+        "We wait thy chariot's awful wheels",
+        "To fetch our longing spirits home."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:3:6"
+}

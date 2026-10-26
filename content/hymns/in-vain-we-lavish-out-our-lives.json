@@ -1,0 +1,110 @@
+{
+  "title": "In Vain We Lavish Out Our Lives",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "In Vain We Lavish Out Our Lives in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 10 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 9, headed “The promises of the covenant of grace, Isa. 55. 1 2. Zech. 13. 1. Mich. 7. 19. Ezek. 36. 25 &c”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "In vain we lav-ish out our lives To ga-ther emp-ty wind, The choic-est bless-ings earth can yield Will starve a hun-gry mind.",
+  "verses": [
+    {
+      "lines": [
+        "In vain we lavish out our lives",
+        "To gather empty wind,",
+        "The choicest blessings earth can yield",
+        "Will starve a hungry mind."
+      ]
+    },
+    {
+      "lines": [
+        "Come and the Lord shall feed our souls",
+        "With more substantial meat,",
+        "With such as saints in glory love,",
+        "With such as angels eat."
+      ]
+    },
+    {
+      "lines": [
+        "Our God will every want supply,",
+        "And fill our hearts with peace;",
+        "He gives by covenant and by oath",
+        "The riches of his grace."
+      ]
+    },
+    {
+      "lines": [
+        "Come, and he'll cleanse our spotted souls,",
+        "And wash away our stains,",
+        "In the dear fountain that his Son",
+        "Pour'd from his dying veins."
+      ]
+    },
+    {
+      "lines": [
+        "Our guilt shall vanish all away",
+        "Tho' black as hell before;",
+        "Our sins shall sink beneath the sea,",
+        "And shall be found no more."
+      ]
+    },
+    {
+      "lines": [
+        "And lest pollution should o'erspread",
+        "Our inward powers again,",
+        "His Spirit shall bedew our souls",
+        "Like purifying rain."
+      ]
+    },
+    {
+      "lines": [
+        "Our heart, that flinty stubborn thing,",
+        "That terrors cannot move,",
+        "That fears no threat'nings of his wrath,",
+        "Shall be dissolv'd by love;"
+      ]
+    },
+    {
+      "lines": [
+        "Or he can take the flint away",
+        "That would not be refin'd,",
+        "And from the treasures of his grace",
+        "Bestow a softer mind."
+      ]
+    },
+    {
+      "lines": [
+        "There shall his sacred Spirit dwell,",
+        "And deep engrave his law,",
+        "And every motion of our souls",
+        "To swift obedience draw."
+      ]
+    },
+    {
+      "lines": [
+        "Thus will he pour salvation down,",
+        "And we shall render praise,",
+        "We the dear people of his love,",
+        "And he our God of grace."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:9"
+}

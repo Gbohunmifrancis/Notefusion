@@ -1,0 +1,62 @@
+{
+  "title": "We Bless the Prophet of the Lord",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "We Bless the Prophet of the Lord in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 132, headed “The offices of Christ”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "We bless the Pro-phet of the Lord, That comes with truth and grace; Je-sus, thy Spir-it and thy word Shall lead us in thy ways.",
+  "verses": [
+    {
+      "lines": [
+        "We bless the Prophet of the Lord,",
+        "That comes with truth and grace;",
+        "Jesus, thy Spirit and thy word",
+        "Shall lead us in thy ways."
+      ]
+    },
+    {
+      "lines": [
+        "We reverence our High Priest above,",
+        "Who offer'd up his blood,",
+        "And lives to carry on his love,",
+        "By pleading with our God."
+      ]
+    },
+    {
+      "lines": [
+        "We honour our exalted King,",
+        "How sweet are his commands!",
+        "He guards our souls from hell and sin",
+        "By his almighty hands."
+      ]
+    },
+    {
+      "lines": [
+        "Hosanna to his glorious Name,",
+        "Who saves by different ways;",
+        "His mercies lay a sovereign claim",
+        "To our immortal praise."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:132"
+}

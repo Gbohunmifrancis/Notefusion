@@ -1,0 +1,70 @@
+{
+  "title": "And Now the Scales Have Left Mine Eyes",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "And Now the Scales Have Left Mine Eyes in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 81, headed “Our sin the cause of Christ's death”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "And now the scales have left mine eyes, Now I be-gin to see; O the curs'd deeds my sins have done! What mur-derous things they be!",
+  "verses": [
+    {
+      "lines": [
+        "And now the scales have left mine eyes,",
+        "Now I begin to see;",
+        "O the curs'd deeds my sins have done!",
+        "What murderous things they be!"
+      ]
+    },
+    {
+      "lines": [
+        "Were these the traitors, dearest Lord,",
+        "That thy fair body tore?",
+        "Monsters, that stain'd those heavenly limbs",
+        "With floods of purple gore?"
+      ]
+    },
+    {
+      "lines": [
+        "Was it for crimes that I had done",
+        "My dearest Lord was slain",
+        "When justice seiz'd God's only Son,",
+        "And put his soul to pain?"
+      ]
+    },
+    {
+      "lines": [
+        "Forgive my guilt, O Prince of peace,",
+        "I'll wound my God no more;",
+        "Hence from my heart, ye sins, be gone,",
+        "For Jesus I adore."
+      ]
+    },
+    {
+      "lines": [
+        "Furnish me, Lord, with heavenly arms",
+        "From grace's magazine,",
+        "And I'll proclaim eternal war",
+        "With every darling sin."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:81"
+}

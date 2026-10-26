@@ -1,0 +1,78 @@
+{
+  "title": "How Sad Our State by Nature Is",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "How Sad Our State by Nature Is in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 90, headed “Faith in Christ for pardon and sanctification”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How sad our state by na-ture is! Our sin how deep it stains! And Sa-tan binds our cap-tive minds Fast in his slav-ish chains.",
+  "verses": [
+    {
+      "lines": [
+        "How sad our state by nature is!",
+        "Our sin how deep it stains!",
+        "And Satan binds our captive minds",
+        "Fast in his slavish chains."
+      ]
+    },
+    {
+      "lines": [
+        "But there's a voice of sovereign grace",
+        "Sounds from the sacred word,",
+        "\"Ho, ye despairing sinners, come,",
+        "\"And trust upon the Lord.\""
+      ]
+    },
+    {
+      "lines": [
+        "My soul obeys th' almighty call,",
+        "And runs to this relief,",
+        "I would believe thy promise, Lord,",
+        "O! help my unbelief."
+      ]
+    },
+    {
+      "lines": [
+        "To the dear fountain of thy blood,",
+        "Incarnate God, I fly,",
+        "Here let me wash my spotted soul",
+        "From crimes of deepest die."
+      ]
+    },
+    {
+      "lines": [
+        "Stretch out thine arm victorious King,",
+        "My reigning sins subdue,",
+        "Drive the old dragon from his seat,",
+        "With all his hellish crew."
+      ]
+    },
+    {
+      "lines": [
+        "A guilty, weak, and helpless worm,",
+        "On thy kind arms I fall:",
+        "Be thou my strength and righteousness,",
+        "My Jesus, and my all."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:90"
+}

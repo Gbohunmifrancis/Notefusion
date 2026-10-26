@@ -1,0 +1,70 @@
+{
+  "title": "Now Have Our Hearts Embrac'd Our God",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Now Have Our Hearts Embrac'd Our God in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book III, prepared for the Lord's Supper, hymn 14, headed “The song of Simeon, Luke 2. 28; or, A sight of Christ makes death easy”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Now have our hearts em-brac'd our God, We would for-get all earth-ly charms, And wish to die as Sime-on would, With his young Sa-viour in his arms.",
+  "verses": [
+    {
+      "lines": [
+        "Now have our hearts embrac'd our God,",
+        "We would forget all earthly charms,",
+        "And wish to die as Simeon would,",
+        "With his young Saviour in his arms."
+      ]
+    },
+    {
+      "lines": [
+        "Our lips should learn that joyful song,",
+        "Were but our hearts prepar'd like his;",
+        "Our souls still willing to be gone,",
+        "And at thy word depart in peace."
+      ]
+    },
+    {
+      "lines": [
+        "Here we have seen thy face, O Lord,",
+        "And view'd salvation with our eyes,",
+        "Tasted and felt the living word,",
+        "The bread descending from the skies."
+      ]
+    },
+    {
+      "lines": [
+        "Thou hast prepar'd this dying Lamb,",
+        "Hast set his blood before our face,",
+        "To teach the terrors of thy Name,",
+        "And show the wonders of thy grace."
+      ]
+    },
+    {
+      "lines": [
+        "He is our light; our morning star",
+        "Shall shine on nations yet unknown;",
+        "The glory of thine Israel here,",
+        "And joy of spirits near the throne."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:3:14"
+}

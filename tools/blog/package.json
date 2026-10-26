@@ -3,7 +3,9 @@
   "private": true,
   "description": "Builds the static blog and hymn pages into web-site/ (the posts from the API at deploy time).",
   "type": "module",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "build": "node build.mjs",
     "check": "node check.mjs",
@@ -11,6 +13,7 @@
   },
   "devDependencies": {
     "@pdf-lib/fontkit": "1.1.1",
+    "hyphen": "1.14.1",
     "lucide-static": "1.48.0",
     "marked": "18.0.14",
     "pdf-lib": "1.17.1",

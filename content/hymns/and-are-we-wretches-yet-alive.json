@@ -1,0 +1,70 @@
+{
+  "title": "And Are We Wretches Yet Alive",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "And Are We Wretches Yet Alive in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 105, headed “Repentance flowing from the patience of God”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "And are we wretch-es yet a-live? And do we yet re-bel? 'Tis bound-less, 'tis a-ma-zing love That bears us up from hell!",
+  "verses": [
+    {
+      "lines": [
+        "And are we wretches yet alive?",
+        "And do we yet rebel?",
+        "'Tis boundless, 'tis amazing love",
+        "That bears us up from hell!"
+      ]
+    },
+    {
+      "lines": [
+        "The burden of our weighty guilt",
+        "Would sink us down to flames,",
+        "And threatening vengeance rolls above",
+        "To crush our feeble frames."
+      ]
+    },
+    {
+      "lines": [
+        "Almighty goodness cries, \"Forbear;\"",
+        "And straight the thunder stays;",
+        "And dare we now provoke his wrath,",
+        "And weary out his grace?"
+      ]
+    },
+    {
+      "lines": [
+        "Lord, we have long abus'd thy love,",
+        "Too long indulg'd our sin;",
+        "Our aching hearts e'en bleed to see",
+        "What rebels we have been."
+      ]
+    },
+    {
+      "lines": [
+        "No more, ye lusts, shall ye command,",
+        "No more will we obey;",
+        "Stretch out, O God, thy conquering hand,",
+        "And drive thy foes away."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:105"
+}

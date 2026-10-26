@@ -1,0 +1,94 @@
+{
+  "title": "Shall Wisdom Cry Aloud",
+  "tune": "franconia",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Shall Wisdom Cry Aloud in Tonic Solfa to FRANCONIA, doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 92, headed “Christ the wisdom of God, Prov. 8. 1 22-32”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to FRANCONIA; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Shall wis-dom cry a-loud And not her speech be heard? The voice of God's e-ter-nal word, De-serves it no re-gard?",
+  "verses": [
+    {
+      "lines": [
+        "Shall wisdom cry aloud",
+        "And not her speech be heard?",
+        "The voice of God's eternal word,",
+        "Deserves it no regard?"
+      ]
+    },
+    {
+      "lines": [
+        "\"I was his chief delight,",
+        "\"His everlasting Son,",
+        "\"Before the first of all his works,",
+        "\"Creation, was begun."
+      ]
+    },
+    {
+      "lines": [
+        "\"Before the flying clouds,",
+        "\"Before the solid land,",
+        "\"Before the fields, before the floods,",
+        "\"I dwelt at his right hand."
+      ]
+    },
+    {
+      "lines": [
+        "\"When he adorn'd the skies,",
+        "\"And built them I was there",
+        "\"To order where the sun should rise,",
+        "\"And marshal every star."
+      ]
+    },
+    {
+      "lines": [
+        "\"When he pour'd out the sea,",
+        "\"And spread the flowing deep,",
+        "\"I gave the flood a firm decree,",
+        "\"In its own bounds to keep."
+      ]
+    },
+    {
+      "lines": [
+        "\"Upon the empty air",
+        "The earth was balanc'd well;",
+        "\"With joy I saw the mansion where",
+        "\"The sons of men should dwell."
+      ]
+    },
+    {
+      "lines": [
+        "\"My busy thoughts at first",
+        "\"On their salvation ran,",
+        "\"Ere sin was born, or Adam's dust",
+        "\"Was fashioned to a man."
+      ]
+    },
+    {
+      "lines": [
+        "\"Then come, receive my grace,",
+        "\"Ye children, and be wise;",
+        "\"Happy the man that keeps my ways;",
+        "\"The man that shuns them dies.\""
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to FRANCONIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:92"
+}

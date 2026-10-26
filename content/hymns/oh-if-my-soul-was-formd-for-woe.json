@@ -1,0 +1,70 @@
+{
+  "title": "Oh, If My Soul Was Form'd for Woe",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Oh, If My Soul Was Form'd for Woe in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 106, headed “Repentance at the cross”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Oh, if my soul was form'd for woe, How would I vent my sighs! Re-pen-tance should like riv-ers flow From both my stream-ing eyes.",
+  "verses": [
+    {
+      "lines": [
+        "Oh, if my soul was form'd for woe,",
+        "How would I vent my sighs!",
+        "Repentance should like rivers flow",
+        "From both my streaming eyes."
+      ]
+    },
+    {
+      "lines": [
+        "'Twas for my sins, my dearest Lord",
+        "Hung on the cursed tree,",
+        "And groan'd away a dying life,",
+        "For thee, my soul, for thee."
+      ]
+    },
+    {
+      "lines": [
+        "O how I hate those lusts of mine",
+        "That crucify'd my God,",
+        "Those sins that pierc'd and nail'd his flesh",
+        "Fast to the fatal wood!"
+      ]
+    },
+    {
+      "lines": [
+        "Yes, my Redeemer, they shall die,",
+        "My heart has so decreed,",
+        "Nor will I spare the guilty things",
+        "That made my Saviour bleed."
+      ]
+    },
+    {
+      "lines": [
+        "Whilst with a melting broken heart",
+        "My murder'd Lord I view,",
+        "I'll raise revenge against my sins,",
+        "And slay the murderers too."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:106"
+}

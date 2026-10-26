@@ -1,0 +1,78 @@
+{
+  "title": "Not to the Terrors of the Lord",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Not to the Terrors of the Lord in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 152, headed “Sinai and Sion, Heb. 12. 18 &c”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Not to the ter-rors of the Lord, The tem-pest, fire, and smoke, Not to the thun-der of that word Which God on Si-nai spoke;",
+  "verses": [
+    {
+      "lines": [
+        "Not to the terrors of the Lord,",
+        "The tempest, fire, and smoke,",
+        "Not to the thunder of that word",
+        "Which God on Sinai spoke;"
+      ]
+    },
+    {
+      "lines": [
+        "But we are come to Sion's hill,",
+        "The city of our God,",
+        "Where milder words declare his will",
+        "And spread his love abroad."
+      ]
+    },
+    {
+      "lines": [
+        "Behold th' innumerable host",
+        "Of angels cloth'd in light!",
+        "Behold the spirits of the just",
+        "Whose faith is turn'd to sight!"
+      ]
+    },
+    {
+      "lines": [
+        "Behold the bless'd assembly there,",
+        "Whose names are writ in heaven;",
+        "And God the judge of all declares",
+        "Their vilest sins forgiven."
+      ]
+    },
+    {
+      "lines": [
+        "The saints on earth and all the dead",
+        "But one communion make;",
+        "All join in Christ their living head,",
+        "And of his grace partake."
+      ]
+    },
+    {
+      "lines": [
+        "In such society as this",
+        "My weary soul would rest:",
+        "The man that dwells where Jesus is,",
+        "Must be for ever blest."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:152"
+}

@@ -1,0 +1,110 @@
+{
+  "title": "Nature with All Her Powers Shall Sing",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Nature with All Her Powers Shall Sing in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 10 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 1, headed “A song of praise to God from Great Britain”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Na-ture with all her powers shall sing God the Cre-a-tor and the King; Nor air, nor earth, nor skies, nor seas De-ny the tri-bute of their praise.",
+  "verses": [
+    {
+      "lines": [
+        "Nature with all her powers shall sing",
+        "God the Creator and the King;",
+        "Nor air, nor earth, nor skies, nor seas",
+        "Deny the tribute of their praise."
+      ]
+    },
+    {
+      "lines": [
+        "Begin to make his glories known,",
+        "Ye seraphs that sit near his throne;",
+        "Tune your harps high, and spread the sound",
+        "To the creation's utmost bound."
+      ]
+    },
+    {
+      "lines": [
+        "All mortal things of meaner frame,",
+        "Exert your force and own his Name;",
+        "Whilst with our souls and with our voice",
+        "We sing his honours and our joys."
+      ]
+    },
+    {
+      "lines": [
+        "To him be sacred all we have",
+        "From the young cradle to the grave:",
+        "Our lips shall his loud wonders tell,",
+        "And every word a miracle."
+      ]
+    },
+    {
+      "lines": [
+        "This northern isle, our native land,",
+        "Lies safe in God th' Almighty's hand:",
+        "Our foes of victory dream in vain,",
+        "And wear the captivating chain."
+      ]
+    },
+    {
+      "lines": [
+        "He builds and guards the British throne,",
+        "And makes it gracious like his own,",
+        "Makes our successive princes kind,",
+        "And gives our dangers to the wind."
+      ]
+    },
+    {
+      "lines": [
+        "Raise monumental praises high",
+        "To him that thunders thro' the sky,",
+        "And with an awful nod or frown",
+        "Shakes an aspiring tyrant down."
+      ]
+    },
+    {
+      "lines": [
+        "Pillars of lasting brass proclaim",
+        "The triumphs of th' eternal Name;",
+        "While trembling nations read from far",
+        "The honours of the God of war."
+      ]
+    },
+    {
+      "lines": [
+        "Thus let our flaming zeal employ",
+        "Our loftiest thoughts and loudest songs",
+        "Britain pronounce with warmest joy",
+        "Hosanna from ten thousand tongues."
+      ]
+    },
+    {
+      "lines": [
+        "Yet, mighty God, our feeble frame",
+        "Attempts in vain to reach thy Name;",
+        "The strongest notes that angels raise",
+        "Faint in the worship and the praise."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:1"
+}

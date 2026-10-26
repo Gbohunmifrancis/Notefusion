@@ -1,0 +1,78 @@
+{
+  "title": "Thus Far the Lord Has Led Me on",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Thus Far the Lord Has Led Me on in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 80, headed “An evening hymn, Psalm 4. 8. and 3. 5 6. and 143. 8”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thus far the Lord has led me on, Thus far his power pro-longs my days, And ev-ery eve-ning shall make known Some fresh memor-i-al of his grace.",
+  "verses": [
+    {
+      "lines": [
+        "Thus far the Lord has led me on,",
+        "Thus far his power prolongs my days,",
+        "And every evening shall make known",
+        "Some fresh memorial of his grace."
+      ]
+    },
+    {
+      "lines": [
+        "Much of my time has run to waste,",
+        "And I perhaps am near my home;",
+        "But he forgives my follies past,",
+        "He gives me strength for days to come."
+      ]
+    },
+    {
+      "lines": [
+        "I lay my body down to sleep,",
+        "Peace is the pillow for my head,",
+        "While well-appointed angels keep",
+        "Their watchful stations round my bed."
+      ]
+    },
+    {
+      "lines": [
+        "In vain the sons of earth or hell",
+        "Tell me a thousand frightful things,",
+        "My God in safety makes me dwell",
+        "Beneath the shadow of his wings."
+      ]
+    },
+    {
+      "lines": [
+        "Faith in his name forbids my fear:",
+        "O may thy presence ne'er depart!",
+        "And in the morning make me hear",
+        "The love and kindness of thy heart."
+      ]
+    },
+    {
+      "lines": [
+        "Thus when the night of death shall come,",
+        "My flesh shall rest beneath the ground,",
+        "And wait thy voice to rouse my tomb,",
+        "With sweet salvation in the sound."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:80"
+}

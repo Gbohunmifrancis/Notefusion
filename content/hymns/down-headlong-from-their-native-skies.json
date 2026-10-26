@@ -1,0 +1,70 @@
+{
+  "title": "Down Headlong from Their Native Skies",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Down Headlong from Their Native Skies in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 96, headed “Distinguishing love; or, Angels punished and men saved”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Down head-long from their na-tive skies The re-bel an-gels fell, And thun-der-bolts of fla-ming wrath Pur-su'd them deep to hell.",
+  "verses": [
+    {
+      "lines": [
+        "Down headlong from their native skies",
+        "The rebel angels fell,",
+        "And thunderbolts of flaming wrath",
+        "Pursu'd them deep to hell."
+      ]
+    },
+    {
+      "lines": [
+        "Down from the top of earthly bliss",
+        "Rebellious man was hurl'd",
+        "And Jesus stoop'd beneath the grave",
+        "To reach a sinking world."
+      ]
+    },
+    {
+      "lines": [
+        "O love of infinite degree!",
+        "Unmeasurable grace!",
+        "Must heaven's eternal Darling die",
+        "To save a traitorous race?"
+      ]
+    },
+    {
+      "lines": [
+        "Must angels sink for ever down,",
+        "And burn in quenchless fire,",
+        "While God forsakes his shining throne",
+        "To raise us wretches higher?"
+      ]
+    },
+    {
+      "lines": [
+        "O for this love let earth and skies",
+        "With hallelujahs ring,",
+        "And the full choir of human tongues",
+        "All hallelujah sing."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:96"
+}

@@ -1,0 +1,62 @@
+{
+  "title": "The King of Glory Sends His Son",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "The King of Glory Sends His Son in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 136, headed “Miracles at the birth of Christ”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The King of Glo-ry sends his Son To make his en-trance on this earth! Be-hold the mid-night bright as noon, And heav-enly hosts de-clare his birth!",
+  "verses": [
+    {
+      "lines": [
+        "The King of Glory sends his Son",
+        "To make his entrance on this earth!",
+        "Behold the midnight bright as noon,",
+        "And heavenly hosts declare his birth!"
+      ]
+    },
+    {
+      "lines": [
+        "About the young Redeemer's head",
+        "What wonders and what glories meet!",
+        "An unknown star arose, and led",
+        "The eastern sages to his feet."
+      ]
+    },
+    {
+      "lines": [
+        "Simeon and Anna both conspire",
+        "The Infant-Saviour to proclaim;",
+        "Inward they felt the sacred fire,",
+        "And bless'd the babe, and own'd his Name."
+      ]
+    },
+    {
+      "lines": [
+        "Let Jews and Greeks blaspheme aloud,",
+        "And treat the holy Child with scorn;",
+        "Our souls adore th' eternal God",
+        "Who condescended to be born."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:136"
+}

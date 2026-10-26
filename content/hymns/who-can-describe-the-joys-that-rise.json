@@ -1,0 +1,54 @@
+{
+  "title": "Who Can Describe the Joys That Rise",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Who Can Describe the Joys That Rise in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 101, headed “Joy in heaven for a repenting sinner, Luke 15. 7-10”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Who can de-scribe the joys that rise Thro' all the courts of Par-a-dise To see a pro-di-gal re-turn, To see an heir of glo-ry born?",
+  "verses": [
+    {
+      "lines": [
+        "Who can describe the joys that rise",
+        "Thro' all the courts of Paradise",
+        "To see a prodigal return,",
+        "To see an heir of glory born?"
+      ]
+    },
+    {
+      "lines": [
+        "With joy the Father doth approve",
+        "The fruit of his eternal love;",
+        "The Son with joy looks down and sees",
+        "The purchase of his agonies."
+      ]
+    },
+    {
+      "lines": [
+        "The Spirit takes delight to view",
+        "The holy soul he form'd anew;",
+        "And saints and angels join to sing",
+        "The growing empire of their King."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:101"
+}

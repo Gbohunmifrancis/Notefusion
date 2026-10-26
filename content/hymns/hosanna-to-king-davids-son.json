@@ -1,0 +1,46 @@
+{
+  "title": "Hosanna to King David's Son",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Hosanna to King David's Son in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book III, prepared for the Lord's Supper, hymn 42, headed “L. M”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Ho-san-na to King Da-vid's Son, Who reigns on a su-pe-rior throne; We bless the Prince of heav-enly birth Who brings sal-va-tion down to earth.",
+  "verses": [
+    {
+      "lines": [
+        "Hosanna to King David's Son,",
+        "Who reigns on a superior throne;",
+        "We bless the Prince of heavenly birth",
+        "Who brings salvation down to earth."
+      ]
+    },
+    {
+      "lines": [
+        "Let every nation, every age,",
+        "In this delightful work engage;",
+        "Old men and babes in Sion sing",
+        "The growing glories of her King."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:3:42"
+}

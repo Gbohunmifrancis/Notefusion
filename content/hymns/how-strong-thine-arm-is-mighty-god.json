@@ -1,0 +1,78 @@
+{
+  "title": "How Strong Thine Arm Is, Mighty God",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "How Strong Thine Arm Is, Mighty God in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 49, headed “The works of Moses and the Lamb, Rev. 15. 3”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How strong thine arm is, might-y God, Who would not fear thy Name! Je-sus, how sweet thy gra-ces are! Who would not love the Lamb!",
+  "verses": [
+    {
+      "lines": [
+        "How strong thine arm is, mighty God,",
+        "Who would not fear thy Name!",
+        "Jesus, how sweet thy graces are!",
+        "Who would not love the Lamb!"
+      ]
+    },
+    {
+      "lines": [
+        "He has done more than Moses did,",
+        "Our Prophet and our King;",
+        "From bonds of hell he freed our souls,",
+        "And taught our lips to sing."
+      ]
+    },
+    {
+      "lines": [
+        "In the Red-sea by Moses' hand",
+        "Th' Egyptian host was drown'd;",
+        "But his own blood hides all our sins,",
+        "And guilt no more is found."
+      ]
+    },
+    {
+      "lines": [
+        "When thro' the desert Israel went,",
+        "With manna they were fed;",
+        "Our Lord invites us to his flesh,",
+        "And calls it living bread."
+      ]
+    },
+    {
+      "lines": [
+        "Moses beheld the promis'd land,",
+        "Yet never reach'd the place;",
+        "But Christ shall bring his followers home",
+        "To see his Father's face."
+      ]
+    },
+    {
+      "lines": [
+        "Then shall our love and joy be full,",
+        "And feel a warmer flame;",
+        "And sweeter voices tune the song",
+        "Of Moses and the Lamb."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:49"
+}

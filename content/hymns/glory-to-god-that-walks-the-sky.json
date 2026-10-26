@@ -1,0 +1,102 @@
+{
+  "title": "Glory to God That Walks the Sky",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Glory to God That Walks the Sky in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 59, headed “Paradise on earth”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Glo-ry to God that walks the sky, And sends his bless-ings thro', That tells his saints of joys on high, And gives a taste be-low.",
+  "verses": [
+    {
+      "lines": [
+        "Glory to God that walks the sky,",
+        "And sends his blessings thro',",
+        "That tells his saints of joys on high,",
+        "And gives a taste below."
+      ]
+    },
+    {
+      "lines": [
+        "Glory to God that stoops his throne",
+        "That dust and worms may see't,",
+        "And brings a glimpse of glory down",
+        "Around his sacred feet."
+      ]
+    },
+    {
+      "lines": [
+        "When Christ, with all his graces crown'd,",
+        "Sheds his kind beams abroad,",
+        "'Tis a young heaven on earthly ground,",
+        "And glory in the bud."
+      ]
+    },
+    {
+      "lines": [
+        "A blooming paradise of joy",
+        "In this wild desert springs;",
+        "And every sense I straight employ",
+        "On sweet celestial things."
+      ]
+    },
+    {
+      "lines": [
+        "White lilies all around appear,",
+        "And each his glory shows;",
+        "The rose of Sharon blossoms here,",
+        "The fairest flower that blows."
+      ]
+    },
+    {
+      "lines": [
+        "Cheerful I feast on heavenly fruit,",
+        "And drink the pleasures down,",
+        "Pleasures that flow hard by the foot",
+        "Of the eternal throne."
+      ]
+    },
+    {
+      "lines": [
+        "But ah! how soon my joys decay,",
+        "How soon my sins arise,",
+        "And snatch the heavenly scene away",
+        "From these lamenting eyes!"
+      ]
+    },
+    {
+      "lines": [
+        "When shall the time, dear Jesus, when",
+        "The shining day appear,",
+        "That I shall leave those clouds of sin,",
+        "And guilt and darkness here?"
+      ]
+    },
+    {
+      "lines": [
+        "Up to the fields above the skies",
+        "My hasty feet would go,",
+        "There everlasting flowers arise,",
+        "And joys unwithering grow."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:59"
+}

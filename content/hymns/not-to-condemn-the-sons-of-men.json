@@ -1,0 +1,62 @@
+{
+  "title": "Not to Condemn the Sons of Men",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Not to Condemn the Sons of Men in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 100, headed “Believe and be saved, John 3. 16 17 18”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Not to con-demn the sons of men Did Christ, the Son of God, ap-pear; No wea-pons in his hands are seen, No fla-ming sword, nor thun-der there.",
+  "verses": [
+    {
+      "lines": [
+        "Not to condemn the sons of men",
+        "Did Christ, the Son of God, appear;",
+        "No weapons in his hands are seen,",
+        "No flaming sword, nor thunder there."
+      ]
+    },
+    {
+      "lines": [
+        "Such was the pity of our God,",
+        "He lov'd the race of man so well,",
+        "He sent his Son to bear our load",
+        "Of sins, and save our souls from hell."
+      ]
+    },
+    {
+      "lines": [
+        "Sinners, believe the Saviour's word,",
+        "Trust in his mighty name and live;",
+        "A thousand joys his lips afford,",
+        "His hands a thousand blessings give."
+      ]
+    },
+    {
+      "lines": [
+        "But vengeance and damnation lies",
+        "On rebels who refuse the grace;",
+        "Who God's eternal Son despise",
+        "The hottest hell shall be their place."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:100"
+}

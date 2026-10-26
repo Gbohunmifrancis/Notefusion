@@ -1,0 +1,62 @@
+{
+  "title": "'Tis by the Faith of Joys to Come",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "'Tis by the Faith of Joys to Come in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 129, headed “We walk by faith, not by sight”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "'Tis by the faith of joys to come We walk thro' de-serts dark as night; Till we ar-rive at heaven our home, Faith is our guide, and faith our light.",
+  "verses": [
+    {
+      "lines": [
+        "'Tis by the faith of joys to come",
+        "We walk thro' deserts dark as night;",
+        "Till we arrive at heaven our home,",
+        "Faith is our guide, and faith our light."
+      ]
+    },
+    {
+      "lines": [
+        "The want of sight she well supplies,",
+        "She makes the pearly gates appear;",
+        "Far into distant worlds she pries,",
+        "And brings eternal glories near."
+      ]
+    },
+    {
+      "lines": [
+        "Cheerful we tread the desert thro',",
+        "While faith inspires a heavenly ray,",
+        "Tho' lions roar, and tempests blow,",
+        "And rocks and dangers fill the way."
+      ]
+    },
+    {
+      "lines": [
+        "So Abrah'm, by divine command,",
+        "Left his own house to walk with God;",
+        "His faith beheld the promis'd land,",
+        "And fir'd his zeal along the road."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:129"
+}

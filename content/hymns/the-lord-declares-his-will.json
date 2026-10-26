@@ -1,0 +1,86 @@
+{
+  "title": "The Lord Declares His Will",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "The Lord Declares His Will in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 120, headed “The law and gospel joined in scripture”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "The Lord de-clares his will, And keeps the world in awe; A-midst the smoke on Si-nai's hill Breaks out his fie-ry law.",
+  "verses": [
+    {
+      "lines": [
+        "The Lord declares his will,",
+        "And keeps the world in awe;",
+        "Amidst the smoke on Sinai's hill",
+        "Breaks out his fiery law."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord reveals his face,",
+        "And smiling from above,",
+        "Sends down the gospel of his grace,",
+        "Th' epistles of his love."
+      ]
+    },
+    {
+      "lines": [
+        "These sacred words impart",
+        "Our Maker's just commands;",
+        "The pity of his melting heart,",
+        "And vengeance of his hands."
+      ]
+    },
+    {
+      "lines": [
+        "Hence we awake our fear,",
+        "We draw our comfort hence;",
+        "The arms of grace are treasur'd here,",
+        "And armour of defence."
+      ]
+    },
+    {
+      "lines": [
+        "We learn Christ crucify'd,",
+        "And here behold his blood:",
+        "All arts and knowledges beside",
+        "Will do us little good."
+      ]
+    },
+    {
+      "lines": [
+        "We read the heavenly word,",
+        "We take the offer'd grace,",
+        "Obey the statutes of the Lord,",
+        "And trust his promises."
+      ]
+    },
+    {
+      "lines": [
+        "In vain shall Satan rage",
+        "Against a book divine;",
+        "Where wrath and lightning guard the page,",
+        "Where beams of mercy shine."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:120"
+}

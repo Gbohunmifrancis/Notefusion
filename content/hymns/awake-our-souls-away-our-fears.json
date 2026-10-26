@@ -1,0 +1,70 @@
+{
+  "title": "Awake, Our Souls, Away, Our Fears",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Awake, Our Souls, Away, Our Fears in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 48, headed “The Christian race, Isa. 40. 28-31”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "A-wake, our souls, a-way, our fears, Let ev-ery trem-bling thought be gone; A-wake and run the heav-enly race, And put a cheer-ful cou-rage on.",
+  "verses": [
+    {
+      "lines": [
+        "Awake, our souls, away, our fears,",
+        "Let every trembling thought be gone;",
+        "Awake and run the heavenly race,",
+        "And put a cheerful courage on."
+      ]
+    },
+    {
+      "lines": [
+        "True, 'tis a strait and thorny road,",
+        "And mortal spirits tire and faint;",
+        "But they forget the mighty God",
+        "That feeds the strength of every saint."
+      ]
+    },
+    {
+      "lines": [
+        "Thee, mighty God, whose matchless power",
+        "Is ever new and ever young,",
+        "And firm endures while endless years",
+        "Their everlasting circles run."
+      ]
+    },
+    {
+      "lines": [
+        "From thee the overflowing spring,",
+        "Our souls shall drink a fresh supply,",
+        "While such as trust their native strength",
+        "Shall melt away, and drop and die."
+      ]
+    },
+    {
+      "lines": [
+        "Swift as an eagle cuts the air",
+        "We'll mount aloft to thine abode,",
+        "On wings of love our souls shall fly,",
+        "Nor tire amidst the heavenly road."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:48"
+}

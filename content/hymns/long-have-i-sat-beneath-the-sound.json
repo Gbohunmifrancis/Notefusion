@@ -1,0 +1,78 @@
+{
+  "title": "Long Have I Sat Beneath the Sound",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Long Have I Sat Beneath the Sound in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 165, headed “Unfruitfulness, ignorance, and unsanctified affections”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Long have I sat be-neath the sound Of thy sal-va-tion, Lord But still how weak my faith is found, And knowl-edge of thy word!",
+  "verses": [
+    {
+      "lines": [
+        "Long have I sat beneath the sound",
+        "Of thy salvation, Lord",
+        "But still how weak my faith is found,",
+        "And knowledge of thy word!"
+      ]
+    },
+    {
+      "lines": [
+        "Oft I frequent thy holy place",
+        "And hear almost in vain;",
+        "How small a portion of thy grace",
+        "My memory can retain!"
+      ]
+    },
+    {
+      "lines": [
+        "My dear Almighty, and my God,",
+        "How little art thou known",
+        "By all the judgments of thy rod,",
+        "And blessings of thy throne!"
+      ]
+    },
+    {
+      "lines": [
+        "How cold and feeble is my love!",
+        "How negligent my fear!",
+        "How low my hope of joys above!",
+        "How few affections there!"
+      ]
+    },
+    {
+      "lines": [
+        "Great God, thy sovereign power impart",
+        "To give thy word success:",
+        "Write the salvation in my heart,",
+        "And make me learn the grace."
+      ]
+    },
+    {
+      "lines": [
+        "Shew my forgetful feet the way",
+        "That leads to joys on high;",
+        "There knowledge grows without decay,",
+        "And love shall never die."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:165"
+}

@@ -1,0 +1,110 @@
+{
+  "title": "The Wondering World Enquires to Know",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "The Wondering World Enquires to Know in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 10 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 75, headed “The description of Christ the beloved, Cant. 5. 9-12 14 15 16”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The won-dering world en-quires to know Why I should love my Je-sus so: \"What are his charms,\" say they, \"a-bove \"The ob-jects of a mor-tal love!\"",
+  "verses": [
+    {
+      "lines": [
+        "The wondering world enquires to know",
+        "Why I should love my Jesus so:",
+        "\"What are his charms,\" say they, \"above",
+        "\"The objects of a mortal love!\""
+      ]
+    },
+    {
+      "lines": [
+        "Yes, my beloved, to my sight,",
+        "Shews a sweet mixture red and white:",
+        "All human beauties, all divine,",
+        "In my beloved meet and shine,"
+      ]
+    },
+    {
+      "lines": [
+        "White is his soul, from blemish free;",
+        "Red with the blood he shed for me;",
+        "The fairest of ten thousand fairs:",
+        "A sun amongst ten thousand stars."
+      ]
+    },
+    {
+      "lines": [
+        "His head the finest gold excels,",
+        "There wisdom in perfection dwells;",
+        "And glory like a crown adorns",
+        "Those temples once beset with thorns."
+      ]
+    },
+    {
+      "lines": [
+        "Compassions in his heart are found,",
+        "Hard by the signals of his wound;",
+        "His sacred side no more shall bear",
+        "The cruel scourge, the piercing spear."
+      ]
+    },
+    {
+      "lines": [
+        "His hands are fairer to behold",
+        "Than diamonds set in rings of gold;",
+        "Those heavenly hands that on the tree",
+        "Were nail'd, and torn, and bled for me."
+      ]
+    },
+    {
+      "lines": [
+        "Tho' once he bow'd his feeble knees,",
+        "Loaded with sins and agonies,",
+        "Now on the throne of his command",
+        "His legs like marble pillars stand."
+      ]
+    },
+    {
+      "lines": [
+        "His eyes are majesty and love,",
+        "The eagle temper'd with the dove:",
+        "No more shall trickling sorrows roll",
+        "Thro' those dear windows of his soul."
+      ]
+    },
+    {
+      "lines": [
+        "His mouth, that pour'd out long complaints,",
+        "Now smiles, and cheers his fainting saints;",
+        "His countenance more graceful is",
+        "Than Lebanon with all its trees."
+      ]
+    },
+    {
+      "lines": [
+        "All over glorious is my Lord,",
+        "Must be belov'd, and yet ador'd:",
+        "His worth if all the nations knew,",
+        "Sure the whole earth would love him too."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:75"
+}

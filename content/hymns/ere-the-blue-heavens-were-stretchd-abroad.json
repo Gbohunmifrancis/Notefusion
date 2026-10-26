@@ -1,0 +1,78 @@
+{
+  "title": "Ere the Blue Heavens Were Stretch'd Abroad",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Ere the Blue Heavens Were Stretch'd Abroad in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 2, headed “The deity and humanity of Christ, John 1. 1-3 14. Col. 9. 16. Eph. 3, 9 10”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Ere the blue heavens were stretch'd a-broad, From ev-er-last-ing was the Word; With God he was; the Word was God, And must di-vine-ly be a-dor'd.",
+  "verses": [
+    {
+      "lines": [
+        "Ere the blue heavens were stretch'd abroad,",
+        "From everlasting was the Word;",
+        "With God he was; the Word was God,",
+        "And must divinely be ador'd."
+      ]
+    },
+    {
+      "lines": [
+        "By his own power were all things made;",
+        "By him supported all things stand;",
+        "He is the whole creation's head,",
+        "And angels fly at his command."
+      ]
+    },
+    {
+      "lines": [
+        "Ere sin was born, or Satan fell,",
+        "He led the host of morning stars;",
+        "(Thy generation who can tell,",
+        "Or count the number of thy years?)"
+      ]
+    },
+    {
+      "lines": [
+        "But lo, he leaves those heavenly forms,",
+        "The Word descends and dwells in clay,",
+        "That he may hold converse with worms,",
+        "Dress'd in such feeble flesh as they."
+      ]
+    },
+    {
+      "lines": [
+        "Mortals with joy beheld his face,",
+        "Th' eternal Father's only Son;",
+        "How full of truth! how full of grace!",
+        "When thro' his eyes the Godhead shone!"
+      ]
+    },
+    {
+      "lines": [
+        "Archangels leave their high abode",
+        "To learn new mysteries here, and tell",
+        "The loves of our descending God,",
+        "The glories of Imannuel."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:2"
+}

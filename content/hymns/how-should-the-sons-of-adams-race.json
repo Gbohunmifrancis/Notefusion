@@ -1,0 +1,78 @@
+{
+  "title": "How Should the Sons of Adam's Race",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "How Should the Sons of Adam's Race in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 86, headed “God holy, just, and sovereign. Job 9. 2-10”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How should the sons of A-dam's race Be pure be-fore their God? If he con-tend in right-eous-ness We fall be-neath his rod.",
+  "verses": [
+    {
+      "lines": [
+        "How should the sons of Adam's race",
+        "Be pure before their God?",
+        "If he contend in righteousness",
+        "We fall beneath his rod."
+      ]
+    },
+    {
+      "lines": [
+        "To vindicate my words and thoughts",
+        "I'll make no more pretence;",
+        "Not one of all my thousand faults",
+        "Can bear a just defence."
+      ]
+    },
+    {
+      "lines": [
+        "Strong is his arm, his heart is wise;",
+        "What vain presumers dare",
+        "Against their Maker's hand to rise,",
+        "Or tempt th' unequal war?"
+      ]
+    },
+    {
+      "lines": [
+        "Mountains by his almighty wrath",
+        "From their old seats are torn;",
+        "He shakes the earth from south to north,",
+        "And all her pillars mourn."
+      ]
+    },
+    {
+      "lines": [
+        "He bids the sun forbear to rise,",
+        "Th' obedient sun forbears:",
+        "His hand with sackcloth spreads the skies,",
+        "And seals up all the stars."
+      ]
+    },
+    {
+      "lines": [
+        "He walks upon the stormy sea",
+        "Flies on the stormy wind;",
+        "There's none can trace his wondrous way,",
+        "Or his dark footsteps find."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:86"
+}

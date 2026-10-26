@@ -1,0 +1,78 @@
+{
+  "title": "When the First Parents of Our Race",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "When the First Parents of Our Race in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 78, headed “Redemption by Christ”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When the first par-ents of our race Re-bell'd and lost their God, And the in-fec-tion of their sin Had taint-ed all our blood;",
+  "verses": [
+    {
+      "lines": [
+        "When the first parents of our race",
+        "Rebell'd and lost their God,",
+        "And the infection of their sin",
+        "Had tainted all our blood;"
+      ]
+    },
+    {
+      "lines": [
+        "Infinite pity touch'd the heart",
+        "Of the eternal Son,",
+        "Descending from the heavenly court",
+        "He left his Father's throne."
+      ]
+    },
+    {
+      "lines": [
+        "Aside the Prince of glory threw",
+        "His most divine array,",
+        "And wrapt his Godhead in a veil",
+        "Of our inferior clay."
+      ]
+    },
+    {
+      "lines": [
+        "His living power, and dying love",
+        "Redeem'd unhappy men,",
+        "And rais'd the ruins of our race",
+        "To life and God again."
+      ]
+    },
+    {
+      "lines": [
+        "To thee, dear Lord, our flesh and soul",
+        "We joyfully resign,",
+        "Bless'd Jesus, take us for thy own,",
+        "For we are doubly thine."
+      ]
+    },
+    {
+      "lines": [
+        "Thine honour shall for ever be",
+        "The business of our days,",
+        "For ever shall our thankful tongue",
+        "Speak thy deserved praise."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:78"
+}

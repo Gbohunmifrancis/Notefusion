@@ -1,0 +1,70 @@
+{
+  "title": "Thus Saith the High and Lofty One",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Thus Saith the High and Lofty One in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 87, headed “God dwells with the humble and penitent, Isa. 57. 15 16”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thus saith the High and Lof-ty One, \"I sit up-on my ho-ly throne, \"My name is God, I dwell on high, \"Dwell in my own e-ter-ni-ty.",
+  "verses": [
+    {
+      "lines": [
+        "Thus saith the High and Lofty One,",
+        "\"I sit upon my holy throne,",
+        "\"My name is God, I dwell on high,",
+        "\"Dwell in my own eternity."
+      ]
+    },
+    {
+      "lines": [
+        "\"But I descend to worlds below,",
+        "\"On earth I have a mansion too,",
+        "\"The humble spirit and contrite",
+        "\"Is an abode of my delight."
+      ]
+    },
+    {
+      "lines": [
+        "\"The humble soul my words revive,",
+        "\"I bid the mourning sinner live,",
+        "\"Heal all the broken hearts I find,",
+        "\"And ease the sorrows of the mind."
+      ]
+    },
+    {
+      "lines": [
+        "\"When I contend against their sin",
+        "\"I make them know how vile they've been;",
+        "\"But should my wrath for ever smoke,",
+        "\"Their souls would sink beneath my stroke.\""
+      ]
+    },
+    {
+      "lines": [
+        "O may thy pardoning grace be nigh,",
+        "Lest we should faint, despair, and die!",
+        "Thus shall our better thoughts approve",
+        "The methods of thy chastening love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:87"
+}

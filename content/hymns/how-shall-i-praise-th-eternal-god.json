@@ -1,0 +1,94 @@
+{
+  "title": "How Shall I Praise Th' Eternal God",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "How Shall I Praise Th' Eternal God in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 166, headed “The divine perfections”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How shall I praise th'e-ter-nal God, That in-fin-ite un-known? Who can as-cend his high a-bode, Or ven-ture near his throne?",
+  "verses": [
+    {
+      "lines": [
+        "How shall I praise th' eternal God,",
+        "That infinite unknown?",
+        "Who can ascend his high abode,",
+        "Or venture near his throne?"
+      ]
+    },
+    {
+      "lines": [
+        "The great Invisible! he dwells",
+        "Conceal'd in dazzling light;",
+        "But his all-searching eye reveals",
+        "The secrets of the night."
+      ]
+    },
+    {
+      "lines": [
+        "Those watchful eyes that never sleep",
+        "Survey the world around;",
+        "His wisdom is a boundless deep",
+        "Where all our thoughts are drown'd."
+      ]
+    },
+    {
+      "lines": [
+        "Speak we of strength? His arm is strong",
+        "To save or to destroy:",
+        "Infinite years his life prolong,",
+        "And endless is his joy."
+      ]
+    },
+    {
+      "lines": [
+        "He knows no shadow of a change,",
+        "Nor alters his decrees;",
+        "Firm as a rock his truth remains",
+        "To guard his promises."
+      ]
+    },
+    {
+      "lines": [
+        "Sinners before his presence die;",
+        "How holy is his Name!",
+        "His anger and his jealousy",
+        "Burn like devouring flame."
+      ]
+    },
+    {
+      "lines": [
+        "Justice upon a dreadful throne",
+        "Maintains the rights of God;",
+        "While Mercy sends her pardons down,",
+        "Bought with a Saviour's blood."
+      ]
+    },
+    {
+      "lines": [
+        "Now to my soul, immortal King,",
+        "Speak some forgiving word;",
+        "Then 't will be double joy to sing",
+        "The glories of my Lord."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:166"
+}

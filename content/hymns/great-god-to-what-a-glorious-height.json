@@ -1,0 +1,70 @@
+{
+  "title": "Great God, to What a Glorious Height",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Great God, to What a Glorious Height in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 112, headed “Angels ministering to Christ and saints”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Great God, to what a glo-rious height Hast thou ad-vanc'd the Lord thy Son! An-gels, in all their robes of light, Are made the ser-vants of his throne.",
+  "verses": [
+    {
+      "lines": [
+        "Great God, to what a glorious height",
+        "Hast thou advanc'd the Lord thy Son!",
+        "Angels, in all their robes of light,",
+        "Are made the servants of his throne."
+      ]
+    },
+    {
+      "lines": [
+        "Before his feet their armies wait,",
+        "And swift as flames of fire they move,",
+        "To manage his affairs of state",
+        "In works of vengeance or of love."
+      ]
+    },
+    {
+      "lines": [
+        "His orders run thro' all their hosts,",
+        "Legions descend at his command",
+        "To shield and guard the British coasts,",
+        "When foreign rage invades our land."
+      ]
+    },
+    {
+      "lines": [
+        "Now they are sent to guide our feet",
+        "Up to the gates of thine abode,",
+        "Thro' all the dangers that we meet",
+        "In travelling the heavenly road."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, when I leave this mortal ground,",
+        "And thou shall bid me rise and come,",
+        "Send a beloved angel down",
+        "Safe to conduct my spirit home."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:112"
+}

@@ -1,0 +1,78 @@
+{
+  "title": "Infinite Grief! Amazing Woe",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Infinite Grief! Amazing Woe in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 95, headed “Look on him whom they pierced, and mourn”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "In-fin-ite grief! a-ma-zing woe! Be-hold my bleed-ing Lord: Hell and the Jews con-spir'd his death, And us'd the Ro-man sword.",
+  "verses": [
+    {
+      "lines": [
+        "Infinite grief! amazing woe!",
+        "Behold my bleeding Lord:",
+        "Hell and the Jews conspir'd his death,",
+        "And us'd the Roman sword."
+      ]
+    },
+    {
+      "lines": [
+        "O the sharp pangs of smarting pain",
+        "My dear Redeemer bore,",
+        "When knotty whips and ragged thorns",
+        "His sacred body tore!"
+      ]
+    },
+    {
+      "lines": [
+        "But knotty whips and ragged thorns",
+        "In vain do I accuse;",
+        "In vain I blame the Roman bands,",
+        "And the more spiteful Jews."
+      ]
+    },
+    {
+      "lines": [
+        "'Twere you, my sins, my cruel sins,",
+        "His chief tormentors were;",
+        "Each of my crimes became a nail,",
+        "And unbelief the spear."
+      ]
+    },
+    {
+      "lines": [
+        "'Twere you that pull'd the vengeance down",
+        "Upon his guiltless head:",
+        "Break, break, my heart, O burst mine eyes!",
+        "And let my sorrows bleed."
+      ]
+    },
+    {
+      "lines": [
+        "Strike, mighty grace, my flinty soul,",
+        "Till melting waters flow,",
+        "And deep repentance drown mine eyes",
+        "In undissembled woe."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:95"
+}

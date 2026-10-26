@@ -203,6 +203,9 @@ export function loadHymns({ tunes, dir = path.join(CONTENT_DIR, "hymns"), includ
     checkSource(file, h);
     for (const k of ["alsoKnownAs", "topics"]) if (h[k] != null && (!Array.isArray(h[k]) || h[k].some((x) => typeof x !== "string" || !x.trim()))) fail(file, `"${k}" must be a list of text`);
     if (h.category != null && (typeof h.category !== "string" || !h.category.trim())) fail(file, `"category" must be text`);
+    // Words set by NoteFusion to a tune of their metre (import/watts.mjs): a page of its own, kept out of hymn
+    // recognition (a hummed ST ANNE should be offered the words it is known by) and out of the app's pack.
+    if (h.setByMetre != null && typeof h.setByMetre !== "boolean") fail(file, `"setByMetre" must be true or false`);
     // The seasons and occasions a hymn without a category is sung at (lib/collections.mjs OCCASIONS).
     if (h.occasions != null && (!Array.isArray(h.occasions) || h.occasions.some((x) => !OCCASION_NAMES.includes(x)))) fail(file, `"occasions" must be a list of: ${OCCASION_NAMES.join(", ")}`);
     if (!Array.isArray(h.verses) || !h.verses.length || h.verses.some((v) => !Array.isArray(v.lines) || !v.lines.length)) fail(file, `"verses" must be a list of {lines: [...]}`);

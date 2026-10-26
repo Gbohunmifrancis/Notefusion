@@ -1,0 +1,70 @@
+{
+  "title": "Now Let the Lord My Saviour Smile",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Now Let the Lord My Saviour Smile in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 50, headed “Comfort under sorrows and pains”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Now let the Lord my Sa-viour smile, And shew my name up-on his heart, I would for-get my pains a-while, And in the plea-sure lose the smart.",
+  "verses": [
+    {
+      "lines": [
+        "Now let the Lord my Saviour smile,",
+        "And shew my name upon his heart,",
+        "I would forget my pains awhile,",
+        "And in the pleasure lose the smart."
+      ]
+    },
+    {
+      "lines": [
+        "Yet why, my soul, why these complaints?",
+        "Still while he frowns his bowels move;",
+        "Still on his heart he bears his saints,",
+        "And feels their sorrows and his love."
+      ]
+    },
+    {
+      "lines": [
+        "My name is printed on his breast;",
+        "His book of life contains my name;",
+        "I'd rather have it there impress'd",
+        "Than in the bright records of fame."
+      ]
+    },
+    {
+      "lines": [
+        "When the last fire burns all things here,",
+        "Those letters shall securely stand,",
+        "And in the Lamb's fair book appear,",
+        "Writ by th' eternal Father's hand."
+      ]
+    },
+    {
+      "lines": [
+        "Now shall my minutes smoothly run,",
+        "Whil'st here I wait my Father's will;",
+        "My rising and my setting sun",
+        "Roll gently up and down the hill."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:50"
+}

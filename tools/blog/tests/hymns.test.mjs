@@ -73,7 +73,8 @@ test("every hymn and tune is unreviewed until checked against a book, and says h
     assert.equal(typeof h.reviewed, "boolean", h.slug);
     if (h.tuneData.confidence !== undefined) assert.ok(String(h.tuneData.confidence).trim(), h.tuneData.slug);
   }
-  const added = allHymns.filter((h) => h.updated >= "2026-10-16");
+  // Words set by metre (import/watts.mjs) sing a tune already on the site, which keeps its own review.
+  const added = allHymns.filter((h) => h.updated >= "2026-10-16" && !h.setByMetre);
   assert.ok(added.length >= 20);
   for (const h of added) {
     assert.equal(h.reviewed, false, h.slug);

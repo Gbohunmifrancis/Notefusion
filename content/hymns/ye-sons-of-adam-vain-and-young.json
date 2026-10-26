@@ -1,0 +1,70 @@
+{
+  "title": "Ye Sons of Adam, Vain and Young",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Ye Sons of Adam, Vain and Young in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 89, headed “Youth and judgment, Eccles. 11. 9”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Ye sons of A-dam, vain and young, In-dulge your eyes, in-dulge your tongue, Taste the de-light your souls de-sire, And give a loose to all your fire.",
+  "verses": [
+    {
+      "lines": [
+        "Ye sons of Adam, vain and young,",
+        "Indulge your eyes, indulge your tongue,",
+        "Taste the delight your souls desire,",
+        "And give a loose to all your fire."
+      ]
+    },
+    {
+      "lines": [
+        "Pursue the pleasures ye design,",
+        "And cheer your hearts with songs and wine,",
+        "Enjoy the day of mirth; but know",
+        "There is a day of judgment too."
+      ]
+    },
+    {
+      "lines": [
+        "God from on high beholds your thoughts,",
+        "His book records your secret faults;",
+        "The works of darkness you have done",
+        "Must all appear before the sun."
+      ]
+    },
+    {
+      "lines": [
+        "The vengeance to your follies due",
+        "Should strike your hearts with terror thro':",
+        "How will ye stand before his face,",
+        "Or answer for his injur'd grace?"
+      ]
+    },
+    {
+      "lines": [
+        "Almighty God, turn off their eyes",
+        "From these alluring vanities;",
+        "And let the thunder of thy word",
+        "Awake their souls to fear the Lord."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:89"
+}

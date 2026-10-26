@@ -1,0 +1,78 @@
+{
+  "title": "\"What Happy Men, or Angels These",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "\"What Happy Men, or Angels These in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 40, headed “The business and blessedness of glorified saints, Rev. 7. 13 &c”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "\"What hap-py men, or an-gels these \"That all their robes are spot-less white? \"Whence did this glo-rious troop ar-rive \"At the pure realms of heav-enly light?\"",
+  "verses": [
+    {
+      "lines": [
+        "\"What happy men, or angels these",
+        "\"That all their robes are spotless white?",
+        "\"Whence did this glorious troop arrive",
+        "\"At the pure realms of heavenly light?\""
+      ]
+    },
+    {
+      "lines": [
+        "From tort'ring racks and burning fires,",
+        "And seas of their own blood they came;",
+        "But nobler blood has wash'd their robes,",
+        "Flowing from Christ the dying Lamb."
+      ]
+    },
+    {
+      "lines": [
+        "Now they approach th' almighty throne,",
+        "With loud hosannas night and day,",
+        "Sweet anthems to the great Three One",
+        "Measure their blest eternity."
+      ]
+    },
+    {
+      "lines": [
+        "No more shall hunger pain their souls,",
+        "He bids their parching thirst be gone,",
+        "And spreads the shadow of his wings",
+        "To screen them from the scorching sun."
+      ]
+    },
+    {
+      "lines": [
+        "The Lamb that fills the middle throne",
+        "Shall shed around his milder beams,",
+        "There shall they feast on his rich love,",
+        "And drink full joys from living streams."
+      ]
+    },
+    {
+      "lines": [
+        "Thus shall their mighty bliss renew",
+        "Thro' the vast round of endless years,",
+        "And the soft hand of sovereign grace",
+        "Heals all their wounds, and wipes their tears."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:40"
+}

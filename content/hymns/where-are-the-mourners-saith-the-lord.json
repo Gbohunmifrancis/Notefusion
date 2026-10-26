@@ -1,0 +1,70 @@
+{
+  "title": "\"Where Are the Mourners, (Saith the Lord)",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "\"Where Are the Mourners, (Saith the Lord) in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 154, headed “Self-righteousness insufficient”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "\"Where are the mourn-ers, (saith the Lord) \"That wait and trem-ble at my word, \"That walk in dark-ness all the day? \"Come, make my name your trust and stay.",
+  "verses": [
+    {
+      "lines": [
+        "\"Where are the mourners, (saith the Lord)",
+        "\"That wait and tremble at my word,",
+        "\"That walk in darkness all the day?",
+        "\"Come, make my name your trust and stay."
+      ]
+    },
+    {
+      "lines": [
+        "\"No works nor duties of your own",
+        "\"Can for the smallest sin atone;",
+        "\"The robes that nature may provide",
+        "\"Will not your least pollutions hide."
+      ]
+    },
+    {
+      "lines": [
+        "\"The softest couch that nature knows",
+        "\"Can give the conscience no repose:",
+        "\"Look to my righteousness, and live;",
+        "\"Comfort and peace are mine to give."
+      ]
+    },
+    {
+      "lines": [
+        "\"Ye sons of pride that kindle coals",
+        "\"With your own hands to warm your souls,",
+        "\"Walk in the light of your own fire,",
+        "\"Enjoy the sparks that ye desire."
+      ]
+    },
+    {
+      "lines": [
+        "\"This is your portion at my hands;",
+        "\"Hell waits you with her iron bands,",
+        "\"Ye shall lie down in sorrow there,",
+        "\"In death, in darkness, and despair.\""
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:154"
+}

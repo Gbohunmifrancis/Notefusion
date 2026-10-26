@@ -1,0 +1,70 @@
+{
+  "title": "No, I'll Repine at Death No More",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "No, I'll Repine at Death No More in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 102, headed “A happy resurrection”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "No, I'll re-pine at death no more, But with a cheer-ful gasp re-sign To the cold dun-geon of the grave These dy-ing, with-ering limbs of mine.",
+  "verses": [
+    {
+      "lines": [
+        "No, I'll repine at death no more,",
+        "But with a cheerful gasp resign",
+        "To the cold dungeon of the grave",
+        "These dying, withering limbs of mine."
+      ]
+    },
+    {
+      "lines": [
+        "Let worms devour my wasting flesh,",
+        "And crumble all my bones to dust,",
+        "My God shall raise my frame anew",
+        "At the revival of the just."
+      ]
+    },
+    {
+      "lines": [
+        "Break, sacred morning, thro' the skies,",
+        "Bring that delightful, dreadful day,",
+        "Cut short the hours, dear Lord, and come,",
+        "Thy lingering wheels, how long they stay!"
+      ]
+    },
+    {
+      "lines": [
+        "Our weary spirits faint to see",
+        "The light of thy returning face,",
+        "And hear the language of those lips",
+        "Where God has shed his richest grace."
+      ]
+    },
+    {
+      "lines": [
+        "Haste then upon the wings of love,",
+        "Rouse all the pious sleeping clay,",
+        "That we may join in heavenly joys,",
+        "And sing the triumph of the day."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:102"
+}

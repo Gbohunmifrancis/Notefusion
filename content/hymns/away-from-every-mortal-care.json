@@ -1,0 +1,78 @@
+{
+  "title": "Away from Every Mortal Care",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Away from Every Mortal Care in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 123, headed “The benefit of public ordinances”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "A-way from ev-ery mor-tal care, A-way from earth our souls re-treat; We leave this worth-less world a-far, And wait and wor-ship near thy seat.",
+  "verses": [
+    {
+      "lines": [
+        "Away from every mortal care,",
+        "Away from earth our souls retreat;",
+        "We leave this worthless world afar,",
+        "And wait and worship near thy seat."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, in the temple of thy grace",
+        "We see thy feet, and we adore;",
+        "We gaze upon thy lovely face,",
+        "And learn the wonders of thy power."
+      ]
+    },
+    {
+      "lines": [
+        "While here our various wants we mourn,",
+        "United groans ascend on high,",
+        "And prayer bears a quick return",
+        "Of blessings in variety."
+      ]
+    },
+    {
+      "lines": [
+        "If Satan rage and sin grow strong,",
+        "Here we receive some cheering word;",
+        "We gird the gospel armour on",
+        "To fight the battles of the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "Or if our spirit faints and dies,",
+        "(Our conscience gall'd with inward stings)",
+        "Here doth the righteous sun arise",
+        "With healing beams beneath his wings."
+      ]
+    },
+    {
+      "lines": [
+        "Father, my soul would still abide",
+        "Within thy temple, near thy side;",
+        "But if my feet must hence depart",
+        "Still keep thy dwelling in my heart."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:123"
+}

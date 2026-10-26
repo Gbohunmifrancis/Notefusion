@@ -1,0 +1,70 @@
+{
+  "title": "'Tis Not the Law of Ten Commands",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "'Tis Not the Law of Ten Commands in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 124, headed “Moses, Aaron, and Joshua”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "'Tis not the law of ten com-mands On ho-ly Si-nai given, Or sent to men by Mo-ses' hands, Can bring us safe to heaven.",
+  "verses": [
+    {
+      "lines": [
+        "'Tis not the law of ten commands",
+        "On holy Sinai given,",
+        "Or sent to men by Moses' hands,",
+        "Can bring us safe to heaven."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis not the blood which Aaron spilt,",
+        "Nor smoke of sweetest smell,",
+        "Can buy a pardon for our guilt,",
+        "Or save our souls from hell."
+      ]
+    },
+    {
+      "lines": [
+        "Aaron the priest resigns his breath",
+        "At God's immediate will;",
+        "And in the desert yields to death",
+        "Upon th' appointed hill."
+      ]
+    },
+    {
+      "lines": [
+        "And thus on Jordan's yonder side",
+        "The tribes of Israel stand,",
+        "While Moses bow'd his head and dy'd",
+        "Short of the promis'd land."
+      ]
+    },
+    {
+      "lines": [
+        "Israel rejoice, now Joshua * leads,",
+        "He'll bring your tribes to rest;",
+        "So far the Saviour's name exceeds",
+        "The ruler and the priest."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:124"
+}

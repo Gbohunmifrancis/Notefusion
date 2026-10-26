@@ -1,0 +1,62 @@
+{
+  "title": "Saints, at Your Father's Heavenly Word",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Saints, at Your Father's Heavenly Word in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 129, headed “Submission and deliverance; or, Abraham offering his son, Gen. 22. 6 &c”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Saints, at your Fa-ther's heav-enly word Give up your com-forts to the Lord; He shall re-store what you re-sign, Or grant you bless-ings more di-vine.",
+  "verses": [
+    {
+      "lines": [
+        "Saints, at your Father's heavenly word",
+        "Give up your comforts to the Lord;",
+        "He shall restore what you resign,",
+        "Or grant you blessings more divine."
+      ]
+    },
+    {
+      "lines": [
+        "So Abraham with obedient hand,",
+        "Led forth his son at God's command,",
+        "The wood, the fire, the knife he took,",
+        "His arm prepar'd the dreadful stroke."
+      ]
+    },
+    {
+      "lines": [
+        "\"Abraham, forbear, (the angel cry'd)",
+        "\"Thy faith is known, thy love is try'd,",
+        "\"Thy son shall live, and in thy seed",
+        "\"Shall the whole earth be bless'd indeed.\""
+      ]
+    },
+    {
+      "lines": [
+        "Just in the last distressing hour",
+        "The Lord displays delivering power;",
+        "The mount of danger is the place",
+        "Where we shall see surprising grace."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:129"
+}

@@ -1,0 +1,62 @@
+{
+  "title": "Let the Old Heathens Tune Their Song",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Let the Old Heathens Tune Their Song in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 21, headed “A song of praise to God the Redeemer”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Let the old hea-thens tune their song Of great Di-a-na and of Jove; But the sweet theme that moves my tongue Is my Re-deem-er and his love.",
+  "verses": [
+    {
+      "lines": [
+        "Let the old heathens tune their song",
+        "Of great Diana and of Jove;",
+        "But the sweet theme that moves my tongue",
+        "Is my Redeemer and his love."
+      ]
+    },
+    {
+      "lines": [
+        "Behold a God descends and dies",
+        "To save my soul from gaping hell;",
+        "How the black gulf where Satan lies",
+        "Yawn'd to receive me when I fell!"
+      ]
+    },
+    {
+      "lines": [
+        "How justice frown'd and vengeance stood",
+        "To drive me down to endless pain!",
+        "But the great Son propos'd his blood,",
+        "And heavenly wrath grew mild again."
+      ]
+    },
+    {
+      "lines": [
+        "Infinite lover, gracious Lord,",
+        "To thee be endless honours given;",
+        "Thy wondrous Name shall be ador'd",
+        "Round the wide earth, and wider heaven."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:21"
+}

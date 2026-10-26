@@ -73,7 +73,7 @@ function tuneEntry(t) {
 
 /** Both files' text: { pack, version } — the pack, and the small file that names its version and size. */
 export function hymnPackFiles(hymns, tunes = []) {
-  const entries = [...hymns.filter((h) => !h.draft).map(hymnEntry), ...tunes.filter((t) => !t.draft).map(tuneEntry)]
+  const entries = [...hymns.filter((h) => !h.draft && !h.setByMetre).map(hymnEntry), ...tunes.filter((t) => !t.draft).map(tuneEntry)]
     .sort((a, b) => sortKey(a.title).localeCompare(sortKey(b.title)) || a.slug.localeCompare(b.slug));
   const slugs = new Set();
   for (const e of entries) {

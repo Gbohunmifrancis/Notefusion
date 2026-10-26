@@ -1,0 +1,78 @@
+{
+  "title": "In Thine Own Ways, O God of Love",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "In Thine Own Ways, O God of Love in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 30, headed “Prayer for deliverance answered, Isa. 26. 8-12 20 21”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "In thine own ways, O God of love, We wait the vis-its of thy grace, Our souls de-sire is to thy Name, And the re-mem-brance of thy face.",
+  "verses": [
+    {
+      "lines": [
+        "In thine own ways, O God of love,",
+        "We wait the visits of thy grace,",
+        "Our souls desire is to thy Name,",
+        "And the remembrance of thy face."
+      ]
+    },
+    {
+      "lines": [
+        "My thoughts are searching, Lord, for thee,",
+        "'Mongst the black shades of lonesome night;",
+        "My earnest cries salute the skies",
+        "Before the dawn restore the light."
+      ]
+    },
+    {
+      "lines": [
+        "Look, how rebellious men deride",
+        "The tender patience of my God;",
+        "But they shall see thy lifted hand,",
+        "And feel the scourges of thy rod."
+      ]
+    },
+    {
+      "lines": [
+        "Hark, the Eternal rends the sky,",
+        "A mighty voice before him goes,",
+        "A voice of music to his friends,",
+        "But threatening thunder to his foes."
+      ]
+    },
+    {
+      "lines": [
+        "Come, children, to your Father's arms,",
+        "Hide in the chambers of my grace,",
+        "Till the fierce storms be overblown,",
+        "And my revenging fury cease."
+      ]
+    },
+    {
+      "lines": [
+        "My sword shall boast its thousands slain,",
+        "And drink the blood of haughty kings,",
+        "While heavenly peace around my flock",
+        "Stretches its soft and shady wings."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:30"
+}

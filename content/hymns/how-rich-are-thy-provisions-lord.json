@@ -1,0 +1,86 @@
+{
+  "title": "How Rich Are Thy Provisions Lord",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "How Rich Are Thy Provisions Lord in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book III, prepared for the Lord's Supper, hymn 12, headed “The gospel feast, Luke 14. 16 &c”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "How rich are thy pro-vi-sions Lord! Thy ta-ble fur-nish'd from a-bove, The fruits of life o'er-spread the board, The cup o'er-flows with heav-enly love.",
+  "verses": [
+    {
+      "lines": [
+        "How rich are thy provisions Lord!",
+        "Thy table furnish'd from above,",
+        "The fruits of life o'erspread the board,",
+        "The cup o'erflows with heavenly love."
+      ]
+    },
+    {
+      "lines": [
+        "Thine ancient family the Jews,",
+        "Were first invited to the feast;",
+        "We humbly take what they refuse,",
+        "And Gentiles thy salvation taste."
+      ]
+    },
+    {
+      "lines": [
+        "We are the poor, the blind, the lame,",
+        "And help was far, and death was nigh,",
+        "But at the gospel call we came",
+        "And every want receiv'd supply."
+      ]
+    },
+    {
+      "lines": [
+        "From the highway that leads to hell,",
+        "From paths of darkness and despair,",
+        "Lord, we are come with thee to dwell,",
+        "Glad to enjoy thy presence here."
+      ]
+    },
+    {
+      "lines": [
+        "What shall we pay th' eternal Son,",
+        "That left the heaven of his abode,",
+        "And to this wretched earth came down",
+        "To bring us wanderers back to God?"
+      ]
+    },
+    {
+      "lines": [
+        "It cost him death to save our lives,",
+        "To buy our souls it cost his own;",
+        "And all the unknown joys he gives,",
+        "Were bought with agonies unknown."
+      ]
+    },
+    {
+      "lines": [
+        "Our everlasting love is due",
+        "To him that ransom'd sinners lost;",
+        "And pity'd rebels when he knew",
+        "The vast expense his love would cost."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:3:12"
+}

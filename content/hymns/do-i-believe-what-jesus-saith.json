@@ -1,0 +1,94 @@
+{
+  "title": "Do I Believe What Jesus Saith",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Do I Believe What Jesus Saith in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 37, headed “[Supplement.] Zeal and Fortitude”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Do I be-lieve what Je-sus saith, And think the gos-pel true? Lord, make me bold to own my faith, And prac-tise vir-tue too.",
+  "verses": [
+    {
+      "lines": [
+        "Do I believe what Jesus saith,",
+        "And think the gospel true?",
+        "Lord, make me bold to own my faith,",
+        "And practise virtue too."
+      ]
+    },
+    {
+      "lines": [
+        "Suppress my shame, subdue my fear,",
+        "Arm me with heavenly zeal,",
+        "That I may make thy power appear,",
+        "And works of praise fulfil."
+      ]
+    },
+    {
+      "lines": [
+        "If men shall see my virtue shine,",
+        "And spread my name abroad,",
+        "Thine is the power, the praise is thine,",
+        "My Saviour and my God."
+      ]
+    },
+    {
+      "lines": [
+        "Thus when the saints in glory meet,",
+        "Their lips proclaim thy grace;",
+        "They cast their honours at thy feet,",
+        "And own their borrow'd rays."
+      ]
+    },
+    {
+      "lines": [
+        "Are we the soldiers of the cross?",
+        "The followers of the Lamb?",
+        "And shall we fear to own his cause,",
+        "Or blush to speak his name?"
+      ]
+    },
+    {
+      "lines": [
+        "Now we must fight, if we would reign;",
+        "Increase our courage, Lord!",
+        "We'll bear the toil, endure the pain,",
+        "Supported by thy word."
+      ]
+    },
+    {
+      "lines": [
+        "Thy saints in all this glorious war",
+        "Shall Conquer tho' they're slain;",
+        "They see the triumph from afar,",
+        "And shall with Jesus reign."
+      ]
+    },
+    {
+      "lines": [
+        "When that illustrious day shall rise,",
+        "And all thy armies shine",
+        "In robes of victory thro' the skies,",
+        "The glory shall be thine."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:37"
+}

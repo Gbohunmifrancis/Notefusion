@@ -1,0 +1,70 @@
+{
+  "title": "'Twas the Commission of Our Lord",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "'Twas the Commission of Our Lord in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 52, headed “Baptism, Matt. 28. 19. Acts 2. 38”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "'Twas the com-mis-sion of our Lord, \"Go, teach the na-tions, and bap-tize;\" The na-tions have re-ceiv'd the word Since he as-cend-ed to the skies.",
+  "verses": [
+    {
+      "lines": [
+        "'Twas the commission of our Lord,",
+        "\"Go, teach the nations, and baptize;\"",
+        "The nations have receiv'd the word",
+        "Since he ascended to the skies."
+      ]
+    },
+    {
+      "lines": [
+        "He sits upon th' eternal hills,",
+        "With grace and pardon in his hands,",
+        "And sends his covenant with the seals,",
+        "To bless the distant British lands."
+      ]
+    },
+    {
+      "lines": [
+        "\"Repent, and be baptiz'd, (he saith)",
+        "For the remission of your sins;\"",
+        "And thus our sense assists our faith,",
+        "And shews us what his gospel means."
+      ]
+    },
+    {
+      "lines": [
+        "Our souls he washes in his blood,",
+        "As water makes the body clean;",
+        "And the good Spirit from our God",
+        "Descends like purifying rain."
+      ]
+    },
+    {
+      "lines": [
+        "Thus we engage ourselves to thee,",
+        "And seal our covenant with the Lord:",
+        "O may the great eternal Three",
+        "In heaven our solemn vows record!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:52"
+}

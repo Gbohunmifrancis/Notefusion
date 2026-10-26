@@ -1,0 +1,102 @@
+{
+  "title": "Begin, My Tongue, Some Heavenly Theme",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Begin, My Tongue, Some Heavenly Theme in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 69, headed “The faithfulness of God in his promises”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Be-gin, my tongue, some heav-enly theme, And speak some bound-less thing, The might-y works, or might-ier name Of our e-ter-nal King.",
+  "verses": [
+    {
+      "lines": [
+        "Begin, my tongue, some heavenly theme,",
+        "And speak some boundless thing,",
+        "The mighty works, or mightier name",
+        "Of our eternal King."
+      ]
+    },
+    {
+      "lines": [
+        "Tell of his wondrous faithfulness,",
+        "And sound his power abroad,",
+        "Sing the sweet promise of his grace,",
+        "And the performing God."
+      ]
+    },
+    {
+      "lines": [
+        "Proclaim \"salvation from the Lord",
+        "\"For wretched dying men;\"",
+        "His hand has writ the sacred word",
+        "With an immortal pen."
+      ]
+    },
+    {
+      "lines": [
+        "Engrav'd as in eternal brass,",
+        "The mighty promise shines;",
+        "Nor can the powers of darkness rase",
+        "Those everlasting lines."
+      ]
+    },
+    {
+      "lines": [
+        "He that can dash whole worlds to death",
+        "And make them when he please,",
+        "He speaks, and that almighty breath",
+        "Fulfils his great decrees."
+      ]
+    },
+    {
+      "lines": [
+        "His very word of grace is strong",
+        "As that which built the skies,",
+        "The voice that rolls the stars along",
+        "Speaks all the promises."
+      ]
+    },
+    {
+      "lines": [
+        "He said, \"Let the wide heaven be spread,\"",
+        "And heaven was stretch'd abroad;",
+        "\"Abrah'm, I'll be thy God,\" he said,",
+        "And he was Abrah'm's God."
+      ]
+    },
+    {
+      "lines": [
+        "O, might I hear thine heavenly tongue",
+        "But whisper, \"Thou art mine;\"",
+        "Those gentle words should raise my song",
+        "To notes almost divine."
+      ]
+    },
+    {
+      "lines": [
+        "How would my leaping heart rejoice",
+        "And think my heaven secure!",
+        "I trust the all-creating voice,",
+        "And faith desires no more."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:69"
+}

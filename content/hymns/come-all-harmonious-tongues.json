@@ -1,0 +1,94 @@
+{
+  "title": "Come, All Harmonious Tongues",
+  "tune": "franconia",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Come, All Harmonious Tongues in Tonic Solfa to FRANCONIA, doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 84, headed “The same”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to FRANCONIA; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Come, all har-mo-nious tongues, Your no-blest mu-sic bring, 'Tis Christ the ev-er-last-ing God, And Christ the man we sing.",
+  "verses": [
+    {
+      "lines": [
+        "Come, all harmonious tongues,",
+        "Your noblest music bring,",
+        "'Tis Christ the everlasting God,",
+        "And Christ the man we sing."
+      ]
+    },
+    {
+      "lines": [
+        "Tell how he took our flesh",
+        "To take away our guilt,",
+        "Sing the dear drops of sacred blood",
+        "That hellish monsters spilt."
+      ]
+    },
+    {
+      "lines": [
+        "Alas, the cruel spear",
+        "Went deep into his side,",
+        "And the rich flood of purple gore",
+        "Their murderous weapons dy'd."
+      ]
+    },
+    {
+      "lines": [
+        "The waves of swelling grief",
+        "Did o'er his bosom roll,",
+        "And mountains of almighty wrath",
+        "Lay heavy on his soul."
+      ]
+    },
+    {
+      "lines": [
+        "Down to the shades of death",
+        "He bow'd his awful head,",
+        "Yet he arose to live and reign",
+        "When death itself is dead."
+      ]
+    },
+    {
+      "lines": [
+        "No more the bloody spear,",
+        "The cross and nails no more;",
+        "For hell itself shakes at his Name,",
+        "And all the heavens adore."
+      ]
+    },
+    {
+      "lines": [
+        "There the Redeemer sits",
+        "High on the Father's throne;",
+        "The Father lays his vengeance by,",
+        "And smiles upon his Son."
+      ]
+    },
+    {
+      "lines": [
+        "There his full glories shine",
+        "With uncreated rays,",
+        "And bless his saints' and angels' eyes",
+        "To everlasting days."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to FRANCONIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:84"
+}

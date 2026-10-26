@@ -1,0 +1,78 @@
+{
+  "title": "Arise My Soul, My Joyful Powers",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Arise My Soul, My Joyful Powers in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 82, headed “Redemption and protection from spiritual enemies”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "A-rise my soul, my joy-ful powers, And tri-umph in my God, A-wake, my voice, and loud pro-claim His glo-rious grace a-broad.",
+  "verses": [
+    {
+      "lines": [
+        "Arise my soul, my joyful powers,",
+        "And triumph in my God,",
+        "Awake, my voice, and loud proclaim",
+        "His glorious grace abroad."
+      ]
+    },
+    {
+      "lines": [
+        "He rais'd me from the deeps of sin,",
+        "The gates of gaping hell,",
+        "And fix'd my standing more secure",
+        "Than 'twas before I fell."
+      ]
+    },
+    {
+      "lines": [
+        "The arms of everlasting love",
+        "Beneath my soul he plac'd,",
+        "And on the rock of ages set",
+        "My slippery footsteps fast."
+      ]
+    },
+    {
+      "lines": [
+        "The city of my bless'd abode",
+        "Is wall'd around with grace",
+        "Salvation for a bulwark stands",
+        "To shield the sacred place."
+      ]
+    },
+    {
+      "lines": [
+        "Satan may vent his sharpest spite,",
+        "And all his legions roar,",
+        "Almighty mercy guards my life,",
+        "And bounds his raging power."
+      ]
+    },
+    {
+      "lines": [
+        "Arise, my soul, awake, my voice,",
+        "And tunes of pleasure sing,",
+        "Loud hallelujahs shall address",
+        "My Saviour and my King."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:82"
+}

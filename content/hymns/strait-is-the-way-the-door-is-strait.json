@@ -1,0 +1,118 @@
+{
+  "title": "Strait Is the Way, the Door Is Strait",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Strait Is the Way, the Door Is Strait in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 11 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 161, headed “Christian virtues; or, The difficulty of conversion”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Strait is the way, the door is strait That leads to joys on high; 'Tis but a few that find the gate, While crowds mis-take and die.",
+  "verses": [
+    {
+      "lines": [
+        "Strait is the way, the door is strait",
+        "That leads to joys on high;",
+        "'Tis but a few that find the gate,",
+        "While crowds mistake and die."
+      ]
+    },
+    {
+      "lines": [
+        "Beloved self must be deny'd,",
+        "The mind and will renew'd:",
+        "Passion suppress'd, and patience try'd,",
+        "And vain desires subdu'd."
+      ]
+    },
+    {
+      "lines": [
+        "Flesh is a dangerous foe to grace,",
+        "Where it prevails and rules;",
+        "Flesh must be humbled, pride abas'd,",
+        "Lest they destroy our souls."
+      ]
+    },
+    {
+      "lines": [
+        "The love of gold be banish'd hence,",
+        "(That vile idolatry);",
+        "And every member, every sense",
+        "In sweet subjection lie."
+      ]
+    },
+    {
+      "lines": [
+        "The tongue, that most unruly power,",
+        "Requires a strong restraint;",
+        "We must be watchful every hour,",
+        "And pray, but never faint."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, can a feeble helpless worm",
+        "Fulfil a task so hard?",
+        "Thy grace must all my work perform,",
+        "And give the free reward."
+      ]
+    },
+    {
+      "lines": [
+        "My thoughts surmount these lower skies",
+        "And look within the veil;",
+        "There springs of endless pleasure rise,",
+        "The waters never fail."
+      ]
+    },
+    {
+      "lines": [
+        "There I behold with sweet delight",
+        "The blessed Three in One;",
+        "And strong affections fix my sight",
+        "On God's incarnate Son."
+      ]
+    },
+    {
+      "lines": [
+        "His promise stands for ever firm,",
+        "His grace shall ne'er depart;",
+        "He binds my name upon his arm,",
+        "And seals it on his heart."
+      ]
+    },
+    {
+      "lines": [
+        "Light are the pains that' nature brings,",
+        "How short our sorrows are,",
+        "When with eternal future things,",
+        "The present we compare!"
+      ]
+    },
+    {
+      "lines": [
+        "I would not be a stranger still",
+        "To that celestial place,",
+        "Where I for ever hope to dwell",
+        "Near my Redeemer's face."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:161"
+}

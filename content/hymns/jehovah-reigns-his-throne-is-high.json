@@ -1,0 +1,62 @@
+{
+  "title": "Jehovah Reigns, His Throne Is High",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Jehovah Reigns, His Throne Is High in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 168, headed “The same”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Je-ho-vah reigns, his throne is high, His robes are light and maj-es-ty; His glo-ry shines with beams so bright No mor-tal can sus-tain the sight.",
+  "verses": [
+    {
+      "lines": [
+        "Jehovah reigns, his throne is high,",
+        "His robes are light and majesty;",
+        "His glory shines with beams so bright",
+        "No mortal can sustain the sight."
+      ]
+    },
+    {
+      "lines": [
+        "His terrors keep the world in awe,",
+        "His justice guards his holy law;",
+        "His love reveals a smiling face,",
+        "His truth and promise seal the grace."
+      ]
+    },
+    {
+      "lines": [
+        "Thro' all his works his wisdom shines,",
+        "And baffles Satan's deep designs;",
+        "His power is sovereign to fulfil",
+        "The noblest counsels of his will."
+      ]
+    },
+    {
+      "lines": [
+        "And will this glorious Lord descend",
+        "To be my father and my friend?",
+        "Then let my songs with angels join;",
+        "Heaven is secure if God be mine."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:168"
+}

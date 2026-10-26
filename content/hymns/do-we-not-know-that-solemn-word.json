@@ -1,0 +1,54 @@
+{
+  "title": "Do We Not Know That Solemn Word",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Do We Not Know That Solemn Word in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 122, headed “Believers buried with Christ in baptism, Rom. 6. 3 &c”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Do we not know that sol-emn word, That we are bu-ry'd with the Lord, Bap-tis'd in-to his death, and then Put off the bo-dy of our sin?",
+  "verses": [
+    {
+      "lines": [
+        "Do we not know that solemn word,",
+        "That we are bury'd with the Lord,",
+        "Baptis'd into his death, and then",
+        "Put off the body of our sin?"
+      ]
+    },
+    {
+      "lines": [
+        "Our souls receive diviner breath,",
+        "Rais'd from corruption, guilt, and death;",
+        "So from the grave did Christ arise,",
+        "And lives to God above the skies."
+      ]
+    },
+    {
+      "lines": [
+        "No more let sin or Satan reign",
+        "Over our mortal flesh again;",
+        "The various lusts we serv'd before",
+        "Shall have dominion now no more."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:122"
+}

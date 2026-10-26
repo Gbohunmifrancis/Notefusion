@@ -1,0 +1,70 @@
+{
+  "title": "Terrible God, That Reign'st on High",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Terrible God, That Reign'st on High in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 22, headed “With God is terrible majesty”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Ter-ri-ble God, that reign'st on high, How aw-ful is thy thun-dering hand! Thy fie-ry bolts how fierce they fly! Nor can all earth or hell with-stand.",
+  "verses": [
+    {
+      "lines": [
+        "Terrible God, that reign'st on high,",
+        "How awful is thy thundering hand!",
+        "Thy fiery bolts how fierce they fly!",
+        "Nor can all earth or hell withstand."
+      ]
+    },
+    {
+      "lines": [
+        "This the old rebel angels knew,",
+        "And Satan fell beneath thy frown:",
+        "Thine arrows struck the traitor thro',",
+        "And weighty vengeance sunk him down."
+      ]
+    },
+    {
+      "lines": [
+        "This Sodom felt, and feels it still,",
+        "And roars beneath th' eternal load,",
+        "\"With endless burnings who can dwell,",
+        "\"Or bear the fury of a God!\""
+      ]
+    },
+    {
+      "lines": [
+        "Tremble, ye sinners, and submit,",
+        "Throw down your arms before his throne,",
+        "Bend your heads low beneath his feet,",
+        "Or his strong hand shall crush you down."
+      ]
+    },
+    {
+      "lines": [
+        "And ye, blest saints, that love him too,",
+        "With rev'rence bow before his Name,",
+        "Thus all his heavenly servants do:",
+        "God is a bright and burning flame."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:22"
+}

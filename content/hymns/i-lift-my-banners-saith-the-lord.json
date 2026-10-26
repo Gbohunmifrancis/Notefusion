@@ -1,0 +1,78 @@
+{
+  "title": "\"I Lift My Banners,\" Saith the Lord",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "\"I Lift My Banners,\" Saith the Lord in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 29, headed “The ruin of Antichrist, Isa. 63. 4-7”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "\"I lift my ban-ners,\" saith the Lord, \"Where An-tich-rist has stood, \"The cit-y of my gos-pel foes \"Shall be a field of blood.",
+  "verses": [
+    {
+      "lines": [
+        "\"I lift my banners,\" saith the Lord,",
+        "\"Where Antichrist has stood,",
+        "\"The city of my gospel-foes",
+        "\"Shall be a field of blood."
+      ]
+    },
+    {
+      "lines": [
+        "\"My heart has study'd just revenge,",
+        "\"And now the day appears,",
+        "\"The day of my redeem'd is come",
+        "\"To wipe away their tears."
+      ]
+    },
+    {
+      "lines": [
+        "\"Quite weary is my patience grown,",
+        "\"And bids my fury go",
+        "\"Swift as the lightning it shall move,",
+        "\"And be as fatal too."
+      ]
+    },
+    {
+      "lines": [
+        "\"I call for helpers but in vain:",
+        "\"Then has my gospel none?",
+        "\"Well, mine own arm has might enough",
+        "\"To crush my foes alone."
+      ]
+    },
+    {
+      "lines": [
+        "\"Slaughter and my devouring sword",
+        "\"Shall walk the streets around,",
+        "\"Babel shall reel beneath my stroke,",
+        "\"And stagger to the ground.\""
+      ]
+    },
+    {
+      "lines": [
+        "Thy honours, O victorious King!",
+        "Thine own right-hand shall raise,",
+        "While we thy awful vengeance sing,",
+        "And our deliverer praise."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:29"
+}

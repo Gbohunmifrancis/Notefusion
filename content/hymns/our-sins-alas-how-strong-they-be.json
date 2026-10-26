@@ -1,0 +1,70 @@
+{
+  "title": "Our Sins, Alas, How Strong They Be",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Our Sins, Alas, How Strong They Be in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 86, headed “Freedom from sin and misery in heaven”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Our sins, a-las, how strong they be! And like a vi-olent sea They break our du-ty, Lord, to thee, And hur-ry us a-way.",
+  "verses": [
+    {
+      "lines": [
+        "Our sins, alas, how strong they be!",
+        "And like a violent sea",
+        "They break our duty, Lord, to thee,",
+        "And hurry us away."
+      ]
+    },
+    {
+      "lines": [
+        "The waves of trouble how they rise!",
+        "How loud the tempests roar!",
+        "But death shall land our weary souls",
+        "Safe on the heavenly shore."
+      ]
+    },
+    {
+      "lines": [
+        "There to fulfil his sweet commands",
+        "Our speedy feet shall move,",
+        "No sin shall clog our winged zeal,",
+        "Or cool our burning love."
+      ]
+    },
+    {
+      "lines": [
+        "There shall we sit, and sing, and tell",
+        "The wonders of his grace,",
+        "Till heavenly raptures fire our hearts,",
+        "And smile in every face."
+      ]
+    },
+    {
+      "lines": [
+        "For ever his dear sacred Name",
+        "Shall dwell upon our tongue,",
+        "And Jesus and salvation be",
+        "The close of every song."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:86"
+}

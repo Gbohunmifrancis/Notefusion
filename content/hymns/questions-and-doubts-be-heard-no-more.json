@@ -1,0 +1,70 @@
+{
+  "title": "Questions and Doubts Be Heard No More",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Questions and Doubts Be Heard No More in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 4, headed “[Supplement] The inward witness to Christianity, 1 John 5. 10”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Ques-tions and doubts be heard no more; Let Christ and joy be all our theme; His Spir-it seals his gos-pel sure, To ev-ery soul that trusts in him.",
+  "verses": [
+    {
+      "lines": [
+        "Questions and doubts be heard no more;",
+        "Let Christ and joy be all our theme;",
+        "His Spirit seals his gospel sure,",
+        "To every soul that trusts in him."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, thy witness speaks within:",
+        "The mercy which thy words reveal",
+        "Refines the heart from sense and sin,",
+        "And stamps its own celestial seal."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis God's inimitable hand",
+        "That moulds and forms the heart anew;",
+        "Blasphemers can no more withstand,",
+        "But bow and own thy doctrine true."
+      ]
+    },
+    {
+      "lines": [
+        "The guilty wretch that trusts thy blood,",
+        "Finds peace and pardon at thy cross;",
+        "The sinful soul averse to God,",
+        "Believes and loves his Maker's laws."
+      ]
+    },
+    {
+      "lines": [
+        "Learning and wit may cease their strife,",
+        "When miracles with glory shine;",
+        "The voice that calls the dead to life",
+        "Must be almighty, and divine."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:4"
+}
