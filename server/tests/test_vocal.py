@@ -197,6 +197,37 @@ def test_analyse_still_splits_repeated_notes_under_reverb():
     assert [n.pitch for n in vocal.analyse(_reverb(y), SR).notes] == [60, 64, 64, 64, 62]
 
 
+def _chant(attack: float, voicing_dip: float = 0.4) -> vocal.Contour:
+    """One pitch re-struck five times, every dip as deep as the others, each followed by an
+    attack of the given strength, the voicing falling to ``voicing_dip`` at each (1.0: no fall)."""
+    midi = np.full(60, 60.0)
+    rms = 0.4 + 0.6 * np.sin(np.pi * np.arange(60) / 12) ** 2  # a low every 12 frames, at 0.4
+    onset = np.ones(60)
+    vp = np.full(60, 0.9)
+    for k in (12, 24, 36, 48):
+        onset[k + 2] = attack
+        vp[k] = 0.9 * voicing_dip
+    c = vocal.smooth(_contour_obj(midi, rms))
+    return vocal.Contour(c.times, c.midi, vp, c.rms, c.rms_fast, c.stable, onset=onset)
+
+
+def test_clean_cuts_a_chant_whose_re_strikes_attack_clearly():
+    # Afrobeats chants one pitch every sixteenth, a consonant before each: every dip is as deep
+    # as the span's ordinary one, which the vibrato guard alone would read as ripple.
+    assert len(vocal.clean(_chant(attack=15.0), [(0, 60)])) == 5
+
+
+def test_clean_keeps_equal_dips_with_only_a_faint_attack_whole():
+    # A held note's vibrato through a reverberant stem: dips of one depth and a faint cue.
+    assert len(vocal.clean(_chant(attack=3.0, voicing_dip=1.0), [(0, 60)])) == 1
+
+
+def test_clean_keeps_a_held_note_whole_under_a_leaking_drum():
+    # The band's drum leaking into a separated stem: a sharp attack on every beat while the
+    # voice goes straight on through it.
+    assert len(vocal.clean(_chant(attack=15.0, voicing_dip=1.0), [(0, 60)])) == 1
+
+
 def test_clean_does_not_split_on_tremolo():
     midi = np.full(60, 60.0)
     t = np.arange(60) * HOP_SEC
