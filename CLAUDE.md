@@ -650,9 +650,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   retried). Plans are offered by the account's stored country (`PlanEligibility`), one set per known country:
   Nigeria gets naira; the lower-income markets in `PlanEligibility.RegionalCountries` (every African country but
   Nigeria, and IN PK BD LK NP ID PH VN MM KH LA) get the regional dollar set (codes carrying `_regional`: Pro
-  $4.99/$39.99, one song $1.00: Bachs refuses a checkout under 1 USD); everyone else the standard dollar set; an unknown country sees naira and
+  $4.99/$39.99, one song $1.99: no region sells a song for less, so naira's is ₦3,000); everyone else the standard dollar set; an unknown country sees naira and
   standard dollars, never the regional set. Checkout refuses a plan from another set
-  (`BILLING_PLAN_NOT_AVAILABLE_IN_REGION`). Each set has a one-song purchase (₦1,500 / $1.99 / $1.00) listed
+  (`BILLING_PLAN_NOT_AVAILABLE_IN_REGION`). Each set has a one-song purchase (₦3,000 / $1.99 / $1.99) listed
   beside Pro for free accounts only (served apart at `GET /api/billing/plans/single`, never in `/plans` or
   `public-plans`, which older clients label as Pro; hidden for Pro, refused at checkout with `BILLING_SINGLE_NOT_NEEDED`); the
   clients offer it first wherever the free limit is hit. It is revenue collected on the dashboard, never

@@ -22,9 +22,9 @@ public class RegionalPricingTests
 {
     private static readonly DateTime Now = new(2026, 10, 15, 12, 0, 0, DateTimeKind.Utc);
 
-    private static readonly string[] Naira = ["one_song_ngn", "pro_monthly_ngn", "pro_yearly_ngn_v2"];
+    private static readonly string[] Naira = ["one_song_ngn_v2", "pro_monthly_ngn", "pro_yearly_ngn_v2"];
     private static readonly string[] Standard = ["one_song_usd", "pro_monthly_usd", "pro_yearly_usd"];
-    private static readonly string[] Regional = ["one_song_usd_regional_v2", "pro_monthly_usd_regional", "pro_yearly_usd_regional"];
+    private static readonly string[] Regional = ["one_song_usd_regional_v3", "pro_monthly_usd_regional", "pro_yearly_usd_regional"];
 
     [Theory]
     [InlineData("NG", "naira")]
@@ -72,18 +72,18 @@ public class RegionalPricingTests
 
         var plans = await Plans(h, user);
 
-        Assert.Equal(100, plans.Single(p => p.Interval == BillingInterval.Single).AmountMinor);
+        Assert.Equal(199, plans.Single(p => p.Interval == BillingInterval.Single).AmountMinor);
         Assert.Equal(499, plans.Single(p => p.Interval == BillingInterval.Monthly).AmountMinor);
         Assert.Equal(3_999, plans.Single(p => p.Interval == BillingInterval.Yearly).AmountMinor);
     }
 
     [Theory]
     [InlineData("GB", "pro_monthly_usd_regional")] // the cheaper set, asked for by id
-    [InlineData("GB", "one_song_usd_regional_v2")]
+    [InlineData("GB", "one_song_usd_regional_v3")]
     [InlineData(null, "pro_yearly_usd_regional")]  // a failed lookup is not a discount
-    [InlineData("NG", "one_song_usd_regional_v2")]
+    [InlineData("NG", "one_song_usd_regional_v3")]
     [InlineData("KE", "pro_monthly_usd")]          // and the regional countries buy the regional set
-    [InlineData("KE", "one_song_ngn")]
+    [InlineData("KE", "one_song_ngn_v2")]
     public async Task Checkout_refuses_a_plan_from_another_set(string? country, string code)
     {
         using var h = new TestHarness(Now);
@@ -99,9 +99,9 @@ public class RegionalPricingTests
 
     [Theory]
     [InlineData("KE", "pro_monthly_usd_regional")]
-    [InlineData("IN", "one_song_usd_regional_v2")]
+    [InlineData("IN", "one_song_usd_regional_v3")]
     [InlineData("GB", "one_song_usd")]
-    [InlineData("NG", "one_song_ngn")]
+    [InlineData("NG", "one_song_ngn_v2")]
     [InlineData(null, "pro_monthly_usd")]
     public async Task Checkout_opens_for_a_plan_in_the_accounts_set(string? country, string code)
     {
@@ -145,13 +145,13 @@ public class RegionalPricingTests
         h.Db.Plans.AddRange(
             Plan.Create(Guid.NewGuid(), "pro_monthly_ngn", "NoteFusion Pro (Monthly)", 750_000, "NGN", BillingInterval.Monthly),
             Plan.Create(Guid.NewGuid(), "pro_yearly_ngn_v2", "NoteFusion Pro (Yearly)", 6_000_000, "NGN", BillingInterval.Yearly),
-            Plan.Create(Guid.NewGuid(), "one_song_ngn", "One song", 150_000, "NGN", BillingInterval.Single),
+            Plan.Create(Guid.NewGuid(), "one_song_ngn_v2", "One song", 300_000, "NGN", BillingInterval.Single),
             Plan.Create(Guid.NewGuid(), "pro_monthly_usd", "NoteFusion Pro (Monthly)", 999, "USD", BillingInterval.Monthly),
             Plan.Create(Guid.NewGuid(), "pro_yearly_usd", "NoteFusion Pro (Yearly)", 7_900, "USD", BillingInterval.Yearly),
             Plan.Create(Guid.NewGuid(), "one_song_usd", "One song", 199, "USD", BillingInterval.Single),
             Plan.Create(Guid.NewGuid(), "pro_monthly_usd_regional", "NoteFusion Pro (Monthly)", 499, "USD", BillingInterval.Monthly),
             Plan.Create(Guid.NewGuid(), "pro_yearly_usd_regional", "NoteFusion Pro (Yearly)", 3_999, "USD", BillingInterval.Yearly),
-            Plan.Create(Guid.NewGuid(), "one_song_usd_regional_v2", "One song", 100, "USD", BillingInterval.Single));
+            Plan.Create(Guid.NewGuid(), "one_song_usd_regional_v3", "One song", 199, "USD", BillingInterval.Single));
         h.Db.SaveChanges();
     }
 
