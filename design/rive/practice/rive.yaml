@@ -1,0 +1,12 @@
+name: NoteFusion Practice 3D
+main: emblem
+artboard:
+  width: 400
+  height: 400
+  background: "#00000000"
+logs:
+  file: build/rive.log
+  problems: build/problems.log
+push:
+  projectId: 2016791
+  fileId: 2687616
