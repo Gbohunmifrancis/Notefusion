@@ -15,7 +15,7 @@ export interface ChoiceRowProps {
   title: string;
   /** A plain line under the title ("One more transcription. No subscription."). */
   detail?: string;
-  /** Right-aligned on the title line ("₦1,500"); `priceUnit` follows it small ("/ month"). */
+  /** Right-aligned on the title line ("₦3,000"); `priceUnit` follows it small ("/ month"). */
   price?: string;
   priceUnit?: string;
   /** The tile's icon; a row without one is a plain choice (a reason, an answer). */

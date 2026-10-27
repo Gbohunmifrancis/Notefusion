@@ -38,7 +38,7 @@ public class BillingSeederTests
         Assert.Equal(
             ["choir_monthly_ngn", "choir_monthly_usd", "choir_monthly_usd_regional",
              "choir_yearly_ngn", "choir_yearly_usd", "choir_yearly_usd_regional",
-             "one_song_ngn", "one_song_usd", "one_song_usd_regional_v2",
+             "one_song_ngn_v2", "one_song_usd", "one_song_usd_regional_v3",
              "pro_monthly_ngn", "pro_monthly_usd", "pro_monthly_usd_regional",
              "pro_yearly_ngn_v2", "pro_yearly_usd", "pro_yearly_usd_regional"],
             plans.Select(p => p.Code));
@@ -169,8 +169,8 @@ public class BillingSeederTests
     public async Task The_regional_one_song_moves_to_a_dollar_as_a_new_code()
     {
         // $0.99 was under Bachs' minimum checkout of 1 USD, so every regional one-song checkout was refused before
-        // the payment page opened. The old row comes off sale at the price it was listed at; the new one is $1.00
-        // and is the only one song the regional paywall offers.
+        // the payment page opened. The old row comes off sale at the price it was listed at; the one on sale now
+        // ($1.99, one_song_usd_regional_v3) is the only one song the regional paywall offers.
         using var h = new TestHarness(Now);
         h.Db.Plans.Add(Plan.Create(Guid.NewGuid(), "one_song_usd_regional", "One song", 99, "USD", BillingInterval.Single));
         await h.Db.SaveChangesAsync();
@@ -185,8 +185,33 @@ public class BillingSeederTests
             .Where(p => PlanEligibility.IsOffered(p.Code, p.Currency, "KE"))
             .ToList();
         var single = Assert.Single(offered, p => p.Interval == BillingInterval.Single);
-        Assert.Equal("one_song_usd_regional_v2", single.Code);
-        Assert.Equal(100, single.AmountMinor);
+        Assert.Equal("one_song_usd_regional_v3", single.Code);
+        Assert.Equal(199, single.AmountMinor);
+    }
+
+    [Theory]
+    [InlineData("one_song_usd_regional_v2", 100, "USD", "KE", "one_song_usd_regional_v3", 199)]
+    [InlineData("one_song_ngn", 150_000, "NGN", "NG", "one_song_ngn_v2", 300_000)]
+    public async Task A_song_under_1_99_comes_off_sale_at_its_old_price_and_its_new_code_takes_over(
+        string oldCode, long oldMinor, string currency, string country, string newCode, long newMinor)
+    {
+        // No region sells a song for less than $1.99: ₦1,500 was about $1. The old row keeps the price it was listed at.
+        using var h = new TestHarness(Now);
+        h.Db.Plans.Add(Plan.Create(Guid.NewGuid(), oldCode, "One song", oldMinor, currency, BillingInterval.Single));
+        await h.Db.SaveChangesAsync();
+
+        await Seed(h);
+
+        var previous = await h.Db.Plans.SingleAsync(p => p.Code == oldCode);
+        Assert.False(previous.IsActive);
+        Assert.Equal(oldMinor, previous.AmountMinor);
+
+        var offered = (await h.Db.Plans.Where(p => p.IsActive).ToListAsync())
+            .Where(p => PlanEligibility.IsOffered(p.Code, p.Currency, country))
+            .ToList();
+        var single = Assert.Single(offered, p => p.Interval == BillingInterval.Single);
+        Assert.Equal(newCode, single.Code);
+        Assert.Equal(newMinor, single.AmountMinor);
     }
 
     [Fact]
@@ -260,9 +285,9 @@ public class BillingSeederTests
         var plans = await h.Db.Plans.ToDictionaryAsync(p => p.Code);
         Assert.Equal(499, plans["pro_monthly_usd_regional"].AmountMinor);  // $4.99
         Assert.Equal(3_999, plans["pro_yearly_usd_regional"].AmountMinor); // $39.99
-        Assert.Equal(150_000, plans["one_song_ngn"].AmountMinor);          // ₦1,500, in kobo
+        Assert.Equal(300_000, plans["one_song_ngn_v2"].AmountMinor);       // ₦3,000, in kobo: about $1.99
         Assert.Equal(199, plans["one_song_usd"].AmountMinor);              // $1.99
-        Assert.Equal(100, plans["one_song_usd_regional_v2"].AmountMinor);  // $1.00, Bachs' minimum
+        Assert.Equal(199, plans["one_song_usd_regional_v3"].AmountMinor);  // $1.99: no song sells for less
         Assert.All(plans.Values.Where(p => p.Code.StartsWith("one_song")), p => Assert.Equal(BillingInterval.Single, p.Interval));
     }
 

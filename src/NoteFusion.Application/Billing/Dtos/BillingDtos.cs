@@ -12,7 +12,7 @@ public sealed record PlanDto(
 /// not produce a trustworthy answer, so <see cref="Plans"/> is empty rather than exposing both regional tiers.
 /// </summary>
 /// <param name="Single">
-/// The region's one-song purchase, for the free card's "or ₦1,500 a song"; null when none is on sale or the
+/// The region's one-song purchase, for the free card's "or ₦3,000 a song"; null when none is on sale or the
 /// country is unknown. Apart from <see cref="Plans"/>, which older pages render as Pro Monthly or Yearly.
 /// </param>
 /// <param name="Choir">

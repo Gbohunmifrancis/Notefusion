@@ -51,9 +51,9 @@ public sealed class BillingSeeder : IHostedService
         ("pro_yearly_usd",           "NoteFusion Pro (Yearly)",  7_900,     "USD", BillingInterval.Yearly, null),
         ("pro_monthly_usd_regional", "NoteFusion Pro (Monthly)", 499,       "USD", BillingInterval.Monthly, null),
         ("pro_yearly_usd_regional",  "NoteFusion Pro (Yearly)",  3_999,     "USD", BillingInterval.Yearly, null),
-        ("one_song_ngn",             "One song",                 150_000,   "NGN", BillingInterval.Single, null),
+        ("one_song_ngn_v2",          "One song",                 300_000,   "NGN", BillingInterval.Single, null),
         ("one_song_usd",             "One song",                 199,       "USD", BillingInterval.Single, null),
-        ("one_song_usd_regional_v2", "One song",                 100,       "USD", BillingInterval.Single, null),
+        ("one_song_usd_regional_v3", "One song",                 199,       "USD", BillingInterval.Single, null),
         ("choir_monthly_ngn",          "NoteFusion Choir (Monthly)", 2_500_000,  "NGN", BillingInterval.Monthly, ChoirSeats),
         ("choir_yearly_ngn",           "NoteFusion Choir (Yearly)",  25_000_000, "NGN", BillingInterval.Yearly,  ChoirSeats),
         ("choir_monthly_usd",          "NoteFusion Choir (Monthly)", 1_999,      "USD", BillingInterval.Monthly, ChoirSeats),
@@ -80,9 +80,12 @@ public sealed class BillingSeeder : IHostedService
     //
     // one_song_usd_regional was $0.99, under Bachs' minimum checkout (1 USD; 100 NGN): every one of its checkouts
     // was refused before the payment page. It moved to $1.00 as one_song_usd_regional_v2, keeping the marker.
+    //
+    // No region sells a song for less than $1.99: the regional one song moved from $1.00 to $1.99 as
+    // one_song_usd_regional_v3, and the naira one from ₦1,500 (about $1) to ₦3,000 as one_song_ngn_v2.
     private static readonly string[] RetiredCodes =
         ["pro_monthly", "pro_yearly", "test_ngn_monthly", "pro_lifetime", "pro_lifetime_v2", "pro_yearly_ngn",
-         "one_song_usd_regional"];
+         "one_song_usd_regional", "one_song_usd_regional_v2", "one_song_ngn"];
 
     private readonly IServiceProvider _services;
     private readonly ILogger<BillingSeeder> _logger;

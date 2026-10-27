@@ -203,7 +203,7 @@ export function LinkScreen() {
 
   /**
    * The region's one-song purchase and Pro by the month, as Record's limit sheet reads them, for the bar's
-   * "Buy this song · ₦1,500". Read once for a free account; until they arrive, or if they fail, it goes without the price.
+   * "Buy this song · ₦3,000". Read once for a free account; until they arrive, or if they fail, it goes without the price.
    */
   const [offer, setOffer] = useState<LimitOffer>({});
   useEffect(() => {

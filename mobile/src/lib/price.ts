@@ -27,7 +27,7 @@ export function formatPrice(amountMinor: number, currency: string): string {
 
 /**
  * What a price is for, after it. On the website's checkout, what one payment buys (board m-ux-medium P4d): "₦7,500
- * for a month", "₦60,000 for a year", "₦1,500 once" — nothing bought there renews, and "/ month" reads as a
+ * for a month", "₦60,000 for a year", "₦3,000 once" — nothing bought there renews, and "/ month" reads as a
  * subscription that does. Google Play does renew, so there it stays a rate ("/ month"), and the lifetime tier and
  * the one-song purchase are "one-time".
  */
@@ -39,7 +39,7 @@ export function periodLabel(interval: BillingInterval, viaPlay: boolean): string
 
 /**
  * The Pay button on the website's checkout (board m-ux-medium P4d), one pattern for every plan: "Pay ₦60,000 for a
- * year", "Pay ₦1,500 for this song", "Pay ₦250,000 for a choir year". Google Play's is `playButtonLabel`.
+ * year", "Pay ₦3,000 for this song", "Pay ₦250,000 for a choir year". Google Play's is `playButtonLabel`.
  */
 export function payLabel(plan: Pick<Plan, "interval" | "amountMinor" | "currency" | "choirSeats">): string {
   const price = formatPrice(plan.amountMinor, plan.currency);
