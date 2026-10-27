@@ -133,3 +133,18 @@ test("the Halloween season: the Night Singer's sticker, its bat burst, the hat, 
   assert.equal(T.seasonConfettiArt("christmas"), T.SEASON_CONFETTI_ART);
   for (const a of ["season-hat", "boo", "boo-sing", "boo-blink", "bat"]) assert.ok(has(a), a);
 });
+
+test("the 3D stills: every reward the web draws in 3D has its WebP, here and on the phone, and the phone lists the same", () => {
+  // The rule practice-view.js picks a still by, read from the file so the test cannot drift from it.
+  const view = readFileSync(new URL("../assets/practice-view.js", import.meta.url), "utf8");
+  const rule = new RegExp(/var STILL = \/(.+)\/;/.exec(view)[1].replace(/\\\\/g, "\\"));
+  const names = readdirSync(ART_DIR).map((f) => f.replace(/\.svg$/, "")).filter((n) => rule.test(n)).sort();
+  const web = readdirSync(new URL("../assets/practice-art-3d/", import.meta.url)).map((f) => f.replace(/\.webp$/, "")).sort();
+  const phone = readdirSync(new URL("../../mobile/assets/practice-3d/", import.meta.url)).map((f) => f.replace(/\.webp$/, "")).sort();
+  const index = readFileSync(new URL("../../mobile/src/components/practice/art/stills.ts", import.meta.url), "utf8");
+  const listed = [...index.matchAll(/^ {2}"([^"]+)": require\("\.\.\/\.\.\/\.\.\/\.\.\/assets\/practice-3d\/\1\.webp"\),$/gm)].map((m) => m[1]).sort();
+  assert.ok(names.length >= 30, `${names.length} stills`);
+  assert.deepEqual(web, names);
+  assert.deepEqual(phone, names);
+  assert.deepEqual(listed, names);
+});

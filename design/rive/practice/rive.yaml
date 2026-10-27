@@ -1,4 +1,4 @@
-name: practice
+name: NoteFusion Practice 3D
 main: emblem
 artboard:
   width: 400
@@ -7,3 +7,6 @@ artboard:
 logs:
   file: build/rive.log
   problems: build/problems.log
+push:
+  projectId: 2016791
+  fileId: 2687616

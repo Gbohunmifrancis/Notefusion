@@ -51,5 +51,7 @@ fn fs_main(i: VOut) -> @location(0) vec4<f32> {
     // The edge: the sticker's own colour in shadow, darker the deeper it sits.
     let edge = c.rgb * (0.5 - 0.12 * i.layer / max(u.params.x, 1.0));
     let rgb = select(edge, face, i.layer < 0.5);
-    return vec4<f32>(min(rgb, vec3<f32>(1.0)) * c.a, c.a);
+    // Only what is solid has thickness: a see-through part (an empty star, the spent flame) stays as light as it is.
+    let a = select(c.a * c.a * c.a * c.a, c.a, i.layer < 0.5);
+    return vec4<f32>(min(rgb, vec3<f32>(1.0)) * a, a);
 }

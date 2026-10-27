@@ -23,7 +23,7 @@ const STICKER_SIZE = 256;
 /** The stickers that become puffy 3D pieces: the rewards Practice shows. */
 export const STICKERS = [
   "flame-active", "flame-at-risk", "flame-out", "freeze", "stars-1", "stars-2", "stars-3",
-  ...assets().map(([n]) => n).filter((n) => n.startsWith("badge-") && !n.endsWith("-locked")),
+  ...assets().map(([n]) => n).filter((n) => n.startsWith("badge-")),
 ];
 
 // Runs in the page: the sticker's normal map from its alpha. A distance-to-edge field (two-pass chamfer), softened by

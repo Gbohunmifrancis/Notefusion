@@ -491,7 +491,13 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   on into Advanced 1–2: wide leaps and 8–16-note sight-singing; exact score, cents, replay). Each track keeps its own place
   on the path. XP and every rule are the same on both.
   Art (our own SVG): `design/practice-art/build.mjs` draws it into `web-site/assets/practice-art/` and mobile `components/practice/art/svgs.ts`
-  (a `-blink` twin for each open-eyed pose Doh idles in), and no gold (Pro's alone). Doh beyond Practice (mobile `components/doh`) is
+  (a `-blink` twin for each open-eyed pose Doh idles in), and no gold (Pro's alone). The rewards are 3D (design/rive, a Rive CLI
+  project bound to the account's "NoteFusion Practice 3D" file): `faces.mjs` rasterises each emblem and sticker (and a normal map
+  inflated from its outline), `stills.py` renders transparent WebP stills that phone `Art` and web `art()` show in place of the 2D
+  emblems, badges, flame, freeze and stars (`art/stills.ts`, `assets/practice-art-3d/`, framed like the 2D art), and `live.py` signs
+  one small `.riv` per level-up and earned badge (`assets/practice-3d/`, `rive login` needed) that the web plays over the reward
+  (`moment3d`: the pinned @rive-app/webgl2 fetched once a take starts, never with reduced motion, data saving or no WebGL2; CSP
+  allows it and `'wasm-unsafe-eval'` on /app). The phone's live moment waits for a store build with the Rive player. Doh beyond Practice (mobile `components/doh`) is
   only: one Home card (`lib/dohSuggestion`; a sheet saved in the last 24 h → Practise this tune, i.e. Learn my part, else Rehearse;
   after 18:00 a 2+-day streak no freeze covers, today unsung → today's drill; the account's first week (`/api/me` `createdAt`) while it can
   transcribe → hello; never two, a card's key on Home one day only, × hides it for good; Settings' "Doh's suggestions", per device, turns

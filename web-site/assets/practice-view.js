@@ -42,9 +42,13 @@
   /**
    * The Practice art (Doh the doh bird, level emblems, badge stickers, the flame, stars, confetti, the track scenes,
    * the empty states): one small SVG file each in /assets/practice-art/, drawn by design/practice-art/build.mjs.
-   * Fetched as <img> only when this view draws them, so none of it is in the app's first load.
+   * Fetched as <img> only when this view draws them, so none of it is in the app's first load. The rewards (level
+   * emblems, badges, the flame, the freeze, the stars) are their 3D stills instead: one WebP each in
+   * /assets/practice-art-3d/, rendered from design/rive/practice by design/rive/stills.py and framed like the 2D art.
    */
   var ART_DIR = "/assets/practice-art/", ART_V = "?v=1";
+  var STILL_DIR = "/assets/practice-art-3d/", STILL_V = "?v=1";
+  var STILL = /^(level-\d|badge-|flame-|freeze$|stars-\d)/;
   var LEVELS = 8;
 
   var ctx = null, root = null;
@@ -81,7 +85,7 @@
   /** One picture of the Practice art, decorative (the words beside it say what it shows). */
   function art(name, width, height, cls) {
     var img = document.createElement("img");
-    img.src = ART_DIR + name + ".svg" + ART_V;
+    img.src = STILL.test(name) ? STILL_DIR + name + ".webp" + STILL_V : ART_DIR + name + ".svg" + ART_V;
     img.alt = ""; img.decoding = "async"; img.draggable = false;
     img.width = width; img.height = height || width;
     img.className = "pv-art" + (cls ? " " + cls : "");
@@ -901,6 +905,63 @@
     setTimeout(function () { layer.remove(); }, 1500);
   }
 
+  // ── The 3D reward moment (board-less; design/rive/live.py) ─────────────
+  // A level reached spins its emblem in, a badge earned pops in: one small signed .riv each in /assets/practice-3d/,
+  // played by the Rive web player (@rive-app/webgl2, pinned, about 1.1 MB). The player is fetched once a take starts,
+  // never with the view, and a moment whose player is not ready by the mark is skipped: the toast's 3D still carries
+  // the reward on its own. Not with reduced motion, data saving or no WebGL2.
+  var RIVE_BASE = "https://cdn.jsdelivr.net/npm/@rive-app/webgl2@2.47.1/";
+  var LIVE_DIR = "/assets/practice-3d/", LIVE_V = "?v=1", LIVE_MS = 2600;
+  var riveLoad = null, riveReady = false;
+  function liveOk() {
+    if (reducedMotion()) return false;
+    try { if (navigator.connection && navigator.connection.saveData) return false; } catch (e) { /* no Network Information API */ }
+    try { return !!document.createElement("canvas").getContext("webgl2"); } catch (e) { return false; }
+  }
+  function warmRive() {
+    if (riveLoad || !liveOk()) return;
+    riveLoad = new Promise(function (resolve, reject) {
+      var tag = document.createElement("script");
+      tag.src = RIVE_BASE + "rive.js"; tag.async = true; tag.crossOrigin = "anonymous";
+      tag.onload = function () { resolve(window.rive); };
+      tag.onerror = function () { tag.remove(); reject(new Error("rive")); };
+      document.head.appendChild(tag);
+    }).then(function (R) {
+      R.RuntimeLoader.setWasmUrl(RIVE_BASE + "rive.wasm");
+      return R.RuntimeLoader.awaitInstance().then(function () { riveReady = true; return R; });
+    });
+    riveLoad.catch(function () { riveLoad = null; }); // a failed fetch is tried again at the next take
+  }
+  /** The live piece for a reward's picture: `level-3-me` spins in as `levelup-3`, a badge pops in as itself. */
+  function livePiece(picture) {
+    var m = /^level-(\d)-/.exec(picture || "");
+    return m ? "levelup-" + m[1] : /^badge-[a-z-]+$/.test(picture || "") && !/-locked$/.test(picture) ? picture : null;
+  }
+  function moment3d(picture) {
+    var piece = livePiece(picture), R = window.rive;
+    if (!piece || !riveReady || !R || !liveOk()) return;
+    var layer = el("div", "pv-moment"); layer.setAttribute("aria-hidden", "true");
+    var canvas = document.createElement("canvas");
+    var px = Math.min(2, window.devicePixelRatio || 1);
+    canvas.width = Math.round(200 * px); canvas.height = Math.round(200 * px);
+    layer.appendChild(canvas);
+    document.body.appendChild(layer);
+    var player = null;
+    var done = function () {
+      layer.classList.add("out");
+      setTimeout(function () { try { if (player) player.cleanup(); } catch (e) { /* already gone */ } layer.remove(); }, 260);
+    };
+    try {
+      player = new R.Rive({
+        src: LIVE_DIR + piece + ".riv" + LIVE_V, canvas: canvas, autoplay: true, enableGPUCanvas: true,
+        layout: new R.Layout({ fit: R.Fit.Contain }),
+        onLoadError: function () { layer.remove(); }
+      });
+    } catch (e) { layer.remove(); return; }
+    track("Practice 3D moment", piece);
+    setTimeout(done, LIVE_MS);
+  }
+
   /** The tile of the note sounding (Hear it) or due (Sing it), lit. */
   function highlight(i) {
     if (!root) return;
@@ -967,6 +1028,7 @@
       s.error = P.micError({ name: "Unsupported" }); render(); return;
     }
     var gen = s.gen, AC = window.AudioContext || window.webkitAudioContext;
+    warmRive(); // the 3D reward moment's player, fetched while the take is sung
     // Made on the press, so the browser lets it play; the piano is decoded into it while the microphone opens.
     var audio = new AC();
     var mine = take = { audio: audio, cancelled: false, lead: P.leadIn(d).seconds };
@@ -1060,6 +1122,7 @@
       var line = g.milestone ? g.milestone.title : sungOn === "playful" ? T.playfulRewardLine(g.reward) : moment && moment.line;
       if (how === "burst") burst();
       if (how !== "quiet" && line) toast(line, T.rewardArt(g.reward));
+      if (how !== "quiet" && g.reward && (g.reward.levelUp || (g.reward.newBadges || []).length)) moment3d(T.rewardArt(g.reward));
       refreshProgress();
       fetchNext();
     }, function (err) {

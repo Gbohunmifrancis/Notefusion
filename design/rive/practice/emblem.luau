@@ -21,6 +21,7 @@ type Emblem = {
     coinGroup: GPUBindGroup?,
     faceGroup: GPUBindGroup?,
     faceTexGroup: GPUBindGroup?,
+    faceImage: Image?,
     sampler: GPUSampler?,
     coinVerts: GPUBuffer?,
     coinIndex: GPUBuffer?,
@@ -166,16 +167,21 @@ local function build(self: Emblem)
     self.coinVerts = GPUBuffer.new({ size = buffer.len(cv), usage = 'vertex', data = cv, immutable = true })
     self.coinIndex = GPUBuffer.new({ size = buffer.len(ci), usage = 'index', data = ci, immutable = true })
     self.coinCount = count
-    local image = context:image('emblem-' .. level)
-    local facePipe = self.facePipe
-    if image and facePipe and self.sampler then
-        self.faceTexGroup = GPUBindGroup.new({
-            layout = facePipe:getBindGroupLayout(1),
-            textures = { { slot = 0, view = image:view() } },
-            samplers = { { slot = 1, sampler = self.sampler } },
-        })
-    end
+    self.faceImage = context:image('emblem-' .. level)
+    self.faceTexGroup = nil
     self.built = level
+end
+
+-- The face's bind group, once its image has decoded: on the web that is after init, and a view taken before it binds
+-- nothing (the pass then drops the draw).
+local function bindFace(self: Emblem)
+    local image, facePipe, sampler = self.faceImage, self.facePipe, self.sampler
+    if self.faceTexGroup or not image or image.width == 0 or not facePipe or not sampler then return end
+    self.faceTexGroup = GPUBindGroup.new({
+        layout = facePipe:getBindGroupLayout(1),
+        textures = { { slot = 0, view = image:view() } },
+        samplers = { { slot = 1, sampler = sampler } },
+    })
 end
 
 local function targets(self: Emblem)
@@ -251,7 +257,7 @@ end
 function draw(self: Emblem, renderer: Renderer)
     local canvas, ubo = self.canvas, self.ubo
     if not canvas or not ubo or canvas.width == 0 or not self.msaaView or not self.depthView then return end
-    if not self.faceTexGroup then build(self) end
+    bindFace(self)
 
     -- At rest it sways; a level-up spins it twice and flashes, settling back into the sway.
     local t = self.time
@@ -329,6 +335,7 @@ return function(context: Context): Layout<Emblem>
         coinGroup = nil,
         faceGroup = nil,
         faceTexGroup = nil,
+        faceImage = nil,
         sampler = nil,
         coinVerts = nil,
         coinIndex = nil,

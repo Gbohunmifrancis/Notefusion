@@ -15,6 +15,8 @@ type Sticker = {
     uboData: buffer,
     uboGroup: GPUBindGroup?,
     texGroup: GPUBindGroup?,
+    colorImage: Image?,
+    normalImage: Image?,
     sampler: GPUSampler?,
     verts: GPUBuffer?,
     index: GPUBuffer?,
@@ -55,17 +57,24 @@ local function card(): (buffer, buffer)
 end
 
 local function load(self: Sticker)
-    local context, pipe, sampler = self.context, self.pipe, self.sampler
-    if not context or not pipe or not sampler then return end
+    local context = self.context
+    if not context then return end
     local name = self.art or 'flame-active'
-    local color, normal = context:image(name), context:image(name .. '-normal')
-    if not color or not normal then return end
+    self.colorImage, self.normalImage = context:image(name), context:image(name .. '-normal')
+    self.texGroup = nil
+    self.loaded = name
+end
+
+-- The textures' bind group, once both images have decoded: on the web that is after init, and a view taken before it
+-- binds nothing (the pass then drops the draw).
+local function bind(self: Sticker)
+    local color, normal, pipe, sampler = self.colorImage, self.normalImage, self.pipe, self.sampler
+    if self.texGroup or not color or not normal or color.width == 0 or normal.width == 0 or not pipe or not sampler then return end
     self.texGroup = GPUBindGroup.new({
         layout = pipe:getBindGroupLayout(1),
         textures = { { slot = 0, view = color:view() }, { slot = 1, view = normal:view() } },
         samplers = { { slot = 2, sampler = sampler } },
     })
-    self.loaded = name
 end
 
 function init(self: Sticker, context: Context): boolean
@@ -115,7 +124,7 @@ end
 function draw(self: Sticker, renderer: Renderer)
     local canvas, ubo, pipe = self.canvas, self.ubo, self.pipe
     if not canvas or not ubo or not pipe or canvas.width == 0 then return end
-    if not self.texGroup then load(self) end
+    bind(self)
     local t = self.time
     -- At rest it floats and turns a little; a pop springs it toward the viewer and flashes.
     local yaw = 0.38 * math.sin(t * 0.9)
@@ -168,6 +177,8 @@ return function(context: Context): Layout<Sticker>
         uboData = buffer.create(144),
         uboGroup = nil,
         texGroup = nil,
+        colorImage = nil,
+        normalImage = nil,
         sampler = nil,
         verts = nil,
         index = nil,
