@@ -6,6 +6,10 @@
 /* Play: Practice's warm accent for the Playful track. Never the Pro amber (--premium), which is Pro's alone. */
 :root { --play: #C2410C; --play-soft: rgba(249, 115, 22, 0.08); --play-line: rgba(249, 115, 22, 0.35); }
 :root[data-theme="dark"] { --play: #FB923C; --play-soft: rgba(251, 146, 60, 0.12); --play-line: rgba(251, 146, 60, 0.40); }
+/* Playful's warmth sits in one place, its drill card: a warm fill top to bottom (no orange border, eyebrow or chips
+   round it), its eyebrow in deep warm ink (6.5:1 on the fill's end), the notes white bubbles. The phone's tokens. */
+:root { --play-hero-from: #FFF7F0; --play-hero-to: #FFE8D6; --play-ink: #8A3B12; --play-chip: #FFFFFF; }
+:root[data-theme="dark"] { --play-hero-from: #241A15; --play-hero-to: #3A2417; --play-ink: #FDBA74; --play-chip: rgba(255, 255, 255, 0.08); }
 /* The Christmas season (drawn only while it is on): pine as a tint, candle ivory for small labels on Night (pine on
    Day). Never the Pro amber, and never a second accent. The same values as season.css and the phone's theme. */
 :root { --pine: #1F6B50; --pine-soft: rgba(31, 107, 80, 0.09); --pine-line: rgba(31, 107, 80, 0.22); --candle: #1F6B50; }
@@ -43,6 +47,9 @@
 
 /* ── Today's drill ───────────────────────────────────────────────────────── */
 .pv-drill { display: flex; flex-direction: column; gap: 8px; }
+.pv-drill-head { display: flex; align-items: flex-start; gap: 8px; }
+.pv-drill-head-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.pv-drill-doh { flex: none; margin: -6px -4px -14px 0; }
 .pv-eyebrow { margin: 0; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue-dark); }
 .pv-title { font-size: 1.1rem; font-weight: 700; }
 .pv-meta { margin: 0; font-size: 0.85rem; color: var(--muted); line-height: 1.45; }
@@ -127,7 +134,6 @@
 .pv-track-pill .ic { width: 16px; height: 16px; color: var(--blue-dark); }
 .pv-track-pill .pv-swap { width: 14px; height: 14px; color: var(--muted); }
 .pv-track-pill { padding-left: 8px; }
-.pv-track-pill.is-playful { border-color: var(--play-line); background: var(--play-soft); }
 .pv-track-pill:focus-visible, .pv-option:focus-visible, .pv-keep:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 .pv-picker { display: flex; flex-direction: column; gap: 12px; }
 .pv-picker-head { display: flex; align-items: center; gap: 12px; }
@@ -152,42 +158,61 @@
 @media (prefers-reduced-motion: reduce) { .pv-spin { animation-duration: 2.4s; } }
 .pv-keep { align-self: center; min-height: 44px; padding: 0 14px; border: 0; background: none; color: var(--muted); font: inherit; font-weight: 600; cursor: pointer; }
 
-/* ── Playful: the buddy, a bigger game card, stars, stickers ─────────────── */
-.pv-buddy { display: flex; align-items: center; gap: 6px; }
+/* ── Playful: Doh in the game card, stars, stickers ─────────────────────── */
 /* Doh in the season's costume (the cap, the witch hat): laid over his picture's own box. */
 .pv-capped { position: relative; display: block; flex: none; }
 .pv-cap { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 
-/* ── The season's card under today's drill while its season is on: the carols' pine one (board d-christmas/03), the
-   Midnight path's pumpkin one (board j-halloween/03). The season's wash, hairline and small labels are its own. ── */
-.pv-carols { --sn-soft: var(--pine-soft); --sn-line: var(--pine-line); --sn-label: var(--candle); }
-.pv-carols.is-halloween { --sn-soft: var(--pumpkin-soft); --sn-line: var(--pumpkin-line); --sn-label: var(--moon); position: relative; overflow: hidden; }
-.pv-carols { display: flex; flex-direction: column; gap: 14px; padding: 18px 16px; border-radius: 16px; background: var(--sn-soft); border: 1px solid var(--sn-line); }
-.pv-carols-top { display: flex; align-items: flex-start; gap: 8px; }
+/* ── The season's card under today's drill while its season is on (boards d-christmas/03, j-halloween/03), as the
+   season's banner: a night sky in Day and Night alike (deep pine for the carols, Halloween's purple for the Midnight
+   path), so it never reads as a second warm card beside Playful's drill. Its label is candle or pumpkin (never an icon),
+   its words white and cream, and its one way in filled in the label's colour. The phone's `seasonBanner`. ── */
+.pv-carols {
+  --sn-from: #22694F; --sn-to: #0F2E23; --sn-label: #F3DFB4; --sn-body: #F3DFB4; --sn-btn: #F3DFB4; --sn-btn-ink: #0F2E23; --sn-seg: rgba(243, 223, 180, 0.22);
+  position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 14px; padding: 18px 16px 16px; border-radius: 20px;
+  background: radial-gradient(130% 150% at 92% 0%, var(--sn-from) 0%, var(--sn-to) 72%); color: #fff;
+}
+.pv-carols.is-halloween { --sn-from: #4A2F8A; --sn-to: #17112F; --sn-label: #F6A65E; --sn-body: #EDE6CF; --sn-btn: #F28A3A; --sn-btn-ink: #1B1438; --sn-seg: rgba(237, 230, 207, 0.22); }
+.pv-carols-top { position: relative; display: flex; align-items: center; gap: 8px; }
 .pv-carols-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
 .pv-carols-eyebrow { margin: 0; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sn-label); }
-.pv .pv-carols-title { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.015em; color: var(--ink); }
-.pv-carols-body { margin: 0; font-size: 0.9rem; line-height: 1.45; color: var(--muted); }
-.pv-carols-bar { display: flex; gap: 6px; }
-.pv-carols-bar i { flex: 1; height: 5px; border-radius: 999px; background: var(--wash); }
+.pv .pv-carols-title { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.015em; color: #fff; }
+.pv-carols-next { margin: 0; font-size: 0.875rem; line-height: 1.4; color: var(--sn-body); opacity: 0.9; }
+.pv-carols-foot { display: flex; align-items: center; gap: 14px; }
+.pv-carols-bar { flex: 1; display: flex; gap: 5px; }
+.pv-carols-bar i { flex: 1; height: 6px; border-radius: 999px; background: var(--sn-seg); }
 .pv-carols-bar i.on { background: var(--sn-label); }
-.pv-carols-foot { display: flex; align-items: center; gap: 10px; }
-.pv-carols-foot strong { font-size: 0.95rem; color: var(--ink); }
-.pv-carols-foot span { font-size: 0.8rem; color: var(--muted); }
-.pv-carols-go { flex: none; min-height: 44px; gap: 6px; }
-/* The Midnight path: three tiny still bats in the corner, and Doh in his witch hat with Boo at his shoulder (Playful). */
-.pv-card-bats { position: absolute; top: 10px; right: 12px; width: 96px; height: 44px; color: var(--bat); opacity: 0.45; pointer-events: none; }
+.pv .pv-carols-go {
+  flex: none; min-height: 44px; gap: 6px; padding: 0 18px; border: 0; border-radius: 999px;
+  background: var(--sn-btn); color: var(--sn-btn-ink); font-weight: 800;
+}
+.pv .pv-carols-go:hover:not(:disabled) { background: var(--sn-btn); filter: brightness(1.06); }
+.pv .pv-carols-go:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.pv-carols-go .ic { color: var(--sn-btn-ink); }
+/* The Midnight path: three tiny still bats under the moon, and Doh in his witch hat with Boo at his shoulder (Playful). */
+.pv-card-bats { position: absolute; top: 6px; right: 6px; width: 96px; height: 44px; color: #EDE6CF; opacity: 0.3; pointer-events: none; }
 .pv-card-bats svg { position: absolute; display: block; }
-.pv-carols.is-halloween .pv-carols-top { position: relative; }
-.pv-card-pair { position: relative; flex: none; width: 94px; height: 80px; margin-top: 8px; }
-.pv-card-pair .pv-carols-doh { position: absolute; left: 0; bottom: 0; }
-.pv-card-boo { position: absolute; right: 0; top: -6px; }
+.pv-carols.is-halloween::before {
+  content: ""; position: absolute; right: 18px; top: -34px; width: 104px; height: 104px; border-radius: 50%; background: #EDE6CF; opacity: 0.1; pointer-events: none;
+}
+.pv-card-pair { position: relative; flex: none; width: 96px; height: 82px; }
+.pv-card-pair .pv-carols-doh { position: absolute; right: 0; bottom: 0; }
+.pv-card-boo { position: absolute; left: 0; top: 0; }
+/* The carols' path screen (practice-carols.js) speaks through Doh in a bubble. */
+.pv-buddy { display: flex; align-items: center; gap: 6px; }
 .pv-buddy-bubble { flex: 1; margin: 0; padding: 10px 14px; border-radius: 14px 14px 14px 4px; background: var(--surface); border: 1px solid var(--line); font-weight: 600; font-size: 0.9rem; line-height: 1.45; color: var(--ink); }
-.is-playful .pv-drill { border: 1.5px solid var(--play-line); }
-.is-playful .pv-eyebrow { color: var(--play); }
-.is-playful .pv-drill .pv-title { font-size: 1.3rem; }
-.is-playful .pv-tiles li { min-width: 56px; min-height: 56px; border-radius: 28px; font-size: 1.5rem; border: 2px solid var(--play-line); background: var(--play-soft); }
-.is-playful .pv-tiles li.on { border-color: var(--blue); background: var(--blue-soft); }
+.is-playful .pv-drill { border: 0; background: linear-gradient(165deg, var(--play-hero-from), var(--play-hero-to)); }
+.is-playful .pv-drill .pv-eyebrow { color: var(--play-ink); }
+.is-playful .pv-drill .pv-title { font-size: 1.4rem; letter-spacing: -0.015em; }
+.is-playful .pv-drill .pv-unit-bar { height: 6px; margin-top: 0; background: var(--play-line); }
+.is-playful .pv-drill .pv-unit-bar i { background: var(--play); }
+.is-playful .pv-tiles { gap: 10px; }
+.is-playful .pv-tiles li {
+  min-width: 58px; min-height: 58px; border-radius: 29px; font-size: 1.5rem; border: 2.5px solid transparent; background: var(--play-chip);
+  box-shadow: 0 3px 8px rgba(138, 59, 18, 0.12);
+}
+.is-playful .pv-tiles li.on { border-color: var(--blue); background: var(--play-chip); color: var(--blue-dark); }
+.is-playful .pv-drill .btn-ghost { background: var(--play-chip); border-color: transparent; }
 .pv-stars-result { margin-top: 4px; padding: 16px 14px; border-radius: 14px; background: var(--play-soft); border: 1.5px solid var(--play-line); display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
 .pv-stars { display: flex; justify-content: center; }
 .pv-star-word { margin: 0; font-size: 1.4rem; font-weight: 700; color: var(--ink); }
@@ -258,12 +283,13 @@
 .pv-moment canvas { display: block; width: 100%; height: 100%; }
 .pv-moment.out { opacity: 0; transform: scale(0.9); }
 
-/* ── The one line at the top: streak and level (board 6a) ────────────────── */
-.pv-progline { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 0.82rem; color: var(--muted); margin-bottom: -2px; }
-.pv-progline strong { color: var(--ink); font-weight: 600; white-space: nowrap; }
-.pv-progline-sep { width: 1px; height: 14px; background: var(--line-strong); flex: none; }
-.pv-progline-level, .pv-progline-next { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-.pv-minibar { width: 48px; height: 5px; border-radius: 3px; background: var(--wash); overflow: hidden; flex: none; }
+/* ── The two small cards at the top: streak and level, each led by its 3D art ── */
+.pv-progline { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr); gap: 10px; }
+.pv-progcard { display: flex; align-items: center; gap: 8px; min-width: 0; min-height: 64px; padding: 10px 12px; border-radius: 18px; border: 1px solid var(--line); background: var(--surface); }
+.pv-progcard-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; font-size: 0.75rem; color: var(--muted); }
+.pv-progcard-text strong { font-size: 0.95rem; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pv-progcard-text span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pv-minibar { display: block; width: 100%; height: 5px; border-radius: 3px; background: var(--wash); overflow: hidden; }
 .pv-minibar i { display: block; height: 100%; border-radius: inherit; background: var(--blue); }
 .pv-pill-ic { display: inline-flex; width: 20px; height: 20px; color: var(--play); }
 .pv-mic-ic svg { display: block; width: 100%; height: 100%; }
@@ -276,21 +302,22 @@
 .pv-modes-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
 .pv-modes-head .pv-section { margin: 0; }
 .pv-modes-doh { margin: 0; font-size: 0.85rem; color: var(--muted); line-height: 1.45; }
-.pv-mode-list { margin: 0; padding: 0; list-style: none; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); overflow: hidden; }
-.pv-mode-list li + li .pv-mode-row { border-top: 1px solid var(--line); }
+/* Two columns of tiles, each the mode's icon, its name and one line; ink icons on neutral tiles on both tracks, so
+   the blue stays on the one thing to press and Playful's warmth in its drill card. */
+.pv-mode-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.pv-mode-list li { display: flex; min-width: 0; }
 .pv-mode-row {
-  display: flex; align-items: center; gap: 14px; width: 100%; min-height: 64px; padding: 10px 14px; border: 0; background: none;
-  color: var(--ink); font: inherit; text-align: left; cursor: pointer;
+  position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; width: 100%; min-height: 118px; padding: 12px;
+  border: 1px solid var(--line); border-radius: 16px; background: var(--surface); color: var(--ink); font: inherit; text-align: left; cursor: pointer;
 }
 .pv-mode-row:hover { background: var(--wash); }
-.pv-mode-row:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
-.pv-mode-tile { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 10px; flex: none; border-radius: 12px; background: var(--blue-soft); color: var(--blue-dark); }
-.pv-modes.is-playful .pv-mode-tile { background: var(--play-soft); color: var(--play); }
-.pv-mode-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.pv-mode-text strong { font-size: 0.97rem; font-weight: 600; }
-.pv-mode-text span { font-size: 0.82rem; color: var(--muted); line-height: 1.35; }
-.pv-mode-value { font-size: 0.82rem; color: var(--muted); white-space: nowrap; }
-.pv-mode-chev { width: 16px; height: 16px; color: var(--faint); flex: none; }
+.pv-mode-row:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.pv-mode-tile { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 10px; flex: none; border-radius: 12px; background: var(--wash); color: var(--ink); }
+.pv-mode-text { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pv-mode-text strong { font-size: 0.95rem; font-weight: 600; }
+.pv-mode-text span { font-size: 0.8rem; color: var(--muted); line-height: 1.35; }
+.pv-mode-value { position: absolute; top: 14px; right: 12px; font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
+.pv-mode-chev { display: none; }
 
 /* ── Wider screens ───────────────────────────────────────────────────────── */
 @media (min-width: 641px) {
@@ -317,5 +344,4 @@
 .pv-game:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 .pv-game strong { font-size: 0.95rem; line-height: 1.25; }
 .pv-game span:last-child { font-size: 0.8rem; line-height: 1.3; color: var(--muted); }
-.pv.is-playful .pv-game { border-color: var(--play-line); }
-.pv.is-playful .pv-game .pv-mode-tile { background: var(--play-soft); color: var(--play); }
+
