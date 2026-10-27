@@ -73,17 +73,19 @@ declare class Native extends NativeModule<Events> {
   setListening(listening: boolean): void;
   setLastKey(key: string, doh: string): void;
   requestAddTile(): Promise<TileResult>;
-  getAnywhere(): AnywhereState;
-  setAnywhere(options: { button?: boolean; notification?: boolean; source?: ListenSource; kind?: ListenKind }): AnywhereState;
-  hasOverlayPermission(): boolean;
-  openOverlaySettings(): boolean;
-  setAllowance(json: string | null): void;
-  setAccount(signedIn: boolean): void;
-  setDataSaver(on: boolean): void;
-  requestAddTakeTile(): Promise<TileResult>;
-  setTakeTileAdded(added: boolean): void;
-  takeHandled(): void;
-  pendingTakes(): { uri: string; fileName: string }[];
+  // Listen from anywhere: absent on store builds made before it (build 43, which Play serves), where an OTA running
+  // there finds no state (Settings hides the feature) and every call below does nothing.
+  getAnywhere?(): AnywhereState;
+  setAnywhere?(options: { button?: boolean; notification?: boolean; source?: ListenSource; kind?: ListenKind }): AnywhereState;
+  hasOverlayPermission?(): boolean;
+  openOverlaySettings?(): boolean;
+  setAllowance?(json: string | null): void;
+  setAccount?(signedIn: boolean): void;
+  setDataSaver?(on: boolean): void;
+  requestAddTakeTile?(): Promise<TileResult>;
+  setTakeTileAdded?(added: boolean): void;
+  takeHandled?(): void;
+  pendingTakes?(): { uri: string; fileName: string }[];
   /** Absent on store builds before build 61: an OTA running there drains nothing. */
   drainEvents?(): string;
 }
@@ -146,54 +148,54 @@ export function addStatusListener(fn: (status: ListenStatus) => void): ListenSub
 
 // ── Listen from anywhere ─────────────────────────────────────────────────────
 
-/** The feature's state, or null where it does not exist (iOS, Expo Go, web). */
+/** The feature's state, or null where it does not exist (iOS, Expo Go, web, a store build older than it). */
 export function getAnywhere(): AnywhereState | null {
-  return native ? native.getAnywhere() : null;
+  return native?.getAnywhere?.() ?? null;
 }
 
 /** Sets what is given, leaves the rest, and starts or stops the service to match. */
 export function setAnywhere(options: { button?: boolean; notification?: boolean; source?: ListenSource; kind?: ListenKind }): AnywhereState | null {
-  return native ? native.setAnywhere(options) : null;
+  return native?.setAnywhere?.(options) ?? null;
 }
 
 export function hasOverlayPermission(): boolean {
-  return native?.hasOverlayPermission() ?? false;
+  return native?.hasOverlayPermission?.() ?? false;
 }
 
 /** Android's own "Display over other apps" page for this app. */
 export function openOverlaySettings(): boolean {
-  return native?.openOverlaySettings() ?? false;
+  return native?.openOverlaySettings?.() ?? false;
 }
 
 /** What the account may send, as JSON (lib/listenAnywhere `listenAllowance`); null forgets it. */
 export function setAllowance(json: string | null): void {
-  native?.setAllowance(json);
+  native?.setAllowance?.(json);
 }
 
 export function setAccount(signedIn: boolean): void {
-  native?.setAccount(signedIn);
+  native?.setAccount?.(signedIn);
 }
 
 export function setDataSaver(on: boolean): void {
-  native?.setDataSaver(on);
+  native?.setDataSaver?.(on);
 }
 
 export async function requestAddTakeTile(): Promise<TileResult> {
-  return native ? native.requestAddTakeTile() : 'unsupported';
+  return native?.requestAddTakeTile ? native.requestAddTakeTile() : 'unsupported';
 }
 
 export function setTakeTileAdded(added: boolean): void {
-  native?.setTakeTileAdded(added);
+  native?.setTakeTileAdded?.(added);
 }
 
 /** The headless task has queued (or given up on) its take. */
 export function takeHandled(): void {
-  native?.takeHandled();
+  native?.takeHandled?.();
 }
 
 /** Takes the headless task never received (the process died in between), for the app to queue. */
 export function pendingTakes(): { uri: string; fileName: string }[] {
-  return native?.pendingTakes() ?? [];
+  return native?.pendingTakes?.() ?? [];
 }
 
 /** The native side's events since the last call, the log emptied (lib/appEvents). */
