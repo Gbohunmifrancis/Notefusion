@@ -64,6 +64,24 @@ public class ChoirPlanTests
         Assert.DoesNotContain(await Plans(h, user), p => p.ChoirSeats is not null);
         var pub = (await new GetPublicPricingQueryHandler(h.Db, h.Country).Handle(new GetPublicPricingQuery(), default)).Value;
         Assert.DoesNotContain(pub.Plans, p => p.Code.StartsWith("choir_"));
+        // ...but the page can say what a choir pays, in the visitor's own set, before anyone signs up.
+        Assert.Equal(new[] { "choir_monthly_usd", "choir_yearly_usd" }, pub.Choir!.Select(p => p.Code).ToArray());
+        Assert.All(pub.Choir!, p => Assert.NotNull(p.ChoirSeats));
+    }
+
+    [Theory]
+    [InlineData("NG", "choir_monthly_ngn")]
+    [InlineData("KE", "choir_monthly_usd_regional")]
+    [InlineData(null, "choir_monthly_usd")]
+    public async Task The_public_page_shows_the_visitors_own_choir_prices(string? country, string cheapest)
+    {
+        using var h = new TestHarness(Now);
+        SeedPlans(h);
+        h.Country.Country = country;
+
+        var pub = (await new GetPublicPricingQueryHandler(h.Db, h.Country).Handle(new GetPublicPricingQuery(), default)).Value;
+        Assert.Equal(cheapest, pub.Choir![0].Code);
+        Assert.All(pub.Choir!, p => Assert.True(p.Currency == pub.Choir![0].Currency));
     }
 
     [Theory]

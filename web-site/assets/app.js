@@ -447,8 +447,40 @@
       $("auth-join").textContent = "You're invited to join a choir on NoteFusion. Sign in, or create a free account, and you'll join it straight after.";
       show($("auth-join"));
     } else hide($("auth-join"));
+    showPickedPlan();
     // Not on taking over the first paint (assets/app-boot.js): whoever scrolled down to the password stays there.
     if (!document.documentElement.classList.contains("nf-boot")) window.scrollTo(0, 0);
+  }
+  /**
+   * Sent here by a plan on the pricing page (?upgrade=<plan id>, or "choir"): the form names it at the price its card
+   * showed (an offer's, with &offer=), and says its checkout (the choir plans) opens straight after; the form used to
+   * say only "Free to start", and the pick seemed lost. Named at once, priced when the public prices answer.
+   */
+  function showPickedPlan() {
+    var q = new URLSearchParams(location.search), want = q.get("upgrade"), offerKey = q.get("offer");
+    var note = $("auth-plan"), choirPick = want === "choir";
+    if (!want || want === "1" || pendingJoin()) { hide(note); return; }
+    function say(plan, offered) {
+      var price = plan ? money(offered ? { amountMinor: offered, currency: plan.currency } : plan) : null;
+      var span = !plan || isSinglePlan(plan) ? "" : isYearly(plan) ? " for a year" : " for a month";
+      note.textContent = choirPick
+        ? "You picked the choir plan" + (price ? ", " + price + " a month," : "") + " for you and up to 25 singers. Create your account or sign in, and the choir plans open next."
+        : "You picked " + (plan ? (isSinglePlan(plan) ? "one song" : isYearly(plan) ? "Pro Yearly" : "Pro Monthly") + ", " + price + span + (offered ? " at the offer's price" : "") : "a plan") +
+          ". Create your account or sign in, and its secure checkout opens next.";
+    }
+    say(null, null);
+    show(note);
+    var offerAsk = offerKey ? request("/api/offers/current?key=" + encodeURIComponent(offerKey), { anonymous: true }).catch(function () { return null; }) : Promise.resolve(null);
+    Promise.all([request("/api/billing/public-plans", { anonymous: true }), offerAsk]).then(function (got) {
+      var p = got[0] || {}, offer = got[1] && got[1].offer;
+      var plan = choirPick
+        ? (p.choir || []).filter(function (x) { return !isYearly(x); })[0]
+        : (p.plans || []).concat(p.single ? [p.single] : [], p.choir || []).filter(function (x) { return String(x.id) === want || x.code === want; })[0];
+      if (!plan) return;
+      var priced = offer && Date.parse(offer.endsAtUtc) > Date.now() && (offer.plans || []).filter(function (x) { return x && String(x.planId) === String(plan.id); })[0];
+      var offered = priced && Number(priced.offerAmountMinor) > 0 && Number(priced.offerAmountMinor) < plan.amountMinor ? Number(priced.offerAmountMinor) : null;
+      say(plan, offered);
+    }).catch(function () { /* the plan stays named, unpriced */ });
   }
   function leaveAuth() {
     if (authLayer) { NfBack.done(authLayer); authLayer = null; }
@@ -2200,17 +2232,19 @@
       // Handled once: the checkout leaves this tab, and Back must not land on a page that starts it again.
       if (upgradeTo) dropParam("upgrade");
       if (fromOffer) { dropParam("offer"); dropParam("m"); }
-      if ((upgradeTo && !isPro()) || fromOffer) {
+      if ((upgradeTo && (!isPro() || upgradeTo === "choir")) || fromOffer) {
         // The plans open once the offer's answer is in (at most 4 s), at the prices that apply: the offer's, or the usual
         // ones with the line that says it has ended.
         var opening = epoch;
         offerSettled().then(function () {
           offerLinkKey = null;
           if (opening !== epoch || !tokens()) return;
-          var want = upgradeTo && upgradeTo !== "1" ? upgradeTo : null;
-          if (isPro()) { openUpgrade("offer"); return; }
+          // "choir": the pricing page's choir line, which opens the choir plans (a Pro member's too) rather than a checkout.
+          var choirPick = upgradeTo === "choir";
+          var want = upgradeTo && upgradeTo !== "1" && !choirPick ? upgradeTo : null;
+          if (isPro()) { openUpgrade(choirPick ? "choir" : "offer"); return; }
           if (fromOffer) track("Offer: opened from a link", fromOffer);
-          openUpgrade(fromOffer ? "offer" : null, null, want);
+          openUpgrade(fromOffer ? "offer" : choirPick ? "choir" : null, null, want);
           // A plan picked at an offer's price whose offer has ended by now: the plans, never a checkout at a price the
           // person was not shown.
           if (want && !(fromOffer && !offerLive())) autoCheckout(want);

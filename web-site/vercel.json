@@ -9,7 +9,8 @@
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "microphone=(self), camera=(), geolocation=()" }
+        { "key": "Permissions-Policy", "value": "microphone=(self), camera=(), geolocation=()" },
+        { "key": "Cross-Origin-Resource-Policy", "value": "same-site" }
       ]
     },
     {
@@ -96,6 +97,12 @@
           "key": "Cache-Control",
           "value": "public, max-age=604800, must-revalidate"
         }
+      ]
+    },
+    {
+      "source": "/(email|assets)/(.*)",
+      "headers": [
+        { "key": "Cross-Origin-Resource-Policy", "value": "cross-origin" }
       ]
     }
   ]
