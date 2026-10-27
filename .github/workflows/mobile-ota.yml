@@ -1,0 +1,148 @@
+name: Mobile OTA
+
+# Publishes the phone app's JavaScript as an EAS Update to the build Google Play is serving, after checking that it can
+# reach it: the runtime policy is the fingerprint, so an update reaches only builds with the same native code, and one
+# published for any other runtime reaches no phone from the store.
+#
+#   1. Google Play: which version codes the production track serves (the API's Play service account,
+#      GOOGLEPLAY__SERVICEACCOUNTJSON, read-only: an edit opened, read and deleted).
+#   2. EAS: the build behind each of those version codes, and its runtime.
+#   3. This commit's runtime, worked out as EAS works it out for an update (production environment).
+#   4. With "publish" ticked and the runtimes the same, `eas update` on the production channel (Sentry source maps
+#      from the EAS production environment). Without it, a report only.
+#
+# Needs the repository secret EXPO_TOKEN (an Expo access token for the account). Run it from the Actions tab.
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish the update (unticked: only report what Play serves and whether an update would reach it)"
+        type: boolean
+        default: false
+      message:
+        description: "The update's message (shown in EAS)"
+        type: string
+        default: "OTA from main"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobile-ota
+  cancel-in-progress: false
+
+jobs:
+  ota:
+    name: EAS Update for the Play Store build
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: mobile
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      PACKAGE: com.notefusion.com
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then echo "::error::Add the repository secret EXPO_TOKEN (expo.dev › Account settings › Access tokens)."; exit 1; fi
+          npm ci
+          npm install --global eas-cli@25.3.0
+          python -m pip install --quiet "google-auth[requests]==2.40.3"
+
+      - name: What Google Play serves
+        id: play
+        env:
+          PLAY_KEY: ${{ secrets.GOOGLEPLAY__SERVICEACCOUNTJSON }}
+        run: |
+          python - <<'EOF'
+          import json, os
+          from google.oauth2 import service_account
+          from google.auth.transport.requests import AuthorizedSession
+
+          out = open(os.environ["GITHUB_OUTPUT"], "a")
+          key = os.environ.get("PLAY_KEY", "").strip()
+          if not key:
+              print("::warning::No GOOGLEPLAY__SERVICEACCOUNTJSON secret: what Play serves cannot be read.")
+              out.write("codes=\n")
+              raise SystemExit(0)
+          creds = service_account.Credentials.from_service_account_info(
+              json.loads(key), scopes=["https://www.googleapis.com/auth/androidpublisher"])
+          s = AuthorizedSession(creds)
+          base = f"https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{os.environ['PACKAGE']}/edits"
+          r = s.post(base)
+          if r.status_code != 200:
+              print(f"::warning::Google Play refused to open an edit ({r.status_code}): the service account may lack "
+                    "'View app information' in Play Console. " + r.text[:300])
+              out.write("codes=\n")
+              raise SystemExit(0)
+          edit = r.json()["id"]
+          try:
+              tracks = s.get(f"{base}/{edit}/tracks").json().get("tracks", [])
+          finally:
+              s.delete(f"{base}/{edit}")
+          production = []
+          for t in tracks:
+              for rel in t.get("releases", []):
+                  codes = rel.get("versionCodes", [])
+                  print(f"{t['track']:<12} {rel.get('status', ''):<11} {rel.get('name', ''):<24} "
+                        f"version codes {', '.join(codes) or '-'}"
+                        + (f"  ({float(rel['userFraction']) * 100:.0f}% of users)" if rel.get("userFraction") else ""))
+                  if t["track"] == "production" and rel.get("status") in ("completed", "inProgress"):
+                      production += codes
+          print(f"Production serves version code(s): {', '.join(production) or 'none'}")
+          out.write(f"codes={' '.join(production)}\n")
+          EOF
+
+      - name: The builds behind them, and this commit's runtime
+        id: runtime
+        env:
+          CODES: ${{ steps.play.outputs.codes }}
+        run: |
+          current=$(eas fingerprint:generate --platform android --environment production --json --non-interactive | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);console.log(j.hash||j.fingerprint?.hash||"")})')
+          echo "This commit's runtime: $current"
+          echo "current=$current" >> "$GITHUB_OUTPUT"
+          echo "Latest finished Android builds on EAS:"
+          eas build:list --platform android --status finished --limit 8 --json --non-interactive \
+            | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{for(const b of JSON.parse(s))console.log(`  versionCode ${b.appBuildVersion}  ${b.appVersion}  ${b.buildProfile}  runtime ${b.runtimeVersion}  ${b.completedAt}  ${(b.gitCommitHash||"").slice(0,8)}`)})'
+          served=""
+          for code in $CODES; do
+            rt=$(eas build:list --platform android --status finished --app-build-version="$code" --limit 1 --json --non-interactive \
+              | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);console.log(j[0]?j[0].runtimeVersion:"")})')
+            echo "Play's version code $code: runtime ${rt:-unknown (no EAS cloud build with that code: a local build?)}"
+            served="$served $rt"
+          done
+          echo "served=$(echo $served | xargs)" >> "$GITHUB_OUTPUT"
+          echo "Updates already on the production branch:"
+          eas update:list --branch production --limit 6 --json --non-interactive \
+            | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);for(const u of (j.currentPage||j))console.log(`  runtime ${u.runtimeVersion}  ${u.createdAt}  ${u.message||""}`)})' || true
+
+      - name: Publish
+        if: ${{ inputs.publish }}
+        env:
+          CURRENT: ${{ steps.runtime.outputs.current }}
+          SERVED: ${{ steps.runtime.outputs.served }}
+          MESSAGE: ${{ inputs.message }}
+        run: |
+          if [ -z "$SERVED" ]; then
+            echo "::error::What Play serves could not be matched to a runtime, so this update might reach no phone. Not published."; exit 1
+          fi
+          match=no
+          for rt in $SERVED; do [ "$rt" = "$CURRENT" ] && match=yes; done
+          if [ "$match" != yes ]; then
+            echo "::error::This commit's runtime ($CURRENT) is not the one Play serves ($SERVED): native code changed since that build, so the update would reach no phone from the store. It needs a store build first. Not published."; exit 1
+          fi
+          # Single quotes: the message is expanded by the inner shell from the environment, never spliced into the command.
+          eas env:exec production 'eas update --channel production --environment production --message "$MESSAGE" --non-interactive && npx sentry-expo-upload-sourcemaps dist'
