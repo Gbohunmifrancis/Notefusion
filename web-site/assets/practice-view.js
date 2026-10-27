@@ -195,20 +195,32 @@
     return span;
   }
 
-  /** The streak and the level in one line at the top (board 6a); the full cards are under "Your progress". */
+  /**
+   * The streak and the level at the top as two small cards, each led by its 3D art (the flame, the level's emblem): the
+   * days with the week's goal under them, and the level with its XP and a bar to the next. The full cards are under
+   * "Your progress".
+   */
   function progressLine(p) {
-    var strip = window.NfPracticeModes.progressStrip(p), line = el("div", "pv-progline");
-    line.setAttribute("role", "group"); line.setAttribute("aria-label", strip.label);
-    line.appendChild(art(PT().flameArt(p.streak), 20));
-    var streak = el("strong", null, strip.streak); streak.setAttribute("aria-hidden", "true");
+    var strip = window.NfPracticeModes.progressStrip(p), week = p.weeklyGoal, days = p.streak.current;
+    var line = el("div", "pv-progline");
+    line.setAttribute("role", "group");
+    line.setAttribute("aria-label", strip.label + (week ? " " + week.daysDone + " of " + week.target + " days this week." : ""));
+    var streak = el("div", "pv-progcard"), st = el("div", "pv-progcard-text");
+    streak.setAttribute("aria-hidden", "true");
+    streak.appendChild(art(PT().flameArt(p.streak), 36));
+    st.appendChild(el("strong", null, days + (days === 1 ? " day" : " days")));
+    if (week) st.appendChild(el("span", null, "Week " + week.daysDone + "/" + week.target));
+    streak.appendChild(st);
     line.appendChild(streak);
-    line.appendChild(el("i", "pv-progline-sep"));
-    var lv = el("span", "pv-progline-level"); lv.setAttribute("aria-hidden", "true");
-    lv.appendChild(el("strong", null, strip.level)); lv.appendChild(document.createTextNode(" · " + strip.xp));
-    line.appendChild(lv);
+    var level = el("div", "pv-progcard is-level"), lt = el("div", "pv-progcard-text");
+    level.setAttribute("aria-hidden", "true");
+    level.appendChild(art(PT().levelArt(p.level.index), 36));
+    lt.appendChild(el("strong", null, strip.level + " · " + strip.xp));
     var bar0 = el("span", "pv-minibar"), fill = el("i"); fill.style.width = Math.round(strip.fraction * 100) + "%";
-    bar0.appendChild(fill); bar0.setAttribute("aria-hidden", "true"); line.appendChild(bar0);
-    if (strip.toNext) { var nx = el("span", "pv-progline-next", strip.toNext); nx.setAttribute("aria-hidden", "true"); line.appendChild(nx); }
+    bar0.appendChild(fill); lt.appendChild(bar0);
+    if (strip.toNext) lt.appendChild(el("span", null, strip.toNext));
+    level.appendChild(lt);
+    line.appendChild(level);
     return line;
   }
 
@@ -369,7 +381,8 @@
     text.appendChild(el("p", "pv-carols-eyebrow", c.eyebrow));
     var h = el("h2", "pv-carols-title", c.title); h.id = "pv-carols-title";
     text.appendChild(h);
-    text.appendChild(el("p", "pv-carols-body", c.body));
+    // The paragraph is the path's own page's; here, how far along and what is next.
+    text.appendChild(el("p", "pv-carols-next", c.sung + " · " + c.next));
     top.appendChild(text);
     if (withDoh && halloween) {
       // Boo, Halloween's friendly ghost, floats beside Doh (never alone: board j-halloween/03).
@@ -383,12 +396,9 @@
     segs.setAttribute("role", "progressbar"); segs.setAttribute("aria-label", c.label);
     segs.setAttribute("aria-valuemin", "0"); segs.setAttribute("aria-valuemax", String(season.total)); segs.setAttribute("aria-valuenow", String(season.sung));
     c.segments.forEach(function (on) { segs.appendChild(el("i", on ? "on" : null)); });
-    card.appendChild(segs);
-    var foot = el("div", "pv-carols-foot"), ft = el("div", "pv-carols-text");
-    ft.appendChild(el("strong", null, c.sung));
-    ft.appendChild(el("span", null, c.next));
-    foot.appendChild(ft);
-    var go = el("button", "btn btn-ghost pv-carols-go"); go.type = "button"; go.id = "pv-carols-go";
+    var foot = el("div", "pv-carols-foot");
+    foot.appendChild(segs);
+    var go = el("button", "btn pv-carols-go"); go.type = "button"; go.id = "pv-carols-go";
     go.appendChild(document.createTextNode(c.action));
     go.appendChild(icon("/assets/icons.svg#i-arrow-right"));
     go.addEventListener("click", openSeasonPath);
@@ -465,12 +475,11 @@
     // on Playful the card's, with Boo beside him, so the buddy steps aside; Focused's card has neither.
     var pathSeason = p.season ? P.seasonOf(p.season.season) : null;
     var cardDoh = !!p.season && !showPicker() && (pathSeason === "halloween" ? playful : !playful);
-    if (playful && !showPicker() && s.drill) {
-      if (!(cardDoh && pathSeason === "halloween")) box.appendChild(buddy(p, T));
-      warmConfetti();
-    }
+    // Playful's Doh stands in the drill card (one Doh on screen: not while the Midnight path's card has him).
+    var withBuddy = playful && !showPicker() && !!s.drill && !(cardDoh && pathSeason === "halloween");
+    if (playful && !showPicker() && s.drill) warmConfetti();
     if (showPicker()) box.appendChild(trackPicker(tr, T));
-    if (s.drill && !showPicker()) box.appendChild(drillCard(s.drill, P));
+    if (s.drill && !showPicker()) box.appendChild(drillCard(s.drill, P, withBuddy ? buddy(p, T) : null));
     if (!s.drill && !showPicker()) box.appendChild(emptyState("empty-no-drill", "No drill yet", "Today's drill isn't here yet. Try again in a moment.", function () { load(); }));
     if (p.season && !showPicker()) box.appendChild(seasonPathCard(p.season, cardDoh));
     if (!showPicker() && window.NfPracticeGames) box.appendChild(gamesSection(tr));
@@ -563,14 +572,14 @@
   }
 
   /** Playful's practice buddy: Doh the doh bird, in the mood of the moment, and a speech bubble. */
+  /** Doh in the corner of Playful's drill card, his mood the take's; what he says is read out, not printed. */
   function buddy(p, T) {
     var allowance = (s.progress && s.progress.drills) || (s.drill && s.drill.allowance);
     var scene = { picking: showPicker(), recording: s.phase !== "idle", grade: s.grade, hasDrill: !!s.drill, drillsLeft: allowance ? PP().drillsLeft(allowance) : null };
-    var mood = T.mascotMood(p, scene), line = T.mascotLine(mood, p, scene), box = el("div", "pv-buddy");
-    box.setAttribute("role", "note"); box.setAttribute("aria-label", "Doh, your practice buddy, says: " + line);
-    box.appendChild(dohArt(T.mascotArt(mood), 68, "pv-buddy-doh"));
-    var bubble = el("p", "pv-buddy-bubble", line); bubble.setAttribute("aria-hidden", "true");
-    box.appendChild(bubble);
+    var mood = T.mascotMood(p, scene), line = T.mascotLine(mood, p, scene), box = el("div", "pv-drill-doh");
+    box.setAttribute("role", "img"); box.setAttribute("aria-label", "Doh, your practice buddy, says: " + line);
+    box.title = line;
+    box.appendChild(dohArt(T.mascotArt(mood), 92));
     return box;
   }
 
@@ -608,13 +617,17 @@
     return row;
   }
 
-  function drillCard(d, P) {
+  function drillCard(d, P, doh) {
     var tr = currentTrack(), playful = tr === "playful", focused = tr === "focused";
     var card = el("section", "card pv-drill");
     card.setAttribute("aria-labelledby", "pv-drill-title");
-    card.appendChild(el("p", "pv-eyebrow", playful ? "Your singing game" : "Practice path · " + d.levelName));
+    var head = el("div", "pv-drill-head"), headText = el("div", "pv-drill-head-text");
+    headText.appendChild(el("p", "pv-eyebrow", playful ? "Your singing game" : "Practice path · " + d.levelName));
     var h = el("h2", "pv-title", d.title); h.id = "pv-drill-title";
-    card.appendChild(h);
+    headText.appendChild(h);
+    head.appendChild(headText);
+    if (doh) head.appendChild(doh);
+    card.appendChild(head);
     var where = P.pathLine(d);
     if (where) {
       card.appendChild(el("p", "pv-path", where));
