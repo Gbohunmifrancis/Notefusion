@@ -228,6 +228,14 @@ def test_clean_keeps_a_held_note_whole_under_a_leaking_drum():
     assert len(vocal.clean(_chant(attack=15.0, voicing_dip=1.0), [(0, 60)])) == 1
 
 
+def test_drop_ghosts_leaves_a_songs_line_and_drops_what_sits_far_under_it():
+    # A line around A4 and two notes pyin heard a sixth of the voice down (31 semitones):
+    # the line's own low note, an octave under its median, stays.
+    spans = [(0, 10, 69.0), (10, 20, 71.0), (20, 30, 72.0), (30, 40, 40.0), (40, 50, 57.0), (50, 60, 41.0)]
+    assert vocal.drop_ghosts(spans) == [(0, 10, 69.0), (10, 20, 71.0), (20, 30, 72.0), (40, 50, 57.0)]
+    assert vocal.drop_ghosts([]) == []
+
+
 def test_clean_does_not_split_on_tremolo():
     midi = np.full(60, 60.0)
     t = np.arange(60) * HOP_SEC
