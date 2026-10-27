@@ -143,6 +143,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   the in-process run), then transcribed; a song's separated vocal (the queue passes the mix as `tempo_source` only
   then) also has its singer's slides folded into the notes they reach (`vocal.absorb_scoops`: a span of at most 0.35 s
   that starts a syllable and runs, unre-struck, up at most 2.5 st into a note 1.5x as long; `NF_SONG_SCOOPS=0` off),
+  and its notes more than `GHOST_BELOW_SEMITONES` (15) under the line's median dropped before the scale fit (`vocal.drop_ghosts`:
+  pyin on a sixth of the voice, or the band; no sung line in the song sets goes an octave under its median),
   and the band leaking into that stem silenced before any pitch is read (`transcriber._gate_bleed`: frames
   `BLEED_BELOW_DB` 14 under the song's vocal-to-instrumental level where the instrumental sounds; the intro's
   leaked notes used to start the sheet before the singer; `NF_SONG_BLEED=0` off).
