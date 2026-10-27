@@ -7,6 +7,7 @@
 
   var regionLabel = document.getElementById("pricing-region");
   var regionNote = document.getElementById("pricing-region-note");
+  var choirNote = document.getElementById("pricing-choir");
   var pricingApi =
     window.location.hostname === "localhost"
       ? "http://localhost:5080/api/billing/public-plans"
@@ -283,6 +284,22 @@
   }
 
   /**
+   * The choir line under the cards, at the region's price for a month of the choir plan, its link opening the choir plans
+   * in the app (after signing up, signed out): the price used to appear only once an account was made.
+   */
+  function choirLine(plan) {
+    if (!choirNote || !plan) return;
+    var link = document.createElement("a");
+    link.href = accessToken() ? "/app?upgrade=choir" : "/app?signup=1&upgrade=choir";
+    link.setAttribute("data-track", "Pricing: choir plan");
+    link.textContent = "see the choir plan";
+    choirNote.replaceChildren(
+      document.createTextNode("Leading a choir? One choir plan makes you and up to 25 singers Pro, " + formatPrice(plan) + " a month: "),
+      link,
+      document.createTextNode("."));
+  }
+
+  /**
    * No prices to show. `unreachable`: the request itself failed (no connection, a timeout, a fault), which trying again
    * can mend. Otherwise the API could not place the visitor (a VPN, say): no price is guessed, and trying again would
    * only say the same, so the way on is the app, which prices by the account's own country.
@@ -431,6 +448,9 @@
       payload.single.amountMinor > 0
         ? payload.single
         : null;
+    choirLine((Array.isArray(payload.choir) ? payload.choir : []).filter(function (plan) {
+      return plan && plan.interval === "monthly" && plan.currency === expectedCurrency && Number.isFinite(plan.amountMinor) && plan.amountMinor > 0;
+    })[0]);
     container.appendChild(freeCard(3, single));
     if (monthly) container.appendChild(paidCard(monthly, !yearly, saving, live, monthlyOffer));
     if (yearly) container.appendChild(paidCard(yearly, true, saving, live, yearlyOffer));

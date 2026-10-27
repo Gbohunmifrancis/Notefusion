@@ -410,7 +410,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `FreeTier.ResetWhen`), never in West Africa Time; `SubscriptionDto` carries `freeTranscriptionsRemaining`/
   `freeTranscriptionsPerWeek`/`freeResetsAtUtc` (clients show it in local time: `web-site/assets/freeweek.js`,
   mobile `lib/freeWeek.ts`) beside `boughtTranscriptionsRemaining`/`boughtTranscriptionsTotal`, and keeps
-  `trialGenerations*` (week's free + bought) for shipped apps. `public-plans` carries the region's one-song `single`.
+  `trialGenerations*` (week's free + bought) for shipped apps. `public-plans` carries the region's one-song `single` and its choir plans (`choir`: the home page's choir line prices them, and `/app?upgrade=choir` opens them; a sign-up from a plan is told which, at what price, and what opens next).
 - Song credits (20 a month on Pro) are spent on completion by linked songs and by uploads with
   vocal isolation (`TranscriptionJobKind.Song`); hummed tunes cost nothing. A failed job costs nothing, and neither
   does a link whose song YouTube refused, where the store's 30-second preview stood in (`source.preview`): no song

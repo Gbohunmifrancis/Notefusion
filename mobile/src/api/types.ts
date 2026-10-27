@@ -1030,6 +1030,10 @@ export interface Plan {
 export interface PublicPricing {
   countryCode: string | null;
   plans: Plan[];
+  /** The region's one-song purchase, apart from `plans`. */
+  single?: Plan | null;
+  /** The region's choir plans, cheapest first, apart from `plans`. */
+  choir?: Plan[] | null;
 }
 
 /**

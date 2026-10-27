@@ -15,7 +15,12 @@ public sealed record PlanDto(
 /// The region's one-song purchase, for the free card's "or ₦1,500 a song"; null when none is on sale or the
 /// country is unknown. Apart from <see cref="Plans"/>, which older pages render as Pro Monthly or Yearly.
 /// </param>
-public sealed record PublicPricingDto(string? CountryCode, IReadOnlyList<PlanDto> Plans, PlanDto? Single = null);
+/// <param name="Choir">
+/// The region's choir plans (a director's, seating <see cref="PlanDto.ChoirSeats"/> singers), cheapest first, for
+/// the pricing note; apart from <see cref="Plans"/> for the same reason as <see cref="Single"/>.
+/// </param>
+public sealed record PublicPricingDto(
+    string? CountryCode, IReadOnlyList<PlanDto> Plans, PlanDto? Single = null, IReadOnlyList<PlanDto>? Choir = null);
 
 /// <summary>
 /// A hosted-checkout session. The app opens <see cref="CheckoutUrl"/> in an external browser

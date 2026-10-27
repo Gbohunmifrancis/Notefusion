@@ -39,17 +39,19 @@ public sealed class GetPublicPricingQueryHandler : IRequestHandler<GetPublicPric
 
         var all = await _db.Plans
             .AsNoTracking()
-            .Where(p => p.IsActive && p.ChoirSeats == null)
+            .Where(p => p.IsActive)
             .OrderBy(p => p.AmountMinor)
-            .Select(p => new PlanDto(p.Id, p.Code, p.Name, p.AmountMinor, p.Currency, p.Interval))
+            .Select(p => new PlanDto(p.Id, p.Code, p.Name, p.AmountMinor, p.Currency, p.Interval, p.ChoirSeats))
             .ToListAsync(ct);
         var offered = all.Where(p => PlanEligibility.IsOffered(p.Code, p.Currency, priceAs)).ToList();
 
         // The choir plans and the one-song purchase are not in Plans: the public page renders each plan there
-        // as Pro Monthly or Pro Yearly. The one-song price rides apart, for the free card's wording.
+        // as Pro Monthly or Pro Yearly. The one-song price rides apart, for the free card's wording, and the
+        // choir plans apart too, so the pricing note can say what a choir pays before anyone signs up.
         return new PublicPricingDto(
             string.IsNullOrWhiteSpace(country) ? null : country,
-            offered.Where(p => p.Interval != BillingInterval.Single).ToList(),
-            offered.FirstOrDefault(p => p.Interval == BillingInterval.Single));
+            offered.Where(p => p.ChoirSeats == null && p.Interval != BillingInterval.Single).ToList(),
+            offered.FirstOrDefault(p => p.ChoirSeats == null && p.Interval == BillingInterval.Single),
+            offered.Where(p => p.ChoirSeats != null).ToList());
     }
 }
