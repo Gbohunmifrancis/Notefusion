@@ -10,6 +10,8 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useCallback } from "react";
 import { Platform } from "react-native";
 
+import * as Listen from "../../modules/notefusion-listen";
+
 import { logAnalyticsEvent } from "../lib/analytics";
 import { isFirstSession } from "../lib/appReady";
 import { isDialogShowing, showDialog } from "../lib/dialog";
@@ -44,7 +46,7 @@ export function useWhatsNew(): void {
       const timer = setTimeout(() => {
         void (async () => {
           const seen = await whatsNewSeen();
-          if (!live || !shouldShowWhatsNew({ platform: Platform.OS, seen, firstLaunch: isFirstSession(), dialogOpen: isDialogShowing() }))
+          if (!live || !shouldShowWhatsNew({ platform: Platform.OS, seen, firstLaunch: isFirstSession(), dialogOpen: isDialogShowing(), anywhere: Listen.getAnywhere() !== null }))
             return;
           await markWhatsNewSeen();
           logAnalyticsEvent("whats_new_shown", { topic: "listen" });
