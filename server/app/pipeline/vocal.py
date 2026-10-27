@@ -688,9 +688,17 @@ def _valleys(window: np.ndarray) -> list[tuple[int, float]]:
     return valleys
 
 
-def _typical_valley(valleys: list[tuple[int, float]]) -> float:
+def _typical_valley(valleys: list[tuple[int, float]], c: Contour | None = None, a: int = 0, b: int = 0) -> float:
     """The span's ordinary amplitude ripple — a vowel sung with vibrato through a formant
-    dips at the vibrato rate, and a re-strike has to be clearly deeper than that."""
+    dips at the vibrato rate, and a re-strike has to be clearly deeper than that.
+
+    Read only off the dips with no new attack (``_onset_cue``), given the contour: a chant
+    re-strikes one pitch every sixteenth, and with its own re-strikes counted as the ripple
+    each was as deep as the "ordinary" and none could be cut (101 of the Afrobeats set's
+    303 merged repeats).  A vibrato's ripple carries no attack, so a held note's is as before.
+    """
+    if c is not None and c.onset is not None:
+        valleys = [(k, ratio) for k, ratio in valleys if not _onset_cue(c, a + k, a, b)]
     return float(np.median([ratio for _, ratio in valleys])) if len(valleys) >= 3 else 1.0
 
 
@@ -729,7 +737,7 @@ def _has_rearticulation(c: Contour, a_start: int, a_end: int, b_start: int, b_en
         return True  # an unvoiced gap: a consonant or a breath
     window = c.rms_fast[a_start:b_end]
     valleys = _valleys(window)
-    typical = _typical_valley(valleys)
+    typical = _typical_valley(valleys, c, a_start, b_end)
     junction = a_end - a_start
     near = [(ratio, k) for k, ratio in valleys if abs(k - junction) <= VALLEY_WIDTH_FRAMES]
     if not near:
@@ -747,7 +755,7 @@ def _split_on_valleys(c: Contour, a: int, b: int) -> list[tuple[int, int]]:
     if window.size < 2 * min_frames + 1:
         return [(a, b)]
     valleys = _valleys(window)
-    typical = _typical_valley(valleys)
+    typical = _typical_valley(valleys, c, a, b)
 
     cuts: list[int] = []
     last = 0
