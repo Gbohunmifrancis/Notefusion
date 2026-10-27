@@ -153,6 +153,12 @@ ONSET_CUE_VOICING = 0.3
 # hymn, sung and instrument corpora and Vocadito level or a hair up.  Dropping the guard instead
 # (reading the ripple off attack-free dips only) cost the studio hymn songs 0.02 and Vocadito's doh.
 RESTRIKE_CLEAR_FLUX = 12.0
+# The attack must come with the voice dipping too (pyin's voiced probability at the dip at this
+# fraction of the note's either side), as a consonant makes it: a drum leaking into a separated
+# stem strikes as sharply on every beat while the held note goes on, and cut the end of
+# belmont's first phrase into three.  Kept 63 of the Afrobeats set's 72 right cuts and 46 of the
+# hymn songs' 51, against 9 of 13 and 17 of 43 wrong ones.
+RESTRIKE_CLEAR_VOICING = 0.6
 # A song's singer slides onto a note: a scoop or an approach from a step below, held long
 # enough on the way to be segmented as a note of its own.  In a song's separated vocal
 # (``analyse(song=True)``) a span that starts a syllable — after a breath or a re-strike — and
@@ -711,12 +717,19 @@ def _is_restrike(ratio: float, typical: float, strong_attack: bool = False, clea
 
 
 def _clear_attack(c: Contour, k: int, a: int, b: int) -> bool:
-    """A re-strike no vibrato could fake: a sharp attack, or no voice at all at the dip."""
+    """A re-strike no vibrato or leaking drum could fake: no voice at all at the dip, or a sharp
+    attack with the voice dipping into it."""
     if c.onset is None:
         return False
     w = VALLEY_WIDTH_FRAMES
-    silent = float(np.min(c.voiced_prob[max(a, k - w) : min(b, k + w + 1)], initial=1.0)) <= 0.0
-    return silent or _attack_flux(c, k, a, b) >= RESTRIKE_CLEAR_FLUX
+    dip = float(np.min(c.voiced_prob[max(a, k - w) : min(b, k + w + 1)], initial=1.0))
+    if dip <= 0.0:
+        return True
+    if _attack_flux(c, k, a, b) < RESTRIKE_CLEAR_FLUX:
+        return False
+    sides = np.concatenate((c.voiced_prob[max(a, k - 4 * w) : max(a, k - w - 1)],
+                            c.voiced_prob[min(b, k + w + 2) : min(b, k + 4 * w + 1)]))
+    return sides.size > 0 and dip <= RESTRIKE_CLEAR_VOICING * float(np.median(sides))
 
 
 def _attack_flux(c: Contour, k: int, a: int, b: int) -> float:
