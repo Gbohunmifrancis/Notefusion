@@ -670,6 +670,13 @@ class Settings:
         return os.getenv("NF_SONG_BLEED", "1").strip().lower() not in ("0", "false", "no")
 
     @property
+    def sixteenths(self) -> bool:
+        """Write a line on sixteenths when its notes start between the eighths
+        (``transcriber._sixteenths``); only over the default eighth grid.  ``NF_SIXTEENTHS=0``
+        keeps every line on eighths."""
+        return os.getenv("NF_SIXTEENTHS", "1").strip().lower() not in ("0", "false", "no")
+
+    @property
     def quantize_divisors(self) -> tuple[int, ...]:
         """music21 quantize grid, as divisions per quarter note.
 
@@ -704,6 +711,13 @@ class Settings:
         time.  The remaining triplet defect is not a grid problem at all — Basic
         Pitch under-detects the phrase's final long note by ~0.35 s, and the coarse
         grid was rounding that shortfall back up.
+
+        So the grid is chosen per line instead (``sixteenths``): eighths unless a fifth of
+        the onsets sit between them, as an Afrobeats line's do.  No clip of the sung or
+        instrument corpora crosses that, 21 of the hymn corpus's 752 do (notes.f1 +0.002,
+        pickup +0.003, meter unchanged over all 752), 13 of the 127 studio songs do
+        (notes.f1 +0.005, pickup +0.016), and on the Afrobeats set it is notes.f1 +0.06
+        and rhythm.ioi_exact +0.30.
 
         Unparseable entries are dropped rather than raising, so a typo in a deploy
         cannot fail every transcription.

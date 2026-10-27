@@ -53,6 +53,7 @@ import { useSubscription } from "../lib/subscription";
 import {
   ascendingFlags,
   deriveSolfa,
+  divisionsFor,
   dohHeader,
   dohLetter,
   dohPitchClass,
@@ -578,7 +579,7 @@ export function ResultScreen({ route, navigation }: Props) {
   ]);
 
   const hymn = useMemo(
-    () => (hasLyrics ? hymnRows(view.notes, lyrics, timeSignature) : []),
+    () => (hasLyrics ? hymnRows(view.notes, lyrics, timeSignature, 4, divisionsFor(view.notes)) : []),
     [hasLyrics, view.notes, lyrics, timeSignature],
   );
 
@@ -683,7 +684,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
   /** One chord line per grid solfa line, character-aligned with the bars below. Grid layout only. */
   const chordLines = useMemo(
-    () => (chordView && solfaStyle === "grid" ? chordRows(chordView, view.solfaLines, timeSignature) : null),
+    () => (chordView && solfaStyle === "grid" ? chordRows(chordView, view.solfaLines, timeSignature, divisionsFor(view.notes)) : null),
     [chordView, solfaStyle, view.solfaLines, timeSignature],
   );
 

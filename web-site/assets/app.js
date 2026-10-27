@@ -3478,7 +3478,7 @@
     var hymn = $("r-hymn"); hymn.innerHTML = ""; hymnCells = [];
     if (hasChords) { hymnCells = N.renderGrid(hymn, N.grid(result.notes || [], current.lyrics, result.chords, result.timeSignature), hasLyrics); return; }
     if (!hasLyrics) return;
-    var bpb = C.beatsPerBar(result.timeSignature);
+    var bpb = C.beatsPerBar(result.timeSignature), cellBeats = 1 / C.divisionsFor(result.notes || []);
     C.hymnRows(result.notes || [], current.lyrics, result.timeSignature).forEach(function (bars, r) {
       var table = document.createElement("table"); table.className = "hymn"; var tr = document.createElement("tr");
       bars.forEach(function (bar, b) {
@@ -3487,7 +3487,7 @@
           var span = document.createElement("span"); span.className = "cell";
           var bEl = document.createElement("b"); bEl.textContent = cell.solfa; var iEl = document.createElement("i"); iEl.textContent = cell.lyric;
           span.appendChild(bEl); span.appendChild(iEl); td.appendChild(span);
-          hymnCells.push({ el: bEl, beat: (r * 4 + b) * bpb + c * 0.5 });
+          hymnCells.push({ el: bEl, beat: (r * 4 + b) * bpb + c * cellBeats });
         });
         tr.appendChild(td);
       });

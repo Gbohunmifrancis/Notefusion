@@ -122,11 +122,24 @@
     notes.forEach(function (n) { end = Math.max(end, n.startBeat + Math.max(0, n.durBeats)); });
     return Math.max(1, Math.ceil(end / beatsPerBar(ts) - 1e-9));
   }
+  /**
+   * Cells per beat a sheet needs: 4 when a note starts or ends between the eighths, else 2, so a
+   * line read on sixteenths never puts two notes in one cell ("d+r"). Mirrors the worker's
+   * solfa_render.divisions_for and mobile lib/solfa.ts divisionsFor.
+   */
+  function divisionsFor(notes) {
+    for (var i = 0; i < notes.length; i++) {
+      var at = [notes[i].startBeat, notes[i].startBeat + Math.max(0, notes[i].durBeats)];
+      for (var k = 0; k < 2; k++) if (Math.abs(at[k] * 2 - Math.round(at[k] * 2)) > 0.01) return 4;
+    }
+    return 2;
+  }
   /** Cells of the solfa grid, each with the lyric syllable sung there; rows of four bars. */
   function hymnRows(notes, lyrics, ts, barsPerLine) {
     barsPerLine = barsPerLine || 4;
     if (!notes.length) return [];
-    var cellBeats = 0.5, cellsPerBar = Math.max(1, Math.round(beatsPerBar(ts) * 2));
+    var divisions = divisionsFor(notes);
+    var cellBeats = 1 / divisions, cellsPerBar = Math.max(1, Math.round(beatsPerBar(ts) * divisions));
     var bars = barCount(notes, ts);
     var under = lyricsUnderNotes(notes, lyrics || "");
     var ordered = notes.map(function (n, i) { return { n: n, i: i, q: Math.floor(n.startBeat / cellBeats + 0.5) * cellBeats }; })
@@ -721,7 +734,7 @@
   }
 
   window.NfChoir = {
-    parseKey: parseKey, label: label, partReference: partReference, keyHeader: keyHeader, renderLines: renderLines, hymnRows: hymnRows,
+    parseKey: parseKey, label: label, partReference: partReference, keyHeader: keyHeader, renderLines: renderLines, hymnRows: hymnRows, divisionsFor: divisionsFor,
     syllabify: syllabify, lyricsUnderNotes: lyricsUnderNotes, barCount: barCount, beatsPerBar: beatsPerBar,
     VOICES: VOICES, rangeReport: rangeReport, pitchName: pitchName, shiftKeyName: shiftKeyName,
     createPlayer: createPlayer, createTransport: createTransport, createPianoOutput: createPianoOutput, loadPiano: loadPiano, pianoNote: pianoNote

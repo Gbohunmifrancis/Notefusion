@@ -313,6 +313,20 @@ function beatsPerBar(timeSignature: string): number {
   return (num * 4) / den;
 }
 
+/**
+ * Cells per beat a sheet needs: 4 when a note starts or ends between the eighths, else 2, so
+ * a line read on sixteenths never puts two notes in one cell ("d+r"). Mirrors the worker's
+ * `solfa_render.divisions_for` and web `choir.js` `divisionsFor`.
+ */
+export function divisionsFor(notes: readonly { startBeat: number; durBeats: number }[]): number {
+  for (const n of notes) {
+    for (const at of [n.startBeat, n.startBeat + Math.max(0, n.durBeats)]) {
+      if (Math.abs(at * 2 - Math.round(at * 2)) > 0.01) return 4;
+    }
+  }
+  return 2;
+}
+
 /** Mirrors app/pipeline/solfa_render.py. */
 export function renderSolfaLines(
   notes: readonly NoteEvent[],
@@ -321,6 +335,7 @@ export function renderSolfaLines(
   divisionsPerBeat = 2,
 ): string[] {
   if (notes.length === 0) return [header];
+  divisionsPerBeat = Math.max(1, divisionsPerBeat, divisionsFor(notes));
   const cellBeats = 1 / Math.max(1, divisionsPerBeat);
   const barBeats = beatsPerBar(timeSignature);
   const cellsPerBar = Math.max(1, Math.round(barBeats * divisionsPerBeat));
@@ -374,6 +389,7 @@ export function renderSolfaLines(
 /**
  * Renders notes in formal Curwen Tonic Sol-fa notation.
  * Uses traditional barlines |, beat delimiters :, sub-beat dots ., and held dashes -.
+ * Quarters, on a sheet that has them, within their half: `d,r . m,f`, `d . ,r`, `d,r`.
  */
 export function renderCurwenLines(
   notes: readonly NoteEvent[],
@@ -385,7 +401,8 @@ export function renderCurwenLines(
 
   const barBeats = beatsPerBar(timeSignature);
   const beatsPerBarCount = Math.max(1, Math.round(barBeats));
-  const divisionsPerBeat = 2;
+  const divisionsPerBeat = divisionsFor(notes);
+  const half = divisionsPerBeat / 2;
   const cellBeats = 1.0 / divisionsPerBeat;
   const cellsPerBar = beatsPerBarCount * divisionsPerBeat;
 
@@ -410,9 +427,7 @@ export function renderCurwenLines(
     const beatStrings: string[] = [];
     for (let beatIdx = 0; beatIdx < beatsPerBarCount; beatIdx++) {
       const c0 = (b * beatsPerBarCount + beatIdx) * divisionsPerBeat;
-      const c1 = c0 + 1;
-
-      const hasSubbeat = (startsByCell.get(c1)?.length ?? 0) > 0;
+      const startsAt = (cIdx: number): boolean => (startsByCell.get(cIdx)?.length ?? 0) > 0;
 
       const cellToken = (cIdx: number): string => {
         const tStart = cIdx * cellBeats;
@@ -431,13 +446,18 @@ export function renderCurwenLines(
         return " ";
       };
 
-      const tok0 = cellToken(c0);
-      if (hasSubbeat) {
-        const tok1 = cellToken(c1);
-        beatStrings.push(`${tok0} . ${tok1}`);
-      } else {
-        beatStrings.push(tok0);
-      }
+      // A half beat, split at its quarter when a note starts there.
+      const halfBeat = (first: number, opensBeat: boolean): string => {
+        let token = opensBeat || startsAt(first) ? cellToken(first) : "";
+        if (half > 1 && startsAt(first + 1)) token += `,${cellToken(first + 1)}`;
+        return token;
+      };
+
+      let beat = halfBeat(c0, true);
+      let second = false;
+      for (let c = c0 + half; c < c0 + divisionsPerBeat; c++) second = second || startsAt(c);
+      if (second) beat += ` . ${halfBeat(c0 + half, false)}`;
+      beatStrings.push(beat);
     }
     barStrings.push(beatStrings.join(" : "));
   }

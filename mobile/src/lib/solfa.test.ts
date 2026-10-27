@@ -1,6 +1,15 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { ascendingFlags, deriveSolfa, partReference, referenceDoh } from "./solfa.ts";
+import {
+  ascendingFlags,
+  deriveSolfa,
+  divisionsFor,
+  partReference,
+  referenceDoh,
+  renderCurwenLines,
+  renderSolfaLines,
+} from "./solfa.ts";
+import type { NoteEvent } from "../api/types.ts";
 
 // The hymn-book table: the lock-step contract. The same rows, with the same expected strings,
 // are in tests/NoteFusion.Tests/Solfa/HymnBookSolfaTests.cs, server/tests/test_solfa.py and
@@ -97,4 +106,41 @@ test("a chromatic is named for where it goes, otherwise the hymn-book default", 
   assert.equal(ascendingFlags([67, 66, 67], 5)[1], true); // What a Friend bar 9: r de r
   assert.deepEqual([61, 63, 66, 68, 70].map((p) => ascendingFlags([p], 0)[0]), [true, false, true, true, false]);
   assert.deepEqual(ascendingFlags([], 0), []);
+});
+
+// Quarter beats: the same cases as the worker's tests/test_solfa_render.py.
+const line = (...notes: [number, number, string][]): NoteEvent[] =>
+  notes.map(([startBeat, durBeats, solfa]) => ({
+    pitchMidi: 60, startBeat, durBeats, degree: 1, solfa, octaveMark: "", conf: 1,
+  }));
+
+test("a sheet on eighths keeps two cells a beat and one on sixteenths gets four", () => {
+  assert.equal(divisionsFor(line([0, 1, "d"], [1, 0.5, "r"], [1.5, 2.5, "m"])), 2);
+  assert.equal(divisionsFor(line([0, 0.75, "d"], [0.75, 0.25, "r"])), 4);
+  assert.equal(divisionsFor(line([0, 0.25, "d"], [0.5, 0.5, "r"])), 4); // ends between
+  assert.equal(divisionsFor([]), 2);
+});
+
+test("the grid gives sixteenths a cell each instead of a chord", () => {
+  const lines = renderSolfaLines(line([0, 0.25, "d"], [0.25, 0.25, "r"], [0.5, 0.5, "m"], [1, 3, "f"]), "Doh is C", "4/4");
+  assert.equal(lines[1], "| d r m - f - - - - - - - - - - - |");
+});
+
+test("curwen writes quarters within their half", () => {
+  const four = line([0, 0.25, "d"], [0.25, 0.25, "r"], [0.5, 0.25, "m"], [0.75, 0.25, "f"], [1, 3, "s"]);
+  assert.equal(renderCurwenLines(four, "Doh is C")[1], "| d,r . m,f : s : - : - |");
+  const dotted = line([0, 0.75, "d"], [0.75, 0.25, "r"], [1, 3, "m"]);
+  assert.equal(renderCurwenLines(dotted, "Doh is C")[1], "| d . ,r : m : - : - |");
+  const snap = line([0, 0.25, "d"], [0.25, 0.75, "r"], [1, 0.5, "m"], [1.5, 0.25, "f"], [1.75, 2.25, "s"]);
+  assert.equal(renderCurwenLines(snap, "Doh is C")[1], "| d,r : m . f,s : - : - |");
+  // A sheet on eighths reads exactly as it always has.
+  const eighths = line([0, 1, "d"], [1, 0.5, "r"], [1.5, 0.5, "m"], [2, 2, "f"]);
+  assert.equal(renderCurwenLines(eighths, "Doh is C")[1], "| d : r . m : f : - |");
+});
+
+test("the lyric grid gives sixteenths a cell each at the sheet's divisions", async () => {
+  const { hymnRows } = await import("./choir.ts");
+  const notes = line([0, 0.25, "d"], [0.25, 0.25, "r"], [0.5, 0.5, "m"], [1, 3, "f"]);
+  const bar = hymnRows(notes, "a b c d", "4/4", 4, divisionsFor(notes))[0]![0]!;
+  assert.deepEqual(bar.slice(0, 5).map((c) => [c.solfa, c.lyric]), [["d", "a"], ["r", "b"], ["m", "c"], ["-", ""], ["f", "d"]]);
 });

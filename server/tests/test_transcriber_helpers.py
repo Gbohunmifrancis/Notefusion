@@ -2293,3 +2293,29 @@ class TestTempoOnsets:
 
     def test_the_trackers_estimate_is_offered_at_the_bar_rate_too(self):
         assert 4.0 in transcriber._TRACKER_LEVEL_FACTORS and 0.25 in transcriber._TRACKER_LEVEL_FACTORS
+
+
+class TestSixteenths:
+    """A line goes on sixteenths only when a fair share of its notes start between eighths."""
+
+    BPM = 100.0
+    BEAT = 60.0 / BPM
+
+    def test_a_line_on_eighths_stays_on_eighths_however_loosely_it_is_sung(self):
+        rng = np.random.default_rng(0)
+        beats = np.arange(0.0, 16.0, 0.5)
+        onsets = beats * self.BEAT + rng.normal(0.0, 0.03, beats.size)  # 30 ms of slack
+        assert not transcriber._sixteenths(onsets, self.BPM, 0.0)
+
+    def test_a_line_starting_on_the_e_and_the_a_goes_on_sixteenths(self):
+        # Afrobeats: half the notes on the second or fourth sixteenth of the beat.
+        beats = np.array([0.0, 0.25, 0.75, 1.0, 1.5, 1.75, 2.25, 2.5, 3.0, 3.75, 4.25, 4.5])
+        assert transcriber._sixteenths(beats * self.BEAT + 0.4, self.BPM, 0.4)
+
+    def test_one_dotted_rhythm_in_a_hymn_does_not(self):
+        beats = np.concatenate([np.arange(0.0, 7.0, 1.0), [7.0, 7.75], np.arange(8.0, 16.0, 1.0)])
+        assert not transcriber._sixteenths(beats * self.BEAT, self.BPM, 0.0)
+
+    def test_too_few_notes_say_nothing(self):
+        beats = np.array([0.0, 0.25, 0.75, 1.25])
+        assert not transcriber._sixteenths(beats * self.BEAT, self.BPM, 0.0)

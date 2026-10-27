@@ -4165,6 +4165,31 @@ _GRID_REFINE_PHASE_STEPS = 201
 # hop's +-11.6 ms out over many of them.  Matches ``_grid_bpm``'s own floor.
 _GRID_REFINE_MIN_ONSETS = 4
 
+# ── Sixteenths (``_sixteenths``) ──────────────────────────────────────────────
+# A line is written on sixteenths when at least this share of its onsets sits nearer an odd
+# sixteenth than any eighth (more than ``_SIXTEENTH_OFF`` of an eighth step from one), and on
+# the eighths it has always used otherwise.
+_SIXTEENTH_SHARE = 0.2
+_SIXTEENTH_OFF = 0.3
+_SIXTEENTH_MIN_ONSETS = 8
+
+
+def _sixteenths(onsets: np.ndarray, bpm: float, beat_origin: float) -> bool:
+    """Whether a line needs the sixteenth grid: a fair share of its notes start between eighths.
+
+    Eighths are the grid by measurement (``settings.quantize_divisors``), and stay it: a
+    hymn's one dotted rhythm or a sung line's loose timing leaves next to no onset halfway
+    between two eighths at the tempo it was read at, while an Afrobeats line starts half
+    its notes on the "e" or "a" of the beat, and every one of those was being moved an
+    eighth or merged.
+    """
+    if onsets.size < _SIXTEENTH_MIN_ONSETS or bpm <= 0.0:
+        return False
+    steps = (onsets - beat_origin) * (bpm / 60.0) * 2.0
+    off = np.abs(steps - np.round(steps)) > _SIXTEENTH_OFF
+    return float(np.mean(off)) >= _SIXTEENTH_SHARE
+
+
 # ── Level refinement (``_level_residual``) ────────────────────────────────────
 # How far a *candidate* tempo may move before its grid fit is measured for the level
 # choice.  The candidates arrive from one median interval or from librosa's lag grid, and
@@ -5794,17 +5819,28 @@ def _transcribe_wav(
         rhythm_y, rhythm_events, tempo_override, post=post, sr=sr, mix=from_mix
     )
     beat_origin = _beat_origin(beat_times, rhythm_events[0].start, bpm) if settings.beat_align else 0.0
-    if settings.grid_refine:
+    onsets = _tempo_onsets(rhythm_events)[0]
+
+    def refined(divisors: tuple[int, ...]) -> tuple[float, float]:
+        if not settings.grid_refine:
+            return bpm, beat_origin
         # A tap-in override says how fast the piece is (TRD par. 5), so band=0.0 leaves the
         # BPM alone and refines only the phase — which the override says nothing about.
         # Nor do the singer's onsets get to move a BPM measured on the whole mix.
-        bpm, beat_origin = _refine_grid(
-            _tempo_onsets(rhythm_events)[0],
-            bpm,
-            beat_origin,
-            settings.quantize_divisors,
+        return _refine_grid(
+            onsets, bpm, beat_origin, divisors,
             band=0.0 if tempo_override is not None or from_mix else _GRID_REFINE_BAND,
         )
+
+    grid = settings.quantize_divisors
+    on_eighths = refined(grid)
+    if settings.sixteenths and grid == (2,) and _sixteenths(onsets, *on_eighths):
+        # Measured again from the start on the grid the notes will snap to: refined on the
+        # eighths first, the beat's phase sits where the notes between them pulled it.
+        grid = (4,)
+        bpm, beat_origin = refined(grid)
+    else:
+        bpm, beat_origin = on_eighths
     sec_to_beats = bpm / 60.0
 
     # ── 7b. Chords ────────────────────────────────────────────────────────────
@@ -5879,12 +5915,12 @@ def _transcribe_wav(
         # onset, so nothing should clamp here.
         s.insert(max(0.0, (evt.start - beat_origin) * sec_to_beats), n)
     heard_at = {id(n): float(n.offset) for n in s.notes}
-    s.quantize(settings.quantize_divisors, processOffsets=True, processDurations=True, inPlace=True)
+    s.quantize(grid, processOffsets=True, processDurations=True, inPlace=True)
     if mode == "chords":
         # A chord sheet's top line is kept a line by its own rule.
         _one_line(s)
     elif mode != "poly":
-        _one_note_per_slot(s, 1.0 / settings.quantize_divisors[0], heard_at)
+        _one_note_per_slot(s, 1.0 / grid[0], heard_at)
 
     # ── 8b. Meter and bar lines ───────────────────────────────────────────────
     # A time signature given always wins; without one the meter is read off the quantized
@@ -6093,7 +6129,7 @@ def _transcribe_wav(
         notes,
         solfa.doh_header(doh_pc),
         time_signature=time_signature,
-        divisions_per_beat=settings.quantize_divisors[0],
+        divisions_per_beat=grid[0],
     )
 
     # ── 10b. Four-part harmony ────────────────────────────────────────────────
@@ -6189,7 +6225,7 @@ def _transcribe_wav(
         # one sheet that has a backing to be played over.
         beat_times_sec=_beat_map(
             beat_origin, bpm, heard, max(n.start_beat + n.dur_beats for n in notes),
-            step=1.0 / settings.quantize_divisors[0] if len(settings.quantize_divisors) == 1 else None)
+            step=1.0 / grid[0] if len(grid) == 1 else None)
         if tempo_source is not None else None,
         pickup_beats=pickup,
         # Read off the events rather than re-testing duration against the cap, so this
