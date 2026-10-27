@@ -143,6 +143,13 @@ VALLEY_WIDTH_FRAMES = 3
 ONSET_CUE_FLUX = 2.0
 ONSET_CUE_STRONG_FLUX = 4.0
 ONSET_CUE_VOICING = 0.3
+# ...and the ripple test (TREMOLO_REL) gives way to an attack no vibrato makes: spectral flux at
+# this multiple of the clip's typical voiced frame, or pyin hearing no voice at all at the dip
+# (a stop's silence).  A chant re-strikes one pitch every sixteenth, so its "ordinary" dip is a
+# re-strike's own and none could be cut: 101 of the Afrobeats set's 303 merged repeats.  Read off
+# every cut that would newly pass, right against wrong: flux 15 and up on the Afrobeats set's and
+# 12 and up on the studio hymn songs' right ones (median), 6.5 and 4.6 on the wrong ones.
+RESTRIKE_CLEAR_FLUX = 12.0
 # A song's singer slides onto a note: a scoop or an approach from a step below, held long
 # enough on the way to be segmented as a note of its own.  In a song's separated vocal
 # (``analyse(song=True)``) a span that starts a syllable — after a breath or a re-strike — and
@@ -688,24 +695,25 @@ def _valleys(window: np.ndarray) -> list[tuple[int, float]]:
     return valleys
 
 
-def _typical_valley(valleys: list[tuple[int, float]], c: Contour | None = None, a: int = 0, b: int = 0) -> float:
+def _typical_valley(valleys: list[tuple[int, float]]) -> float:
     """The span's ordinary amplitude ripple — a vowel sung with vibrato through a formant
-    dips at the vibrato rate, and a re-strike has to be clearly deeper than that.
-
-    Read only off the dips with no new attack (``_onset_cue``), given the contour: a chant
-    re-strikes one pitch every sixteenth, and with its own re-strikes counted as the ripple
-    each was as deep as the "ordinary" and none could be cut (101 of the Afrobeats set's
-    303 merged repeats).  A vibrato's ripple carries no attack, so a held note's is as before.
-    """
-    if c is not None and c.onset is not None:
-        valleys = [(k, ratio) for k, ratio in valleys if not _onset_cue(c, a + k, a, b)]
+    dips at the vibrato rate, and a re-strike has to be clearly deeper than that."""
     return float(np.median([ratio for _, ratio in valleys])) if len(valleys) >= 3 else 1.0
 
 
-def _is_restrike(ratio: float, typical: float, strong_attack: bool = False) -> bool:
-    if ratio > TREMOLO_REL * typical:
+def _is_restrike(ratio: float, typical: float, strong_attack: bool = False, clear_attack: bool = False) -> bool:
+    if ratio > TREMOLO_REL * typical and not clear_attack:
         return False
     return ratio < REARTICULATION_FRAC or (strong_attack and ratio < REARTICULATION_SOFT_FRAC)
+
+
+def _clear_attack(c: Contour, k: int, a: int, b: int) -> bool:
+    """A re-strike no vibrato could fake: a sharp attack, or no voice at all at the dip."""
+    if c.onset is None:
+        return False
+    w = VALLEY_WIDTH_FRAMES
+    silent = float(np.min(c.voiced_prob[max(a, k - w) : min(b, k + w + 1)], initial=1.0)) <= 0.0
+    return silent or _attack_flux(c, k, a, b) >= RESTRIKE_CLEAR_FLUX
 
 
 def _attack_flux(c: Contour, k: int, a: int, b: int) -> float:
@@ -737,14 +745,15 @@ def _has_rearticulation(c: Contour, a_start: int, a_end: int, b_start: int, b_en
         return True  # an unvoiced gap: a consonant or a breath
     window = c.rms_fast[a_start:b_end]
     valleys = _valleys(window)
-    typical = _typical_valley(valleys, c, a_start, b_end)
+    typical = _typical_valley(valleys)
     junction = a_end - a_start
     near = [(ratio, k) for k, ratio in valleys if abs(k - junction) <= VALLEY_WIDTH_FRAMES]
     if not near:
         return False
     ratio, k = min(near)
     strong = _attack_flux(c, a_start + k, a_start, b_end) >= ONSET_CUE_STRONG_FLUX
-    return _is_restrike(ratio, typical, strong) and _onset_cue(c, a_start + k, a_start, b_end)
+    clear = _clear_attack(c, a_start + k, a_start, b_end)
+    return _is_restrike(ratio, typical, strong, clear) and _onset_cue(c, a_start + k, a_start, b_end)
 
 
 def _split_on_valleys(c: Contour, a: int, b: int) -> list[tuple[int, int]]:
@@ -755,7 +764,7 @@ def _split_on_valleys(c: Contour, a: int, b: int) -> list[tuple[int, int]]:
     if window.size < 2 * min_frames + 1:
         return [(a, b)]
     valleys = _valleys(window)
-    typical = _typical_valley(valleys, c, a, b)
+    typical = _typical_valley(valleys)
 
     cuts: list[int] = []
     last = 0
@@ -763,7 +772,7 @@ def _split_on_valleys(c: Contour, a: int, b: int) -> list[tuple[int, int]]:
         if k < min_frames or k > window.size - min_frames or k - last < min_frames:
             continue
         strong = _attack_flux(c, a + k, a, b) >= ONSET_CUE_STRONG_FLUX
-        if _is_restrike(ratio, typical, strong) and _onset_cue(c, a + k, a, b):
+        if _is_restrike(ratio, typical, strong, _clear_attack(c, a + k, a, b)) and _onset_cue(c, a + k, a, b):
             cuts.append(k)
             last = k
     bounds = [0, *cuts, window.size]
