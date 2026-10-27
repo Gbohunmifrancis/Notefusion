@@ -173,6 +173,14 @@ RESTRIKE_CLEAR_VOICING = 0.6
 # Only from below: a step down into a longer note is as often a written dotted figure (s. f m,
 # the short note re-sung on a voiced consonant the engine cannot hear); from below alone
 # measured the same on the dev half (0.774).
+# A song's separated vocal also carries notes no one sang far under the line: pyin locked onto a
+# subharmonic (a sixth of the voice, 31 semitones down, a fifth off in pitch class) or the band
+# leaking through.  A note more than this many semitones under the line's median is one of them
+# (``drop_ghosts``): no sung line of the studio songs, the hymn songs or the Afrobeats set goes
+# more than an octave under its median (9, 10 and 12), and all 381 decoded notes more than 12
+# under were ghosts.  Their pitch classes also voted in the scale fit (a ta in a tune that never
+# sings one made its subdominant the doh).
+GHOST_BELOW_SEMITONES = 15.0
 SCOOP_MAX_SEC = 0.35
 SCOOP_MIN_RATIO = 1.5
 SCOOP_MAX_STEP = 2.5
@@ -889,6 +897,14 @@ def clean(c: Contour, spans: list[tuple[int, int]]) -> list[tuple[int, int, floa
     return [(a, b, m) for a, b, m in out if (b - a) * hop >= MIN_NOTE_SEC * 0.75]
 
 
+def drop_ghosts(spans: list[tuple[int, int, float]]) -> list[tuple[int, int, float]]:
+    """A song's spans less those far under its line (``GHOST_BELOW_SEMITONES``): not sung."""
+    if not spans:
+        return spans
+    floor = float(np.median([m for _, _, m in spans])) - GHOST_BELOW_SEMITONES
+    return [x for x in spans if x[2] >= floor]
+
+
 def absorb_scoops(c: Contour, spans: list[tuple[int, int, float]]) -> list[tuple[int, int, float]]:
     """Fold a singer's slide up onto a note into the note: see ``SCOOP_MAX_SEC``.
 
@@ -1393,7 +1409,7 @@ def analyse(y: np.ndarray, sr: int = SAMPLE_RATE, contour: Contour | None = None
     if contour is None:
         spans = fix_octaves(y, sr, c, spans)
     if song:
-        spans = absorb_scoops(c, spans)
+        spans = drop_ghosts(absorb_scoops(c, spans))
     hop = _hop_sec(c)
 
     # Noise goes before the scale fit: a span too quiet and too unvoiced to be written must not
