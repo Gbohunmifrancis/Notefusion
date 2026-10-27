@@ -1047,6 +1047,9 @@ def fit_scale_detail(midis: Sequence[float], weights: Sequence[float]) -> ScaleF
     best_cost, best_theta = root_costs(m, w)
     order = sorted(range(12), key=lambda r: float(best_cost[r]))
     low = float(best_cost[order[0]])
+    import os as _os  # TEMP probe
+    if _os.environ.get("NF_PROBE_FIT"):
+        print(f"[fitprobe] per_weight={low / float(w.sum()):.5f} runner={float(best_cost[order[1]]) / float(w.sum()):.5f} n={m.size}", flush=True)
     tied = [r for r in order if float(best_cost[r]) <= low * (1.0 + SCALE_FIT_TIE_RATIO) + SCALE_FIT_TIE]
 
     def twins(a: int, b: int) -> bool:
