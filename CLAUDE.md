@@ -74,7 +74,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   pending jobs are capped (`NF_MAX_PENDING_JOBS`, 503 past it); completion webhooks go only to
   `NF_CALLBACK_HOSTS` (default `api,localhost,127.0.0.1`) and carry `X-Api-Key`, which the API requires.
   Melody mode (hummed/sung clips) is decoded by `app/pipeline/vocal.py` — pyin f0 contour,
-  hysteresis note segmentation, noise spans dropped, then scale-fit notation (`write_in_scale`:
+  hysteresis note segmentation, noise spans dropped (a same-pitch re-strike cut at a level dip with a new attack, the vibrato guard overruled by a clear one, `RESTRIKE_CLEAR_FLUX` or no voice at the dip, so a chant's repeats are notes), then scale-fit notation (`write_in_scale`:
   a long take's steady drift, at most 1 st/min, is taken out first; `fit_scale_detail` finds the
   tuning offset and the major scale together, settling a quarter-tone singer's two readings on
   the simpler key signature and then roots within `SCALE_FIT_TIE_RATIO` of each other on the tonal
