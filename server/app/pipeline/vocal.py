@@ -242,6 +242,12 @@ SCALE_FIT_SURE_TONAL_MARGIN = 0.25
 # recording conditions: 18 of the 22 wrong dohs had another reading this close (the true
 # doh, on 16), against 67 of the 148 right ones.
 SCALE_FIT_CROWD_RATIO = 0.05
+# Every ratio above is taken over the best fit's cost, but never over less than this much per
+# unit of note length (a 0.1-semitone scatter): a voice sung, played or auto-tuned dead in tune
+# fits its scale at next to no cost, and one short misheard note then reads as an
+# overwhelming lead (a sixteenth's slide read as ta made a pentatonic tune's subdominant
+# "certain").  Real singers sit above it (Vocadito's 5th percentile is 0.021 a unit).
+SCALE_FIT_COST_FLOOR = float(__import__("os").environ.get("NF_PROBE_FLOOR", "0.01"))  # TEMP override
 # A fitted offset beyond this is a singer near a quarter-tone off, whose notes read nearly
 # as well in the scale a semitone over: when the two tie the key signature chooses, not the
 # audio, and a little more scatter would have made them tie, so the doh is at best an even
@@ -1047,10 +1053,9 @@ def fit_scale_detail(midis: Sequence[float], weights: Sequence[float]) -> ScaleF
     best_cost, best_theta = root_costs(m, w)
     order = sorted(range(12), key=lambda r: float(best_cost[r]))
     low = float(best_cost[order[0]])
-    import os as _os  # TEMP probe
-    if _os.environ.get("NF_PROBE_FIT"):
-        print(f"[fitprobe] per_weight={low / float(w.sum()):.5f} runner={float(best_cost[order[1]]) / float(w.sum()):.5f} n={m.size}", flush=True)
-    tied = [r for r in order if float(best_cost[r]) <= low * (1.0 + SCALE_FIT_TIE_RATIO) + SCALE_FIT_TIE]
+    # What the ratios are taken over (``SCALE_FIT_COST_FLOOR``).
+    scale = max(low, SCALE_FIT_COST_FLOOR * float(w.sum()))
+    tied = [r for r in order if float(best_cost[r]) <= low + SCALE_FIT_TIE_RATIO * scale + SCALE_FIT_TIE]
 
     def twins(a: int, b: int) -> bool:
         # One reading written twice: the same notes a semitone over, at the wrap of the
@@ -1068,8 +1073,8 @@ def fit_scale_detail(midis: Sequence[float], weights: Sequence[float]) -> ScaleF
     def margin_over(root: int) -> float:
         rivals = [float(best_cost[r]) for r in order if r != root and not twins(r, root)]
         runner_up = rivals[0] if rivals else np.inf
-        if low > 0.0:
-            return runner_up / low - 1.0
+        if scale > 0.0:
+            return (runner_up - low) / scale
         return 0.0 if runner_up <= SCALE_FIT_TIE else 1.0
 
     # The readings the cost barely tells apart.  Twins are one reading, and so are roots the
@@ -1077,7 +1082,7 @@ def fit_scale_detail(midis: Sequence[float], weights: Sequence[float]) -> ScaleF
     # those, and its own margin says how surely.
     readings: list[int] = []
     for r in order:
-        if float(best_cost[r]) > low * (1.0 + SCALE_FIT_CROWD_RATIO) + SCALE_FIT_TIE:
+        if float(best_cost[r]) > low + SCALE_FIT_CROWD_RATIO * scale + SCALE_FIT_TIE:
             break
         if not any(twins(q, r) or abs(float(best_cost[q] - best_cost[r])) <= SCALE_FIT_TIE for q in readings):
             readings.append(r)
@@ -1085,7 +1090,7 @@ def fit_scale_detail(midis: Sequence[float], weights: Sequence[float]) -> ScaleF
     def alternatives_to(root: int) -> tuple[int, ...]:
         offered: list[int] = []
         for r in order:
-            if float(best_cost[r]) > low * (1.0 + SCALE_FIT_CROWD_RATIO) + SCALE_FIT_TIE:
+            if float(best_cost[r]) > low + SCALE_FIT_CROWD_RATIO * scale + SCALE_FIT_TIE:
                 break
             if r == root or twins(r, root):
                 continue

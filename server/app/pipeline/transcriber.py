@@ -3298,7 +3298,10 @@ def _rewrite_in_root(
     untuned = [float(e.pyin_midi) + fit.offset for e in events]
     durations = [e.end - e.start for e in events]
     costs, _offsets = vocal.root_costs(untuned, durations)
-    if costs[root] > DOH_MAX_COST_RATIO * float(costs.min()):
+    best = float(costs.min())
+    # Over the fit's cost floor, as the fit's own ratios are: dead in tune, one stray note
+    # would put every other root past the ratio.
+    if costs[root] - best > (DOH_MAX_COST_RATIO - 1.0) * max(best, vocal.SCALE_FIT_COST_FLOOR * sum(durations)):
         return None
     stabilities = [e.stability for e in events]
     offset, pitches = vocal.write_in_root(
