@@ -149,9 +149,10 @@ ONSET_CUE_VOICING = 0.3
 # re-strike's own and none could be cut: 101 of the Afrobeats set's 303 merged repeats.  Read off
 # every cut that would newly pass, right against wrong: flux 15 and up on the Afrobeats set's and
 # 12 and up on the studio hymn songs' right ones (median), 6.5 and 4.6 on the wrong ones.
-# Measured: Afrobeats notes.f1 0.712 -> 0.736 (recall +0.04, precision up too); studio songs,
-# hymn, sung and instrument corpora and Vocadito level or a hair up.  Dropping the guard instead
-# (reading the ripple off attack-free dips only) cost the studio hymn songs 0.02 and Vocadito's doh.
+# Measured (with RESTRIKE_CLEAR_VOICING): Afrobeats notes.f1 0.712 -> 0.733 (recall +0.03,
+# precision up too); studio songs, hymn, sung and instrument corpora and Vocadito level or a
+# hair up.  Dropping the guard instead (reading the ripple off attack-free dips only) cost the
+# studio hymn songs 0.02 and Vocadito's doh.
 RESTRIKE_CLEAR_FLUX = 12.0
 # The attack must come with the voice dipping too (pyin's voiced probability at the dip at this
 # fraction of the note's either side), as a consonant makes it: a drum leaking into a separated
