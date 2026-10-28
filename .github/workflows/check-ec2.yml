@@ -15,8 +15,9 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           # The server's ECDSA host key (the actions' SSH client checks that one); unset, the key goes unchecked.
           fingerprint: ${{ vars.EC2_HOST_FINGERPRINT }}
-          # The YouTube probe fetches on every rung (up to two minutes each), past the action's default ten.
-          command_timeout: 20m
+          # The YouTube probe fetches on every rung (up to two minutes each), past the action's default ten; the sheet
+          # music check reads a page with homr (seconds, five minutes at most).
+          command_timeout: 25m
           script: |
             # The repository is public, so this run's log is too: everything below goes through redact (addresses,
             # IPs, push tokens, JWTs and any long token-like string, share links included), and Caddy's access log
@@ -66,6 +67,12 @@ jobs:
             echo "== newest finished jobs: the first notes and the solfa lines"
             docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -x -c "SELECT left(\"JobId\",8) AS job, to_char(\"CreatedAtUtc\",'MM-DD HH24:MI') AS at, r->>'key' AS key, r->>'tempo' AS tempo, (SELECT string_agg((n->>'pitchMidi')||'@'||(n->>'startBeat')||'x'||(n->>'durBeats'), ' ' ORDER BY i) FROM jsonb_array_elements(r->'notes') WITH ORDINALITY AS t(n,i) WHERE i <= 90) AS first_notes, left((SELECT string_agg(x, ' | ') FROM jsonb_array_elements_text(r->'solfaLines') x), 700) AS solfa FROM (SELECT \"JobId\",\"CreatedAtUtc\",\"ResultJson\"::jsonb AS r FROM transcription_jobs WHERE \"ResultJson\" IS NOT NULL ORDER BY \"CreatedAtUtc\" DESC LIMIT 4) j ORDER BY \"CreatedAtUtc\" DESC;" || true
             echo "== cookies file"; ls -la /opt/notefusion/ytdlp-cookies.txt 2>/dev/null || echo "no cookies file"
+            # Whether the worker still reads printed music (app/pipeline/sheet_check.py): a known engraved page through
+            # homr and the score path a photo takes, against the hymn's own notes. Before the link probes, which can
+            # take the rest of the time.
+            echo "== sheet music check"
+            cd /opt/notefusion
+            timeout 300 docker compose -f docker-compose.prod.yml exec -T transcriber python -m app.pipeline.sheet_check || echo "(sheet music check failed or did not finish)"
             # What YouTube answers the worker right now: the worker's own probe (app/ingest/probe.py) shows the ladder as
             # configured (rungs, whether a proxy and the token sidecar are set and answer, cookie rows, yt-dlp), then has
             # each rung fetch ten seconds of two videos with the cookies, tokens and proxy the jobs use. A download, not
