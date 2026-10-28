@@ -12,7 +12,6 @@
   {"name": "Spotify album", "url": "https://open.spotify.com/album/6N9PS4QXF1D0OWPk0Sxtb4", "expect": "not_a_song_link"},
   {"name": "Instagram reel", "url": "https://www.instagram.com/reel/Chunk8-jurw/", "expect": "fetched"},
   {"name": "Instagram post", "url": "https://www.instagram.com/p/BQ0eAlwhDrw/", "expect": "fetched"},
-  {"name": "TikTok video", "url": "https://www.tiktok.com/@leenabhushan/video/6748451240264420610", "expect": "fetched"},
-  {"name": "TikTok short link", "url": "https://vm.tiktok.com/ZTR45GpSF/", "expect": "fetched"}
+  {"name": "TikTok video (off: NF_TIKTOK_LINKS)", "url": "https://www.tiktok.com/@leenabhushan/video/6748451240264420610", "expect": "not_supported"}
  ]
 }

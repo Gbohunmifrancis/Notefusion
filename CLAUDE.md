@@ -136,8 +136,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   (`report --songs --set afro`, `tests/accuracy/afro_songs.py`: 40 songs composed from their names in Afrobeats, amapiano
   and highlife styles — syncopated sixteenth-note lines, chants, runs, call and response, ad-libs, auto-tune — over the
   style's band, log drum and talking drum included; simulated stems; its own `afro_baseline.json`). Linked songs
-  (`POST /v1/transcribe/link`: YouTube, Spotify, Apple Music; Instagram reels and TikTok videos too, fetched themselves on the
-  first rung only with no store preview, a sign-in wall answered `post_refused` → `TRANS_LINK_POST_REFUSED`) are fetched by `app/ingest/links.py`
+  (`POST /v1/transcribe/link`: YouTube, Spotify, Apple Music; Instagram reels too, fetched themselves on the
+  first rung only with no store preview, a sign-in wall answered `post_refused` → `TRANS_LINK_POST_REFUSED`; TikTok is off
+  (`NF_TIKTOK_LINKS`, its extractor wants browser impersonation the image does not have): a TikTok link is refused at parse,
+  `not_supported` → `TRANS_LINK_NOT_SUPPORTED`, and no client names TikTok) are fetched by `app/ingest/links.py`
   (oEmbed metadata + yt-dlp; which links are songs is its `provider_of` alone: the C# `SongLinks`, web `songlink.js` and
   phone `lib/songLink` only find the link in pasted text and send any link, and one that is not a song comes back
   `not_a_song_link` → `TRANS_INVALID_LINK`; the lookup never holds a submit: one refused only for now (`TRANS_LINK_REFUSED`,

@@ -310,6 +310,7 @@ public class WorkerContractTests
     [InlineData("unavailable", "TRANS_LINK_UNAVAILABLE")]
     [InlineData("refused", "TRANS_LINK_REFUSED")]
     [InlineData("post_refused", "TRANS_LINK_POST_REFUSED")]
+    [InlineData("not_supported", "TRANS_LINK_NOT_SUPPORTED")]
     public async Task A_reason_the_worker_names_by_code_is_told_in_our_own_words(string code, string expected)
     {
         var body = $$$"""{"detail":{"message":"the worker's own sentence","code":"{{{code}}}"}}""";

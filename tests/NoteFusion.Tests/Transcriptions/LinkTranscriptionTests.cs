@@ -463,7 +463,7 @@ public class LinkTranscriptionTests
         var result = await SubmitLink(h, user, api, url);
 
         Assert.Equal("TRANS_INVALID_LINK", result.Error.Code);
-        Assert.Equal("Paste a link to a YouTube, Instagram or TikTok video, a Spotify track or an Apple Music song.", result.Error.Message);
+        Assert.Equal("Paste a link to a YouTube or Instagram video, a Spotify track or an Apple Music song.", result.Error.Message);
         Assert.Equal(url, api.LastUrl);
         Assert.Null(api.LastOptions);
         Assert.Equal(("parse", "not_a_song_link"),

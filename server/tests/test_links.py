@@ -1156,6 +1156,7 @@ def _fake_post(calls, info: str, fail: str = ""):
 
 
 def test_a_tiktok_video_is_named_by_its_sound_and_fetched_itself(monkeypatch, tmp_path):
+    monkeypatch.setattr(links.settings, "tiktok_links", True)
     calls = []
     info = '{"id": "7312345678901234567", "duration": 31, "title": "when the choir hits the high note #fyp", ' \
            '"track": "Way Maker", "artist": "Sinach", "uploader": "choirdaily", "thumbnail": "https://p.tiktokcdn.com/t.jpg"}'
@@ -1203,6 +1204,7 @@ def test_a_sign_in_wall_is_a_plain_refusal_with_no_preview(monkeypatch, tmp_path
 
 
 def test_a_missing_tiktok_video_is_unavailable(monkeypatch):
+    monkeypatch.setattr(links.settings, "tiktok_links", True)
     monkeypatch.setattr(links.subprocess, "run", _fake_post([], "", fail="ERROR: [TikTok] 731: Video not available, status code 10204"))
     with pytest.raises(LinkError) as caught:
         links.resolve_link("https://www.tiktok.com/@a/video/7312345678901234567")
@@ -1266,3 +1268,14 @@ def test_a_failed_link_job_says_where_it_stopped_and_why(monkeypatch):
             break
         time.sleep(0.02)
     assert (job.status, job.failure_stage, job.failure_code) == (STATUS_FAILED, "metadata", "refused")
+
+
+def test_a_tiktok_link_is_refused_at_once_while_tiktok_is_off(monkeypatch):
+    calls = []
+    monkeypatch.setattr(links.subprocess, "run", lambda *a, **k: calls.append(a) or None)
+    with pytest.raises(LinkError) as caught:
+        links.resolve_link("https://vm.tiktok.com/ZMabc123/")
+    assert (caught.value.code, caught.value.stage) == ("not_supported", "parse")
+    assert "TikTok links aren't supported yet" in str(caught.value)
+    assert calls == []  # nothing asked of TikTok
+    assert links.not_supported("https://www.youtube.com/watch?v=dQw4w9WgXcQ") is None

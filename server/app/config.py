@@ -44,6 +44,10 @@ class Settings:
     #: sent through it only after YouTube refused this server directly and with the fallback
     #: clients. A residential or ISP address is what gets past a datacenter block. Empty: off.
     ytdlp_proxy: str = os.getenv("NF_YTDLP_PROXY", "").strip()
+    #: TikTok links: off until they pass the link test matrix in production (``app.ingest.probe --links``).
+    #: yt-dlp's TikTok extractor wants browser impersonation, which the image does not install; while
+    #: off, a TikTok link is refused at once with ``not_supported`` rather than failing as "unavailable".
+    tiktok_links: bool = os.getenv("NF_TIKTOK_LINKS", "0").strip() == "1"
     #: Where the worker keeps the yt-dlp it updates itself to (``app.ingest.ytdlp_update``).
     #: Empty (the default, and tests): the yt-dlp the image was built with, never updated.
     ytdlp_update_dir: str = os.getenv("NF_YTDLP_UPDATE_DIR", "").strip()
