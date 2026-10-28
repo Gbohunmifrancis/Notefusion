@@ -9,7 +9,8 @@
  * every minute until one holds. The API closes each stream after ten minutes; it is opened again at once.
  *
  * One stream per tab, whoever follows it: the notices and the Users page follow `changed`, the Blog section's drafting
- * cards follow `blog` (a batch of drafts moved), the Support page and its nav badge `support` (a message or a read).
+ * cards follow `blog` (a batch of drafts moved), the Support page and its nav badge `support` (a message or a read), the
+ * Mail page `inbox` (new mail came in).
  * `ready` and the fallback tell every follower.
  */
 
@@ -25,7 +26,7 @@ const SETTLE_MS = 1_000;
 const FALLBACK_MS = 60_000;
 const BACKOFF_MS = [1_000, 2_000, 5_000, 10_000, 30_000];
 
-export type LiveEvent = "changed" | "blog" | "support";
+export type LiveEvent = "changed" | "blog" | "support" | "inbox";
 
 type Follower = { event: LiveEvent; onChange: () => void; settle: ReturnType<typeof setTimeout> | null };
 

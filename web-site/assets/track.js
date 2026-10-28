@@ -335,7 +335,15 @@
     leaveHooks.forEach(function (fn) { try { fn(); } catch (e) { /* a hook never blocks the batch */ } });
     beacon();
   }
-  function back() { left = false; }
+  function back() { left = false; present(); }
+
+  // A reader on one page sends nothing for minutes, so a tab in sight says it is still open every minute (and on coming
+  // back to it): the Traffic page's "on the site now". Held in the API's memory, never an event or a stored row.
+  function present() {
+    if (document.visibilityState !== "visible" || !navigator.sendBeacon) return;
+    try { navigator.sendBeacon(API + "/api/web/presence", JSON.stringify({ visitorId: visitorId, path: path() })); } catch (e) { /* only a count */ }
+  }
+  setInterval(present, 60000);
   window.addEventListener("pagehide", leave);
   window.addEventListener("pageshow", back);
   document.addEventListener("visibilitychange", function () { document.visibilityState === "hidden" ? leave() : back(); });

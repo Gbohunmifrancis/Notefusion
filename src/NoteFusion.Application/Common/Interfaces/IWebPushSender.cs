@@ -15,7 +15,18 @@ public sealed record WebPushNotification(string Title, string Body, string Tag, 
 public interface IWebPushSender
 {
     /// <summary>To the account's browsers of one audience: the web app's ("app") or the admin console's ("console").</summary>
-    Task SendAsync(Guid userId, WebPushNotification notification, CancellationToken ct = default, string audience = "app");
+    Task<WebPushReport> SendAsync(Guid userId, WebPushNotification notification, CancellationToken ct = default, string audience = "app");
+}
+
+/// <summary>
+/// What became of one send, per subscribed browser: delivered, gone (unsubscribed or expired, so removed), refused (a
+/// stale key or a bad request, counted) or unanswered (the push service busy or away). <paramref name="Off"/> when web
+/// push is off on this server. Most callers ignore it; the console's test shows it, so "on" is never a guess.
+/// </summary>
+public sealed record WebPushReport(bool Off, int Browsers, int Delivered, int Gone, int Refused, int Unanswered)
+{
+    public static readonly WebPushReport WebPushOff = new(true, 0, 0, 0, 0, 0);
+    public static readonly WebPushReport NoBrowsers = new(false, 0, 0, 0, 0, 0);
 }
 
 /// <summary>The VAPID application server key browsers subscribe with; null when web push is off.</summary>

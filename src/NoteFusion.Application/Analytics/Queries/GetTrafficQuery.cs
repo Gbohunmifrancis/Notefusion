@@ -53,6 +53,12 @@ public sealed class GetTrafficQueryHandler :
     /// <summary>"On the site now" means an event in this many minutes.</summary>
     public const int LiveMinutes = 5;
 
+    /// <summary>
+    /// ...or a heartbeat in this many: a tab in sight beats every minute (<see cref="IWebPresence"/>), so two minutes
+    /// without one means the reader has gone, or hidden the tab.
+    /// </summary>
+    public const int PresenceMinutes = 2;
+
     public const string Direct = "Direct";
     public const string Unknown = "Unknown";
 
@@ -64,11 +70,13 @@ public sealed class GetTrafficQueryHandler :
 
     private readonly IApplicationDbContext _db;
     private readonly IDateTimeProvider _clock;
+    private readonly IWebPresence? _presence;
 
-    public GetTrafficQueryHandler(IApplicationDbContext db, IDateTimeProvider clock)
+    public GetTrafficQueryHandler(IApplicationDbContext db, IDateTimeProvider clock, IWebPresence? presence = null)
     {
         _db = db;
         _clock = clock;
+        _presence = presence;
     }
 
     private sealed record Row(
@@ -142,13 +150,24 @@ public sealed class GetTrafficQueryHandler :
     public async Task<Result<TrafficLiveDto>> Handle(GetTrafficLiveQuery request, CancellationToken ct)
     {
         var since = _clock.UtcNow.AddMinutes(-LiveMinutes);
-        var recent = await _db.RealWebEvents()
+        var recent = (await _db.RealWebEvents()
             .Where(e => e.OccurredAtUtc >= since)
             .Select(e => new { e.VisitorId, e.Path, e.OccurredAtUtc })
-            .ToListAsync(ct);
+            .ToListAsync(ct))
+            .Select(e => new WebPresenceEntry(e.VisitorId, e.Path, e.OccurredAtUtc))
+            .ToList();
+        // A reader who stays on one page sends no event for minutes, only heartbeats: theirs count too, the team's not.
+        var beating = _presence?.Since(_clock.UtcNow.AddMinutes(-PresenceMinutes)) ?? [];
+        if (beating.Count > 0)
+        {
+            var ids = beating.Select(b => b.VisitorId).Distinct().ToList();
+            var internalOnes = (await _db.InternalVisitors().Where(v => ids.Contains(v)).Distinct().ToListAsync(ct))
+                .ToHashSet(StringComparer.Ordinal);
+            recent.AddRange(beating.Where(b => !internalOnes.Contains(b.VisitorId)));
+        }
         var latest = recent
             .GroupBy(e => e.VisitorId, StringComparer.Ordinal)
-            .Select(g => BlogEvents.NormalisePath(g.MaxBy(e => e.OccurredAtUtc)!.Path))
+            .Select(g => BlogEvents.NormalisePath(g.MaxBy(e => e.AtUtc)!.Path))
             .ToList();
         var pages = Top(latest.GroupBy(p => p, StringComparer.Ordinal).Select(g => new TrafficRowDto(g.Key, g.Count(), g.Count())));
         return new TrafficLiveDto(LiveMinutes, latest.Count, [.. pages]);

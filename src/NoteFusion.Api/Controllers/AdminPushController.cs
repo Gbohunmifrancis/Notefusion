@@ -5,6 +5,7 @@ using NoteFusion.Api.Auth;
 using NoteFusion.Api.Common;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Push.Commands;
+using NoteFusion.Application.Push.Queries;
 using NoteFusion.Core.Entities;
 
 namespace NoteFusion.Api.Controllers;
@@ -33,15 +34,28 @@ public sealed class AdminPushController : ApiControllerBase
     public async Task<IActionResult> Unsubscribe(WebPushUnsubscribeRequest body, CancellationToken ct)
         => HandleNoContent(await _sender.Send(new DeleteWebPushSubscriptionCommand(body.Endpoint), ct));
 
-    /// <summary>A test notification to this admin's console browsers, so the switch can show it works.</summary>
+    /// <summary>Whether this server still holds this browser's subscription (<paramref name="endpoint"/>) for the caller's console.</summary>
+    [HttpGet("subscriptions/status")]
+    public async Task<IActionResult> Status([FromQuery] string endpoint, [FromServices] ICurrentUser caller, CancellationToken ct)
+    {
+        if (caller.UserId is not { } id)
+            return Unauthorized();
+        return Ok(await _sender.Send(new GetWebPushSubscriptionStatusQuery(id, endpoint ?? "", WebPushSubscription.ConsoleAudience), ct));
+    }
+
+    /// <summary>
+    /// A test notification to this admin's console browsers, answered with what became of it per browser (delivered,
+    /// gone, refused, unanswered, or web push off), so the switch shows whether it works rather than assuming it does.
+    /// </summary>
     [HttpPost("test")]
     public async Task<IActionResult> Test([FromServices] IWebPushSender push, [FromServices] ICurrentUser caller, CancellationToken ct)
     {
         if (caller.UserId is not { } id)
             return Unauthorized();
-        await push.SendAsync(id, new WebPushNotification(
-            "Notifications are on", "Payments, sign-up waves and transcription floods will show here.", "nf-console-test", "/", "test"),
+        var report = await push.SendAsync(id, new WebPushNotification(
+            "Notifications are on", "Payments, new emails, support messages, sign-up waves and transcription floods will show here.",
+            "nf-console-test", "/", "test"),
             ct, WebPushSubscription.ConsoleAudience);
-        return NoContent();
+        return Ok(report);
     }
 }

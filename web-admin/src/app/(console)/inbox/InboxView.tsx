@@ -15,6 +15,8 @@ import {
   X,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+
+import { followLiveFeed, type LiveEvent } from "@/lib/liveFeed";
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 import {
@@ -554,7 +556,10 @@ function Mailbox<T extends { id: string }>({
   empty,
   renderItem,
   renderDetail,
+  follow,
 }: {
+  /** A live notice that means new items (the Inbox's `inbox`): the first page is read again, quietly. */
+  follow?: LiveEvent;
   load: (page: number, pageSize: number, signal: AbortSignal) => Promise<Paged<T>>;
   noun: string;
   empty: ReactNode;
@@ -596,6 +601,17 @@ function Mailbox<T extends { id: string }>({
     go(1);
     return () => abortRef.current?.abort();
   }, [go]);
+
+  // New mail: the first page is read again without the spinner; a later page is left as it is.
+  const pageRef = useRef(page);
+  pageRef.current = page;
+  useEffect(() => {
+    if (!follow) return;
+    return followLiveFeed(() => {
+      if (pageRef.current !== 1) return;
+      load(1, PAGE_SIZE, new AbortController().signal).then(setData).catch(() => undefined);
+    }, follow);
+  }, [follow, load]);
 
   const items = data?.items ?? [];
   const totalPages = data?.totalPages ?? 1;
@@ -722,6 +738,7 @@ export function InboxView() {
       {box === "inbox" ? (
         <Mailbox<InboxEmailSummary>
           key="inbox"
+          follow="inbox"
           load={loadInbox}
           noun="inbox"
           empty={<EmptyState />}

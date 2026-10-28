@@ -48,10 +48,10 @@ public sealed class WebPushSender : IWebPushSender
 
     private enum Outcome { Delivered, Gone, Refused, Unanswered }
 
-    public async Task SendAsync(Guid userId, WebPushNotification notification, CancellationToken ct = default, string audience = WebPushSubscription.AppAudience)
+    public async Task<WebPushReport> SendAsync(Guid userId, WebPushNotification notification, CancellationToken ct = default, string audience = WebPushSubscription.AppAudience)
     {
         if (!_keys.IsOn)
-            return;
+            return WebPushReport.WebPushOff;
 
         List<WebPushSubscription> subscriptions;
         try
@@ -65,11 +65,11 @@ public sealed class WebPushSender : IWebPushSender
         catch (Exception ex) when (!ct.IsCancellationRequested)
         {
             _logger.LogWarning(ex, "Could not read the web push subscriptions; web push not sent.");
-            return;
+            return WebPushReport.NoBrowsers;
         }
 
         if (subscriptions.Count == 0)
-            return;
+            return WebPushReport.NoBrowsers;
 
         var payload = JsonSerializer.Serialize(
             new WebPushPayload(notification.Title, notification.Body, notification.Tag, notification.Url, notification.Kind),
@@ -108,6 +108,8 @@ public sealed class WebPushSender : IWebPushSender
             // The browser unsubscribed (or another account took the endpoint) while we were sending.
             _logger.LogInformation(ex, "Web push bookkeeping was overtaken by another change; left as it is.");
         }
+        return new WebPushReport(false, outcomes.Length, outcomes.Count(o => o == Outcome.Delivered),
+            outcomes.Count(o => o == Outcome.Gone), outcomes.Count(o => o == Outcome.Refused), outcomes.Count(o => o == Outcome.Unanswered));
     }
 
     private async Task<Outcome> DeliverAsync(WebPushSubscription row, string payload, CancellationToken ct)
