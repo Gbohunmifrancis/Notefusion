@@ -49,6 +49,23 @@ public class ActivityLogTests
         Assert.Equal(TranscriptionLog.Submitted, log.Status);
     }
 
+    [Theory]
+    [InlineData("hymn 135.jpg", "image/jpeg")]
+    [InlineData("Scan.PNG", "image/png")]
+    [InlineData("choir pack.pdf", "application/pdf")]
+    public async Task A_photo_or_PDF_of_printed_music_goes_to_the_worker_as_a_score(string fileName, string contentType)
+    {
+        using var h = new TestHarness(Now);
+        var user = Signup(h, "ada@example.com", "Ada");
+        var api = new FakeApi();
+
+        var result = await Upload(h, user, api, fileName, contentType: contentType);
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal([fileName], api.Scores);
+        Assert.Equal("score", Assert.Single(h.Db.TranscriptionLogs).Kind);
+    }
+
     [Fact]
     public async Task A_refused_upload_is_logged_with_the_reason_and_no_job()
     {
@@ -330,8 +347,14 @@ public class ActivityLogTests
                 ? Result.Failure<string>(Error.Failure("Worker.Rejected", "The file could not be read."))
                 : Result<string>.Success($"job-{Guid.NewGuid():N}-{++_next}"));
 
+        /// <summary>The files sent as scores (read without listening), in order.</summary>
+        public List<string> Scores { get; } = [];
+
         public Task<Result<string>> SubmitScoreAsync(Stream score, string fileName, TranscribeOptions options, CancellationToken ct = default)
-            => SubmitAsync(score, fileName, options, ct);
+        {
+            Scores.Add(fileName);
+            return SubmitAsync(score, fileName, options, ct);
+        }
 
         public Task<Result<string>> SubmitLinkAsync(string url, TranscribeOptions options, CancellationToken ct = default)
             => SubmitAsync(Stream.Null, url, options, ct);

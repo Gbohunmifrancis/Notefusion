@@ -177,6 +177,12 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   video is refused at `/v1/links/resolve` with a `LinkError.code` the C# `TranscriptionErrors.ForLink`
   turns into its own sentence, and the refusal is remembered so the submit is refused at once. Sections
   are cut as a copy (no `--force-keyframes-at-cuts`); ffmpeg cuts the exact window while decoding.
+  A photo or PDF of printed music is a score too (`/v1/transcribe/score` takes .jpg/.jpeg/.png/.webp/.pdf; the C#
+  `SubmitTranscriptionCommand.IsScoreFile`, web "Photo or PDF of sheet music", phone Import): `app/pipeline/sheet_reader.py`
+  runs homr (AGPL-3.0, unmodified, its own venv `/opt/homr` and process, `NF_OMR_BIN`; `server/THIRD_PARTY.md`) per page
+  (a PDF's first 4 drawn by `pdftoppm`), keeps the first key signature where homr drops it on later systems, takes the top
+  staff's top note at each moment as the tune, and hands that to the score path; the sheet says `READ_CONFIDENCE` (0.7), so the
+  clients ask for a check. Measured: engraved hymn pages photographed 99% of syllables; real 1870 scans 89% (71% lengths).
   `app/pipeline/harmony.py` writes SATB under the tune (Viterbi chord choice, then Viterbi over each
   note's voicings so the inner parts move as lines — steps, light passing notes off the beat, no parallels —
   homorhythmic parts; bench against CCEH's own harmonisations: `python -m tests.accuracy.harmony_bench`,

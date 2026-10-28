@@ -13,6 +13,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libsndfile1 \
         ffmpeg \
+        poppler-utils \
     && rm -rf /var/lib/apt/lists/*
 
 # Deno, the JavaScript runtime yt-dlp uses for YouTube's player challenges (yt-dlp-ejs).
@@ -50,6 +51,14 @@ PY
 # A release asset can be replaced under the same URL; the build fails unless it is the file
 # that was reviewed.  A deliberate model change updates this hash with it.
 RUN echo "534b2070fcc7df514b13ef660dc8cbb328679c2374d04354a5c42bb14ecce111  /app/models/UVR-MDX-NET-Voc_FT.onnx" | sha256sum -c -
+
+# The reader for photos and PDFs of printed music (homr, AGPL-3.0; THIRD_PARTY.md): installed unmodified in a
+# virtual environment of its own and run as its own program by app/pipeline/sheet_reader.py, never imported.
+# Its models (~180 MB) are fetched at build time, as the other models are; poppler-utils draws a PDF's pages.
+ENV NF_OMR_BIN=/opt/homr/bin/homr
+RUN python -m venv /opt/homr \
+    && /opt/homr/bin/pip install homr==0.7.0 \
+    && /opt/homr/bin/homr --init
 
 # The newest yt-dlp on every build.  requirements.txt leaves it unpinned, but the layer that
 # installs requirements.txt is cached until that file changes, so on its own a rebuild kept

@@ -24,7 +24,7 @@
 <link rel="preload" href="/assets/fonts/geist-v5-latin.woff2" as="font" type="font/woff2" crossorigin>
 <!-- Only what the first screen needs; the range picker's and the recorder's styles load at the end of the body. -->
 <link rel="stylesheet" href="/assets/theme.css?v=7">
-<link rel="stylesheet" href="/assets/app.css?v=38">
+<link rel="stylesheet" href="/assets/app.css?v=39">
 <link rel="stylesheet" href="/assets/night.css?v=16">
 </head>
 <body class="guest">
@@ -501,6 +501,12 @@
         <span class="drop-hint">or drop it here · up to 25 MB</span>
       </label>
       <p class="studio-hint" id="drop-types">MP3, WAV, M4A, FLAC, OGG, WebM, or a video (MP4, MOV).</p>
+      <!-- Printed music read off the page (the worker's sheet_reader): a photo or a PDF, not a recording. -->
+      <label class="btn btn-ghost studio-sheet" id="sheet-pick">
+        <input id="sheet-input" type="file" accept="image/jpeg,image/png,image/webp,application/pdf,.jpg,.jpeg,.png,.webp,.pdf" aria-describedby="sheet-hint">
+        <svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-camera"/></svg>Photo or PDF of sheet music
+      </label>
+      <p class="studio-hint" id="sheet-hint">We read the tune off the page and write it in solfa. Take the photo straight on, in good light, then check the notes.</p>
       </div>
 
       <!-- Out of the form's row and still its submit button: shown on the Song link tab only (app.js selectSource). -->
@@ -1126,7 +1132,7 @@
 <script src="/assets/freeweek.js?v=2" defer></script>
 <script src="/assets/sse.js?v=1" defer></script>
 <script src="/assets/library-groups.js?v=1" defer></script>
-<script src="/assets/app.js?v=73" defer></script>
+<script src="/assets/app.js?v=74" defer></script>
 <script src="/assets/season.js?v=4" defer></script>
 <script src="/assets/track.js?v=7" defer></script>
   <script src="/assets/support.js?v=2" defer></script>

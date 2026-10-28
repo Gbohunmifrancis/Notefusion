@@ -2515,20 +2515,23 @@
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && !$("cost-pop").hidden) { setCostInfo(false); $("cost-info").focus(); }
   });
-  function submitAudio(file, name, fromMic, again, meter, costChecked) {
+  function submitAudio(file, name, fromMic, again, meter, costChecked, sheet) {
     // One recording goes up at a time: a second drop or take while the first is uploading is ignored.
     if (submitting) return Promise.resolve();
+    // Told by the picker, or read off the file (a kept take sent again, Try again).
+    if (sheet === undefined) sheet = !fromMic && isSheet({ type: file.type, name: name });
     sfx.prime(); // from the click that sent it: the chime for a job that finishes out of sight can play
     // On a free account whose chip already says this one cannot go (the week's free ones used, or a song with nothing
     // to pay for it), the plans come first and the take is kept for after (keepTake, songBought), rather than a whole
     // upload over 3G only to be refused. The count is read again first, in case the week has turned since.
-    if (!again && !costChecked && !guest && !isPro()) {
+    // (A sheet is a tune whatever the picker shows, so the picker's cost is not its cost: the server decides.)
+    if (!again && !costChecked && !guest && !isPro() && !sheet) {
       uploadKind(fromMic);
       var cost = studioCost();
       if (cost && cost.out) {
         return refreshUsage().then(function () {
           var still = studioCost();
-          if (!still || !still.out || isPro()) return submitAudio(file, name, fromMic, false, undefined, true);
+          if (!still || !still.out || isPro()) return submitAudio(file, name, fromMic, false, undefined, true, sheet);
           keepTake(file, name, fromMic, chosenMeter());
           openUpgrade("limit", still.text + ". Your recording is kept, and goes once it's paid for.");
         });
@@ -2536,7 +2539,8 @@
     }
     // Read once: "Try again" sends the meter this recording went with, not what the box says now.
     if (!again) meter = chosenMeter();
-    var kind = uploadKind(fromMic), song = kind === "song" || (kind === "choir" && $("choir-band").checked);
+    // A sheet is read, not heard: one tune, never separated, whatever the picker says.
+    var kind = sheet ? "hum" : uploadKind(fromMic), song = !sheet && (kind === "song" || (kind === "choir" && $("choir-band").checked));
     var form = new FormData();
     form.append("audio", file, name);
     // A choir in parts keeps every voice; chords keep the harmony, with the top line as the tune; anything else is one line.
@@ -2550,7 +2554,7 @@
     // 10 MB and nine seconds of synthesis for a three-minute song) is not wanted here.
     form.append("audioPreview", "false");
     hide($("app-alert"));
-    track(guest ? "Preview started (audio)" : song ? "Song uploaded" : kind === "choir" ? "Choir uploaded" : kind === "chords" ? "Chords uploaded" : "Tune uploaded");
+    track(guest ? "Preview started (audio)" : sheet ? "Sheet music uploaded" : song ? "Song uploaded" : kind === "choir" ? "Choir uploaded" : kind === "chords" ? "Chords uploaded" : "Tune uploaded");
     if (!again && window.NfMeter) track(window.NfMeter.eventName(meter));
     // The recording's own journey up is the first stage on the card, with a real percentage. When a
     // job is still being followed (Try again), that card is left alone and the button carries the count.
@@ -2635,21 +2639,28 @@
    * Over 3G the whole file used to go up first, only to come back refused.
    */
   var MAX_UPLOAD_BYTES = 25 * 1024 * 1024;
+  /** A photo or PDF of printed music: read off the page by the worker, never listened to. */
+  function isSheet(file) {
+    return /^(image\/(jpeg|png|webp)|application\/pdf)$/.test(file.type || "") || /\.(jpe?g|png|webp|pdf)$/i.test(file.name || "");
+  }
   function fileProblem(file) {
     if (file.size > MAX_UPLOAD_BYTES) return "That file is over 25 MB. Choose a shorter recording, or one saved as MP3 or M4A.";
-    var audio = /^audio\//.test(file.type || "") || /\.(wav|mp3|m4a|aac|flac|ogg|oga|opus|webm|mp4)$/i.test(file.name || "");
-    return audio ? null : "That doesn't look like a recording. Choose an MP3, WAV, M4A, FLAC, OGG or WebM file.";
+    if (isSheet(file)) return guest ? "Create a free account to turn a photo of sheet music into solfa." : null;
+    var audio = /^(audio\/|video\/(mp4|quicktime)$)/.test(file.type || "") || /\.(wav|mp3|m4a|aac|flac|ogg|oga|opus|webm|mp4|mov)$/i.test(file.name || "");
+    return audio ? null : "That doesn't look like a recording. Choose an MP3, WAV, M4A, FLAC, OGG or WebM file, or a video.";
   }
   function submitFile(file) {
     var problem = fileProblem(file);
     if (problem) { alertIn($("app-alert"), "info", problem); return; }
-    submitAudio(file, file.name);
+    submitAudio(file, file.name, false, false, undefined, false, isSheet(file));
   }
-  $("file-input").addEventListener("change", function (e) {
-    var file = e.target.files && e.target.files[0];
-    if (!file) return;
-    submitFile(file);
-    e.target.value = "";
+  ["file-input", "sheet-input"].forEach(function (id) {
+    $(id).addEventListener("change", function (e) {
+      var file = e.target.files && e.target.files[0];
+      if (!file) return;
+      submitFile(file);
+      e.target.value = "";
+    });
   });
   // ── Where the music comes from: Record, Upload or a Song link, one panel at a time ──
   // The three used to stack in one block with the recording options between them; asking one thing

@@ -909,6 +909,11 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
           "text/xml",
           "application/vnd.recordare.musicxml",
           "application/vnd.recordare.musicxml+xml",
+          // A photo or PDF of printed music: the worker reads its tune off the page.
+          "image/jpeg",
+          "image/png",
+          "image/webp",
+          "application/pdf",
           "*/*",
         ],
         copyToCacheDirectory: true,
@@ -936,7 +941,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
       }
       // Refused here, not after the upload: the picker shows every file (lib/importFile).
       if (!canImport(asset.name)) {
-        setPermError("That file isn't one we can read. Choose a recording (MP3, M4A, WAV…), a MIDI file or MusicXML.");
+        setPermError("That file isn't one we can read. Choose a recording (MP3, M4A, WAV…), a MIDI or MusicXML file, or a photo or PDF of sheet music.");
         return;
       }
       // A file from the phone's library is as likely to be a song with a band behind the
