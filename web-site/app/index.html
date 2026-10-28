@@ -24,7 +24,7 @@
 <link rel="preload" href="/assets/fonts/geist-v5-latin.woff2" as="font" type="font/woff2" crossorigin>
 <!-- Only what the first screen needs; the range picker's and the recorder's styles load at the end of the body. -->
 <link rel="stylesheet" href="/assets/theme.css?v=7">
-<link rel="stylesheet" href="/assets/app.css?v=42">
+<link rel="stylesheet" href="/assets/app.css?v=43">
 <link rel="stylesheet" href="/assets/night.css?v=17">
 </head>
 <body class="guest">
@@ -606,13 +606,19 @@
         <!-- The notes falling onto the keys they are played on, in time with Play (assets/piano-roll.js, loaded on first open). -->
         <div id="r-roll" class="hidden">
           <div class="roll-bar">
-            <button class="btn btn-primary btn-sm" id="roll-play" type="button"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-play"/></svg>Play</button>
+            <span class="roll-acts">
+              <button class="btn btn-primary btn-sm" id="roll-play" type="button"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-play"/></svg>Play</button>
+              <button class="btn btn-ghost btn-sm hidden" id="roll-again" type="button"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-restart"/></svg>Start over</button>
+              <button class="btn btn-ghost btn-sm" id="roll-along" type="button" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-keys"/></svg>Play along</button>
+            </span>
             <div class="roll-speed" role="group" aria-label="Speed">
               <button type="button" data-rate="0.5" aria-pressed="false">0.5×</button>
               <button type="button" data-rate="0.75" aria-pressed="false">0.75×</button>
               <button type="button" data-rate="1" aria-pressed="true">1×</button>
             </div>
           </div>
+          <!-- Playing along: the note to play, how it went, and whether a keyboard is plugged in. -->
+          <div class="roll-along-say hidden" id="roll-along-say" aria-live="polite"><p class="roll-now" id="roll-now"></p><p class="small muted" id="roll-kbd"></p></div>
           <div class="roll-scroll" id="roll-scroll">
             <canvas class="roll-canvas" id="roll-canvas" role="img" aria-label="The notes falling onto a piano keyboard as they play, each key marked with its solfa. Tap a key to hear it; tap the falling notes to play or pause."></canvas>
           </div>
@@ -1171,7 +1177,7 @@
 <script src="/assets/library-groups.js?v=1" defer></script>
 <script src="/assets/sheet-edit.js?v=1" defer></script>
 <script src="/assets/musicxml.js?v=1" defer></script>
-<script src="/assets/app.js?v=79" defer></script>
+<script src="/assets/app.js?v=80" defer></script>
 <script src="/assets/season.js?v=4" defer></script>
 <script src="/assets/track.js?v=8" defer></script>
   <script src="/assets/support.js?v=2" defer></script>

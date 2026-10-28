@@ -610,7 +610,12 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   wide (48 px white keys under a coarse pointer, 28 under a mouse), each marked with its syllable in the sheet's key, and
   play when tapped (`player.tap`, the same piano); a keyboard wider than the screen scrolls sideways in its frame and
   follows the tune while it plays (not for 4 s after a finger moves it), and the chat button steps aside on a phone while
-  the keys are on screen.
+  the keys are on screen. Play along (the view's switch; app.js `startAlong`, pure `NfPianoRoll.along`): the player pauses
+  and the roll waits on each note of the tune (a moment's top note), its key washed and ringed, until it is pressed on the
+  screen or on a keyboard plugged in (Web MIDI note-ons from every input, asked for only when play-along starts; not in
+  Safari, where the screen's keys still play; a plugged-in key also sounds through the piano and lights on screen); the right
+  note in any octave counts, a wrong one flashes grey, then the roll falls on at the sheet's tempo × the speed to the next
+  (a press before it lands snaps it there), and the end says how many were right first time. Nothing is stored or graded.
   Song backing (board o-backing): filing keeps `BeatOriginSec`/`BeatTimesSec` (written out at the heard tempo when a sheet
   with a backing has none, so tempo edits never move it) and, for the owner's own upload only (never
   `FromLink`), the separated instrumental (`IBackingStorage`: R2 photo bucket, unguessable `BackingKey`, not backed up;

@@ -100,3 +100,27 @@ test("the tune's span about to be played, the parts and the far notes left out",
   assert.deepEqual(plain(R.tuneSpan(near, 400, 0.5)), { lo: 100, hi: 246 });
   assert.equal(R.tuneSpan([near[2], near[3]], 400, 0.5), null);
 });
+
+test("play along: a note at a time, the right note in any octave, right first time only without a wrong key before it", () => {
+  const tune = [
+    { pitchMidi: 67, startBeat: 0, durBeats: 1 }, { pitchMidi: 71, startBeat: 1, durBeats: 1 },
+    { pitchMidi: 62, startBeat: 1, durBeats: 1 }, // a chord's lower note: the tune is its top
+    { pitchMidi: 69, startBeat: 2, durBeats: 2 }, { pitchMidi: 0, startBeat: 4, durBeats: 1 },
+  ];
+  const a = R.along(tune);
+  assert.equal(a.count, 3);
+  assert.equal(a.target().pitchMidi, 67);
+  assert.deepEqual(plain(a.press(55)), { kind: "right", note: tune[0], done: false }); // G3 for G4: any octave
+  assert.equal(a.press(72).kind, "wrong");
+  assert.equal(a.target().pitchMidi, 71); // a wrong key leaves the note waiting
+  assert.equal(a.press(71).kind, "right");
+  const last = a.press(69);
+  assert.equal(last.done, true);
+  assert.ok(a.done());
+  assert.equal(a.press(69).kind, "done");
+  assert.deepEqual(plain(a.score()), { played: 3, firstTime: 2, total: 3 });
+  a.restart();
+  assert.deepEqual(plain(a.score()), { played: 0, firstTime: 0, total: 3 });
+  assert.equal(a.target().pitchMidi, 67);
+  assert.equal(R.along([]).target(), null);
+});
