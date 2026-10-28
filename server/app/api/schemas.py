@@ -275,3 +275,7 @@ class JobResponse(ApiModel):
     source: SourceDto | None = None
     result: ResultDto | None = None
     error: str | None = None
+    # A failed job's step (``links.STAGES``) and reason in one word (``links.failure_code``): for the
+    # API's log and the console's breakdown, never shown as they are.
+    failure_stage: str | None = None
+    failure_code: str | None = None

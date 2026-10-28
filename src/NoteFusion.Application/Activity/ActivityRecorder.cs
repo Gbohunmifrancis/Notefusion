@@ -57,12 +57,30 @@ public sealed class ActivityRecorder
         await _db.SaveChangesAsync(ct);
     }
 
-    /// <summary>Logs a submission that was refused, with the reason the user was given, then commits.</summary>
+    /// <summary>
+    /// Logs a submission that was refused, with the reason the user was given and where it stopped (the worker's step
+    /// and reason when it was the worker's refusal, else <see cref="RefusalStage"/>), then commits.
+    /// </summary>
     public async Task RefusedAsync(TranscriptionLog.Request request, Error error, CancellationToken ct)
     {
-        _db.TranscriptionLogs.Add(TranscriptionLog.Refuse(request, $"{error.Code}: {error.Message}", _clock.UtcNow));
+        _db.TranscriptionLogs.Add(TranscriptionLog.Refuse(
+            request, $"{error.Code}: {error.Message}", _clock.UtcNow, error.Stage ?? RefusalStage(error), error.Cause ?? error.Code));
         await _db.SaveChangesAsync(ct);
     }
+
+    /// <summary>
+    /// Where this API turned a submission away: <c>parse</c> for a link it will not send, <c>gate</c> for an allowance
+    /// or a plan (billing, the free week, a song credit), <c>worker</c> when the service could not be reached, and
+    /// <c>request</c> for any other setting it refused.
+    /// </summary>
+    public static string RefusalStage(Error error) => error.Code switch
+    {
+        "TRANS_INVALID_LINK" => "parse",
+        _ when error.Code.StartsWith("BILLING_", StringComparison.Ordinal) || error.Code.StartsWith("TRIAL_", StringComparison.Ordinal)
+               || error.Code.StartsWith("PREVIEW_", StringComparison.Ordinal) => "gate",
+        _ when error.Type == ErrorType.Network || error.Code.StartsWith("Api.", StringComparison.Ordinal) => "worker",
+        _ => "request",
+    };
 
     /// <summary>
     /// Records a finished job's outcome on its log row, when there is one. Does not commit: every caller is
@@ -85,11 +103,15 @@ public sealed class ActivityRecorder
             source?.Title, source?.Artist, source?.Preview == true);
     }
 
-    /// <summary>Records a failed job on its log row, when there is one. Does not commit, like <see cref="FinishAsync"/>.</summary>
+    /// <summary>
+    /// Records a failed job on its log row, when there is one, with where it stopped and why in one word (the worker's,
+    /// or <c>worker</c> / <c>job_lost</c> / <c>no_answer</c> for a job it lost). Does not commit, like <see cref="FinishAsync"/>.
+    /// </summary>
     public static async Task FailAsync(
-        IApplicationDbContext db, string jobId, string? reason, DateTime utcNow, CancellationToken ct)
+        IApplicationDbContext db, string jobId, string? reason, DateTime utcNow, CancellationToken ct,
+        string? stage = null, string? code = null)
     {
         var log = await db.TranscriptionLogs.FirstOrDefaultAsync(l => l.JobId == jobId, ct);
-        log?.Fail(utcNow, reason);
+        log?.Fail(utcNow, reason, stage, code);
     }
 }

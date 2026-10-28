@@ -291,6 +291,14 @@ function TranscriptionsTab() {
         </div>
       )}
 
+      {s?.stops && s.stops.length > 0 && (
+        <Ranked
+          title="Where they stop"
+          rows={s.stops.map((x) => ({ label: `${x.stage} · ${x.code}`, count: x.count }))}
+          empty="Nothing failed"
+        />
+      )}
+
       <Card bleed>
         <StateView
           state={state}

@@ -75,6 +75,19 @@ public class TranscriptionLog : BaseEntity
     /// <summary>Why it was refused or failed, in the words the user was shown.</summary>
     public string? FailureReason { get; private set; }
 
+    /// <summary>
+    /// Where it stopped: this API's <c>gate</c> (an allowance or plan) or <c>request</c> (a bad setting), or the worker's
+    /// <c>parse</c>, <c>resolve</c>, <c>metadata</c>, <c>search</c>, <c>download</c>, <c>decode</c>, <c>separation</c>,
+    /// <c>transcription</c>, or <c>worker</c> for a job it lost. Null for one that did not stop.
+    /// </summary>
+    public string? FailureStage { get; private set; }
+
+    /// <summary>The reason in one word (blocked, unavailable, no_match, low_confidence, job_lost…), for counting.</summary>
+    public string? FailureCode { get; private set; }
+
+    public const int StageMaxLength = 20;
+    public const int CodeMaxLength = 60;
+
     public DateTime? FinishedAtUtc { get; private set; }
 
     /// <summary>How much audio was transcribed, in seconds, as the worker measured it.</summary>
@@ -113,8 +126,13 @@ public class TranscriptionLog : BaseEntity
     public static TranscriptionLog Accept(string jobId, Request request, DateTime utcNow)
         => Create(Clip(jobId, 100), request, utcNow, Submitted, null);
 
-    public static TranscriptionLog Refuse(Request request, string reason, DateTime utcNow)
-        => Create(null, request, utcNow, Refused, Clip(reason, ReasonMaxLength));
+    public static TranscriptionLog Refuse(Request request, string reason, DateTime utcNow, string? stage = null, string? code = null)
+    {
+        var log = Create(null, request, utcNow, Refused, Clip(reason, ReasonMaxLength));
+        log.FailureStage = Clip(stage, StageMaxLength);
+        log.FailureCode = Clip(code, CodeMaxLength);
+        return log;
+    }
 
     /// <summary>Idempotent: the first terminal observation wins, as with the job rows.</summary>
     public bool Finish(
@@ -136,12 +154,14 @@ public class TranscriptionLog : BaseEntity
     }
 
     /// <summary>Idempotent, like <see cref="Finish"/>.</summary>
-    public bool Fail(DateTime utcNow, string? reason)
+    public bool Fail(DateTime utcNow, string? reason, string? stage = null, string? code = null)
     {
         if (Status != Submitted) return false;
         Status = Failed;
         FinishedAtUtc = utcNow;
         FailureReason = Clip(reason, ReasonMaxLength);
+        FailureStage = Clip(stage, StageMaxLength);
+        FailureCode = Clip(code, CodeMaxLength);
         return true;
     }
 

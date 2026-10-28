@@ -38,11 +38,20 @@ public sealed record TranscriptionLogRowDto(
     Guid? UserId,
     string? UserName,
     string? UserEmail,
-    string? DeviceHash);
+    string? DeviceHash,
+    string? FailureStage = null,
+    string? FailureCode = null);
 
-/// <summary>Counts over everything the filters matched, not only the page shown.</summary>
+/// <summary>
+/// Counts over everything the filters matched, not only the page shown. <c>Stops</c> is where the failed and refused
+/// ones stopped, by step and reason, most first: the console's "Where they stop".
+/// </summary>
 public sealed record TranscriptionLogSummaryDto(
-    int Total, int Done, int Failed, int Refused, int Running, int Saved, int StorePreviews, long TotalBytes);
+    int Total, int Done, int Failed, int Refused, int Running, int Saved, int StorePreviews, long TotalBytes,
+    IReadOnlyList<FailureStopDto>? Stops = null);
+
+/// <summary>One step and reason transcriptions stopped at (the log's <c>FailureStage</c> and <c>FailureCode</c>), and how often.</summary>
+public sealed record FailureStopDto(string Stage, string Code, int Count);
 
 public sealed record TranscriptionLogPageDto(
     PagedResultDto<TranscriptionLogRowDto> Page,

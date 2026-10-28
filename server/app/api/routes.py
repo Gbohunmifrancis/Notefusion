@@ -55,12 +55,12 @@ def _correlation_id(request: Request) -> str | None:
 
 
 def _refused_link(error: Exception) -> HTTPException:
-    """The 422 for a link the worker will not use: its detail is the plain sentence, or — when
-    the reason has a code the C# API has words of its own for — an object carrying both."""
-    code = getattr(error, "code", None)
-    if code is None:
-        return HTTPException(422, str(error))
-    detail: dict = {"message": str(error), "code": code}
+    """The 422 for a link the worker will not use: the plain sentence, the reason as one word
+    (``links.failure_code``; the C# API has words of its own for some) and the step it stopped at
+    (``links.STAGES``), which the API keeps in its log."""
+    from app.ingest.links import failure_code
+
+    detail: dict = {"message": str(error), "code": failure_code(error), "stage": getattr(error, "stage", None) or "resolve"}
     if getattr(error, "limit_seconds", None) is not None:
         detail["limit_seconds"] = error.limit_seconds
     return HTTPException(422, detail)
@@ -369,7 +369,8 @@ async def submit_link_transcription(
     key = _clean_key(key)
     url = (url or "").strip()
     if len(url) > 2048 or provider_of(url) is None:
-        raise HTTPException(422, "url must be a YouTube video, Spotify track or Apple Music song link.")
+        raise HTTPException(422, {"message": "url must be a YouTube, Instagram or TikTok video, a Spotify track or an "
+                                             "Apple Music song link.", "code": "not_a_song_link", "stage": "parse"})
     # A link the resolve already turned away (a live stream, a video over the cap) is
     # refused here and now rather than queued for a job that would only fail.
     refusal = cached_refusal(url)
@@ -411,7 +412,8 @@ def resolve_link_info(body: LinkInfoRequest) -> LinkInfoResponse:
 
     url = (body.url or "").strip()
     if len(url) > 2048 or provider_of(url) is None:
-        raise HTTPException(422, "url must be a YouTube video, Spotify track or Apple Music song link.")
+        raise HTTPException(422, {"message": "url must be a YouTube, Instagram or TikTok video, a Spotify track or an "
+                                             "Apple Music song link.", "code": "not_a_song_link", "stage": "parse"})
     try:
         source = resolve_link(url)
     except LinkError as ex:
@@ -721,7 +723,8 @@ async def get_job(request: Request, job_id: str) -> JobResponse:
 
     return JobResponse(status=job.status, progress=job.progress, stage=job.stage,
                        queue_position=queue.queue_position(job_id),
-                       source=job.source, result=result, error=job.error)
+                       source=job.source, result=result, error=job.error,
+                       failure_stage=job.failure_stage, failure_code=job.failure_code)
 
 
 # A photo or PDF of printed music is a score too: its tune is read first (pipeline/sheet_reader.py).

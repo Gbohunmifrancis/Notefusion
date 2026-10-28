@@ -83,12 +83,33 @@ class LinkError(Exception):
     ``unavailable``, ``live``, ``too_long``, ``refused`` (YouTube) and ``post_refused`` (Instagram or
     TikTok); None for every other reason.
     ``limit_seconds`` goes with ``too_long``: the cap the video outran.
+    ``stage`` is where on the way in it stopped (``STAGES``), for the log and the console: set where
+    it is raised, else by the step that was running (``_step``).
     """
 
-    def __init__(self, message: str, code: str | None = None, limit_seconds: float | None = None):
+    def __init__(self, message: str, code: str | None = None, limit_seconds: float | None = None,
+                 stage: str | None = None):
         super().__init__(message)
         self.code = code
         self.limit_seconds = limit_seconds
+        self.stage = stage
+
+
+#: Where a link's way in can stop, in order. ``parse`` is the API's own (a link it will not send);
+#: ``separation`` and ``transcription`` are the queue's, after the audio is in hand.
+STAGES = ("parse", "resolve", "metadata", "search", "download", "decode", "separation", "transcription")
+
+
+def failure_code(failure: BaseException) -> str:
+    """The reason a link's way in stopped, as one word: the refusal's own code (``not_found``,
+    ``live``, ``too_long``, ``refused``, ``post_refused``, ``unavailable``, ``no_match``…), else what
+    yt-dlp's words were read as (``blocked``, ``unavailable``, ``age_restricted``, ``timeout``),
+    else ``other``."""
+    code = getattr(failure, "code", None)
+    if code:
+        return code
+    kind = getattr(failure, "kind", None)
+    return kind if kind and kind != "other" else "other"
 
 
 @dataclass(frozen=True)
@@ -404,6 +425,7 @@ def _resolve_youtube_by_details(canonical: str) -> "_Cached":
 
 
 def _read_youtube_details(canonical: str) -> "_Cached":
+    _step("metadata")
     try:
         info_json, route = _extract_info(canonical, _INFO_TIMEOUT)
     except _YtdlpFailed as failure:
@@ -440,6 +462,7 @@ def _resolve_video_post(url: str, provider: str) -> "_Cached":
     canonical = instagram_url(url) if provider == "instagram" else tiktok_url(url)
     name = _NAMES[provider]
     with _tracked("resolve", provider):
+        _step("metadata")
         try:
             info_json, route = _extract_info(canonical, _INFO_TIMEOUT * 2, provider)
         except _YtdlpFailed as failure:
@@ -607,10 +630,12 @@ def resolve_source(text: str) -> Source:
             entry = _Cached(_resolve_spotify(url))
         else:
             entry = _Cached(_resolve_apple(url))
-    except LinkError:
+    except LinkError as refusal:
+        refusal.stage = refusal.stage or "resolve"
         raise
     except Exception as exc:  # noqa: BLE001 - network and parse failures all read the same to a user
-        raise LinkError("Could not read that link. Check it opens in a browser, or upload the audio file instead.") from exc
+        raise LinkError("Could not read that link. Check it opens in a browser, or upload the audio file instead.",
+                        "unreadable", stage="resolve") from exc
     _cache_put(entry, url, entry.source.url, entry.source.audio_url)
     return entry.source
 
@@ -945,6 +970,7 @@ def _choose_result(lines: list[str], source: Source) -> str | None:
 def _search_youtube(base: list[str], source: Source) -> tuple[list[str], int]:
     """Watch URLs of the YouTube uploads that best match a Spotify / Apple Music song, best
     first, and the rung of the ladder the search got through on."""
+    _step("search")
     terms = [f'"{t.replace(chr(34), "")}"' for t in (source.title, source.artist) if t]
     result, route = _extract(
         base, ["--flat-playlist", "--print", "%(id)s\t%(duration)s\t%(channel)s\t%(title)s",
@@ -952,7 +978,9 @@ def _search_youtube(base: list[str], source: Source) -> tuple[list[str], int]:
         60, source.provider)
     ids = _rank_results(result.stdout.strip().splitlines(), source)[:_SEARCH_CANDIDATES]
     if not ids:
-        raise _YtdlpFailed("Could not find a playable copy of that song. Upload the audio file instead.")
+        failure = _YtdlpFailed("Could not find a playable copy of that song. Upload the audio file instead.")
+        failure.code = "no_match"
+        raise failure
     return [f"https://www.youtube.com/watch?v={video_id}" for video_id in ids], route
 
 
@@ -995,6 +1023,8 @@ class _Attempt:
         self.outcome: str | None = None
         self.preview = False
         self.started = time.monotonic()
+        #: The step running now (``STAGES``): a failure that names no stage of its own took place in it.
+        self.step = "resolve" if stage == "resolve" else "download"
 
 
 _attempt_local = threading.local()
@@ -1005,6 +1035,13 @@ OUTCOMES = ("success", "blocked", "unavailable", "other")
 
 def _current_attempt() -> _Attempt | None:
     return getattr(_attempt_local, "current", None)
+
+
+def _step(name: str) -> None:
+    """Marks the step the running resolve or fetch has reached (``STAGES``)."""
+    attempt = _current_attempt()
+    if attempt is not None:
+        attempt.step = name
 
 
 def _note_route(name: str) -> None:
@@ -1039,6 +1076,8 @@ def _tracked(stage: str, provider: str) -> Iterator[_Attempt]:
         yield attempt
     except BaseException as failure:
         attempt.outcome = attempt.outcome or _outcome_of(failure)
+        if isinstance(failure, LinkError) and failure.stage is None:
+            failure.stage = attempt.step
         raise
     finally:
         _attempt_local.current = outer
@@ -1147,6 +1186,7 @@ def _download_youtube(base: list[str], target: str, max_seconds: float, work: Pa
     if cached is not None and cached.info_json:
         info_json, route = cached.info_json, cached.route
     else:
+        _step("metadata")
         result, route = _extract(base, ["-f", _AUDIO_FORMAT, "-J", target], 60, source.provider, route)
         info_json = result.stdout
     refusal = _video_refusal(info_json)
@@ -1167,6 +1207,7 @@ def _download_youtube(base: list[str], target: str, max_seconds: float, work: Pa
         # re-encode: every AAC or Opus frame stands alone, so the cut lands within one frame
         # of the mark), and ffmpeg then cuts the exact window while decoding to WAV.
         args += ["--download-sections", f"*{start:.2f}-{start + length + 2:.2f}"]
+    _step("download")
     try:
         _download(base, args, info_path, info_json, target, source.provider, route)
     finally:
@@ -1281,6 +1322,7 @@ def _download_preview(url: str, work: Path) -> Path:
 
 def _to_wav(audio: Path, max_seconds: float, work: Path, offset: float = 0.0) -> Path:
     """``max_seconds`` of ``audio`` from ``offset`` seconds in, as the pipeline's WAV."""
+    _step("decode")
     wav = work / "song.wav"
     ffmpeg = subprocess.run(
         [
@@ -1292,7 +1334,7 @@ def _to_wav(audio: Path, max_seconds: float, work: Path, offset: float = 0.0) ->
     )
     audio.unlink(missing_ok=True)
     if ffmpeg.returncode != 0 or not wav.is_file():
-        raise LinkError("The audio from that link could not be decoded.")
+        raise LinkError("The audio from that link could not be decoded.", "decode_failed", stage="decode")
     return wav
 
 
@@ -1372,6 +1414,7 @@ def resolve_link(text: str) -> Source:
     if source.provider != "youtube" or source.duration is not None or entry is None or entry.info_json is not None:
         return source
     with _tracked("resolve", "youtube"):
+        _step("metadata")
         info_json, entry.route = _youtube_info(source.audio_url or source.url)
     entry.info_json = _slim_info(info_json) or ""
     entry.refusal = _video_refusal(info_json)

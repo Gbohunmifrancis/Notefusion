@@ -371,9 +371,13 @@ internal sealed partial class TranscriptionApiClient(
             using var doc = System.Text.Json.JsonDocument.Parse(await response.Content.ReadAsStringAsync(ct));
             if (doc.RootElement.ValueKind == System.Text.Json.JsonValueKind.Object
                 && doc.RootElement.TryGetProperty("detail", out var detail)
-                && detail.ValueKind == System.Text.Json.JsonValueKind.Object
-                && TranscriptionErrors.ForLink(Text(detail, "code"), Number(detail, "limit_seconds", "limitSeconds")) is { } named)
-                return named;
+                && detail.ValueKind == System.Text.Json.JsonValueKind.Object)
+            {
+                // The worker's step and reason ride along for the activity log, whatever words the user is given.
+                var (stage, cause) = (Text(detail, "stage"), Text(detail, "code"));
+                var told = TranscriptionErrors.ForLink(cause, Number(detail, "limit_seconds", "limitSeconds")) ?? TranscriptionErrors.InvalidLink;
+                return told with { Stage = stage, Cause = cause };
+            }
         }
         catch (System.Text.Json.JsonException)
         {
@@ -601,7 +605,9 @@ internal sealed partial class TranscriptionApiClient(
             HasBacking: !string.IsNullOrEmpty(wire.Result.BackingAudioBase64));
 
         return new TranscriptionJobDto(jobId, status, wire.Progress ?? 0, result, wire.Error, wire.Stage, MapSource(wire.Source), wire.QueuePosition,
-            ErrorCode: status == TranscriptionStatus.Failed ? Application.Transcriptions.JobFailures.CodeFor(wire.Error) : null);
+            ErrorCode: status == TranscriptionStatus.Failed ? Application.Transcriptions.JobFailures.CodeFor(wire.Error) : null,
+            FailureStage: status == TranscriptionStatus.Failed ? wire.FailureStage : null,
+            FailureCode: status == TranscriptionStatus.Failed ? wire.FailureCode : null);
     }
 
     private static HymnMatchDto? MapHymnMatch(WireHymnMatch? hymn)

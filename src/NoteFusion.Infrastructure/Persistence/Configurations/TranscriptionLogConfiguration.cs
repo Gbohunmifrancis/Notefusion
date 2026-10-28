@@ -25,6 +25,8 @@ public sealed class TranscriptionLogConfiguration : IEntityTypeConfiguration<Tra
         builder.Property(l => l.TimeSignatureRequested).HasMaxLength(10);
         builder.Property(l => l.Status).HasMaxLength(10).IsRequired();
         builder.Property(l => l.FailureReason).HasMaxLength(TranscriptionLog.ReasonMaxLength);
+        builder.Property(l => l.FailureStage).HasMaxLength(TranscriptionLog.StageMaxLength);
+        builder.Property(l => l.FailureCode).HasMaxLength(TranscriptionLog.CodeMaxLength);
         builder.Property(l => l.DetectedKey).HasMaxLength(40);
         builder.Property(l => l.SongTitle).HasMaxLength(TranscriptionLog.TextMaxLength);
         builder.Property(l => l.SongArtist).HasMaxLength(TranscriptionLog.TextMaxLength);

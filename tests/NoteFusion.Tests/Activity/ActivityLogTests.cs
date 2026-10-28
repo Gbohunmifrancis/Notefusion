@@ -1,5 +1,7 @@
 using NoteFusion.Application.Activity.Commands;
 using NoteFusion.Application.Activity.Queries;
+using NoteFusion.Application.Activity.Dtos;
+using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Preview.Commands;
 using NoteFusion.Application.Preview.Queries;
@@ -109,6 +111,52 @@ public class ActivityLogTests
         var bad = h.Db.TranscriptionLogs.Single(l => l.JobId == failed);
         Assert.Equal(TranscriptionLog.Failed, bad.Status);
         Assert.Equal("Too quiet to hear any notes.", bad.FailureReason);
+        // Where it stopped and why, as the worker said, for the console's count.
+        Assert.Equal(("transcription", "low_confidence"), (bad.FailureStage, bad.FailureCode));
+        Assert.Null(ok.FailureStage);
+    }
+
+    [Fact]
+    public async Task A_refusal_records_where_it_stopped_the_workers_step_or_this_apis_own()
+    {
+        using var h = new TestHarness(Now);
+        var user = Signup(h, "ada@example.com", "Ada");
+
+        // The worker's: its step and reason ride on the error the user is told in our words.
+        var refused = TranscriptionErrors.LinkRefused with { Stage = "metadata", Cause = "blocked" };
+        await h.Activity(user, null).RefusedAsync(
+            new TranscriptionLog.Request(TranscriptionLog.AccountOrigin, user, null, "web", "link", "melody", LinkUrl: "https://youtu.be/x"),
+            refused, default);
+        // This API's own: a link it will not send, an allowance used up.
+        await h.Activity(user, null).RefusedAsync(
+            new TranscriptionLog.Request(TranscriptionLog.AccountOrigin, user, null, "web", "link", "melody"), TranscriptionErrors.InvalidLink, default);
+        await h.Activity(user, null).RefusedAsync(
+            new TranscriptionLog.Request(TranscriptionLog.AccountOrigin, user, null, "web", "upload", "melody"),
+            Error.Validation("BILLING_FREE_TIER_LIMIT", "No free ones left."), default);
+
+        var logs = h.Db.TranscriptionLogs.OrderBy(l => l.CreatedAtUtc).ThenBy(l => l.Kind).ToList();
+        Assert.Contains(logs, l => (l.FailureStage, l.FailureCode) == ("metadata", "blocked"));
+        Assert.Contains(logs, l => (l.FailureStage, l.FailureCode) == ("parse", "TRANS_INVALID_LINK"));
+        Assert.Contains(logs, l => (l.FailureStage, l.FailureCode) == ("gate", "BILLING_FREE_TIER_LIMIT"));
+        // The diagnostic never changes which error it is.
+        Assert.Equal(TranscriptionErrors.LinkRefused, refused);
+    }
+
+    [Fact]
+    public async Task The_log_counts_where_failed_and_refused_ones_stopped_most_first()
+    {
+        using var h = new TestHarness(Now);
+        var user = Signup(h, "ada@example.com", "Ada");
+        var link = new TranscriptionLog.Request(TranscriptionLog.AccountOrigin, user, null, "web", "link", "melody", LinkUrl: "https://youtu.be/x");
+        foreach (var _ in Enumerable.Range(0, 2))
+            await h.Activity(user, null).RefusedAsync(link, TranscriptionErrors.LinkRefused with { Stage = "metadata", Cause = "blocked" }, default);
+        await h.Activity(user, null).RefusedAsync(link, TranscriptionErrors.InvalidLink, default);
+
+        var page = (await Log(h, new GetTranscriptionLogQuery())).Value;
+        Assert.Equal(
+            [new FailureStopDto("metadata", "blocked", 2), new FailureStopDto("parse", "TRANS_INVALID_LINK", 1)],
+            page.Summary.Stops);
+        Assert.All(page.Page.Items, row => Assert.NotNull(row.FailureStage));
     }
 
     [Fact]
@@ -368,7 +416,9 @@ public class ActivityLogTests
                 : null;
             return Task.FromResult(Result<TranscriptionJobDto>.Success(new TranscriptionJobDto(
                 jobId, status, status == TranscriptionStatus.Pending ? 0.5 : 1, result,
-                status == TranscriptionStatus.Failed ? "Too quiet to hear any notes." : null)));
+                status == TranscriptionStatus.Failed ? "Too quiet to hear any notes." : null,
+                FailureStage: status == TranscriptionStatus.Failed ? "transcription" : null,
+                FailureCode: status == TranscriptionStatus.Failed ? "low_confidence" : null)));
         }
 
         public Task<Result<SourceDto>> ResolveLinkAsync(string url, CancellationToken ct = default)

@@ -348,4 +348,7 @@ public sealed record TranscriptionJobDto(
     int? QueuePosition = null,
     string? ErrorCode = null,
     Guid? SavedId = null,
-    string? SavedTitle = null);
+    string? SavedTitle = null,
+    // Where a failed job stopped and why in one word (the worker's), for the activity log: never sent to a client.
+    [property: System.Text.Json.Serialization.JsonIgnore] string? FailureStage = null,
+    [property: System.Text.Json.Serialization.JsonIgnore] string? FailureCode = null);

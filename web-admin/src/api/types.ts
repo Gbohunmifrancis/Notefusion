@@ -1040,6 +1040,17 @@ export interface TranscriptionLogRow {
   userName: string | null;
   userEmail: string | null;
   deviceHash: string | null;
+  /** The step it stopped at (parse, resolve, metadata, search, download, decode, separation, transcription; gate,
+   *  request or worker for this API's own refusals), and the reason's code. Null before steps were kept. */
+  failureStage?: string | null;
+  failureCode?: string | null;
+}
+
+/** Failed and refused transcriptions by the step and reason they stopped at. */
+export interface FailureStop {
+  stage: string;
+  code: string;
+  count: number;
 }
 
 export interface TranscriptionLogSummary {
@@ -1051,6 +1062,8 @@ export interface TranscriptionLogSummary {
   saved: number;
   storePreviews: number;
   totalBytes: number;
+  /** Most first; missing from an older API. */
+  stops?: FailureStop[] | null;
 }
 
 export interface TranscriptionLogPage {
