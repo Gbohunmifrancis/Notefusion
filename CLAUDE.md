@@ -208,6 +208,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   (a PDF's first 4 drawn by `pdftoppm`), keeps the first key signature where homr drops it on later systems, takes the top
   staff's top note at each moment as the tune, and hands that to the score path; the sheet says `READ_CONFIDENCE` (0.7), so the
   clients ask for a check. Measured: engraved hymn pages photographed 99% of syllables; real 1870 scans 89% (71% lengths).
+  homr writes no ties, so a held note comes back as the same note again. `python -m app.pipeline.sheet_check` (run by
+  `check-ec2.yml`) reads a known engraved page, `app/data/sheet_check/amazing-grace.png`, the way a job does and fails
+  unless its key, meter and 90% of the hymn's notes (`amazing-grace.json`, repeats joined) come back.
   `app/pipeline/harmony.py` writes SATB under the tune (Viterbi chord choice, then Viterbi over each
   note's voicings so the inner parts move as lines — steps, light passing notes off the beat, no parallels —
   homorhythmic parts; bench against CCEH's own harmonisations: `python -m tests.accuracy.harmony_bench`,
