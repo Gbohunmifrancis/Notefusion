@@ -1,5 +1,7 @@
 using NoteFusion.Application.Analytics.Dtos;
 using NoteFusion.Application.Analytics.Queries;
+using NoteFusion.Application.Web.Commands;
+using NoteFusion.Infrastructure.Web;
 using NoteFusion.Core.Entities;
 using NoteFusion.Tests.Support;
 
@@ -161,5 +163,43 @@ public class TrafficTests
         Assert.Equal(2, result.Value.Visitors);
         var page = Assert.Single(result.Value.Pages);
         Assert.Equal(("/hymns", 2), (page.Label, page.Visitors));
+    }
+
+    [Fact]
+    public async Task A_reader_known_only_by_heartbeats_is_on_the_site_now_but_not_the_team_or_one_gone_quiet()
+    {
+        using var h = new TestHarness(Now);
+        var admin = User.CreateAdmin("Admin", "admin@example.com", "hash", Now.AddDays(-50));
+        h.Db.Users.Add(admin);
+        h.Db.WebEvents.Add(WebEvent.TryCreate(WebEvent.Pageview, null, "/", null, null, "team", "t", admin.Id, "mobile", Now.AddDays(-3))!);
+        h.Db.SaveChanges();
+        var presence = new InMemoryWebPresence();
+        // Reading one hymn for twenty minutes: its page view is long past, its heartbeats are not.
+        Add(h, "reader", "r", Now.AddMinutes(-20), WebEvent.Pageview, "/hymns/amazing-grace");
+        presence.Touch("reader", "/hymns/amazing-grace", Now.AddSeconds(-40));
+        presence.Touch("team", "/hymns/amazing-grace", Now.AddSeconds(-30));   // the founder's own browser
+        presence.Touch("gone", "/", Now.AddMinutes(-3));                        // hid the tab three minutes ago
+        Add(h, "clicker", "c", Now.AddMinutes(-1), WebEvent.Pageview, "/tools");
+
+        h.Clock.UtcNow = Now;
+        var live = (await new GetTrafficQueryHandler(h.Db, h.Clock, presence).Handle(new GetTrafficLiveQuery(), default)).Value;
+
+        Assert.Equal(2, live.Visitors);
+        Assert.Equal(["/hymns/amazing-grace", "/tools"], live.Pages.Select(p => p.Label).Order().ToArray());
+    }
+
+    [Fact]
+    public async Task A_heartbeat_from_a_bot_or_without_a_page_is_not_kept()
+    {
+        using var h = new TestHarness(Now);
+        var presence = new InMemoryWebPresence();
+        var record = new RecordPresenceCommandHandler(presence, h.Clock);
+
+        await record.Handle(new RecordPresenceCommand("v1", "/hymns", "Mozilla/5.0 (Linux; Android 14) Chrome/130.0 Mobile Safari/537.36"), default);
+        await record.Handle(new RecordPresenceCommand("v2", "/hymns", "Mozilla/5.0 (compatible; Googlebot/2.1)"), default);
+        await record.Handle(new RecordPresenceCommand("v3", null, null), default);
+        await record.Handle(new RecordPresenceCommand(new string('x', 65), "/", null), default);
+
+        Assert.Equal(["v1"], presence.Since(Now.AddMinutes(-1)).Select(b => b.VisitorId).ToArray());
     }
 }

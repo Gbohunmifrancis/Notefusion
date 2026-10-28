@@ -150,6 +150,7 @@ public static class DependencyInjection
         services.AddSingleton<IAdminPhoneLock, InMemoryAdminPhoneLock>();
         // Live job updates for the clients watching a job (one instance, like the above).
         services.AddSingleton<IJobEvents, Transcriptions.InMemoryJobEvents>();
+        services.AddSingleton<IWebPresence, Web.InMemoryWebPresence>();
     }
 
     private static void AddPush(this IServiceCollection services, IConfiguration configuration)
@@ -193,7 +194,11 @@ public static class DependencyInjection
             ?? new NoteFusion.Application.Admin.ConsoleAlerts.AdminConsoleAlertSettings();
         services.AddSingleton(consoleAlerts);
         if (consoleAlerts.Enabled)
+        {
             services.AddHostedService<AdminConsoleAlertWorker>();
+            // New mail in the console's Mail (Resend inbound), pushed to the consoles within a minute.
+            services.AddHostedService<AdminInboxWatchWorker>();
+        }
 
         // Web push for the web app: the VAPID pair is configured or derived from the JWT signing key
         // (see VapidKeys), so it needs no setup; WebPush__Enabled=false turns it off.

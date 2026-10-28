@@ -24,7 +24,7 @@ function jwt(sub, expSeconds = Date.now() / 1000 + 900) {
 /** One page load. `local`/`session` are shared between loads to stand for the same browser tab. */
 function load({ local = store({ "nf.web.device": "device-0001" }), session = store(), status = () => 204, beaconOk = true } = {}) {
   const on = { win: {}, doc: {} };
-  const beacons = [], fetches = [];
+  const beacons = [], fetches = [], intervals = [];
   const doc = { referrer: "", visibilityState: "visible", addEventListener: (t, f) => (on.doc[t] ||= []).push(f) };
   const win = {
     document: doc, innerWidth: 400,
@@ -38,6 +38,7 @@ function load({ local = store({ "nf.web.device": "device-0001" }), session = sto
     navigator: { onLine: true, sendBeacon: (url, blob) => { beacons.push({ url, blob }); return beaconOk; } },
     fetch: (url, init) => { fetches.push({ url, init, body: JSON.parse(init.body) }); return Promise.resolve({ status: status(fetches.length) }); },
     Blob, URL, Promise, Date, setTimeout, clearTimeout, atob,
+    setInterval: (f, ms) => intervals.push({ f, ms }), clearInterval: () => {},
   };
   vm.runInNewContext(src, context);
   return {
@@ -49,6 +50,9 @@ function load({ local = store({ "nf.web.device": "device-0001" }), session = sto
     hide: () => { doc.visibilityState = "hidden"; (on.doc.visibilitychange || []).forEach((f) => f()); },
     show: () => { doc.visibilityState = "visible"; (on.doc.visibilitychange || []).forEach((f) => f()); },
     online: () => (on.win.online || []).forEach((f) => f()),
+    minute: () => intervals.filter((i) => i.ms === 60000).forEach((i) => i.f()),
+    events: () => beacons.filter((b) => b.url.endsWith("/api/web/events/beacon")),
+    heartbeats: () => beacons.filter((b) => b.url.endsWith("/api/web/presence")),
   };
 }
 const settle = () => new Promise((r) => setImmediate(r));
@@ -92,11 +96,26 @@ test("a signed-in browser's last batch goes as a beacon too, carrying its token"
 test("pagehide and visibilitychange for one leave send one beacon; leaving again after a return sends again", () => {
   const p = load();
   p.hide(); p.leave();
-  assert.equal(p.beacons.length, 1);
+  assert.equal(p.events().length, 1);
   p.show();
   p.win.nfTrack("Played");
   p.hide();
-  assert.equal(p.beacons.length, 2);
+  assert.equal(p.events().length, 2);
+});
+
+test("a tab in sight says it is still open every minute and on coming back, a hidden one says nothing", async () => {
+  const p = load();
+  p.minute();
+  assert.equal(p.heartbeats().length, 1);
+  const beat = JSON.parse(p.heartbeats()[0].blob);
+  assert.deepEqual(Object.keys(beat).sort(), ["path", "visitorId"]);   // a browser id and a page, nothing else
+  assert.equal(beat.path, "/blog/x");
+  p.hide();
+  p.minute();
+  assert.equal(p.heartbeats().length, 1);                               // hidden: no heartbeat
+  p.show();
+  assert.equal(p.heartbeats().length, 2);                               // back: one at once
+  assert.equal(p.stored().filter((e) => e.kind !== "pageview").length, 0); // never an event of its own
 });
 
 test("what was beaconed stays marked: this page never resends it, the next load does under the same ids", async (t) => {

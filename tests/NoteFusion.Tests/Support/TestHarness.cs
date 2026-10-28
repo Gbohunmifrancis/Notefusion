@@ -402,10 +402,10 @@ public sealed class RecordingWebPushSender : IWebPushSender
     /// <summary>What went to admin consoles (audience "console"), apart from the web app's pushes in <see cref="Sent"/>.</summary>
     public List<(Guid UserId, WebPushNotification Notification)> SentToConsole { get; } = [];
 
-    public Task SendAsync(Guid userId, WebPushNotification notification, CancellationToken ct = default, string audience = "app")
+    public Task<WebPushReport> SendAsync(Guid userId, WebPushNotification notification, CancellationToken ct = default, string audience = "app")
     {
         (audience == "console" ? SentToConsole : Sent).Add((userId, notification));
-        return Task.CompletedTask;
+        return Task.FromResult(new WebPushReport(false, 1, 1, 0, 0, 0));
     }
 }
 

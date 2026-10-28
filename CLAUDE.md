@@ -38,7 +38,12 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   The admin console has its own web push (`WebPushSubscription.Audience` "console", `/api/admin/push/subscriptions|test`,
   web-admin `public/sw.js` + `lib/consolePush`, Settings › Notifications): a payment (beside the phone alert, first try only),
   and from `AdminConsoleAlertWorker` (1 min, cooldown memory per key) failed payment attempts, a wave of accounts, one inbox
-  making several, and transcription floods per account, per phone and in all (`AdminConsoleAlerts__*`, admins/internal left out).
+  making several, and transcription floods per account, per phone and in all (`AdminConsoleAlerts__*`, admins/internal left out),
+  and new mail (`AdminInboxWatchWorker`, every minute: Resend inbound since the last look, `WatchAdminInboxCommand`, up to 3
+  a notification each, more one summary, the live notice `inbox` the Mail page refetches on; the first look after a start only
+  notes the place). Its test answers what became of it (`WebPushReport`: delivered, gone, refused, unanswered, push off), and
+  `lib/consolePush` subscribes afresh on a stale key and re-registers a browser the server dropped
+  (`GET /api/admin/push/subscriptions/status`), so "on" is never a guess.
   Expo push: a ticket only says Expo took a push; `PushReceiptWorker` (2 min) reads each ticket's receipt
   (`PushTicketLog`, in memory), drops DeviceNotRegistered tokens, logs a key problem (InvalidCredentials = no FCM V1
   key on Expo, MismatchSenderId, a 401 wanting `Push__ExpoAccessToken`) as an error at most hourly, and System Health's
@@ -622,7 +627,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   (`WebEvent` rows, account-linked when a token is sent; `window.nfTrack("Saved sheet")` names an
   action) and the overview's `WebTraffic` section reads them back, as does the console's Traffic page (`/traffic`,
   `GET /api/admin/analytics/traffic[/live]`, `GetTrafficQuery`: a visit is a tab session, every list is a filter that picks
-  whole visits, sources and link tags, pages, entry/exit, countries, browsers, systems, screens, goals, who is on now); the queue is kept in localStorage (`nf.web.events`, ids
+  whole visits, sources and link tags, pages, entry/exit, countries, browsers, systems, screens, goals, who is on now: an event
+  in 5 minutes or a heartbeat in 2, `track.js` beating every minute while the tab is in sight to `POST /api/web/presence`, held in
+  memory, `IWebPresence`, never a row); the queue is kept in localStorage (`nf.web.events`, ids
   per event, removed only after a 2xx, retried, a week at most) and a hidden or left page's batches go by `sendBeacon` to
   `POST /api/web/events/beacon` (text/plain JSON, device id and, signed in, the token in the body). A page load's first page
   view also carries its link's campaign tags (`utm_*`, `?ref=`/`?via=`, `campaignFrom`); the API keeps the browser and system

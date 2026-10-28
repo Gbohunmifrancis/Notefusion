@@ -85,6 +85,32 @@ public sealed class WebEventsController : ApiControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// A tab in sight is still open: <c>track.js</c>'s heartbeat, every minute while the page is visible, sent with
+    /// <c>navigator.sendBeacon</c> as <c>text/plain</c> JSON (no preflight). Held in memory for the Traffic page's live count
+    /// (<see cref="IWebPresence"/>), never stored. 204 whatever was in it.
+    /// </summary>
+    [HttpPost("presence")]
+    [EnableRateLimiting(AuthRateLimiting.WebEvents)]
+    [RequestSizeLimit(MaxPresenceBytes)]
+    public async Task<IActionResult> Presence(CancellationToken ct)
+    {
+        try
+        {
+            var beat = await JsonSerializer.DeserializeAsync<PresenceRequest>(Request.Body, BeaconJson, ct);
+            if (beat is not null)
+                await _sender.Send(new RecordPresenceCommand(beat.VisitorId, beat.Path, Request.Headers.UserAgent.ToString()), ct);
+        }
+        catch (JsonException)
+        {
+            // Not the tracker: nothing to keep.
+        }
+        return NoContent();
+    }
+
+    /// <summary>A heartbeat is a browser id and a path.</summary>
+    private const long MaxPresenceBytes = 1024;
+
     /// <summary>The account a beacon's token names, validated as the bearer header would be; null for none or an invalid one.</summary>
     private async Task<Guid?> UserFromTokenAsync(string? token)
     {
@@ -108,6 +134,8 @@ public sealed class WebEventsController : ApiControllerBase
     private static readonly JsonSerializerOptions BeaconJson = new(JsonSerializerDefaults.Web);
 
     public sealed record WebEventsRequest(string? VisitorId, string? SessionId, IReadOnlyList<WebEventInput>? Events);
+
+    public sealed record PresenceRequest(string? VisitorId, string? Path);
 
     /// <summary>A beacon's body: the batch plus the device id the headers would have carried.</summary>
     public sealed record BeaconRequest(
