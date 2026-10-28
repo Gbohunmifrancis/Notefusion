@@ -1,7 +1,8 @@
-/* The song link inside pasted text: the one rule the worker (server/app/ingest/links.py) applies,
- * mirrored here so a share sheet's "Listen to … on Spotify: https://…" is read the same way
- * everywhere, a wrong link gets a plain answer at once, and only the link itself is sent.
- * The C# API and the mobile app mirror the same rule — keep them in lock-step.
+/* The link inside pasted text, so a share sheet's "Listen to … on Spotify: https://…" is cut down to
+ * its link and only the link is sent: the rule the worker's extract_url (server/app/ingest/links.py)
+ * applies, as the C# API's SongLinks and the phone's lib/songLink do. Whether a link is a song we can
+ * read is the worker's alone: any link is sent, and one it cannot use comes back as the API's plain
+ * TRANS_INVALID_LINK sentence.
  *
  * Plain script, no build step. Exposes window.NfSongLink.
  */
@@ -12,9 +13,6 @@
   // A link to one of the services typed without its scheme ("youtube.com/watch?v=…"), read as https://.
   var BARE_LINK = /(?:^|[\s(\[<"'“‘«])((?:[a-z0-9-]+\.)*(?:youtube\.com|youtu\.be|spotify\.com|spotify\.link|app\.link|apple\.com|instagram\.com|tiktok\.com)\/[^\s<>"]+)/i;
   var TRAILING = /[.,;:!?'")\]}>»”’…]+$/;
-  var VIDEO_ID = /^[A-Za-z0-9_-]{11}$/;
-  var TIKTOK_ID = /^\d{8,24}$/;
-  var SHORT_CODE = /^[A-Za-z0-9_-]{4,32}$/;
 
   /**
    * The first http(s) link in the text, or else the first link to a service typed without "https://", with
@@ -28,57 +26,15 @@
     return url && url.length > "https://".length ? url : null;
   }
 
-  function providerOf(url) {
-    var u;
-    try { u = new URL(url); } catch (e) { return null; }
-    var host = u.hostname.toLowerCase(), parts = u.pathname.split("/").filter(Boolean);
-    if (host === "youtu.be" || host === "www.youtu.be") return parts[0] && VIDEO_ID.test(parts[0]) ? "youtube" : null;
-    if (host === "youtube.com" || /\.youtube\.com$/.test(host)) {
-      if (parts.length === 1 && parts[0] === "watch") return VIDEO_ID.test(u.searchParams.get("v") || "") ? "youtube" : null;
-      if (["shorts", "live", "embed", "v"].indexOf(parts[0]) >= 0) return parts[1] && VIDEO_ID.test(parts[1]) ? "youtube" : null;
-      return null;
-    }
-    if (host === "open.spotify.com") {
-      var at = /^intl-[A-Za-z-]+$/.test(parts[0] || "") ? 1 : 0;
-      return parts.length === at + 2 && parts[at] === "track" && /^[A-Za-z0-9]+$/.test(parts[at + 1]) ? "spotify" : null;
-    }
-    if (host === "spotify.link" || host === "spotify.app.link") return parts[0] ? "spotify" : null;
-    if (host === "music.apple.com" || host === "geo.music.apple.com") {
-      // /<country>/(song|album)/<slug>/<id>, the slug sometimes missing.
-      if (parts.length < 3) return null;
-      if (parts[1] === "song") return /^\d+$/.test(parts[parts.length - 1]) ? "apple_music" : null;
-      if (parts[1] === "album") return /^\d+$/.test(u.searchParams.get("i") || "") ? "apple_music" : null;
-      return null;
-    }
-    if (host === "instagram.com" || host === "www.instagram.com" || host === "m.instagram.com") {
-      // /<kind>/<code>/ or /<user>/<kind>/<code>/
-      for (var i = 0; i < Math.min(2, parts.length); i++) {
-        if (["reel", "reels", "p", "tv"].indexOf(parts[i]) >= 0 && /^[A-Za-z0-9_-]{5,64}$/.test(parts[i + 1] || "")) return "instagram";
-      }
-      return null;
-    }
-    if (host === "vm.tiktok.com" || host === "vt.tiktok.com") return parts.length === 1 && SHORT_CODE.test(parts[0]) ? "tiktok" : null;
-    if (host === "tiktok.com" || host === "www.tiktok.com" || host === "m.tiktok.com") {
-      if (parts.length === 2 && parts[0] === "t") return SHORT_CODE.test(parts[1]) ? "tiktok" : null;
-      if (parts.length === 3 && parts[0].charAt(0) === "@" && parts[1] === "video") return TIKTOK_ID.test(parts[2]) ? "tiktok" : null;
-      if (parts.length === 2 && parts[0] === "v" && /\.html$/.test(parts[1])) return TIKTOK_ID.test(parts[1].slice(0, -5)) ? "tiktok" : null;
-      return null;
-    }
-    return null;
-  }
-
-  /** { url, provider } for the song link in pasted text, or null when there is none we can read. */
+  /** { url } for the link in pasted text, or null when it holds none. The server says whether it is a song. */
   function extract(text) {
     var url = firstUrl(text);
-    var provider = url && providerOf(url);
-    return provider ? { url: url, provider: provider } : null;
+    return url ? { url: url } : null;
   }
 
-  /** What to tell someone whose text holds no song link we can read. */
-  function hint(text) {
-    return firstUrl(text)
-      ? "That link isn't a single song. Paste a link to a YouTube, Instagram or TikTok video, a Spotify track or an Apple Music song."
-      : "Paste a link to a YouTube, Instagram or TikTok video, a Spotify track or an Apple Music song.";
+  /** What to tell someone whose text holds no link at all. */
+  function hint() {
+    return "Paste a link to a YouTube, Instagram or TikTok video, a Spotify track or an Apple Music song.";
   }
 
   /**

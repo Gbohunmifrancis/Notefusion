@@ -1,5 +1,6 @@
 using NoteFusion.Application.Billing.Queries;
 using NoteFusion.Application.Common;
+using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Transcriptions;
 using NoteFusion.Application.Transcriptions.Commands;
@@ -456,13 +457,17 @@ public class LinkTranscriptionTests
     {
         using var h = new TestHarness(Now);
         var user = Seed(h);
-        var api = new FakeTranscriptionApi();
+        // The worker is the one judge of a song link; the API passes the link on and its refusal back.
+        var api = new FakeTranscriptionApi { RefusesLink = TranscriptionErrors.InvalidLink with { Stage = "parse", Cause = "not_a_song_link" } };
 
         var result = await SubmitLink(h, user, api, url);
 
         Assert.Equal("TRANS_INVALID_LINK", result.Error.Code);
-        Assert.Equal("Paste a link to a YouTube video, a Spotify track or an Apple Music song.", result.Error.Message);
+        Assert.Equal("Paste a link to a YouTube, Instagram or TikTok video, a Spotify track or an Apple Music song.", result.Error.Message);
+        Assert.Equal(url, api.LastUrl);
         Assert.Null(api.LastOptions);
+        Assert.Equal(("parse", "not_a_song_link"),
+            h.Db.TranscriptionLogs.Select(l => new { l.FailureStage, l.FailureCode }).AsEnumerable().Select(l => (l.FailureStage, l.FailureCode)).Single());
     }
 
     // ---------------------------------------------------------------- keyboard transpose and chords
@@ -731,6 +736,8 @@ public class LinkTranscriptionTests
         public string Midi { get; set; } = "";
         public TranscribeOptions? LastOptions { get; private set; }
         public string? LastUrl { get; private set; }
+        /// <summary>The worker's refusal of the link (its <c>provider_of</c> is the one judge of a song link).</summary>
+        public Error? RefusesLink { get; init; }
 
         public Task<Result<string>> SubmitAsync(Stream audio, string fileName, TranscribeOptions options, CancellationToken ct = default)
         {
@@ -744,7 +751,7 @@ public class LinkTranscriptionTests
         public Task<Result<string>> SubmitLinkAsync(string url, TranscribeOptions options, CancellationToken ct = default)
         {
             LastUrl = url;
-            return SubmitAsync(Stream.Null, url, options, ct);
+            return RefusesLink is { } refusal ? Task.FromResult(Result.Failure<string>(refusal)) : SubmitAsync(Stream.Null, url, options, ct);
         }
 
         public Task<Result<TranscriptionJobDto>> GetJobAsync(string jobId, CancellationToken ct = default)
@@ -768,7 +775,9 @@ public class LinkTranscriptionTests
             => Task.FromResult(Result<GradeResultDto>.Success(new GradeResultDto(100, target.Notes.Count, 0, 0, 0, 0, 0, 0, "Spot on.", [])));
 
         public Task<Result<SourceDto>> ResolveLinkAsync(string url, CancellationToken ct = default)
-            => Task.FromResult(Result<SourceDto>.Success(new SourceDto("youtube", url, "Way Maker", "Sinach", null)));
+            => Task.FromResult(RefusesLink is { } refusal
+                ? Result.Failure<SourceDto>(refusal)
+                : Result<SourceDto>.Success(new SourceDto("youtube", url, "Way Maker", "Sinach", null)));
 
         public Task<Result<int>> PingAsync(CancellationToken ct = default) => Task.FromResult(Result<int>.Success(1));
     }

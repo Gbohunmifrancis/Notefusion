@@ -68,8 +68,8 @@ public class LinkSectionTests
     [Theory]
     [InlineData("")]
     [InlineData("not a link")]
-    [InlineData("https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M")]
-    public async Task A_link_that_is_not_a_song_is_refused_before_the_worker_is_asked(string url)
+    [InlineData("Check this out, it's on YouTube")]
+    public async Task Text_without_a_link_is_refused_before_the_worker_is_asked(string url)
     {
         using var h = new TestHarness(Now);
         var user = Seed(h);

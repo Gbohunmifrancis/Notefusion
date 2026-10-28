@@ -138,7 +138,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   style's band, log drum and talking drum included; simulated stems; its own `afro_baseline.json`). Linked songs
   (`POST /v1/transcribe/link`: YouTube, Spotify, Apple Music; Instagram reels and TikTok videos too, fetched themselves on the
   first rung only with no store preview, a sign-in wall answered `post_refused` → `TRANS_LINK_POST_REFUSED`) are fetched by `app/ingest/links.py`
-  (oEmbed metadata + yt-dlp), vocal-isolated by `app/pipeline/separate.py` (MDX-Net ONNX, model
+  (oEmbed metadata + yt-dlp; which links are songs is its `provider_of` alone: the C# `SongLinks`, web `songlink.js` and
+  phone `lib/songLink` only find the link in pasted text and send any link, and one that is not a song comes back
+  `not_a_song_link` → `TRANS_INVALID_LINK`), vocal-isolated by `app/pipeline/separate.py` (MDX-Net ONNX, model
   baked into the image at `NF_MDX_MODEL_PATH`; one pass needs ~1.6 GB and the process keeps ~320 MB of it,
   so the model runs in a child process that hands the memory back — `NF_SEPARATE_IN_PROCESS=1` restores
   the in-process run), then transcribed; a song's separated vocal (the queue passes the mix as `tempo_source` only
