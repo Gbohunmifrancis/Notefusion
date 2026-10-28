@@ -671,6 +671,9 @@ class JobQueue:
                 )
                 if work is not None:
                     job.result.overall_confidence = READ_CONFIDENCE
+                    # A photographed hymn page is offered its hymnbook version, as a sung one is: homr writes no
+                    # ties and misreads lengths on old scans, which the published score has right.
+                    _offer_hymn(job, "melody")
             finally:
                 score_path.unlink(missing_ok=True)
                 if work is not None:
@@ -845,7 +848,7 @@ _STEM_SECONDS_PER_NOTE = 3.0
 def _offer_hymn(job: Job, mode: str) -> None:
     """Attach ``hymn_match`` when a melody's tune clearly matches a hymn we hold.
 
-    Once, at the end of a melody (or song) transcription: a choir's parts, chords mode and an
+    Once, at the end of a melody (or song) transcription, or of a photo or PDF of printed music: a choir's parts, chords mode and an
     arrangement written under the tune are read against their own beats, which the hymnbook
     version would not keep, so they are never offered one. Recognition is an extra on top of the
     sheet: any failure leaves the result as it was.

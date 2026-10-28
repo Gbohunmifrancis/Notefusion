@@ -236,7 +236,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `app/pipeline/chords.py` reads chords per beat (notes + chroma + bass, Viterbi, key from the chords) for
   `mode="chords"` (top line = melody) and for melody-mode songs off the backing; `keyboard_transpose` writes
   sounding pitch minus the keyboard's transpose (solfa unchanged). Bench: `python -m tests.accuracy.chords_bench`.
-  `app/pipeline/hymn_match.py` recognises a hymn we hold once a melody (or song) job finishes (`queue._offer_hymn`;
+  `app/pipeline/hymn_match.py` recognises a hymn we hold once a melody (or song) job finishes, or a photo or PDF of printed music is read (`queue._offer_hymn`;
   never choir/chords mode or a sheet with parts; `NF_HYMN_MATCH=0` turns it off): interval-trigram prefilter (cosine,
   so it holds at 10k entries), Smith-Waterman on intervals then on pitch classes under the likeliest transpositions,
   offered only past `MIN_MATCHED`/density/coverage and a margin over the best *other* tune (more for a short match),

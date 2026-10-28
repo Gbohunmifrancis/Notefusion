@@ -135,3 +135,38 @@ def test_the_score_route_takes_a_photo_and_the_job_writes_its_tune(tmp_path, mon
     assert job["result"]["key"] == "Eb major"
     # Read off a page, not given exactly: the clients ask for a check of the notes.
     assert 0.5 <= job["result"]["overallConfidence"] < 0.75
+
+
+def test_a_photographed_hymn_page_is_offered_its_hymnbook_version(tmp_path, monkeypatch):
+    import io
+    import json
+    import time
+
+    from fastapi.testclient import TestClient
+    from music21 import key as m21key, meter, note as m21note, stream
+
+    from app.main import app
+    from app.pipeline import sheet_check
+
+    # Amazing Grace as homr reads it: every note, but its tied notes as repeats (homr writes no ties).
+    hymn = json.loads(sheet_check.PAGE.with_suffix(".json").read_text(encoding="utf-8"))["pitchMidi"]
+    read = hymn[:9] + [hymn[8]] + hymn[9:] + [hymn[-1]]
+    part = stream.Part()
+    part.append(m21key.KeySignature(1))
+    part.append(meter.TimeSignature("3/4"))
+    for m in read:
+        part.append(m21note.Note(m, quarterLength=1))
+    _fake_homr(tmp_path, monkeypatch, stream.Score([part]).write("musicxml").read_text(encoding="utf-8"))
+    with TestClient(app) as client:
+        r = client.post("/v1/transcribe/score", files={"score": ("grace.jpg", io.BytesIO(b"\xff\xd8 jpeg"), "image/jpeg")})
+        job_id = r.json()["jobId"]
+        for _ in range(100):
+            job = client.get(f"/v1/jobs/{job_id}").json()
+            if job["status"] in ("done", "failed"):
+                break
+            time.sleep(0.1)
+    assert job["status"] == "done", job
+    offer = job["result"]["hymnMatch"]
+    assert (offer["slug"], offer["kind"], offer["key"]) == ("amazing-grace", "score", "G major")
+    # The hymnbook's notes: its held notes whole, as the page printed them.
+    assert len(offer["notes"]) == len(hymn)
