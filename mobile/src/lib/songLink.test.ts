@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { extractSongUrl, firstUrl, providerOf, songLinkHint } from "./songLink.ts";
+import { extractSongUrl, fetchesItsOwnVideo, firstUrl, providerOf, songLinkHint } from "./songLink.ts";
 
 test("first link in share text, trailing punctuation trimmed", () => {
   assert.equal(
@@ -77,4 +77,30 @@ test("a link typed without https:// is read as https, as the worker, the API and
   assert.equal(firstUrl("notyoutube.com/watch?v=dQw4w9WgXcQ"), null);
   assert.equal(firstUrl("example.com/watch?v=dQw4w9WgXcQ"), null);
   assert.match(songLinkHint("youtube.com/@RickAstleyYT"), /isn't a single song/);
+});
+
+test("Instagram reels and posts and TikTok videos, as the worker, the API and the web read them", () => {
+  for (const url of [
+    "https://www.instagram.com/reel/C9xYz12AbCd/?igsh=abc",
+    "https://instagram.com/reels/C9xYz12AbCd/",
+    "https://www.instagram.com/p/C9xYz12AbCd/",
+    "https://www.instagram.com/someone/reel/C9xYz12AbCd/",
+  ]) assert.equal(providerOf(url), "instagram", url);
+  for (const url of [
+    "https://www.tiktok.com/@singer/video/7312345678901234567?is_from_webapp=1",
+    "https://vm.tiktok.com/ZMabc123/",
+    "https://vt.tiktok.com/ZSabc123/",
+    "https://www.tiktok.com/t/ZTabc123/",
+    "https://m.tiktok.com/v/7312345678901234567.html",
+  ]) assert.equal(providerOf(url), "tiktok", url);
+  for (const url of [
+    "https://www.instagram.com/someone/",
+    "https://www.instagram.com/explore/tags/choir/",
+    "https://www.tiktok.com/@singer",
+    "https://www.tiktok.com/music/original-sound-7312345678901234567",
+    "https://vm.tiktok.com/",
+  ]) assert.equal(providerOf(url), null, url);
+  assert.deepEqual(extractSongUrl("Watch this vm.tiktok.com/ZMabc123/"), { url: "https://vm.tiktok.com/ZMabc123/", provider: "tiktok" });
+  assert.equal(fetchesItsOwnVideo("tiktok"), true);
+  assert.equal(fetchesItsOwnVideo("spotify"), false);
 });

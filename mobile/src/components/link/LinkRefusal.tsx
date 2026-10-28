@@ -19,6 +19,7 @@ const REFUSALS: Record<string, { title: string; icon: IconName }> = {
   TRANS_LINK_NOT_FOUND: { title: "No video at that link", icon: "not-found" },
   TRANS_LINK_TOO_LONG: { title: "That video is too long", icon: "too-long" },
   TRANS_LINK_REFUSED: { title: "YouTube said no for now", icon: "later" },
+  TRANS_LINK_POST_REFUSED: { title: "That video is for signed-in viewers", icon: "later" },
   TRANS_INVALID_LINK: { title: "That isn't a song link", icon: "link-off" },
 };
 

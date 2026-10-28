@@ -34,3 +34,29 @@ test("a link typed without https:// is read as https, as the worker, the API and
   assert.match(hint("youtube.com/@RickAstleyYT"), /isn't a single song/);
   assert.match(hint("hello"), /^Paste a link/);
 });
+
+test("Instagram reels and posts and TikTok videos are links we read, as the worker, the API and the phone do", () => {
+  for (const url of [
+    "https://www.instagram.com/reel/C9xYz12AbCd/?igsh=abc",
+    "https://instagram.com/reels/C9xYz12AbCd/",
+    "https://www.instagram.com/p/C9xYz12AbCd/",
+    "https://www.instagram.com/someone/reel/C9xYz12AbCd/",
+  ]) assert.equal(extract(url).provider, "instagram", url);
+  for (const url of [
+    "https://www.tiktok.com/@singer/video/7312345678901234567?is_from_webapp=1",
+    "https://vm.tiktok.com/ZMabc123/",
+    "https://vt.tiktok.com/ZSabc123/",
+    "https://www.tiktok.com/t/ZTabc123/",
+    "https://m.tiktok.com/v/7312345678901234567.html",
+  ]) assert.equal(extract(url).provider, "tiktok", url);
+  assert.deepEqual(extract("Watch this vm.tiktok.com/ZMabc123/"), { url: "https://vm.tiktok.com/ZMabc123/", provider: "tiktok" });
+  assert.deepEqual(extract("instagram.com/reel/C9xYz12AbCd"), { url: "https://instagram.com/reel/C9xYz12AbCd", provider: "instagram" });
+  for (const url of [
+    "https://www.instagram.com/someone/",
+    "https://www.instagram.com/explore/tags/choir/",
+    "https://www.tiktok.com/@singer",
+    "https://www.tiktok.com/music/original-sound-7312345678901234567",
+    "https://vm.tiktok.com/",
+  ]) assert.equal(extract(url), null, url);
+  assert.match(hint("hello"), /Instagram or TikTok/);
+});

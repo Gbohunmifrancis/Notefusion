@@ -37,6 +37,11 @@ public static class TranscriptionErrors
     public static readonly Error LinkRefused =
         Error.Validation("TRANS_LINK_REFUSED", "YouTube is refusing automated downloads right now. Upload the audio file instead.");
 
+    /// <summary>An Instagram or TikTok video the service keeps to signed-in viewers (or would not hand over just now).</summary>
+    public static readonly Error LinkPostRefused =
+        Error.Validation("TRANS_LINK_POST_REFUSED",
+            "Instagram and TikTok keep some videos to signed-in viewers, so we couldn't fetch this one. Save it to your phone and upload the file instead.");
+
     /// <summary>The video outruns the worker's cap on a linked video; <paramref name="limitSeconds"/> is that cap when it was named.</summary>
     public static Error LinkTooLong(double? limitSeconds) =>
         Error.Validation("TRANS_LINK_TOO_LONG", limitSeconds is { } cap
@@ -54,6 +59,7 @@ public static class TranscriptionErrors
         "unavailable" => LinkUnavailable,
         "live" => LinkLive,
         "refused" => LinkRefused,
+        "post_refused" => LinkPostRefused,
         "too_long" => LinkTooLong(limitSeconds),
         _ => null,
     };

@@ -117,6 +117,21 @@ SPOTIFY_ID = "4cOdK2wGLETKBW3PvgPWqT"
         ("youtube.com/@RickAstleyYT", "https://youtube.com/@RickAstleyYT", None),
         ("notyoutube.com/watch?v=dQw4w9WgXcQ", None, None),
         ("example.com/watch?v=dQw4w9WgXcQ", None, None),
+        # Instagram reels and posts (under a profile too), TikTok videos and their short links.
+        ("https://www.instagram.com/reel/C9xYz12AbCd/?igsh=abc", "https://www.instagram.com/reel/C9xYz12AbCd/?igsh=abc", "instagram"),
+        ("https://instagram.com/reels/C9xYz12AbCd/", "https://instagram.com/reels/C9xYz12AbCd/", "instagram"),
+        ("https://www.instagram.com/p/C9xYz12AbCd/", "https://www.instagram.com/p/C9xYz12AbCd/", "instagram"),
+        ("https://www.instagram.com/someone/reel/C9xYz12AbCd/", "https://www.instagram.com/someone/reel/C9xYz12AbCd/", "instagram"),
+        ("instagram.com/reel/C9xYz12AbCd", "https://instagram.com/reel/C9xYz12AbCd", "instagram"),
+        ("https://www.instagram.com/someone/", "https://www.instagram.com/someone/", None),
+        ("https://www.tiktok.com/@singer/video/7312345678901234567?is_from_webapp=1",
+         "https://www.tiktok.com/@singer/video/7312345678901234567?is_from_webapp=1", "tiktok"),
+        ("Watch this https://vm.tiktok.com/ZMabc123/", "https://vm.tiktok.com/ZMabc123/", "tiktok"),
+        ("https://vt.tiktok.com/ZSabc123/", "https://vt.tiktok.com/ZSabc123/", "tiktok"),
+        ("https://www.tiktok.com/t/ZTabc123/", "https://www.tiktok.com/t/ZTabc123/", "tiktok"),
+        ("https://m.tiktok.com/v/7312345678901234567.html", "https://m.tiktok.com/v/7312345678901234567.html", "tiktok"),
+        ("https://www.tiktok.com/@singer", "https://www.tiktok.com/@singer", None),
+        ("https://www.tiktok.com/music/original-sound-7312345678901234567", "https://www.tiktok.com/music/original-sound-7312345678901234567", None),
     ],
 )
 def test_extract_url_and_provider_of_follow_the_shared_link_rule(text, url, provider):
@@ -1055,3 +1070,86 @@ def test_the_logged_tail_never_carries_a_cookie_line():
     # Mentioning cookies is not the same as echoing one: the bot message keeps its advice.
     assert "--cookies-from-browser" in links._log_tail("ERROR: Sign in to confirm. Use --cookies-from-browser")
     assert links._log_tail("") == "no output"
+
+
+# ── Instagram and TikTok ─────────────────────────────────────────────────────
+
+
+def test_instagram_and_tiktok_links_have_one_address_each():
+    assert links.instagram_url("https://instagram.com/reels/C9xYz12AbCd/?igsh=x") == "https://www.instagram.com/reel/C9xYz12AbCd/"
+    assert links.instagram_url("https://www.instagram.com/someone/p/C9xYz12AbCd") == "https://www.instagram.com/p/C9xYz12AbCd/"
+    assert links.tiktok_url("https://www.tiktok.com/@singer/video/7312345678901234567?lang=en") == \
+        "https://www.tiktok.com/@singer/video/7312345678901234567"
+    assert links.tiktok_url("https://vm.tiktok.com/ZMabc123") == "https://vm.tiktok.com/ZMabc123/"
+    assert links.instagram_url(YOUTUBE) is None and links.tiktok_url(YOUTUBE) is None
+
+
+def _fake_post(calls, info: str, fail: str = ""):
+    def run(args, **kwargs):
+        calls.append(list(args))
+        if args[0] == "ffmpeg":
+            Path(args[-1]).write_bytes(b"RIFF")
+            return _Completed()
+        if args[0] == "ffprobe":
+            return _Completed(0, "20\n")
+        if fail:
+            return _Completed(1, "", fail)
+        if "-J" in args:
+            return _Completed(0, info)
+        Path(args[args.index("-o") + 1].replace("%(ext)s", "mp4")).write_bytes(b"mp4")
+        return _Completed()
+    return run
+
+
+def test_a_tiktok_video_is_named_by_its_sound_and_fetched_itself(monkeypatch, tmp_path):
+    calls = []
+    info = '{"id": "7312345678901234567", "duration": 31, "title": "when the choir hits the high note #fyp", ' \
+           '"track": "Way Maker", "artist": "Sinach", "uploader": "choirdaily", "thumbnail": "https://p.tiktokcdn.com/t.jpg"}'
+    monkeypatch.setattr(links.subprocess, "run", _fake_post(calls, info))
+    monkeypatch.setattr(links, "_http_json", _never_run)
+    monkeypatch.setattr(links.settings, "ytdlp_proxy", "http://proxy.example:8080")
+    url = "https://www.tiktok.com/@choirdaily/video/7312345678901234567?is_from_webapp=1"
+    source = links.resolve_link(url)
+    assert (source.provider, source.title, source.artist, source.duration) == ("tiktok", "Way Maker", "Sinach", 31.0)
+    assert source.audio_url == "https://www.tiktok.com/@choirdaily/video/7312345678901234567"
+    fetched = links.fetch_audio(source, 180, work_dir=tmp_path)
+    assert fetched.preview is False and fetched.song_seconds == 31
+    ytdlp = [c for c in calls if c[0] == "yt-dlp"]
+    # The details read at resolve are reused; YouTube's proxy is never asked for TikTok.
+    assert len(ytdlp) == 2 and "--load-info-json" in ytdlp[1]
+    assert not any("--proxy" in c for c in ytdlp)
+
+
+def test_an_instagram_reel_without_a_song_credit_is_named_by_its_caption(monkeypatch):
+    info = '{"id": "C9xYz12AbCd", "duration": 45, "description": "Our choir singing Amazing Grace in four parts at ' \
+           'the Sunday evening service, recorded live in the chapel\\nmore below", "uploader": "stpaulschoir"}'
+    monkeypatch.setattr(links.subprocess, "run", _fake_post([], info))
+    source = links.resolve_link("https://www.instagram.com/reel/C9xYz12AbCd/?igsh=x")
+    assert source.provider == "instagram" and source.artist == "stpaulschoir"
+    assert source.title.startswith("Our choir singing Amazing Grace") and len(source.title) <= 80
+    assert source.title.endswith("…")
+
+
+def test_a_sign_in_wall_is_a_plain_refusal_with_no_preview(monkeypatch, tmp_path):
+    calls = []
+    wall = ("ERROR: [Instagram] C9xYz12AbCd: Requested content is not available, rate-limit reached or login required. "
+            "Use --cookies")
+    monkeypatch.setattr(links.subprocess, "run", _fake_post(calls, "", fail=wall))
+    monkeypatch.setattr(links, "_http_json", _never_run)
+    with pytest.raises(LinkError) as caught:
+        links.resolve_link("https://www.instagram.com/reel/C9xYz12AbCd/")
+    assert caught.value.code == "post_refused" and "Instagram" in str(caught.value) and "upload" in str(caught.value)
+    assert len(calls) == 1  # one rung only: the others are YouTube's
+    # A fetch refused the same way never stands a store preview in for the post.
+    source = Source("tiktok", "https://www.tiktok.com/@a/video/7312345678901234567", "T", "A",
+                    audio_url="https://www.tiktok.com/@a/video/7312345678901234567")
+    with pytest.raises(LinkError) as fetch_refused:
+        links.fetch_audio(source, 60, work_dir=tmp_path)
+    assert "TikTok" in str(fetch_refused.value)
+
+
+def test_a_missing_tiktok_video_is_unavailable(monkeypatch):
+    monkeypatch.setattr(links.subprocess, "run", _fake_post([], "", fail="ERROR: [TikTok] 731: Video not available, status code 10204"))
+    with pytest.raises(LinkError) as caught:
+        links.resolve_link("https://www.tiktok.com/@a/video/7312345678901234567")
+    assert caught.value.code == "unavailable" and "TikTok" in str(caught.value)

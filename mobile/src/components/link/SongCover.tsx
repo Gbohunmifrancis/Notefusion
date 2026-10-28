@@ -17,7 +17,7 @@ import type { LinkInfo } from "../../api/types";
 import { useDataSaver } from "../../lib/dataSaver";
 import { loadsImages } from "../../lib/dataPolicy";
 
-export const PROVIDER_LABEL = { youtube: "YouTube", spotify: "Spotify", apple_music: "Apple Music" } as const;
+export const PROVIDER_LABEL = { youtube: "YouTube", spotify: "Spotify", apple_music: "Apple Music", instagram: "Instagram", tiktok: "TikTok" } as const;
 
 /**
  * The shade over the artwork that keeps white text readable. Artwork can be any colour in

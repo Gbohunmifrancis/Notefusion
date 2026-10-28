@@ -34,6 +34,16 @@ public class SongLinksTests
     [InlineData("https://music.apple.com/gb/song/never-gonna-give-you-up/1559885424")]
     [InlineData("https://music.apple.com/gb/song/1559885424")]
     [InlineData("https://geo.music.apple.com/us/album/_/1559885421?i=1559885424")]
+    // Instagram reels and posts, TikTok videos and their short links.
+    [InlineData("https://www.instagram.com/reel/C9xYz12AbCd/?igsh=abc")]
+    [InlineData("https://instagram.com/reels/C9xYz12AbCd/")]
+    [InlineData("https://www.instagram.com/p/C9xYz12AbCd/")]
+    [InlineData("https://www.instagram.com/someone/reel/C9xYz12AbCd/")]
+    [InlineData("https://www.tiktok.com/@singer/video/7312345678901234567?is_from_webapp=1")]
+    [InlineData("https://vm.tiktok.com/ZMabc123/")]
+    [InlineData("https://vt.tiktok.com/ZSabc123/")]
+    [InlineData("https://www.tiktok.com/t/ZTabc123/")]
+    [InlineData("https://m.tiktok.com/v/7312345678901234567.html")]
     public void A_supported_song_link_is_taken_as_it_is(string link)
     {
         Assert.True(SongLinks.TryExtract(link, out var url));
@@ -64,6 +74,8 @@ public class SongLinksTests
     [InlineData("youtu.be/dQw4w9WgXcQ.", "https://youtu.be/dQw4w9WgXcQ")]
     [InlineData("open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT", "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT")]
     [InlineData("(music.apple.com/gb/song/1559885424)", "https://music.apple.com/gb/song/1559885424")]
+    [InlineData("instagram.com/reel/C9xYz12AbCd", "https://instagram.com/reel/C9xYz12AbCd")]
+    [InlineData("Watch this vm.tiktok.com/ZMabc123/", "https://vm.tiktok.com/ZMabc123/")]
     public void A_link_typed_without_its_scheme_is_read_as_https(string text, string expected)
     {
         Assert.True(SongLinks.TryExtract(text, out var url));
@@ -91,6 +103,11 @@ public class SongLinksTests
     [InlineData("https://music.apple.com/us/album/never-gonna-give-you-up/1559885421")] // a whole album
     [InlineData("https://music.apple.com/us/artist/rick-astley/669771")]
     [InlineData("https://music.apple.com/us/song/never-gonna-give-you-up/abc")]
+    [InlineData("https://www.instagram.com/someone/")]                  // a profile
+    [InlineData("https://www.instagram.com/explore/tags/choir/")]
+    [InlineData("https://www.tiktok.com/@singer")]                       // a profile
+    [InlineData("https://www.tiktok.com/music/original-sound-7312345678901234567")]
+    [InlineData("https://vm.tiktok.com/")]
     [InlineData("Check this out, it's on YouTube")]
     public void Anything_else_is_refused(string? text)
     {

@@ -217,7 +217,7 @@ function barCountOf(notes: readonly NoteEvent[], timeSignature: string): number 
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-const PROVIDERS: Record<string, string> = { youtube: "YouTube", spotify: "Spotify", apple_music: "Apple Music" };
+const PROVIDERS: Record<string, string> = { youtube: "YouTube", spotify: "Spotify", apple_music: "Apple Music", instagram: "Instagram", tiktok: "TikTok" };
 
 /** The space between a guest's "Keep this sheet" card and the player above it. */
 const KEEP_GAP = 8;

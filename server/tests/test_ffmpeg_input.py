@@ -90,6 +90,7 @@ SAMPLES = {
     "mp3": ["-c:a", "libmp3lame"],
     "m4a": ["-c:a", "aac"],
     "mp4": ["-c:a", "aac"],
+    "mov": ["-c:a", "aac"],  # a phone's screen recording
     "aac": ["-c:a", "aac", "-f", "adts"],
     "ogg": ["-c:a", "libvorbis"],
     "opus": ["-c:a", "libopus"],

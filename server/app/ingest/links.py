@@ -1,13 +1,17 @@
 """Turning a pasted link into audio on disk plus who made it.
 
 Supported links: YouTube (watch, youtu.be, shorts, live, embed, music.youtube.com), Spotify
-tracks (including ``spotify.link`` short links) and Apple Music songs.  The link may arrive
+tracks (including ``spotify.link`` short links), Apple Music songs, Instagram reels and posts,
+and TikTok videos (including ``vm.``/``vt.tiktok.com`` short links).  The link may arrive
 inside share text ("Listen to … on Spotify: https://…"); ``extract_url`` takes the first
 link out of it, and the clients and the C# API mirror that rule.
 
 Only YouTube can supply a whole song: Spotify and Apple Music streams are DRM-protected,
 so for those the link supplies the title, artist and length, and the song is then found
-on YouTube by them — which is how every link-to-transcription product does it.
+on YouTube by them — which is how every link-to-transcription product does it.  An
+Instagram or TikTok video is fetched itself, like a YouTube one, but on the first rung of
+the ladder only (the rest is YouTube's), and with no store preview to stand in: those
+services often want a signed-in viewer, and the user is then told to upload the file.
 
 Metadata comes from the platforms' official endpoints (YouTube and Spotify oEmbed, the
 iTunes lookup API) or the page's Open Graph tags: no API keys, no scraping of signed-in
@@ -76,7 +80,8 @@ class LinkError(Exception):
     """A user-facing reason the link could not be used.
 
     ``code`` names the reason for the C# API, which has words of its own for ``not_found``,
-    ``unavailable``, ``live``, ``too_long`` and ``refused``; None for every other reason.
+    ``unavailable``, ``live``, ``too_long``, ``refused`` (YouTube) and ``post_refused`` (Instagram or
+    TikTok); None for every other reason.
     ``limit_seconds`` goes with ``too_long``: the cap the video outran.
     """
 
@@ -88,7 +93,7 @@ class LinkError(Exception):
 
 @dataclass(frozen=True)
 class Source:
-    provider: str  # "youtube" | "spotify" | "apple_music"
+    provider: str  # "youtube" | "spotify" | "apple_music" | "instagram" | "tiktok"
     url: str
     title: str
     artist: str
@@ -121,7 +126,7 @@ _VIDEO_ID = re.compile(r"^[A-Za-z0-9_-]{11}$")
 _URL_IN_TEXT = re.compile(r"https?://[^\s<>\"]+", re.I)
 # A link to one of the services typed without its scheme ("youtube.com/watch?v=…"), read as https://.
 _BARE_LINK = re.compile(
-    r"""(?:^|[\s(\[<"'“‘«])((?:[a-z0-9-]+\.)*(?:youtube\.com|youtu\.be|spotify\.com|spotify\.link|app\.link|apple\.com)/[^\s<>"]+)""",
+    r"""(?:^|[\s(\[<"'“‘«])((?:[a-z0-9-]+\.)*(?:youtube\.com|youtu\.be|spotify\.com|spotify\.link|app\.link|apple\.com|instagram\.com|tiktok\.com)/[^\s<>"]+)""",
     re.I,
 )
 # A link that ends a sentence or sits in brackets drags these along when pasted.
@@ -129,6 +134,14 @@ _TRAILING = ".,;:!?)]}>'\"’”»…"
 _SPOTIFY_TRACK_PATH = re.compile(r"^/(?:intl-[A-Za-z-]+/)?track/([A-Za-z0-9]+)/?$")
 _SPOTIFY_TRACK_URL = re.compile(r"https://open\.spotify\.com/(?:intl-[A-Za-z-]+/)?track/[A-Za-z0-9]+")
 _SPOTIFY_SHORT_HOSTS = ("spotify.link", "spotify.app.link")
+_INSTAGRAM_HOSTS = ("instagram.com", "www.instagram.com", "m.instagram.com")
+_INSTAGRAM_KINDS = ("reel", "reels", "p", "tv")
+_INSTAGRAM_CODE = re.compile(r"^[A-Za-z0-9_-]{5,64}$")
+_TIKTOK_HOSTS = ("tiktok.com", "www.tiktok.com", "m.tiktok.com")
+_TIKTOK_SHORT_HOSTS = ("vm.tiktok.com", "vt.tiktok.com")
+_TIKTOK_ID = re.compile(r"^\d{8,24}$")
+_SHORT_CODE = re.compile(r"^[A-Za-z0-9_-]{4,32}$")
+_NAMES = {"youtube": "YouTube", "instagram": "Instagram", "tiktok": "TikTok"}
 # Hosts a store's preview may be downloaded from (Spotify's CDN, Apple's).
 _PREVIEW_HOSTS = (".scdn.co", ".apple.com", ".mzstatic.com")
 _PREVIEW_MAX_BYTES = 5_000_000
@@ -237,6 +250,38 @@ def apple_track_id(url: str) -> str | None:
     return candidate if candidate.isdigit() else None
 
 
+def instagram_url(url: str) -> str | None:
+    """The reel or post's canonical address (``https://www.instagram.com/<kind>/<code>/``), or None:
+    /reel/, /reels/, /p/ and /tv/, also under a profile (/<user>/reel/<code>/)."""
+    host, path, _ = _host_path_query(url)
+    if host not in _INSTAGRAM_HOSTS:
+        return None
+    parts = [p for p in path.split("/") if p]
+    for i, part in enumerate(parts[:2]):
+        if part in _INSTAGRAM_KINDS and i + 1 < len(parts) and _INSTAGRAM_CODE.match(parts[i + 1]):
+            kind = "reel" if part == "reels" else part
+            return f"https://www.instagram.com/{kind}/{parts[i + 1]}/"
+    return None
+
+
+def tiktok_url(url: str) -> str | None:
+    """The video's address: ``https://www.tiktok.com/@<user>/video/<id>`` (or /v/<id>.html on m.), or a
+    vm./vt.tiktok.com or tiktok.com/t/ short link as pasted (yt-dlp follows it); None otherwise."""
+    host, path, _ = _host_path_query(url)
+    parts = [p for p in path.split("/") if p]
+    if host in _TIKTOK_SHORT_HOSTS:
+        return f"https://{host}/{parts[0]}/" if len(parts) == 1 and _SHORT_CODE.match(parts[0]) else None
+    if host not in _TIKTOK_HOSTS:
+        return None
+    if len(parts) == 2 and parts[0] == "t" and _SHORT_CODE.match(parts[1]):
+        return f"https://www.tiktok.com/t/{parts[1]}/"
+    if len(parts) == 3 and parts[0].startswith("@") and parts[1] == "video" and _TIKTOK_ID.match(parts[2]):
+        return f"https://www.tiktok.com/{parts[0]}/video/{parts[2]}"
+    if len(parts) == 2 and parts[0] == "v" and parts[1].endswith(".html") and _TIKTOK_ID.match(parts[1][:-5]):
+        return f"https://www.tiktok.com/@_/video/{parts[1][:-5]}"
+    return None
+
+
 def provider_of(text: str) -> str | None:
     """Which supported service the first link in ``text`` belongs to, or None."""
     url = extract_url(text)
@@ -251,6 +296,10 @@ def provider_of(text: str) -> str | None:
         return "spotify"
     if apple_track_id(url):
         return "apple_music"
+    if instagram_url(url):
+        return "instagram"
+    if tiktok_url(url):
+        return "tiktok"
     return None
 
 
@@ -373,6 +422,45 @@ def _read_youtube_details(canonical: str) -> "_Cached":
     source = Source("youtube", canonical, title, artist, info.get("thumbnail") or None, audio_url=canonical,
                     duration=_info_duration(info_json))
     return _Cached(source, info_json, route=route)
+
+
+#: An Instagram or TikTok title is the post's caption: its first line, at most this long.
+_CAPTION_MAX = 80
+
+
+def _caption(text: str) -> str:
+    line = _clean((text or "").splitlines()[0] if (text or "").strip() else "")
+    return line if len(line) <= _CAPTION_MAX else line[: _CAPTION_MAX - 1].rstrip() + "…"
+
+
+def _resolve_video_post(url: str, provider: str) -> "_Cached":
+    """An Instagram or TikTok video, from yt-dlp's details (they have no oEmbed without an app
+    key).  The sound's own name and artist when the service knows the song (TikTok's music
+    credit), else the caption's first line and the account."""
+    canonical = instagram_url(url) if provider == "instagram" else tiktok_url(url)
+    name = _NAMES[provider]
+    with _tracked("resolve", provider):
+        try:
+            info_json, route = _extract_info(canonical, _INFO_TIMEOUT * 2, provider)
+        except _YtdlpFailed as failure:
+            if failure.kind == "blocked":
+                raise LinkError(f"{name} wouldn't share that video with us. Save it to your phone and upload the "
+                                "file instead.", "post_refused") from failure
+            raise LinkError(f"That {name} video is private or unavailable, so it can't be fetched.",
+                            "unavailable") from failure
+        except OSError as exc:  # no yt-dlp on this machine
+            raise LinkError(f"That {name} video can't be fetched.", "unavailable") from exc
+    refusal = _video_refusal(info_json)
+    if refusal is not None:
+        raise refusal
+    info = json.loads(info_json)
+    track, artist = _clean(str(info.get("track") or "")), _clean(str(info.get("artist") or info.get("creator") or ""))
+    if not track:
+        track = _caption(str(info.get("title") or info.get("description") or "")) or f"{name} video"
+        artist = _clean(str(info.get("uploader") or info.get("channel") or ""))
+    source = Source(provider, canonical, track, artist, info.get("thumbnail") or None, audio_url=canonical,
+                    duration=_info_duration(info_json))
+    return _Cached(source, _slim_info(info_json), route=route)
 
 
 def _resolve_spotify(url: str) -> Source:
@@ -505,7 +593,7 @@ def resolve_source(text: str) -> Source:
     """
     provider = provider_of(text)
     if provider is None:
-        raise LinkError("That link is not a YouTube video, Spotify track or Apple Music song.")
+        raise LinkError("That link is not a YouTube, Instagram or TikTok video, a Spotify track or an Apple Music song.")
     url = extract_url(text)
     cached = _cache_get(url)
     if cached is not None:
@@ -513,6 +601,8 @@ def resolve_source(text: str) -> Source:
     try:
         if provider == "youtube":
             entry = _resolve_youtube(url)
+        elif provider in ("instagram", "tiktok"):
+            entry = _resolve_video_post(url, provider)
         elif provider == "spotify":
             entry = _Cached(_resolve_spotify(url))
         else:
@@ -555,7 +645,9 @@ _PREFERRED = re.compile(r"official (audio|lyric video)|\(audio\)", re.I)
 # bot check is matched on its own words. YouTube's rate limit reads "Video unavailable. This
 # content isn't available, try again later", so it is matched before "unavailable" is.
 _AGE_GATE = re.compile(r"confirm your age|age[- ]restricted|inappropriate for some users", re.I)
-_BOT_CHECK = re.compile(r"not a bot|confirm you(?:'|’)re not|rate-limited|try again later|captcha", re.I)
+_BOT_CHECK = re.compile(
+    r"not a bot|confirm you(?:'|’)re not|rate-limited|rate-limit reached|login required|log in to|try again later|captcha",
+    re.I)
 _GONE = re.compile(
     r"private|unavailable|removed|no longer available|terminated|does not exist|members|copyright"
     r"|available in your country", re.I)
@@ -605,6 +697,13 @@ def _refused(stderr: str) -> bool:
 
 def _explain(stderr: str, provider: str = "youtube") -> str:
     kind = classify(stderr)
+    if provider in ("instagram", "tiktok"):
+        name = _NAMES[provider]
+        if kind == "blocked":
+            return f"{name} wouldn't share that video with us. Save it to your phone and upload the file instead."
+        if kind in ("unavailable", "age_restricted"):
+            return f"That {name} video is private or unavailable."
+        return "Could not fetch audio from that link. Upload the audio file instead."
     searched = provider != "youtube"
     if kind in ("unavailable", "age_restricted"):
         if searched:
@@ -738,13 +837,16 @@ class _Route(NamedTuple):
     args: tuple[str, ...]
 
 
-def _routes() -> list[_Route]:
+def _routes(provider: str = "youtube") -> list[_Route]:
     """The ways to ask YouTube, in order; a rung is climbed only after a refusal on the one below.
 
     The proxy rung exists only with ``settings.ytdlp_proxy`` set, and only yt-dlp is ever sent
-    through it: the stores' metadata and previews are fetched directly.
+    through it: the stores' metadata and previews are fetched directly.  An Instagram or TikTok
+    video has the first rung alone: the others are YouTube's clients and YouTube's proxy.
     """
     routes = [_Route("direct", ())]
+    if provider in ("instagram", "tiktok"):
+        return routes
     if settings.ytdlp_fallback_clients:
         routes.append(_Route("clients", ("--extractor-args", f"youtube:player_client={settings.ytdlp_fallback_clients}")))
     if settings.ytdlp_proxy:
@@ -773,7 +875,7 @@ def _extract(base: list[str], args: list[str], timeout: float, provider: str,
     rung, within what is left of ``timeout``.  The result and the rung that answered (the
     download must use the same address the details were read from); the last refusal when
     every rung refused."""
-    routes = _routes()
+    routes = _routes(provider)
     started = time.monotonic()
     index = min(max(first, 0), len(routes) - 1)
     while True:
@@ -1084,7 +1186,7 @@ def _download(base: list[str], args: list[str], info_path: Path, info_json: str,
     """Run the download from ``info_json`` on rung ``route`` of the ladder.  When YouTube refuses
     the media itself (a 403 on a URL it no longer honours, a missing token for that client),
     the details are read again on the next rung and the download runs from those."""
-    routes = _routes()
+    routes = _routes(provider)
     route = min(max(route, 0), len(routes) - 1)
     info_path.write_text(info_json, encoding="utf-8")
     _note_route(routes[route].name)
@@ -1200,6 +1302,8 @@ def _preview_fallback(source: Source, failure: _YtdlpFailed, max_seconds: float,
     A pasted YouTube link falls back only when YouTube refused: a private or removed
     video is that, not a reason to transcribe some other upload of the song.
     """
+    if source.provider in ("instagram", "tiktok"):
+        raise failure  # no store preview: the post is the only copy
     if source.provider == "youtube" and not _refused(failure.stderr):
         raise failure
     preview_url, duration = source.preview_url, source.duration

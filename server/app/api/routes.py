@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 # What a phone or a browser produces, as well as what a desktop exports. ``.webm`` is what
 # MediaRecorder gives in Chrome and Firefox, ``.mp4`` in Safari; both decode through ffmpeg.
-ACCEPTED_SUFFIXES = {".wav", ".flac", ".ogg", ".opus", ".mp3", ".m4a", ".aac", ".webm", ".mp4", ".caf", ".weba"}
+ACCEPTED_SUFFIXES = {".wav", ".flac", ".ogg", ".opus", ".mp3", ".m4a", ".aac", ".webm", ".mp4", ".mov", ".caf", ".weba"}
 
 #: Long enough for a GUID or the C# API's own id, short enough that a caller cannot
 #: pad the log file with one header.
