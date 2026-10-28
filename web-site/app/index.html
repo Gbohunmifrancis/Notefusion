@@ -613,7 +613,9 @@
               <button type="button" data-rate="1" aria-pressed="true">1×</button>
             </div>
           </div>
-          <canvas class="roll-canvas" id="roll-canvas" role="img" aria-label="The notes falling onto a piano keyboard as they play. Tap to play or pause."></canvas>
+          <div class="roll-scroll" id="roll-scroll">
+            <canvas class="roll-canvas" id="roll-canvas" role="img" aria-label="The notes falling onto a piano keyboard as they play, each key marked with its solfa. Tap a key to hear it; tap the falling notes to play or pause."></canvas>
+          </div>
         </div>
         <div id="r-parts" class="hidden">
           <div id="r-parts-locked" class="upgrade-note hidden" style="margin-top:0">
@@ -1151,7 +1153,7 @@
 <!-- The engraver (once the app is open) and the PDF library (on the first PDF) are loaded by app.js from pinned,
      integrity-checked CDN URLs. -->
 <script src="/assets/backing-clock.js?v=2" defer></script>
-<script src="/assets/choir.js?v=9" defer></script>
+<script src="/assets/choir.js?v=10" defer></script>
 <script src="/assets/chords.js?v=2" defer></script>
 <script src="/assets/songlink.js?v=8" defer></script>
 <script src="/assets/rangepicker.js?v=1" defer></script>

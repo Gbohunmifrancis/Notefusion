@@ -3621,7 +3621,7 @@
     // The beats placed in the song's recording, so its backing and the notes keep one clock (assets/backing-clock.js).
     player.load({ voices: voices, tempoBpm: result.tempo, timeSignature: result.timeSignature, beatOriginSec: result.beatOriginSec, beatTimesSec: result.beatTimesSec });
     loadBacking(result);
-    if (roll) roll.set({ voices: voices, timeSignature: result.timeSignature });
+    if (roll) roll.set({ voices: voices, timeSignature: result.timeSignature, key: result.key });
     var bars = C.barCount(result.notes || [], result.timeSignature);
     $("loop-from").max = bars; $("loop-to").max = bars; $("loop-to").value = Math.min(4, bars); $("loop-from").value = 1; $("loop-on").checked = false;
     var box = $("voices"), hear = $("part-mix-voices");
@@ -4629,10 +4629,17 @@
     loadAsset(ROLL_ASSET).then(function () {
       if (at !== epoch || !current || !current.result || !rollShown()) return;
       if (!roll) {
-        roll = window.NfPianoRoll.create($("roll-canvas"));
-        if (window.ResizeObserver) new ResizeObserver(function () { if (rollShown()) roll.resize(); }).observe($("roll-canvas"));
+        // A tapped key sounds through the player's piano; a tap on the falling notes plays or pauses.
+        roll = window.NfPianoRoll.create($("roll-canvas"), $("roll-scroll"), {
+          key: function (midi) { if (player) player.tap(midi); track("Played a piano key"); },
+          roll: function () { if (player) player.toggle(); }
+        });
+        if (window.ResizeObserver) new ResizeObserver(function () { if (rollShown()) roll.resize(); }).observe($("roll-scroll"));
+        if (window.IntersectionObserver) {
+          new IntersectionObserver(function (seen) { document.body.classList.toggle("nf-at-keys", seen[seen.length - 1].isIntersecting); }).observe($("roll-scroll"));
+        }
       }
-      roll.set({ voices: rehearsalVoices(current.result), timeSignature: current.result.timeSignature });
+      roll.set({ voices: rehearsalVoices(current.result), timeSignature: current.result.timeSignature, key: current.result.key });
       syncRollSpeed();
       rollTick({ beat: player ? player.beat() : 0, playing: !!(player && player.isPlaying()) });
       track("Opened the piano view");
@@ -4644,20 +4651,19 @@
   function rollTick(t) {
     label($("roll-play"), t.playing ? "pause" : "play", t.playing ? "Pause" : "Play");
     if (!roll || !rollShown()) return;
-    if (!t.playing) { roll.draw(t.beat); return; }
+    if (!t.playing) { roll.draw(t.beat, false); return; }
     if (!rollFrame) rollFrame = requestAnimationFrame(rollStep);
   }
   function rollStep() {
     rollFrame = 0;
     if (!roll || !rollShown() || !player) return;
-    roll.draw(player.beat());
+    roll.draw(player.beat(), true);
     if (player.isPlaying()) rollFrame = requestAnimationFrame(rollStep);
   }
   function syncRollSpeed() {
     var rate = $("rate").value;
     document.querySelectorAll(".roll-speed [data-rate]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.rate === rate)); });
   }
-  $("roll-canvas").addEventListener("click", function () { if (player) player.toggle(); });
   $("roll-play").addEventListener("click", function () { if (player) player.toggle(); });
   document.querySelectorAll(".roll-speed [data-rate]").forEach(function (b) {
     b.addEventListener("click", function () {

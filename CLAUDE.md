@@ -604,9 +604,13 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   (`wordsFor`), and a saved sheet keeps both through `PUT /api/library/{id}/notes` (its optional `musicXml`); Undo steps back.
   The result's Piano tab (web; its keyboard icon alone under 641 px, "Four parts" reads "Parts" under 401 px so four tabs fit
   a 360 px phone) shows the notes falling onto the keys they are played on, labelled in solfa, the parts beside the tune in
-  ink: `assets/piano-roll.js` (pure `keyboard`/`bars`/`barLines`, then a canvas), loaded on first open, drawn at the
-  rehearsal player's `beat()` every frame while it plays, so its speed (0.5/0.75/1×, the same setting as Slow & loop's) and
-  loop are the player's; a tap on the roll plays or pauses.
+  ink: `assets/piano-roll.js` (pure `keyboard`/`keyAt`/`bars`/`barLines`/`tuneSpan`/`scaleSyllable`, then a canvas), loaded
+  on first open, drawn at the rehearsal player's `beat()` every frame while it plays, so its speed (0.5/0.75/1×, the same
+  setting as Slow & loop's) and loop are the player's; a tap on the falling notes plays or pauses. The keys are a finger
+  wide (48 px white keys under a coarse pointer, 28 under a mouse), each marked with its syllable in the sheet's key, and
+  play when tapped (`player.tap`, the same piano); a keyboard wider than the screen scrolls sideways in its frame and
+  follows the tune while it plays (not for 4 s after a finger moves it), and the chat button steps aside on a phone while
+  the keys are on screen.
   Song backing (board o-backing): filing keeps `BeatOriginSec`/`BeatTimesSec` (written out at the heard tempo when a sheet
   with a backing has none, so tempo edits never move it) and, for the owner's own upload only (never
   `FromLink`), the separated instrumental (`IBackingStorage`: R2 photo bucket, unguessable `BackingKey`, not backed up;

@@ -58,3 +58,45 @@ test("bar lines: each bar's first beat in sight, the one sounding now on the key
   assert.deepEqual(plain(R.barLines(3, 1, 6, 300)), [200, 50]);
   assert.deepEqual(plain(R.barLines(4, 4, 8, 400)), [400, 200]);
 });
+
+test("keys a finger wide: never under the minimum, running past the screen when they must, two octaves only when they fit", () => {
+  // Amazing Grace's range (D4 to E5) on a 360 px phone at 48 px a key: C4 to B5 is 14 keys, too wide to grow into.
+  const keys = R.keyboard([62, 76], 360, 48);
+  const whites = keys.filter((k) => !k.black);
+  assert.ok(whites.every((k) => k.w === 48));
+  assert.equal(R.span(keys), 14 * 48);
+  // One octave of notes stays one octave when a second would not fit, and grows to two when it would.
+  assert.equal(R.keyboard([60, 67], 360, 48).filter((k) => !k.black).length, 7);
+  assert.equal(R.keyboard([60, 67], 800, 48).filter((k) => !k.black).length, 14);
+  // A wide screen shares itself out: keys wider than the minimum, the keyboard exactly the screen.
+  assert.ok(Math.abs(R.span(R.keyboard([60, 83], 1000, 48)) - 1000) < 1e-9);
+});
+
+test("a finger on a black key plays it; below the black keys, the white key under it", () => {
+  const keys = R.keyboard([60, 71], 7 * 48, 48); // C4 to B4
+  const at = (x, y) => R.keyAt(keys, x, y, 100)?.midi;
+  assert.equal(at(48, 20), 61); // over the line between C and D, high up: C#
+  assert.equal(at(48, 80), 62); // the same line low down: D's white key
+  assert.equal(at(10, 80), 60);
+  assert.equal(at(10, 20), 60); // no black key left of C#'s edge
+  assert.equal(at(7 * 48 - 1, 50), 71);
+  assert.equal(at(10, -5), undefined);
+  assert.equal(at(10, 101), undefined);
+});
+
+test("each key's syllable in the sheet's key: G major's F# is t, its F has none", () => {
+  const syl = (midi) => R.scaleSyllable(midi, 7);
+  assert.deepEqual([67, 69, 71, 72, 74, 76, 78, 79].map(syl), ["d", "r", "m", "f", "s", "l", "t", "d"]);
+  assert.equal(syl(77), "");
+  // A minor's doh is C: its A is l.
+  assert.equal(R.scaleSyllable(69, 0), "l");
+});
+
+test("the tune's span about to be played, the parts and the far notes left out", () => {
+  const near = [
+    { voice: 0, x: 100, w: 46, y: 300, h: 50 }, { voice: 0, x: 200, w: 46, y: 250, h: 30 },
+    { voice: 1, x: 10, w: 46, y: 300, h: 50 }, { voice: 0, x: 400, w: 46, y: 0, h: 40 },
+  ];
+  assert.deepEqual(plain(R.tuneSpan(near, 400, 0.5)), { lo: 100, hi: 246 });
+  assert.equal(R.tuneSpan([near[2], near[3]], 400, 0.5), null);
+});

@@ -682,6 +682,12 @@
         if (tickCb) tickCb({ beat: startBeat, playing: false });
       },
       toggle: function () { playing ? this.pause() : this.play(); },
+      /** One key, as a finger plays it (the Piano view): at once, through the same piano, beside whatever is playing. */
+      tap: function (midi) {
+        ensure();
+        if (ctx.state === "suspended") ctx.resume();
+        loadPiano(ctx).then(function () { pianoNote(ctx, master, midi, 1.2, ctx.currentTime, 0.8); }, function () { /* no piano, no sound */ });
+      },
       isPlaying: function () { return playing; },
       setRate: function (r) {
         rate = Math.min(2, Math.max(0.5, r));
