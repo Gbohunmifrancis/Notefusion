@@ -1,6 +1,16 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { asProvider, extractSongUrl, fetchesItsOwnVideo, firstUrl, serviceOf, songLinkHint } from "./songLink.ts";
+import {
+  LOOKUP_GRACE_MS,
+  NOT_NOW_LINE,
+  asProvider,
+  extractSongUrl,
+  fetchesItsOwnVideo,
+  firstUrl,
+  lookupNotNow,
+  serviceOf,
+  songLinkHint,
+} from "./songLink.ts";
 
 test("first link in share text, trailing punctuation trimmed", () => {
   assert.equal(
@@ -62,4 +72,14 @@ test("a link's service is read off its host, for its mark only", () => {
   assert.equal(asProvider(undefined), null);
   assert.equal(fetchesItsOwnVideo("tiktok"), true);
   assert.equal(fetchesItsOwnVideo("spotify"), false);
+});
+
+test("a lookup refused only for now keeps Transcribe; one refused for good does not", () => {
+  assert.equal(lookupNotNow("TRANS_LINK_REFUSED"), true);
+  assert.equal(lookupNotNow("TRANS_LINK_POST_REFUSED"), true);
+  for (const code of ["TRANS_LINK_NOT_FOUND", "TRANS_LINK_UNAVAILABLE", "TRANS_LINK_LIVE", "TRANS_LINK_TOO_LONG", "TRANS_INVALID_LINK", null]) {
+    assert.equal(lookupNotNow(code), false, String(code));
+  }
+  assert.match(NOT_NOW_LINE, /Transcribe still tries it/);
+  assert.equal(LOOKUP_GRACE_MS, 6000); // the web's GRACE_MS
 });

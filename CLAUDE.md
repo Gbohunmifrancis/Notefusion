@@ -140,7 +140,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   first rung only with no store preview, a sign-in wall answered `post_refused` → `TRANS_LINK_POST_REFUSED`) are fetched by `app/ingest/links.py`
   (oEmbed metadata + yt-dlp; which links are songs is its `provider_of` alone: the C# `SongLinks`, web `songlink.js` and
   phone `lib/songLink` only find the link in pasted text and send any link, and one that is not a song comes back
-  `not_a_song_link` → `TRANS_INVALID_LINK`), vocal-isolated by `app/pipeline/separate.py` (MDX-Net ONNX, model
+  `not_a_song_link` → `TRANS_INVALID_LINK`; the lookup never holds a submit: one refused only for now (`TRANS_LINK_REFUSED`,
+  `…POST_REFUSED`: web `NfSongLink.notNow`, phone `lookupNotNow`) or still going after 6 s leaves Transcribe on, taking the song
+  from the start, and the submit's re-read of the length waits 5 s and stops only on a refusal for good, `SongSections.IsForGood`),
+  vocal-isolated by `app/pipeline/separate.py` (MDX-Net ONNX, model
   baked into the image at `NF_MDX_MODEL_PATH`; one pass needs ~1.6 GB and the process keeps ~320 MB of it,
   so the model runs in a child process that hands the memory back — `NF_SEPARATE_IN_PROCESS=1` restores
   the in-process run), then transcribed; a song's separated vocal (the queue passes the mix as `tempo_source` only

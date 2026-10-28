@@ -268,6 +268,38 @@ public class LinkSectionTests
     }
 
     [Theory]
+    [InlineData("TRANS_LINK_REFUSED")]
+    [InlineData("TRANS_LINK_POST_REFUSED")]
+    public async Task A_link_refused_only_for_now_still_gets_its_job_which_reads_it_again(string code)
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        GoPro(h, user);
+
+        var notNow = new FakeApi { Resolve = code == "TRANS_LINK_REFUSED" ? TranscriptionErrors.LinkRefused : TranscriptionErrors.LinkPostRefused };
+        var result = await Submit(h, user, notNow, start: 10, end: 40);
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal((10, 40), (notNow.LastOptions!.StartSeconds, notNow.LastOptions.EndSeconds));
+    }
+
+    [Fact]
+    public async Task A_worker_slow_to_say_the_length_does_not_hold_the_submit()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        GoPro(h, user);
+
+        var slow = new FakeApi { NeverAnswers = true };
+        var clock = System.Diagnostics.Stopwatch.StartNew();
+        var result = await Submit(h, user, slow, start: 180, end: 400);
+
+        Assert.True(result.IsSuccess);
+        Assert.InRange(clock.Elapsed, SongSections.LengthWait, SongSections.LengthWait + TimeSpan.FromSeconds(10));
+        Assert.Equal(400, slow.LastOptions!.EndSeconds); // the worker trims it
+    }
+
+    [Theory]
     [InlineData(7200, "2 hours")]
     [InlineData(3600, "1 hour")]
     [InlineData(5400, "1 h 30 min")]
@@ -331,13 +363,18 @@ public class LinkSectionTests
         /// <summary>Set to have the resolve fail this way instead of answering.</summary>
         public Error? Resolve { get; set; }
 
+        /// <summary>Set to have the resolve wait until it is given up on.</summary>
+        public bool NeverAnswers { get; set; }
+
         public TranscribeOptions? LastOptions { get; private set; }
         public string? LastResolved { get; private set; }
 
-        public Task<Result<SourceDto>> ResolveLinkAsync(string url, CancellationToken ct = default)
+        public async Task<Result<SourceDto>> ResolveLinkAsync(string url, CancellationToken ct = default)
         {
             LastResolved = url;
-            return Task.FromResult(Resolve is { } error
+            if (NeverAnswers)
+                await Task.Delay(Timeout.Infinite, ct);
+            return await Task.FromResult(Resolve is { } error
                 ? Result.Failure<SourceDto>(error)
                 : Result<SourceDto>.Success(new SourceDto("youtube", url, "Way Maker", "Sinach", "https://i.ytimg.com/vi/x/hq.jpg", DurationSeconds: Duration)));
         }

@@ -27,7 +27,7 @@
 
   function say(text, kind) { status.textContent = text || ""; status.className = "try-status" + (kind ? " try-status-" + kind : ""); }
   var busyNow = false;
-  function busy(on) { busyNow = on; submit.disabled = on || info.pending; record.disabled = on; file.disabled = on; }
+  function busy(on) { busyNow = on; submit.disabled = on || (info.pending && !info.slow); record.disabled = on; file.disabled = on; }
   // What a visitor reads when the API says no: its own sentences for expected refusals pass through;
   // a server fault, a bare status or anything technical becomes one plain line. The console keeps the detail.
   var TECHNICAL = /\b(exception|stack|sql|npgsql|postgres|database|db context|entity framework|null reference|object reference|timeout expired|returned \d{3}|status code|http \d{3}|\d{3} \(|traceback|internal server|[A-Z]{3,}_[A-Z_]{3,})/i;
@@ -186,11 +186,11 @@
   // Once the box holds a song link, the API says what it is and how long it runs, and a card under
   // the form lets the guest pick which thirty seconds to hear (assets/rangepicker.js). The pick goes
   // with the link; with no card (length unknown, lookup failed) the preview is the start of the song.
-  var section = $("try-section"), info = { url: null, card: null, timer: null, seq: 0, pending: false, wanted: null };
+  var section = $("try-section"), info = { url: null, card: null, timer: null, seq: 0, pending: false, slow: false, wanted: null };
   function clearCard() {
     info.seq++; // an answer still on its way is for a link no longer in the box
     if (info.card) info.card.destroy();
-    info.card = null; info.url = null; info.pending = false; submit.disabled = busyNow;
+    info.card = null; info.url = null; info.pending = false; info.slow = false; submit.disabled = busyNow;
     if (section) section.innerHTML = "";
   }
   function lookup(now) {
@@ -204,6 +204,13 @@
       info.url = found.url; info.pending = true; submit.disabled = true; // the card comes before the preview is sent
       var seq = info.seq;
       var looking = document.createElement("p"); looking.className = "try-status link-looking"; looking.textContent = "Finding the song…"; section.appendChild(looking);
+      // A lookup that runs on stops holding Transcribe; pressed meanwhile, the preview goes now, from the beginning.
+      setTimeout(function () {
+        if (seq !== info.seq || !info.pending) return;
+        info.slow = true; submit.disabled = busyNow;
+        looking.textContent = "Still finding the song… Transcribe starts the preview from the beginning.";
+        if (info.wanted === found.url) { info.wanted = null; clearCard(); submitLink(found.url); }
+      }, links.GRACE_MS);
       send("/api/preview/link/info", { json: { url: found.url } }).then(function (data) {
         if (seq !== info.seq) return;
         section.innerHTML = "";
@@ -232,8 +239,10 @@
     var found = links.extract(raw);
     if (!found) { sayLink(links.hint(raw)); urlInput.focus(); return; }
     urlInput.value = found.url;
-    // The song's card comes first, so which thirty seconds to hear is seen and picked before it is sent.
-    if (info.url !== found.url || info.pending) { info.wanted = found.url; if (info.url !== found.url) lookup(true); return; }
+    // The song's card comes first, so which thirty seconds to hear is seen and picked before it is sent; a lookup
+    // still going after GRACE_MS (`slow`) no longer holds it: its late answer is dropped and the preview starts from the beginning.
+    if (info.url !== found.url || (info.pending && !info.slow)) { info.wanted = found.url; if (info.url !== found.url) lookup(true); return; }
+    if (info.pending) clearCard();
     submitLink(found.url);
   });
   // "Beats in a bar": sent only when the visitor names a meter, and counted only where it was asked.
