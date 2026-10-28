@@ -24,8 +24,8 @@
 <link rel="preload" href="/assets/fonts/geist-v5-latin.woff2" as="font" type="font/woff2" crossorigin>
 <!-- Only what the first screen needs; the range picker's and the recorder's styles load at the end of the body. -->
 <link rel="stylesheet" href="/assets/theme.css?v=7">
-<link rel="stylesheet" href="/assets/app.css?v=39">
-<link rel="stylesheet" href="/assets/night.css?v=16">
+<link rel="stylesheet" href="/assets/app.css?v=40">
+<link rel="stylesheet" href="/assets/night.css?v=17">
 </head>
 <body class="guest">
 
@@ -436,6 +436,7 @@
         <button class="source-tab" type="button" role="tab" id="src-tab-record" data-source="record" aria-controls="src-record" aria-selected="true"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-mic"/></svg>Record</button>
         <button class="source-tab" type="button" role="tab" id="src-tab-upload" data-source="upload" aria-controls="src-upload" aria-selected="false" tabindex="-1"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-upload"/></svg>Upload</button>
         <button class="source-tab" type="button" role="tab" id="src-tab-link" data-source="link" aria-controls="src-link" aria-selected="false" tabindex="-1"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-link"/></svg>Song link</button>
+        <button class="source-tab" type="button" role="tab" id="src-tab-sheet" data-source="sheet" aria-controls="src-sheet" aria-selected="false" tabindex="-1"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-camera"/></svg>Sheet music</button>
       </div>
 
       <!-- The choices first, then what it costs, then the action (board m-ux-medium W2a): the record button or the
@@ -472,8 +473,9 @@
       <p class="studio-hint hidden" id="kb-hint">Your keyboard’s transpose setting: at −4 you press A and hear F. The sheet is written in the keys you press.</p>
       </div>
 
-      <!-- Beats in a bar, on every tab: the worker cannot hear the meter yet, so a 3/4 hymn came back in 4/4. -->
-      <div class="studio-opts studio-meter">
+      <!-- Beats in a bar, on every tab but Sheet music (a page says its own): the worker cannot hear the meter yet, so a 3/4
+           hymn came back in 4/4. -->
+      <div class="studio-opts studio-meter" id="meter-block">
         <label class="studio-opt" for="meter">Beats in a bar
           <select id="meter" data-meter aria-describedby="meter-hint"></select></label>
       </div>
@@ -501,12 +503,17 @@
         <span class="drop-hint">or drop it here · up to 25 MB</span>
       </label>
       <p class="studio-hint" id="drop-types">MP3, WAV, M4A, FLAC, OGG, WebM, or a video (MP4, MOV).</p>
+      </div>
+
       <!-- Printed music read off the page (the worker's sheet_reader): a photo or a PDF, not a recording. -->
-      <label class="btn btn-ghost studio-sheet" id="sheet-pick">
+      <div class="source-panel" id="src-sheet" role="tabpanel" aria-labelledby="src-tab-sheet" hidden>
+      <label class="drop" id="sheet-drop">
         <input id="sheet-input" type="file" accept="image/jpeg,image/png,image/webp,application/pdf,.jpg,.jpeg,.png,.webp,.pdf" aria-describedby="sheet-hint">
-        <svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-camera"/></svg>Photo or PDF of sheet music
+        <svg class="ic drop-ic" aria-hidden="true"><use href="/assets/icons.svg#i-camera"/></svg>
+        <span class="btn btn-light">Choose a photo or PDF</span>
+        <span class="drop-hint">or drop it here · up to 25 MB</span>
       </label>
-      <p class="studio-hint" id="sheet-hint">We read the tune off the page and write it in solfa. Take the photo straight on, in good light, then check the notes.</p>
+      <p class="studio-hint" id="sheet-hint">A photo or PDF of printed music: we read the tune off the page and write it in solfa. Take the photo straight on, in good light, then check the notes.</p>
       </div>
 
       <!-- Out of the form's row and still its submit button: shown on the Song link tab only (app.js selectSource). -->
@@ -1132,7 +1139,7 @@
 <script src="/assets/freeweek.js?v=2" defer></script>
 <script src="/assets/sse.js?v=1" defer></script>
 <script src="/assets/library-groups.js?v=1" defer></script>
-<script src="/assets/app.js?v=76" defer></script>
+<script src="/assets/app.js?v=77" defer></script>
 <script src="/assets/season.js?v=4" defer></script>
 <script src="/assets/track.js?v=8" defer></script>
   <script src="/assets/support.js?v=2" defer></script>

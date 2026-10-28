@@ -2472,8 +2472,9 @@
    */
   function studioCost() {
     if (!sub || guest) return null;
-    var tab = document.querySelector(".source-tab[aria-selected=true]");
-    var link = !!tab && tab.getAttribute("data-source") === "link", kind = checkedKind();
+    var tab = document.querySelector(".source-tab[aria-selected=true]"), source = tab && tab.getAttribute("data-source");
+    // A sheet is one tune whatever the picker says (submitAudio): it costs what a hum does.
+    var link = source === "link", kind = source === "sheet" ? "hum" : checkedKind();
     var kept = ", and deleting its sheet doesn't give it back.";
     if (isPro()) {
       if (!link && kind !== "song" && !(kind === "choir" && $("choir-band").checked)) return null;
@@ -2548,7 +2549,8 @@
       }
     }
     // Read once: "Try again" sends the meter this recording went with, not what the box says now.
-    if (!again) meter = chosenMeter();
+    // A sheet's meter is the page's own, so none is sent with it.
+    if (!again) meter = sheet ? null : chosenMeter();
     // A sheet is read, not heard: one tune, never separated, whatever the picker says.
     var kind = sheet ? "hum" : uploadKind(fromMic), song = !sheet && (kind === "song" || (kind === "choir" && $("choir-band").checked));
     var form = new FormData();
@@ -2558,7 +2560,7 @@
     // A song with a band behind the voice (or the voices) is separated first; a hummed tune is not.
     form.append("separate", song ? "true" : "false");
     // The sheet in the keys pressed on a transposed keyboard: always sent for chords, otherwise only when set.
-    if (kind === "chords" || kbTranspose() !== 0) form.append("keyboardTranspose", String(kbTranspose()));
+    if (!sheet && (kind === "chords" || kbTranspose() !== 0)) form.append("keyboardTranspose", String(kbTranspose()));
     if (meter) form.append("timeSignature", meter);
     // The browser renders its own playback from the notes: the server's piano WAV (about
     // 10 MB and nine seconds of synthesis for a three-minute song) is not wanted here.
@@ -2570,7 +2572,7 @@
     // job is still being followed (Try again), that card is left alone and the button carries the count.
     var following = !!follow, before = current;
     if (!following) {
-      openProgress("Uploading your recording");
+      openProgress(sheet ? "Uploading your sheet music" : "Uploading your recording");
       setStage("uploading", "upload", null, song);
     }
     function onProgress(fraction) {
@@ -2672,10 +2674,11 @@
       e.target.value = "";
     });
   });
-  // ── Where the music comes from: Record, Upload or a Song link, one panel at a time ──
+  // ── Where the music comes from: Record, Upload, a Song link or Sheet music, one panel at a time ──
   // The three used to stack in one block with the recording options between them; asking one thing
-  // at a time is calmer, and the last choice is kept for the next visit.
-  var SOURCE_KEY = "nf.web.source", SOURCES = ["record", "upload", "link"];
+  // at a time is calmer, and the last choice is kept for the next visit. Sheet music (a photo or PDF of
+  // printed music) was a button under Upload's drop box, where nobody found it: it is a tab of its own.
+  var SOURCE_KEY = "nf.web.source", SOURCES = ["record", "upload", "link", "sheet"];
   function sourceShowing() { var on = SOURCES.filter(function (s) { return !$("src-" + s).hidden; })[0]; return on || "record"; }
   function selectSource(name, focus) {
     if (SOURCES.indexOf(name) < 0) name = "record";
@@ -2685,11 +2688,13 @@
       tab.tabIndex = on ? 0 : -1;
       $("src-" + s).hidden = !on;
     });
-    // What is in the recording matters for a recording or a file, not for a link; Transcribe is the link's own action.
-    $("kind-block").hidden = name === "link";
+    // What is in the recording matters for a recording or a file, not for a link or a page; Transcribe is the link's
+    // own action; a page says its own beats in a bar.
+    $("kind-block").hidden = name === "link" || name === "sheet";
+    $("meter-block").hidden = $("meter-hint").hidden = name === "sheet";
     $("link-submit").hidden = name !== "link";
     // Until someone picks, the picker shows what this tab sends (defaultKind).
-    if (!chosenKind() && name !== "link") selectKind(defaultKind(name));
+    if (!chosenKind() && name !== "link" && name !== "sheet") selectKind(defaultKind(name));
     renderStudioCredits();
     try { localStorage.setItem(SOURCE_KEY, name); } catch (e) { /* private mode */ }
     if (focus) $("src-tab-" + name).focus();
@@ -2704,21 +2709,27 @@
       }
     });
   });
-  selectSource((function () { try { return localStorage.getItem(SOURCE_KEY); } catch (e) { return null; } })() || "record");
-  // A file dragged over the studio is an upload, whichever tab is showing.
+  // ?source=sheet (the home page's, the tools' and the blog's links) opens that tab, and is kept like a tap on it, so a
+  // visitor who signs up first lands on it.
+  selectSource(new URLSearchParams(location.search).get("source")
+    || (function () { try { return localStorage.getItem(SOURCE_KEY); } catch (e) { return null; } })() || "record");
+  // A file dragged over the studio is an upload, whichever tab is showing; a picture or a PDF is sheet music.
   $("studio").addEventListener("dragenter", function (e) {
-    if (e.dataTransfer && Array.prototype.indexOf.call(e.dataTransfer.types || [], "Files") >= 0) selectSource("upload");
+    var dt = e.dataTransfer;
+    if (!dt || Array.prototype.indexOf.call(dt.types || [], "Files") < 0) return;
+    var item = dt.items && dt.items[0];
+    selectSource(item && isSheet({ type: item.type }) ? "sheet" : "upload");
   });
 
-  (function () {
-    var drop = $("drop");
+  ["drop", "sheet-drop"].forEach(function (id) {
+    var drop = $(id);
     ["dragenter", "dragover"].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add("is-over"); }); });
     ["dragleave", "drop"].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove("is-over"); }); });
     drop.addEventListener("drop", function (e) {
       var file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
       if (file) submitFile(file);
     });
-  })();
+  });
 
   // ── Record a tune in the browser ─────────────────────────────────────────
   // The same recording pop-up as the home page (assets/recorder.js): the level meter and the
