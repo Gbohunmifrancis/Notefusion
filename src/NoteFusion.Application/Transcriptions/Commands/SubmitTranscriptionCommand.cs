@@ -83,7 +83,7 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
             return submitted;
 
         var ext = Path.GetExtension(request.FileName).ToLowerInvariant();
-        var kind = ext is ".musicxml" or ".xml" or ".mxl" or ".mid" or ".midi" or ".abc" ? "score"
+        var kind = IsScoreFile(ext) ? "score"
             : request.Separate ? "song" : "upload";
         var log = _activity.Describe(
             TranscriptionLog.AccountOrigin, kind, request.Mode, request.FileName, request.ContentType, request.SizeBytes,
@@ -95,6 +95,13 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
 
         return submitted;
     }
+
+    /// <summary>
+    /// A score the worker reads without listening: a notation file, or a photo or PDF of printed music, whose tune the
+    /// worker reads off the page first (server/app/pipeline/sheet_reader.py).
+    /// </summary>
+    private static bool IsScoreFile(string ext)
+        => ext is ".musicxml" or ".xml" or ".mxl" or ".mid" or ".midi" or ".abc" or ".jpg" or ".jpeg" or ".png" or ".webp" or ".pdf";
 
     /// <returns>The job id, and whether it is the job an earlier submit with the same key started.</returns>
     private async Task<(Result<string> Submitted, bool Repeat)> SubmitAsync(
@@ -115,7 +122,7 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
         var fingerprint = _device.Current;
         var metered = false;
         var ext = Path.GetExtension(request.FileName).ToLowerInvariant();
-        var isScore = ext is ".musicxml" or ".xml" or ".mxl" or ".mid" or ".midi" or ".abc";
+        var isScore = IsScoreFile(ext);
         var isPro = false;
         var paidByCredit = false;
         Guid? choirPool = null;

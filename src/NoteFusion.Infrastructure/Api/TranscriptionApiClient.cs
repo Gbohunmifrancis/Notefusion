@@ -90,6 +90,10 @@ internal sealed partial class TranscriptionApiClient(
                 ".xml" or ".musicxml" => "application/xml",
                 ".mxl" => "application/vnd.recordare.musicxml",
                 ".abc" => "text/plain",
+                ".jpg" or ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                ".webp" => "image/webp",
+                ".pdf" => "application/pdf",
                 _ => "application/octet-stream"
             };
             scoreContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);

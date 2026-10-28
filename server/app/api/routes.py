@@ -724,7 +724,8 @@ async def get_job(request: Request, job_id: str) -> JobResponse:
                        source=job.source, result=result, error=job.error)
 
 
-ACCEPTED_SCORE_SUFFIXES = {".musicxml", ".xml", ".mxl", ".mid", ".midi", ".abc"}
+# A photo or PDF of printed music is a score too: its tune is read first (pipeline/sheet_reader.py).
+ACCEPTED_SCORE_SUFFIXES = {".musicxml", ".xml", ".mxl", ".mid", ".midi", ".abc", ".jpg", ".jpeg", ".png", ".webp", ".pdf"}
 
 
 @router.post("/transcribe/score", status_code=status.HTTP_202_ACCEPTED,

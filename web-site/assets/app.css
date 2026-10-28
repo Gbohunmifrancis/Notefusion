@@ -208,6 +208,10 @@ body.guest .topbar { display: flex; }
 .btn.btn-light:hover:not(:disabled) { background: #eff6ff; transform: translateY(-1px); }
 .btn.btn-dark { background: var(--blue-deep); color: #fff; border-color: rgba(255, 255, 255, 0.15); }
 .btn.btn-dark:hover:not(:disabled) { background: #172554; }
+/* "Photo or PDF of sheet music" under the audio drop: its input hidden as the drop's is, the label the button. */
+.studio .studio-sheet { position: relative; display: flex; justify-content: center; gap: 8px; width: 100%; min-height: 48px; margin-top: 14px; cursor: pointer; }
+.studio .studio-sheet input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; clip: rect(0 0 0 0); }
+.studio .studio-sheet:has(input:focus-visible) { outline: 2px solid #fff; outline-offset: 2px; }
 .studio .studio-kind { display: flex; margin: 12px 0 0; background: rgba(15, 23, 42, 0.18); }
 .studio .studio-kind label { flex: 1; justify-content: center; color: rgba(255, 255, 255, 0.85); }
 .studio-kind label .ic { width: 16px; height: 16px; }

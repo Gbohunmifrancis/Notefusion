@@ -650,15 +650,26 @@ class JobQueue:
         self._journal_started(job)
         job.status = STATUS_PROCESSING
         job.stage = STAGE_TRANSCRIBING
+        work: Path | None = None
         try:
             try:
                 from app.pipeline.score_transcriber import transcribe_score
+                from app.pipeline.sheet_reader import READ_CONFIDENCE, SHEET_SUFFIXES, read_sheet
+                score = score_path
+                if score_path.suffix.lower() in SHEET_SUFFIXES:
+                    # A photo or PDF of printed music: its tune is read into a score first.
+                    work = Path(tempfile.mkdtemp(prefix="nf_sheet_"))
+                    score = read_sheet(score_path, work)
                 job.result = transcribe_score(
-                    score_path, key_override=key, tempo_override=tempo,
+                    score, key_override=key, tempo_override=tempo,
                     time_signature_override=time_signature,
                 )
+                if work is not None:
+                    job.result.overall_confidence = READ_CONFIDENCE
             finally:
                 score_path.unlink(missing_ok=True)
+                if work is not None:
+                    shutil.rmtree(work, ignore_errors=True)
                 job.finished_at = time.monotonic()
             self._done(job, "Score job")
         except LowConfidenceError as ex:
