@@ -602,6 +602,11 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   staff numbers them, the pickup bar 0): pure `assets/sheet-edit.js` reads and makes it on the labelled notes, `assets/musicxml.js`
   (a port of mobile `lib/musicxml.ts`) writes the staff afresh from them, the words under the old staff kept note for note
   (`wordsFor`), and a saved sheet keeps both through `PUT /api/library/{id}/notes` (its optional `musicXml`); Undo steps back.
+  The result's Piano tab (web; its keyboard icon alone under 641 px, "Four parts" reads "Parts" under 401 px so four tabs fit
+  a 360 px phone) shows the notes falling onto the keys they are played on, labelled in solfa, the parts beside the tune in
+  ink: `assets/piano-roll.js` (pure `keyboard`/`bars`/`barLines`, then a canvas), loaded on first open, drawn at the
+  rehearsal player's `beat()` every frame while it plays, so its speed (0.5/0.75/1×, the same setting as Slow & loop's) and
+  loop are the player's; a tap on the roll plays or pauses.
   Song backing (board o-backing): filing keeps `BeatOriginSec`/`BeatTimesSec` (written out at the heard tempo when a sheet
   with a backing has none, so tempo edits never move it) and, for the owner's own upload only (never
   `FromLink`), the separated instrumental (`IBackingStorage`: R2 photo bucket, unguessable `BackingKey`, not backed up;
