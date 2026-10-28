@@ -3,8 +3,8 @@ when a marked take earns one. Each is one Luau piece in this folder (with helper
 view model carries the values the page sets when it plays it (the streak's days, the stars, the run).
 
 Every piece is built as its own Rive project under build/<name>/ (main.luau, scene.rml, its font and images) and
-signed by `rive --publish` against the Rive file design/rive/practice is bound to, like design/rive/live.py, so it
-carries no watermark. That needs `rive login` with an account that can open that file.
+signed by `rive --publish` against the Rive file "NoteFusion Reward Moments" (PUSH). That needs `rive login` with an
+account that can open that file.
 
     python3 design/rive/moments/moments.py                 # verify every piece, then publish the signed files
     python3 design/rive/moments/moments.py --verify        # build and check only, no login needed
@@ -91,13 +91,8 @@ def scene(name: str, piece: dict) -> str:
 """
 
 
-def binding() -> str:
-    """The `push:` block of design/rive/practice, which every piece is signed against (as live.py signs)."""
-    yaml = (HERE.parent / "practice" / "rive.yaml").read_text()
-    m = re.search(r"^push:\n(?:  .+\n)+", yaml, re.M)
-    if not m:
-        raise SystemExit("design/rive/practice is not bound to a Rive file: run `rive push` there first")
-    return m.group(0)
+# The Rive file the pieces are pushed to and signed against: "NoteFusion Reward Moments" in the account's Personal Files.
+PUSH = "push:\n  projectId: 2016791\n  fileId: 2690561\n"
 
 
 def project(name: str) -> Path:
@@ -107,7 +102,7 @@ def project(name: str) -> Path:
     d.mkdir(parents=True)
     (d / "main.luau").write_text((HERE / "helpers.luau").read_text() + "\n" + (HERE / f"{name}.luau").read_text())
     (d / "scene.rml").write_text(scene(name, piece))
-    (d / "rive.yaml").write_text(f"name: {name}\nmain: {name}\n{binding()}")
+    (d / "rive.yaml").write_text(f"name: {name}\nmain: {name}\n{PUSH}")
     if piece["font"]:
         shutil.copy(HERE / f"{FONT}.ttf", d)
     for image in piece["images"]:
