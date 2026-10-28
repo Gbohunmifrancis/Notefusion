@@ -2,8 +2,9 @@
  * labelled with its solfa. It follows the rehearsal player (its beat, its speed, its loop), so slowing the player down
  * slows the notes down with it. The keys are a finger wide on a phone and play when tapped, each marked with its
  * syllable in the sheet's key; a keyboard wider than the screen scrolls sideways and follows the tune while it plays.
+ * Playing along, the roll waits on each note of the tune until its key is pressed (on the screen or on a keyboard plugged in).
  *
- * Pure geometry first (keyboard, keyAt, bars, barLines, tuneSpan, scaleSyllable: tested in
+ * Pure geometry first (keyboard, keyAt, bars, barLines, tuneSpan, scaleSyllable, along: tested in
  * web-site/tests/piano-roll.test.mjs), then the drawing on a <canvas> inside a sideways scroller. Plain script, no build
  * step; loaded the first time the Piano tab opens. Exposes window.NfPianoRoll.
  */
@@ -103,6 +104,40 @@
     return lo <= hi ? { lo: lo, hi: hi } : null;
   }
 
+  /**
+   * Play along: the tune's notes one at a time, each waiting for its key. One note a moment (a chord's top note, as the
+   * tune is the top line); the right note in any octave counts, as a small keyboard may not reach the written one.
+   * `press(midi)` answers {kind: "right", note, done} or {kind: "wrong", want}; a note is right first time when no wrong key
+   * came before it. Pure: the view moves the roll and the keyboard says what was pressed.
+   */
+  function along(notes) {
+    var steps = [];
+    (notes || []).filter(function (n) { return n.pitchMidi > 0; }).slice()
+      .sort(function (a, b) { return a.startBeat - b.startBeat || b.pitchMidi - a.pitchMidi; })
+      .forEach(function (n) {
+        var prev = steps[steps.length - 1];
+        if (!prev || n.startBeat - prev.startBeat > 1e-6) steps.push(n);
+      });
+    var at = 0, tries = 0, firstTime = 0;
+    return {
+      count: steps.length,
+      index: function () { return at; },
+      target: function () { return steps[at] || null; },
+      done: function () { return at >= steps.length; },
+      press: function (midi) {
+        var want = steps[at];
+        if (!want) return { kind: "done" };
+        if ((((Math.round(midi) - Math.round(want.pitchMidi)) % 12) + 12) % 12 !== 0) { tries++; return { kind: "wrong", want: want }; }
+        if (!tries) firstTime++;
+        tries = 0; at++;
+        return { kind: "right", note: want, done: at >= steps.length };
+      },
+      /** How it went: notes played, of them right first time, and the whole tune's count. */
+      score: function () { return { played: at, firstTime: firstTime, total: steps.length }; },
+      restart: function () { at = 0; tries = 0; firstTime = 0; }
+    };
+  }
+
   /** The bar lines in sight: the y of each bar's first beat between now and `ahead` beats on. */
   function barLines(perBar, beat, ahead, height) {
     var out = [];
@@ -129,7 +164,7 @@
    */
   function create(canvas, scroller, on) {
     var ctx = canvas.getContext("2d"), voices = [], perBar = 4, dohPc = null, keys = [], width = 0, height = 0, ratio = 1;
-    var last = 0, lit = {}, litTimer = null, handsOnAt = -Infinity, ourScroll = false;
+    var last = 0, lit = {}, litTimer = null, handsOnAt = -Infinity, ourScroll = false, target = null;
     var layout = { keysH: 0, rollH: 0 };
     on = on || {};
 
@@ -182,7 +217,8 @@
       barLines(perBar, beat, ahead, rollH).forEach(function (y) { ctx.beginPath(); ctx.moveTo(0, Math.round(y) + 0.5); ctx.lineTo(wide, Math.round(y) + 0.5); ctx.stroke(); });
       var inSight = bars(voices, keys, beat, ahead, rollH), sounding = {};
       inSight.forEach(function (b) {
-        if (b.sounding) sounding[b.midi] = sounding[b.midi] === 0 ? 0 : b.voice;
+        // Playing along, a key lights only when it is pressed: the note waiting on it is the player's to find.
+        if (b.sounding && target === null) sounding[b.midi] = sounding[b.midi] === 0 ? 0 : b.voice;
         ctx.globalAlpha = b.voice === 0 ? 1 : 0.55;
         ctx.fillStyle = b.voice === 0 ? c.tune : c.muted;
         round(b.x, b.y, b.w, b.h, 5); ctx.fill();
@@ -195,8 +231,17 @@
       });
       ctx.globalAlpha = 1;
       function fill(k, rest) {
-        if (lit[k.midi] > t || sounding[k.midi] === 0) return c.tune;
+        var press = lit[k.midi];
+        if (press && press.until > t) return press.wrong ? c.muted : c.tune;
+        if (sounding[k.midi] === 0) return c.tune;
         return sounding[k.midi] !== undefined ? c.muted : rest;
+      }
+      /** The key a note is waiting on, playing along: washed in the tune's colour and ringed. */
+      function ring(k, depth) {
+        if (k.midi !== target) return;
+        ctx.globalAlpha = 0.28; ctx.fillStyle = c.tune; ctx.fillRect(k.x, rollH, k.w, depth);
+        ctx.globalAlpha = 1; ctx.strokeStyle = c.tune; ctx.lineWidth = 3; ctx.strokeRect(k.x + 1.5, rollH + 1.5, k.w - 3, depth - 3);
+        ctx.lineWidth = 1;
       }
       // The keyboard: white keys, then black over them. A key sounding or tapped takes the tune's colour; each is marked
       // with its syllable in the sheet's key (the doh bolder), and each C with its octave.
@@ -205,6 +250,7 @@
         var bg = fill(k, "#FFFFFF"), down = bg !== "#FFFFFF";
         ctx.fillStyle = bg; ctx.fillRect(k.x, rollH, k.w, keysH);
         ctx.strokeStyle = "rgba(15,23,42,0.25)"; ctx.strokeRect(k.x + 0.5, rollH + 0.5, k.w - 1, keysH - 1);
+        if (!down) ring(k, keysH);
         ctx.textAlign = "center"; ctx.textBaseline = "bottom";
         var syl = dohPc === null ? "" : scaleSyllable(k.midi, dohPc);
         if (syl && k.w >= 20) {
@@ -222,6 +268,7 @@
         if (!k.black) return;
         var bg = fill(k, "#1E293B");
         ctx.fillStyle = bg; round(k.x, rollH - 1, k.w, keysH * BLACK_DEPTH + 1, 3); ctx.fill();
+        if (bg === "#1E293B") ring(k, keysH * BLACK_DEPTH);
         var syl = dohPc === null ? "" : scaleSyllable(k.midi, dohPc);
         if (syl && k.w >= 16) {
           ctx.fillStyle = "#FFFFFF"; ctx.textAlign = "center"; ctx.textBaseline = "bottom";
@@ -241,12 +288,16 @@
       handsOnAt = now();
       var p = point(e), key = keyAt(keys, p.x, p.y - layout.rollH, layout.keysH);
       if (!key) return;
-      lit[key.midi] = now() + LIT_MS;
+      light(key.midi, false);
       if (on.key) on.key(key.midi);
+    });
+    /** A key pressed: lit in the tune's colour, or grey for a wrong one playing along, for a moment. */
+    function light(midi, wrong) {
+      lit[midi] = { until: now() + LIT_MS, wrong: !!wrong };
       draw(last, false);
       clearTimeout(litTimer);
       litTimer = setTimeout(function () { draw(last, false); }, LIT_MS + 20);
-    });
+    }
     canvas.addEventListener("click", function (e) { if (point(e).y < layout.rollH && on.roll) on.roll(); });
     scroller.addEventListener("scroll", function () { if (ourScroll) ourScroll = false; else handsOnAt = now(); }, { passive: true });
     scroller.addEventListener("wheel", function () { handsOnAt = now(); }, { passive: true });
@@ -266,14 +317,24 @@
         var key = window.NfChoir && opts.key ? window.NfChoir.parseKey(opts.key) : null;
         dohPc = key ? (key.mode === "minor" ? (key.tonicPitchClass + 3) % 12 : key.tonicPitchClass) : null;
         keys = []; // laid out again for these notes
+        target = null;
         draw(0, false);
         toStart();
       },
       draw: draw,
+      /** A key pressed on a keyboard plugged in, or judged wrong playing along: lit as a tap lights it. */
+      light: light,
+      /** The key a note is waiting on, playing along (null: none), brought into sight. */
+      waitOn: function (midi) {
+        target = midi === null || midi === undefined ? null : Math.round(midi);
+        var key = target === null ? null : keys.filter(function (k) { return k.midi === target; })[0];
+        if (key) bring(key.x, key.x + key.w, false);
+        draw(last, false);
+      },
       /** Lays the roll out again for a new size of its box (full screen, a turned phone). */
       resize: function () { keys = []; draw(last, false); }
     };
   }
 
-  window.NfPianoRoll = { keyboard: keyboard, span: span, keyAt: keyAt, scaleSyllable: scaleSyllable, bars: bars, tuneSpan: tuneSpan, barLines: barLines, create: create };
+  window.NfPianoRoll = { keyboard: keyboard, span: span, keyAt: keyAt, scaleSyllable: scaleSyllable, bars: bars, tuneSpan: tuneSpan, barLines: barLines, along: along, create: create };
 })();

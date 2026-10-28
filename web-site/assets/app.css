@@ -1139,6 +1139,11 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 @media (max-width: 640px) { body.nf-at-keys .nf-support-btn { display: none !important; } }
 .roll-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
 .roll-bar .btn { min-height: 44px; }
+.roll-acts { display: inline-flex; gap: 8px; flex-wrap: wrap; }
+#roll-along[aria-pressed="true"] { background: var(--blue-soft); color: var(--blue-deep); border-color: transparent; }
+.roll-along-say { margin: 0 0 10px; }
+.roll-along-say p { margin: 0; }
+.roll-now { font-weight: 600; font-size: 1.05rem; }
 .roll-speed { display: inline-flex; border: 1px solid var(--border); border-radius: var(--r-pill); padding: 2px; }
 .roll-speed button { min-width: 56px; min-height: 40px; border: 0; border-radius: var(--r-pill); background: none; color: var(--text); font: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
 .roll-speed button[aria-pressed="true"] { background: var(--blue-soft); color: var(--blue-deep); }

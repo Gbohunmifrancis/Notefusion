@@ -3621,7 +3621,7 @@
     // The beats placed in the song's recording, so its backing and the notes keep one clock (assets/backing-clock.js).
     player.load({ voices: voices, tempoBpm: result.tempo, timeSignature: result.timeSignature, beatOriginSec: result.beatOriginSec, beatTimesSec: result.beatTimesSec });
     loadBacking(result);
-    if (roll) roll.set({ voices: voices, timeSignature: result.timeSignature, key: result.key });
+    if (roll) { endAlong(); roll.set({ voices: voices, timeSignature: result.timeSignature, key: result.key }); }
     var bars = C.barCount(result.notes || [], result.timeSignature);
     $("loop-from").max = bars; $("loop-to").max = bars; $("loop-to").value = Math.min(4, bars); $("loop-from").value = 1; $("loop-on").checked = false;
     var box = $("voices"), hear = $("part-mix-voices");
@@ -4621,7 +4621,7 @@
   });
 
   // ── The Piano view (assets/piano-roll.js): the notes falling onto the keys, in time with the player ──
-  var ROLL_ASSET = "/assets/piano-roll.js?v=1";
+  var ROLL_ASSET = "/assets/piano-roll.js?v=2";
   var roll = null, rollFrame = 0;
   function rollShown() { return !$("r-roll").classList.contains("hidden"); }
   function openRoll() {
@@ -4631,14 +4631,15 @@
       if (!roll) {
         // A tapped key sounds through the player's piano; a tap on the falling notes plays or pauses.
         roll = window.NfPianoRoll.create($("roll-canvas"), $("roll-scroll"), {
-          key: function (midi) { if (player) player.tap(midi); track("Played a piano key"); },
-          roll: function () { if (player) player.toggle(); }
+          key: function (midi) { if (player) player.tap(midi); if (along) alongKey(midi); else track("Played a piano key"); },
+          roll: function () { if (player && !along) player.toggle(); }
         });
         if (window.ResizeObserver) new ResizeObserver(function () { if (rollShown()) roll.resize(); }).observe($("roll-scroll"));
         if (window.IntersectionObserver) {
           new IntersectionObserver(function (seen) { document.body.classList.toggle("nf-at-keys", seen[seen.length - 1].isIntersecting); }).observe($("roll-scroll"));
         }
       }
+      endAlong();
       roll.set({ voices: rehearsalVoices(current.result), timeSignature: current.result.timeSignature, key: current.result.key });
       syncRollSpeed();
       rollTick({ beat: player ? player.beat() : 0, playing: !!(player && player.isPlaying()) });
@@ -4650,7 +4651,7 @@
   /** Each tick of the player: the button's word, and while playing a frame per screen refresh (the tick is 60 ms). */
   function rollTick(t) {
     label($("roll-play"), t.playing ? "pause" : "play", t.playing ? "Pause" : "Play");
-    if (!roll || !rollShown()) return;
+    if (!roll || !rollShown() || along) return;
     if (!t.playing) { roll.draw(t.beat, false); return; }
     if (!rollFrame) rollFrame = requestAnimationFrame(rollStep);
   }
@@ -4674,6 +4675,123 @@
     });
   });
   $("rate").addEventListener("change", syncRollSpeed);
+
+  // ── Play along: the roll waits on each note of the tune until its key is pressed ──
+  // On the screen, or on a keyboard plugged in by USB or Bluetooth (Web MIDI: Chrome, Edge, Firefox and Android's Chrome;
+  // not Safari, where the screen's keys still play along). Between notes the roll moves at the sheet's tempo and the
+  // speed chosen, and stops at the next one.
+  var along = null, alongBeat = 0, alongTo = null, alongFrame = 0, alongAt = 0, alongMiss = false;
+  var plugged = { asked: false, access: null, names: [], refused: false };
+  function alongNote() { return along && along.target(); }
+  function startAlong() {
+    if (!roll || !current || !current.result) return;
+    if (player) player.pause();
+    along = window.NfPianoRoll.along(rehearsalVoices(current.result)[0].notes);
+    var first = along.target();
+    alongBeat = first ? first.startBeat : 0; alongTo = null; alongMiss = false;
+    roll.draw(alongBeat, false);
+    roll.waitOn(first ? first.pitchMidi : null);
+    $("roll-along").setAttribute("aria-pressed", "true");
+    hide($("roll-play")); show($("roll-again")); show($("roll-along-say"));
+    listenForKeyboards();
+    sayAlong();
+    keysInSight();
+    track("Started playing along");
+  }
+  /** The keys are what is played: the page moves just far enough to show them above a phone's tab bar. */
+  function keysInSight() {
+    var box = $("roll-scroll").getBoundingClientRect(), bar = document.querySelector(".tabbar");
+    var floor = window.innerHeight - (bar ? bar.getBoundingClientRect().height : 0) - 8; // fixed, so no offsetParent: hidden reads 0 tall
+    if (box.bottom > floor) window.scrollBy({ top: box.bottom - floor, behavior: glide() });
+  }
+  function endAlong() {
+    if (!along) return;
+    along = null; alongTo = null;
+    if (alongFrame) { cancelAnimationFrame(alongFrame); alongFrame = 0; }
+    if (roll) roll.waitOn(null);
+    $("roll-along").setAttribute("aria-pressed", "false");
+    show($("roll-play")); hide($("roll-again")); hide($("roll-along-say"));
+  }
+  /** A key pressed, on the screen or the keyboard: the note waiting moves on when it is the right one. */
+  function alongKey(key) {
+    if (!along) return;
+    // Played before the roll has landed on it: a pianist who knows the tune is not kept waiting for the fall.
+    if (alongTo !== null) {
+      alongBeat = alongTo; alongTo = null;
+      if (alongFrame) { cancelAnimationFrame(alongFrame); alongFrame = 0; }
+      roll.draw(alongBeat, false);
+    }
+    var r = along.press(key);
+    if (r.kind === "wrong") { alongMiss = true; roll.light(key, true); sayAlong(); return; }
+    if (r.kind !== "right") return;
+    alongMiss = false;
+    if (r.done) { roll.waitOn(null); sayAlong(); track("Played along to the end"); return; }
+    // On to the next note, at the tempo and speed: the roll falls until it lands, then waits there.
+    roll.waitOn(null);
+    alongTo = along.target().startBeat; alongAt = performance.now();
+    sayAlong();
+    alongFrame = requestAnimationFrame(alongStep);
+  }
+  function alongStep(now) {
+    alongFrame = 0;
+    if (!along || alongTo === null) return;
+    var perSec = (Math.max(30, current.result.tempo || 100) / 60) * (parseFloat($("rate").value) || 1);
+    alongBeat = Math.min(alongTo, alongBeat + Math.max(0, now - alongAt) / 1000 * perSec); alongAt = now;
+    if (alongBeat >= alongTo - 1e-6) {
+      alongTo = null;
+      roll.draw(alongBeat, false);
+      roll.waitOn(along.target().pitchMidi);
+      return;
+    }
+    if (rollShown()) roll.draw(alongBeat, false);
+    alongFrame = requestAnimationFrame(alongStep);
+  }
+  function noteName(n) { return n.solfa ? n.solfa + (n.octaveMark || "") : C.pitchName(n.pitchMidi); }
+  function sayAlong() {
+    if (!along) return;
+    var score = along.score(), n = along.target();
+    if (along.done()) {
+      $("roll-now").textContent = "Done: " + score.firstTime + " of " + score.total + " notes right first time." +
+        (score.firstTime === score.total ? " Every one!" : " Start over to try again.");
+    } else {
+      $("roll-now").textContent = (alongMiss ? "Not that one. Play " : "Play ") + noteName(n) + " · note " + (score.played + 1) + " of " + score.total;
+    }
+    var kbd = !navigator.requestMIDIAccess ? "This browser can't hear a keyboard plugged in (Chrome and Edge can). Tap the keys on the screen."
+      : plugged.refused ? "The browser wasn't allowed to hear a keyboard. Tap the keys on the screen."
+      : plugged.names.length ? "Keyboard: " + plugged.names.join(", ")
+      : "Tap the keys on the screen, or plug in a keyboard by USB.";
+    $("roll-kbd").textContent = kbd;
+  }
+  /** Asks once, when playing along starts, to hear keyboards plugged in; follows them as they come and go. */
+  function listenForKeyboards() {
+    if (plugged.asked || !navigator.requestMIDIAccess) return;
+    plugged.asked = true;
+    navigator.requestMIDIAccess().then(function (access) {
+      plugged.access = access;
+      access.onstatechange = hookKeyboards;
+      hookKeyboards();
+    }, function () { plugged.refused = true; sayAlong(); });
+  }
+  function hookKeyboards() {
+    var names = [];
+    plugged.access.inputs.forEach(function (input) {
+      input.onmidimessage = onKeyboard;
+      if (input.state === "connected" && names.indexOf(input.name) < 0) names.push(input.name);
+    });
+    if (names.length && !plugged.names.length) track("Plugged in a keyboard");
+    plugged.names = names;
+    sayAlong();
+  }
+  /** A key pressed on a keyboard plugged in (note on, velocity above 0): heard here, lit on the screen, and played along. */
+  function onKeyboard(e) {
+    var d = e.data;
+    if (!d || d.length < 3 || (d[0] & 0xf0) !== 0x90 || d[2] === 0 || !roll || !rollShown()) return;
+    if (player) player.tap(d[1]);
+    roll.light(d[1], false);
+    if (along) alongKey(d[1]);
+  }
+  $("roll-along").addEventListener("click", function () { along ? endAlong() : startAlong(); });
+  $("roll-again").addEventListener("click", function () { endAlong(); startAlong(); });
 
   /**
    * The parts, on the sheet. The "Write the four parts" panel is in the tool pop-up when this runs from
