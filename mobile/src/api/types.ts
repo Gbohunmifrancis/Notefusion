@@ -89,7 +89,7 @@ export interface ChordSymbol {
 
 /** The song a linked transcription came from — the acknowledgement line and the sheet's credit. */
 export interface TranscriptionSource {
-  provider: "youtube" | "spotify" | "apple_music" | string;
+  provider: "youtube" | "spotify" | "apple_music" | "instagram" | "tiktok" | string;
   url: string;
   title: string;
   artist: string;
@@ -111,7 +111,7 @@ export interface TranscriptionSource {
  * Mirrors the C# LinkInfoDto.
  */
 export interface LinkInfo {
-  provider: "youtube" | "spotify" | "apple_music" | string;
+  provider: "youtube" | "spotify" | "apple_music" | "instagram" | "tiktok" | string;
   url: string;
   title: string;
   artist: string;

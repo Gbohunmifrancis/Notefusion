@@ -10,9 +10,11 @@
 
   var URL_IN_TEXT = /https?:\/\/[^\s<>"]+/i;
   // A link to one of the services typed without its scheme ("youtube.com/watch?v=…"), read as https://.
-  var BARE_LINK = /(?:^|[\s(\[<"'“‘«])((?:[a-z0-9-]+\.)*(?:youtube\.com|youtu\.be|spotify\.com|spotify\.link|app\.link|apple\.com)\/[^\s<>"]+)/i;
+  var BARE_LINK = /(?:^|[\s(\[<"'“‘«])((?:[a-z0-9-]+\.)*(?:youtube\.com|youtu\.be|spotify\.com|spotify\.link|app\.link|apple\.com|instagram\.com|tiktok\.com)\/[^\s<>"]+)/i;
   var TRAILING = /[.,;:!?'")\]}>»”’…]+$/;
   var VIDEO_ID = /^[A-Za-z0-9_-]{11}$/;
+  var TIKTOK_ID = /^\d{8,24}$/;
+  var SHORT_CODE = /^[A-Za-z0-9_-]{4,32}$/;
 
   /**
    * The first http(s) link in the text, or else the first link to a service typed without "https://", with
@@ -48,6 +50,20 @@
       if (parts[1] === "album") return /^\d+$/.test(u.searchParams.get("i") || "") ? "apple_music" : null;
       return null;
     }
+    if (host === "instagram.com" || host === "www.instagram.com" || host === "m.instagram.com") {
+      // /<kind>/<code>/ or /<user>/<kind>/<code>/
+      for (var i = 0; i < Math.min(2, parts.length); i++) {
+        if (["reel", "reels", "p", "tv"].indexOf(parts[i]) >= 0 && /^[A-Za-z0-9_-]{5,64}$/.test(parts[i + 1] || "")) return "instagram";
+      }
+      return null;
+    }
+    if (host === "vm.tiktok.com" || host === "vt.tiktok.com") return parts.length === 1 && SHORT_CODE.test(parts[0]) ? "tiktok" : null;
+    if (host === "tiktok.com" || host === "www.tiktok.com" || host === "m.tiktok.com") {
+      if (parts.length === 2 && parts[0] === "t") return SHORT_CODE.test(parts[1]) ? "tiktok" : null;
+      if (parts.length === 3 && parts[0].charAt(0) === "@" && parts[1] === "video") return TIKTOK_ID.test(parts[2]) ? "tiktok" : null;
+      if (parts.length === 2 && parts[0] === "v" && /\.html$/.test(parts[1])) return TIKTOK_ID.test(parts[1].slice(0, -5)) ? "tiktok" : null;
+      return null;
+    }
     return null;
   }
 
@@ -61,8 +77,8 @@
   /** What to tell someone whose text holds no song link we can read. */
   function hint(text) {
     return firstUrl(text)
-      ? "That link isn't a single song. Paste a link to a YouTube video, a Spotify track or an Apple Music song."
-      : "Paste a link to a YouTube video, a Spotify track or an Apple Music song.";
+      ? "That link isn't a single song. Paste a link to a YouTube, Instagram or TikTok video, a Spotify track or an Apple Music song."
+      : "Paste a link to a YouTube, Instagram or TikTok video, a Spotify track or an Apple Music song.";
   }
 
   /**

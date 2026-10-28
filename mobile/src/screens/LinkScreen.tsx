@@ -59,7 +59,7 @@ import { useAuth } from "../lib/auth";
 import { linkJobStore } from "../lib/linkJobStore";
 import type { LinkJobOptions, LinkSong } from "../lib/linkJob";
 import { markPractisedToday } from "../lib/practiceReminder";
-import { extractSongUrl, songLinkHint } from "../lib/songLink";
+import { extractSongUrl, fetchesItsOwnVideo, songLinkHint } from "../lib/songLink";
 import { defaultRange, fitsWhole, formatClock, isWholeSong, sectionLabel, type ClipRange } from "../lib/clipRange";
 import { toApiError } from "../api/client";
 import { isNetworkCode } from "../lib/reachability";
@@ -558,7 +558,7 @@ export function LinkScreen() {
 
         {!busy && provider && !refusal ? (
           <>
-            {provider !== "youtube" && !song ? (
+            {!fetchesItsOwnVideo(provider) && !song ? (
               <Text style={styles.hint}>
                 {PROVIDER_LABEL[provider]} — we'll find the song on YouTube by its title and artist.
               </Text>

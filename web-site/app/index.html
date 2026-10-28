@@ -445,7 +445,7 @@
       <form id="form-link" class="link-form studio-link" novalidate>
         <span class="input-wrap providers">
           <span class="provider-marks" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#p-youtube"/></svg><svg class="ic" aria-hidden="true"><use href="#p-spotify"/></svg><svg class="ic" aria-hidden="true"><use href="#p-apple"/></svg></span>
-          <input id="link-url" type="url" placeholder="YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false" required>
+          <input id="link-url" type="url" placeholder="YouTube, TikTok, Instagram, Spotify or Apple Music link" autocomplete="off" spellcheck="false" required>
         </span>
         <button class="btn btn-glass" id="link-paste" type="button" hidden><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-paste"/></svg>Paste</button>
       </form>
@@ -495,12 +495,12 @@
 
       <div class="source-panel" id="src-upload" role="tabpanel" aria-labelledby="src-tab-upload" hidden>
       <label class="drop" id="drop">
-        <input id="file-input" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,.mp4,audio/*" aria-describedby="drop-types">
+        <input id="file-input" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,.mp4,.mov,audio/*,video/mp4,video/quicktime" aria-describedby="drop-types">
         <svg class="ic drop-ic" aria-hidden="true"><use href="/assets/icons.svg#i-upload"/></svg>
         <span class="btn btn-light">Upload your audio</span>
         <span class="drop-hint">or drop it here · up to 25 MB</span>
       </label>
-      <p class="studio-hint" id="drop-types">MP3, WAV, M4A, FLAC, OGG or WebM.</p>
+      <p class="studio-hint" id="drop-types">MP3, WAV, M4A, FLAC, OGG, WebM, or a video (MP4, MOV).</p>
       </div>
 
       <!-- Out of the form's row and still its submit button: shown on the Song link tab only (app.js selectSource). -->
@@ -1112,7 +1112,7 @@
 <script src="/assets/backing-clock.js?v=2" defer></script>
 <script src="/assets/choir.js?v=9" defer></script>
 <script src="/assets/chords.js?v=2" defer></script>
-<script src="/assets/songlink.js?v=3" defer></script>
+<script src="/assets/songlink.js?v=4" defer></script>
 <script src="/assets/rangepicker.js?v=1" defer></script>
 <script src="/assets/back.js?v=1" defer></script>
 <script src="/assets/recorder.js?v=9" defer></script>
@@ -1126,7 +1126,7 @@
 <script src="/assets/freeweek.js?v=2" defer></script>
 <script src="/assets/sse.js?v=1" defer></script>
 <script src="/assets/library-groups.js?v=1" defer></script>
-<script src="/assets/app.js?v=72" defer></script>
+<script src="/assets/app.js?v=73" defer></script>
 <script src="/assets/season.js?v=4" defer></script>
 <script src="/assets/track.js?v=7" defer></script>
   <script src="/assets/support.js?v=2" defer></script>

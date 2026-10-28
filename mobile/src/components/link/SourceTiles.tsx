@@ -12,6 +12,7 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { AppleMusicLogo, SpotifyLogo, YouTubeLogo, YouTubeMusicLogo } from "../SourceLogos";
+import { Icon } from "../Icon";
 import { fonts, spacing, type Palette } from "../../design/theme";
 import { useThemedStyles } from "../../lib/theme";
 import type { SongProvider } from "../../lib/songLink";
@@ -27,6 +28,8 @@ const SOURCES = [
 export function ProviderMark({ provider, size }: { provider: SongProvider; size: number }) {
   if (provider === "spotify") return <SpotifyLogo size={size} />;
   if (provider === "apple_music") return <AppleMusicLogo size={size} />;
+  // Instagram and TikTok: no mark of theirs here, the plain link sign.
+  if (provider === "instagram" || provider === "tiktok") return <Icon name="link" size={Math.round(size * 0.7)} />;
   return <YouTubeLogo size={size} />;
 }
 

@@ -7,13 +7,16 @@
  * No imports: the tests run on Node's own type stripping.
  */
 
-export type SongProvider = "youtube" | "spotify" | "apple_music";
+export type SongProvider = "youtube" | "spotify" | "apple_music" | "instagram" | "tiktok";
 
 const URL_IN_TEXT = /https?:\/\/[^\s<>"]+/i;
 // A link to one of the services typed without its scheme ("youtube.com/watch?v=…"), read as https://.
-const BARE_LINK = /(?:^|[\s(\[<"'“‘«])((?:[a-z0-9-]+\.)*(?:youtube\.com|youtu\.be|spotify\.com|spotify\.link|app\.link|apple\.com)\/[^\s<>"]+)/i;
+const BARE_LINK = /(?:^|[\s(\[<"'“‘«])((?:[a-z0-9-]+\.)*(?:youtube\.com|youtu\.be|spotify\.com|spotify\.link|app\.link|apple\.com|instagram\.com|tiktok\.com)\/[^\s<>"]+)/i;
 const TRAILING = /[.,;:!?'")\]}>»”’…]+$/;
 const VIDEO_ID = /^[A-Za-z0-9_-]{11}$/;
+const INSTAGRAM_CODE = /^[A-Za-z0-9_-]{5,64}$/;
+const TIKTOK_ID = /^\d{8,24}$/;
+const SHORT_CODE = /^[A-Za-z0-9_-]{4,32}$/;
 
 /**
  * The first http(s) link in the text, or else the first link to a service typed without "https://", with sentence
@@ -77,7 +80,26 @@ export function providerOf(url: string): SongProvider | null {
     if (path[1] === "album") return /^\d+$/.test(query.get("i") ?? "") ? "apple_music" : null;
     return null;
   }
+  if (host === "instagram.com" || host === "www.instagram.com" || host === "m.instagram.com") {
+    // /<kind>/<code>/ or /<user>/<kind>/<code>/
+    for (let i = 0; i < Math.min(2, path.length); i++) {
+      if (["reel", "reels", "p", "tv"].includes(path[i]) && INSTAGRAM_CODE.test(path[i + 1] ?? "")) return "instagram";
+    }
+    return null;
+  }
+  if (host === "vm.tiktok.com" || host === "vt.tiktok.com") return path.length === 1 && SHORT_CODE.test(path[0]) ? "tiktok" : null;
+  if (host === "tiktok.com" || host === "www.tiktok.com" || host === "m.tiktok.com") {
+    if (path.length === 2 && path[0] === "t") return SHORT_CODE.test(path[1]) ? "tiktok" : null;
+    if (path.length === 3 && path[0].startsWith("@") && path[1] === "video") return TIKTOK_ID.test(path[2]) ? "tiktok" : null;
+    if (path.length === 2 && path[0] === "v" && path[1].endsWith(".html")) return TIKTOK_ID.test(path[1].slice(0, -5)) ? "tiktok" : null;
+    return null;
+  }
   return null;
+}
+
+/** The services whose own video is fetched; a store's song is found on YouTube by its title and artist. */
+export function fetchesItsOwnVideo(provider: SongProvider): boolean {
+  return provider === "youtube" || provider === "instagram" || provider === "tiktok";
 }
 
 /** `{ url, provider }` for the song link in pasted text, or null when there is none we can read. */
@@ -90,6 +112,6 @@ export function extractSongUrl(text: string | null | undefined): { url: string; 
 /** What to tell someone whose text holds no song link we can read. */
 export function songLinkHint(text: string): string {
   return firstUrl(text)
-    ? "That link isn't a single song. Paste a link to a YouTube video, a Spotify track or an Apple Music song."
-    : "Paste a link to a YouTube video, a Spotify track or an Apple Music song.";
+    ? "That link isn't a single song. Paste a link to a YouTube, Instagram or TikTok video, a Spotify track or an Apple Music song."
+    : "Paste a link to a YouTube, Instagram or TikTok video, a Spotify track or an Apple Music song.";
 }

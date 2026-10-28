@@ -40,6 +40,8 @@ internal sealed partial class TranscriptionApiClient(
                 ".wav" => "audio/wav",
                 ".ogg" => "audio/ogg",
                 ".flac" => "audio/flac",
+                ".mp4" => "video/mp4",
+                ".mov" => "video/quicktime",
                 _ => "audio/m4a"
             };
             audioContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);

@@ -13,7 +13,9 @@ namespace NoteFusion.Application.Transcriptions;
 /// <c>/shorts/</c>, <c>/live/</c>, <c>/embed/</c> or <c>/v/</c>, and youtu.be/&lt;id&gt;); a Spotify track
 /// (open.spotify.com/(intl-xx/)track/&lt;id&gt;, or a spotify.link / spotify.app.link short link); an Apple
 /// Music song (music.apple.com or geo.music.apple.com /&lt;country&gt;/song/…/&lt;id&gt;, or /album/… with an
-/// <c>i=</c> song id anywhere in the query).
+/// <c>i=</c> song id anywhere in the query); an Instagram reel or post (instagram.com, www., m. with
+/// <c>/reel/</c>, <c>/reels/</c>, <c>/p/</c> or <c>/tv/</c>, also under a profile); a TikTok video
+/// (tiktok.com/@&lt;user&gt;/video/&lt;id&gt;, m.tiktok.com/v/&lt;id&gt;.html, or a vm./vt.tiktok.com or tiktok.com/t/ short link).
 /// </remarks>
 public static partial class SongLinks
 {
@@ -27,7 +29,7 @@ public static partial class SongLinks
     private static partial Regex UrlInText();
 
     // A link to one of the services typed without its scheme ("youtube.com/watch?v=…"), read as https://.
-    [GeneratedRegex("""(?:^|[\s(\[<"'“‘«])((?:[a-z0-9-]+\.)*(?:youtube\.com|youtu\.be|spotify\.com|spotify\.link|app\.link|apple\.com)/[^\s<>"]+)""", RegexOptions.IgnoreCase)]
+    [GeneratedRegex("""(?:^|[\s(\[<"'“‘«])((?:[a-z0-9-]+\.)*(?:youtube\.com|youtu\.be|spotify\.com|spotify\.link|app\.link|apple\.com|instagram\.com|tiktok\.com)/[^\s<>"]+)""", RegexOptions.IgnoreCase)]
     private static partial Regex BareLink();
 
     [GeneratedRegex("^[A-Za-z0-9_-]{11}$")]
@@ -35,6 +37,15 @@ public static partial class SongLinks
 
     [GeneratedRegex("^/(?:intl-[A-Za-z-]+/)?track/([A-Za-z0-9]+)/?$")]
     private static partial Regex SpotifyTrackPath();
+
+    [GeneratedRegex("^[A-Za-z0-9_-]{5,64}$")]
+    private static partial Regex InstagramCode();
+
+    [GeneratedRegex("^[0-9]{8,24}$")]
+    private static partial Regex TikTokId();
+
+    [GeneratedRegex("^[A-Za-z0-9_-]{4,32}$")]
+    private static partial Regex ShortCode();
 
     /// <summary>
     /// The first http(s) link in <paramref name="text"/> (or, without one, the first link to a supported service typed
@@ -61,7 +72,7 @@ public static partial class SongLinks
             return false;
         if (!Uri.TryCreate(candidate, UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https"))
             return false;
-        if (!IsYouTubeVideo(uri) && !IsSpotifyTrack(uri) && !IsAppleMusicSong(uri))
+        if (!IsYouTubeVideo(uri) && !IsSpotifyTrack(uri) && !IsAppleMusicSong(uri) && !IsInstagramVideo(uri) && !IsTikTokVideo(uri))
             return false;
 
         url = candidate;
@@ -107,6 +118,36 @@ public static partial class SongLinks
             return false;
         var id = parts[1] == "album" ? Query(uri, "i") : parts[^1];
         return !string.IsNullOrEmpty(id) && id.All(char.IsAsciiDigit);
+    }
+
+    private static bool IsInstagramVideo(Uri uri)
+    {
+        if (uri.Host.ToLowerInvariant() is not ("instagram.com" or "www.instagram.com" or "m.instagram.com"))
+            return false;
+        // /<kind>/<code>/ or /<user>/<kind>/<code>/
+        var parts = Segments(uri);
+        for (var i = 0; i < Math.Min(2, parts.Length); i++)
+            if (parts[i] is "reel" or "reels" or "p" or "tv" && i + 1 < parts.Length && InstagramCode().IsMatch(parts[i + 1]))
+                return true;
+        return false;
+    }
+
+    private static bool IsTikTokVideo(Uri uri)
+    {
+        var host = uri.Host.ToLowerInvariant();
+        var parts = Segments(uri);
+        // A short link only names its video once followed; the worker's yt-dlp follows it.
+        if (host is "vm.tiktok.com" or "vt.tiktok.com")
+            return parts is [var code] && ShortCode().IsMatch(code);
+        if (host is not ("tiktok.com" or "www.tiktok.com" or "m.tiktok.com"))
+            return false;
+        return parts switch
+        {
+            ["t", var code] => ShortCode().IsMatch(code),
+            [var user, "video", var id] => user.StartsWith('@') && TikTokId().IsMatch(id),
+            ["v", var page] => page.EndsWith(".html", StringComparison.Ordinal) && TikTokId().IsMatch(page[..^5]),
+            _ => false
+        };
     }
 
     private static string[] Segments(Uri uri)
