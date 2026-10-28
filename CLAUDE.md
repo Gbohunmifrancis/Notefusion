@@ -173,7 +173,11 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   proof-of-origin tokens from the `bgutil-provider` sidecar (`NF_YTDLP_POT_URL`; plugin pin = sidecar tag),
   then `NF_YTDLP_FALLBACK_CLIENTS` (`mweb,android_vr,web_embedded`; `tv_embedded` is gone from yt-dlp), then
   `NF_YTDLP_PROXY` — optional and off, YouTube only, from the `YTDLP_PROXY` secret; a download keeps the rung
-  its details were read on. A store link tries up to three clean search matches. yt-dlp stays current three
+  its details were read on. A store link tries up to three search matches, each one that names the song, is no other version
+  of it (a remix, cover, live take, slowed, 432 Hz… unless the store's own version says so) and is within 8 s of the store's
+  length (or the artist's own official upload up to 30 s longer, last; with no length known, the artist named); none, and
+  the store's preview stands in rather than a guess (`links._rank_results`; bench `python -m tests.accuracy.store_match`,
+  82 frozen real searches, `store_match_frozen.json`, 37 held out). yt-dlp stays current three
   ways: a cache-busted Dockerfile layer every build, a weekly scheduled deploy, and the worker installing the
   newest nightly beside the image's at startup and daily (`app/ingest/ytdlp_update.py`, `NF_YTDLP_UPDATE_*`).
   Each resolve that asks yt-dlp and each link job logs one `link_attempt` line (outcome, rung, running

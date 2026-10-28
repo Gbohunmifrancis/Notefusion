@@ -1,0 +1,1509 @@
+{
+ "about": "Real YouTube searches for store songs: Deezer's title, artist and length for each song and the worker's own ytsearch5 query, run 28 Oct 2026, frozen. 'recording' lists the uploads that are the store's own recording (same performer, within 8 s, not another version); empty when none of the five is. 'padded' lists the artist's own official upload of the same song, longer (an intro). Labelled by hand; dev was looked at while the ranking was written, test was labelled before either ranking was run on it. See tests/accuracy/store_match.py.",
+ "cases": [
+  {
+   "split": "dev",
+   "title": "Way Maker",
+   "artist": "Sinach",
+   "duration": 306.0,
+   "results": [
+    "w2pHOVKP7xo\t306\tAdorons le SEIGNEUR\tSINACH   WAY MAKER   OFFICIAL VIDEO",
+    "QM8jQHE5AAk\t526\tSINACH\tSINACH: WAY MAKER - Official Live Video",
+    "k28qCBwww0E\t306\tGospel ZOOM\tSINACH  WAY MAKER   OFFICIAL VIDEO",
+    "FCZDWsmTsOc\t503\tGospel Love\tWay Maker | Sinach | Caminho no Deserto",
+    "sAzytrfqjDU\t310\tLyricsFeverReborn\tSINACH - Way Maker (Lyrics)"
+   ],
+   "recording": [
+    "w2pHOVKP7xo",
+    "k28qCBwww0E",
+    "sAzytrfqjDU"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Excess Love",
+   "artist": "Mercy Chinwo",
+   "duration": 394.0,
+   "results": [
+    "awexlghI7gM\t397\tEeZee Global\tExcess Love - Mercy Chinwo (Official Video)",
+    "SC5ROke_WMc\t508\tJJ Hairston\tExcess Love (Remix) (Official Video) | JJ Hairston & Mercy Chinwo",
+    "9Q0uZcpcQ74\t396\tGOD WORKS\tExcess Love - Mercy Chinwo (Lyrics Video) GOD WORKS",
+    "iEhaCogic44\t2938\tPOWER AND GRACE EVANGELISTIC MINISTRIES INTL\tMercy Chinwo sings Chinedum and Excess Love in Ghana at Women in Worship 2019",
+    "dKeiFmI4I84\t719\tMAAJABU GOSPEL\tGALA D'OUVERTURE : Mercy Chinwo X Ruth Pala, Excess Love (Mix cover)"
+   ],
+   "recording": [
+    "awexlghI7gM",
+    "9Q0uZcpcQ74"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Onise Iyanu",
+   "artist": "Nathaniel Bassey",
+   "duration": 368.0,
+   "results": [
+    "G8L3KT14g3E\t372\tSong of Solomon Ministries\tOnise Iyanu (Awesome Wonder) - Nathaniel Bassey (Lyrics)",
+    "hvW0Ui_OCgE\t279\tGreen Worship\tOnise Iyanu - Nathaniel Bassey",
+    "r0IgEtIrHjc\t366\tEdem Saviour\tOnise Iyanu - Nathaniel Bassey",
+    "Jx84DLwIII4\t364\tNathaniel Bassey Main\tIMELA (Thank You) - Nathaniel Bassey feat  Enitan Adaba",
+    "JsuZmFUExho\t382\tGospel360\tNATHANIEL BASSEY -  ONISE IYANU (Feat. Micah Stampley And Glorious Fountain Choir)"
+   ],
+   "recording": [
+    "G8L3KT14g3E",
+    "r0IgEtIrHjc"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Ekwueme",
+   "artist": "Prospa Ochimana",
+   "duration": 417.0,
+   "results": [
+    "Z-ln__MWpKA\t418\tProspa Ochimana\tProspa Ochimana - Ekwueme feat. Osinachi (Live Ministration)",
+    "hX9QMH-QJk4\t525\tUnusual Praise\tProspa Ochimana & Osinachi Nwachukwu Ekwueme | Unusual Praise 2017",
+    "FZDwE5OoLL8\t414\tSir Ken's Combinatin👁️‍🗨️\tEkwueme - Prospa Ochimana ( Lyrics )",
+    "6bMx_Ehgmfg\t421\tHoly Spirit Music\tEkwueme - Prospa Ochimana feat. Osinachi Nwachuku (Lyrics)",
+    "8sw0QtkPV-Y\t362\tO.B SAMUEL TV\tEKWUEME BY OSINACHI NWACHUKWU"
+   ],
+   "recording": [
+    "Z-ln__MWpKA",
+    "FZDwE5OoLL8",
+    "6bMx_Ehgmfg"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Imela",
+   "artist": "Nathaniel Bassey",
+   "duration": 354.0,
+   "results": [
+    "Jx84DLwIII4\t364\tNathaniel Bassey Main\tIMELA (Thank You) - Nathaniel Bassey feat  Enitan Adaba",
+    "n0LkbhTJkdo\t252\tNew Covenant House\tImela (Thank you) - Nathaniel Bassey Live! | NCH Dallas",
+    "dWaqKo0fE4Q\t355\tSong of Solomon Ministries\tImela - Nathaniel Bassey feat. Enitan Adaba (Lyrics)",
+    "lWIFRFbH0Qg\t364\tCharles Changwe\tImela (thank you) Official video with lyrics.mp4",
+    "QcUxJRn5D4M\t458\t3B4JOY\tNathaniel Bassey - Imela (Thank You) Acoustic Cover - 3B4JOY"
+   ],
+   "recording": [
+    "dWaqKo0fE4Q"
+   ],
+   "padded": [
+    "Jx84DLwIII4"
+   ]
+  },
+  {
+   "split": "dev",
+   "title": "Essence (feat. Tems)",
+   "artist": "Wizkid",
+   "duration": 249.0,
+   "results": [
+    "jipQpjUA_o8\t246\tStarBoy TV\tWizkid - Essence (Official Video) ft. Tems",
+    "m77FDcKg96Q\t250\tStarBoy TV\tWizkid - Essence (Audio) ft. Tems",
+    "ew6yksHg40w\t250\tlife + lyrics\tWizKid - Essence ft. Tems (Lyrics)",
+    "FeMeopQqB6s\t265\tStarBoy TV\tWizkid - Essence (Audio) ft. Justin Bieber, Tems",
+    "rQ64DJ3ey3g\t266\tVibe Music\tWizKid - Essence (Lyrics) ft. Justin Bieber, Tems"
+   ],
+   "recording": [
+    "jipQpjUA_o8",
+    "m77FDcKg96Q",
+    "ew6yksHg40w"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Last Last",
+   "artist": "Burna Boy",
+   "duration": 172.0,
+   "results": [
+    "421w1j87fEM\t174\tBurna Boy\tBurna Boy - Last Last [Official Music Video]",
+    "eWD4715QJ0I\t171\tPizza Music\tBurna Boy - Last Last",
+    "p5SYBGgqVXI\t175\tVibe Music\tBurna Boy - Last Last (Lyrics)",
+    "qE4fhAfM0fA\t173\tMiziki\tBurna Boy - Last Last [Audio]",
+    "otWJWEwwqJk\t173\tLatinHype\tBurna Boy - Last Last"
+   ],
+   "recording": [
+    "421w1j87fEM",
+    "eWD4715QJ0I",
+    "p5SYBGgqVXI",
+    "qE4fhAfM0fA",
+    "otWJWEwwqJk"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Calm Down",
+   "artist": "Rema",
+   "duration": 220.0,
+   "results": [
+    "CQLsdm1ZYAw\t220\tRema\tRema - Calm Down (Official Music Video)",
+    "WcIcVapfqXw\t240\tSelena Gomez\tRema, Selena Gomez - Calm Down (Official Music Video)",
+    "h1iXtgCOCxo\t220\tLatinHype\tRema - Calm Down",
+    "W50sgQV1pl0\t237\t7clouds Rock\tRema, Selena Gomez - Calm Down (Lyrics)",
+    "7evD9YKhAbk\t258\tRema\tRema - Calm Down (Live At The BRITs 2024)"
+   ],
+   "recording": [
+    "CQLsdm1ZYAw",
+    "h1iXtgCOCxo"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "love nwantiti (ah ah ah)",
+   "artist": "CKay",
+   "duration": 145.0,
+   "results": [
+    "D-YDEyuDxWU\t194\tCKay\tCKay - Love Nwantiti Remix ft. Joeboy & Kuami Eugene [Ah Ah Ah] [Official Music Video]",
+    "h3ha8gDxZQ0\t147\tVibe Music\tCKay - Love Nwantiti (Ah Ah Ah) (Lyrics)",
+    "-pPpFq92cOI\t211\tCONTRAST CREW \tCKay - Love Nwantiti [Choreo Flying Steps Academy] feat. Ivana Santacruz",
+    "RY3B_XXmTYU\t146\tLatinHype\tCKay - Love Nwantiti",
+    "HnaJyrdL0ic\t204\tCloudx Music\tCKay - Love Nwantiti (Lyrics)"
+   ],
+   "recording": [
+    "h3ha8gDxZQ0",
+    "RY3B_XXmTYU"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Ye",
+   "artist": "Burna Boy",
+   "duration": 231.0,
+   "results": [
+    "lPe09eE6Xio\t234\tBurna Boy\tBurna Boy - Ye [Official Music Video]",
+    "4rz_kQiBxaQ\t232\tBurna Boy\tBurna Boy - Ye [Official Audio]",
+    "U_a67VTYzQc\t229\tMusic and Lyrics\tBurna Boy  - Ye (Lyrics)",
+    "Y1jiNNqDxsE\t223\tLady Divine\tBurna Boy - Ye",
+    "ak1Qky27O9I\t232\tOnlyChillVibez\tBurna Boy - Ye"
+   ],
+   "recording": [
+    "lPe09eE6Xio",
+    "4rz_kQiBxaQ",
+    "U_a67VTYzQc",
+    "Y1jiNNqDxsE",
+    "ak1Qky27O9I"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Water",
+   "artist": "Tyla",
+   "duration": 200.0,
+   "results": [
+    "XoiOOiuH8iI\t220\tTyla\tTyla - Water (Official Music Video)",
+    "TSsFB241BHs\t203\tLatinHype\tTyla - Water",
+    "wlmUnWLaeog\t202\tTyla\tTyla - Water (Official Audio)",
+    "-DkJMa7QkGY\t221\tTyla\tTyla - Water (Live from The Tonight Show Starring Jimmy Fallon)",
+    "Qjo_5j28xNg\t199\t7clouds\tTyla - Water (Lyrics)"
+   ],
+   "recording": [
+    "TSsFB241BHs",
+    "wlmUnWLaeog",
+    "Qjo_5j28xNg"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Rush",
+   "artist": "Ayra Starr",
+   "duration": 185.0,
+   "results": [
+    "crtQSTYWtqE\t186\tAyra Starr\tAyra Starr - Rush (Official Music Video)",
+    "VAXGYrtO6gY\t187\tLatinHype\tAyra Starr - Rush",
+    "o1IlptXTyK4\t187\tVibe Music\tAyra Starr - Rush (Lyrics)",
+    "tMqpkG9HYr0\t252\tAyra Starr\tAyra Starr - Rush (Live) | Vevo DSCVR Artists to Watch 2023",
+    "HjnPo_XLX48\t179\tSARA’H\tRUSH ( FRENCH VERSION ) AYRA STARR ( SARA'H COVER )"
+   ],
+   "recording": [
+    "crtQSTYWtqE",
+    "VAXGYrtO6gY",
+    "o1IlptXTyK4"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "UNAVAILABLE (feat. Musa Keys)",
+   "artist": "Davido",
+   "duration": 169.0,
+   "results": [
+    "OSBan_sH_b8\t190\tDavido\tDavido - UNAVAILABLE (Official Video) ft. Musa Keys",
+    "vs2ADpu2-nA\t170\t7clouds\tDavido - UNAVAILABLE (Lyrics) ft. Musa Keys",
+    "ZBnn_4v2PYM\t172\tDavido\tDavido - UNAVAILABLE (Official Audio) ft. Musa Keys",
+    "aSlBnAijziI\t205\tSean Paul\tDavido - UNAVAILABLE (Sean Paul & DING DONG Remix - Official Video) ft. Musa Keys",
+    "6DsGyXaGRzw\t181\tDavido\tDavido - UNAVAILABLE (Live at BET Awards 2023) ft. Musa Keys"
+   ],
+   "recording": [
+    "vs2ADpu2-nA",
+    "ZBnn_4v2PYM"
+   ],
+   "padded": [
+    "OSBan_sH_b8"
+   ]
+  },
+  {
+   "split": "dev",
+   "title": "KU LO SA",
+   "artist": "Oxlade",
+   "duration": 149.0,
+   "results": [
+    "R4qud199tQk\t149\tOxlade\tOxlade - KU LO SA (Official Video)",
+    "1pDQjwaH3qk\t151\tCOLORS\tOxlade - KU LO SA | A COLORS SHOW",
+    "IcIkmPU9reU\t149\tOxlade\tOxlade, Camila Cabello - KU LO SA (Official Video)",
+    "yugnGjmljww\t174\tOxlade Live\tOxlade & Tayc - KU LO SA (Red Bull Symphonic Paris)",
+    "wV5fGSwn6Qw\t148\t7clouds\tOxlade - KU LO SA (Lyrics)"
+   ],
+   "recording": [
+    "R4qud199tQk",
+    "wV5fGSwn6Qw"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Goodness of God (Live)",
+   "artist": "Bethel Music",
+   "duration": 296.0,
+   "results": [
+    "n0FBb6hnwTo\t304\tBethel Music and Jenn Johnson\tGoodness Of God (LIVE) - Jenn Johnson | VICTORY",
+    "j1ZsiaV0i4w\t369\tBethel Music and Garett & Kate\tGoodness Of God - Kate Serban",
+    "-f4MUUMWMV4\t304\tmusic meets heaven\tGoodness Of God (Lyrics) ~ Bethel Music",
+    "IvSuGyJQ6oM\t295\tBethel Music and Jenn Johnson\tGoodness of God (Official Lyric Video) - Bethel Music & Jenn Johnson | VICTORY",
+    "n3t6CdeiN1M\t453\tBethel Music and Jenn Johnson\tGoodness of God (Official Lyric Video) - Bethel Music & Jenn Johnson | Peace"
+   ],
+   "recording": [
+    "IvSuGyJQ6oM",
+    "n0FBb6hnwTo",
+    "-f4MUUMWMV4"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Oceans (Where Feet May Fail) (Live At Red Rocks, Morrison, CO, 2013)",
+   "artist": "Hillsong UNITED",
+   "duration": 480.0,
+   "results": [
+    "0AuUj7LGQkY\t479\tHillsong UNITED\tOceans (Where Feet May Fail) - Live at Red Rocks 2013 | Hillsong UNITED",
+    "gB9Ds0FqhQY\t592\tadoracionpentecostal\tOceans Live At Red Rocks - Hillsong United",
+    "_FvsGehgo7g\t64\tBobbyJack1968\tHillsong United @ Red Rocks, Morrison Co",
+    "jfdjuS-Y3T8\t565\tDavid Goff\tHillsong United 6-13-13 Red Ro",
+    "2U0v5Xdmi7o\t288\ttmedrano1\tHillsong United- Zion Tour Red Rocks"
+   ],
+   "recording": [
+    "0AuUj7LGQkY"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "10,000 Reasons (Bless The Lord) (Live)",
+   "artist": "Matt Redman",
+   "duration": 342.0,
+   "results": [
+    "SzG-WKIVH0w\t463\tMatt Redman\tMatt Redman - 10,000 Reasons (Bless The Lord) [Live]",
+    "XtwIT8JjddM\t262\tMatt Redman\tMatt Redman - 10,000 Reasons (Bless the Lord)",
+    "vFj_JMTL0Ws\t342\tKeith Groom\t10000 Reasons Bless the Lord -  Matt Redman - Lyrics - 432 hz",
+    "Kq9NwmEXkoo\t292\tKeithandKristyn Getty\t10,000 Reasons ( Live at the Sing! 2018) - Matt Redman",
+    "DXDGE_lRI0E\t343\tGloryToFatherGod\t10,000 Reasons (Bless the Lord) - Matt Redman (Best Worship Song Ever) (with Lyrics)"
+   ],
+   "recording": [
+    "DXDGE_lRI0E"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Fresh Wind / What A Beautiful Name (Live)",
+   "artist": "Hillsong Worship",
+   "duration": 611.0,
+   "results": [
+    "2RpAQhX-reA\t609\tHillsong Worship\tFresh Wind / What A Beautiful Name (Live) - Hillsong Worship",
+    "rVWxytOG_Z0\t609\tinfinite HOPE\tFresh Wind / What A Beautiful Name (Live) - Hillsong Worship (Lyrics)",
+    "8LRuUYreeYU\t1611\tGrace Revolution Worship\tFresh Wind / What A Beautiful Name (Live with Lyrics) | Grace Revolution Worship",
+    "7LRqPaBCRVs\t271\tHillsong Worship\tFresh Wind (Lyric Video) - Hillsong Worship",
+    "bp5Ak95kHo8\t548\tOne Voice INT Music\tFresh Wind/ What a Beautiful Name (Hillsong)- (Feat Jake Archer & Bri3jet)| One voice"
+   ],
+   "recording": [
+    "2RpAQhX-reA",
+    "rVWxytOG_Z0"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Holy Forever",
+   "artist": "Chris Tomlin",
+   "duration": 308.0,
+   "results": [
+    "IkHgxKemCRk\t309\tChris Tomlin\tChris Tomlin - Holy Forever (Lyric Video)",
+    "SlEEgMWwxhc\t389\tChris Tomlin\tChris Tomlin - Holy Forever (Live) feat. Jenn & Brian Johnson",
+    "ZQ6IB1LrEAE\t490\tWorship Together\tHoly Forever // Chris Tomlin // Live From Worship Together",
+    "hZcrSa6pjs4\t328\tComicConScott\tChris Tomlin - Holy Forever - Elevation Church 9-11-22",
+    "BcJC-JPNqFg\t337\tMUEN - Worship Lounge\tHoly Forever - Chris Tomlin | Acoustic Lounge Worship Cover | MUEN"
+   ],
+   "recording": [
+    "IkHgxKemCRk"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Gratitude",
+   "artist": "Brandon Lake",
+   "duration": 337.0,
+   "results": [
+    "dQdfs5S6jyA\t342\tBrandon Lake\tGratitude (Chosen Performance) - Brandon Lake",
+    "vA83MufOCoA\t786\tBethel Music\tGratitude - Brandon Lake | Moment",
+    "UoHrBNTfzIs\t338\tHoly Spirit Music\tGratitude - Brandon Lake (Lyrics)",
+    "ffszHwWyRQc\t236\tBrandon Lake\tBrandon Lake - Gratitude - Radio Version (Lyric Video)",
+    "keJal6ftePU\t327\tGateway Worship\tGratitude + Great Are You Lord | feat. Zac Rowe | Gateway Worship"
+   ],
+   "recording": [
+    "UoHrBNTfzIs"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Firm Foundation (He Won’t)",
+   "artist": "Cody Carnes",
+   "duration": 382.0,
+   "results": [
+    "x9ndiD0_qNk\t383\tCody Carnes\tCody Carnes – Firm Foundation (He Won’t) (Official Lyric Video)",
+    "ckXBSSGevPU\t227\tNew Christian Radio\tCody Carnes - Firm Foundation (He Won't)",
+    "uOP4s8fOEm0\t520\tTRIBL\tFirm Foundation (He Won’t) [feat. Chandler Moore & Cody Carnes] | Maverick City Music | TRIBL",
+    "2z74HGoKHkI\t245\tOfficialChristianRadioHD\tFirm Foundation (He Won't) [Air1 Radio Edit] - Cody Carnes",
+    "e9Qrqefreas\t229\tLyric Videos\tFirm Foundation - Cory Carnes (Lyrics)"
+   ],
+   "recording": [
+    "x9ndiD0_qNk"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Hello (Dub up Mix)",
+   "artist": "Adele Harley",
+   "duration": 286.0,
+   "results": [
+    "LZzmxg0cs7U\t297\tAdele Harley\tAdele Harley - Hello (Adele Reggae Cover)"
+   ],
+   "recording": [],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Hello",
+   "artist": "Lionel Richie",
+   "duration": 249.0,
+   "results": [
+    "mHONNcZbwDY\t327\tlionelrichie\tLionel Richie - Hello (Official Music Video)",
+    "Axx9IMdL4jc\t247\tMilabel Ranque\tHELLO -  LIONEL RICHIE lyrics (HD)",
+    "U7Z0qpn_OQs\t247\tBakos Attila\tLionel Richie - Hello (Official Audio)",
+    "-_dG1vW15DM\t247\tWind Music\tLionel Richie - Hello (lyrics)",
+    "62XB9IbMnxQ\t244\tENJOYWITHLYRICS\tLIONEL RICHIE - HELLO LYRICS"
+   ],
+   "recording": [
+    "U7Z0qpn_OQs",
+    "Axx9IMdL4jc",
+    "-_dG1vW15DM",
+    "62XB9IbMnxQ"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Hallelujah",
+   "artist": "Leonard Cohen",
+   "duration": 279.0,
+   "results": [
+    "YrLk4vdY28Q\t440\tLeonard Cohen\tLeonard Cohen - Hallelujah (Official Live in London 2008)",
+    "ttEMYvpoR-k\t279\tLeonard Cohen\tLeonard Cohen - Hallelujah (Official Audio)",
+    "WtVn2bqU6B8\t274\tTimeless Tracks\tLeonard Cohen - Hallelujah (Lyrics)",
+    "z1rB_XvrM5Q\t252\tNosta Network\tLeonard Cohen - Hallelujah (1984)",
+    "gRsnjNt_Rhw\t273\tLuke\tLeonard Cohen - Hallelujah (lyrics)"
+   ],
+   "recording": [
+    "ttEMYvpoR-k",
+    "WtVn2bqU6B8",
+    "gRsnjNt_Rhw"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Hallelujah",
+   "artist": "Jeff Buckley",
+   "duration": 414.0,
+   "results": [
+    "y8AWFf7EAc4\t394\tJeff Buckley Music\tJeff Buckley - Hallelujah (Official Video - Live at Bearsville)",
+    "WIF4_Sm-rgQ\t417\tAVATAR Kalki Presents THE MUSE VERSE MegaChannel Work in Progress\tJeff Buckley - Hallelujah (Original Studio Version)",
+    "36_i2jf8p_I\t414\tChristmas Music\tJeff Buckley - Hallelujah (Christmas Songs - Fireplace Video)",
+    "vIw0ewEsNHs\t415\tdaniellekat05\tJeff Buckley - \"Hallelujah\"",
+    "_ETDygQ1vsE\t391\tWind Music\tJeff Buckley - Hallelujah (lyrics)"
+   ],
+   "recording": [
+    "WIF4_Sm-rgQ",
+    "36_i2jf8p_I",
+    "vIw0ewEsNHs"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Yesterday (Remastered 2015)",
+   "artist": "The Beatles",
+   "duration": 123.0,
+   "results": [
+    "wXTJBr9tt8Q\t153\tThe Beatles\tThe Beatles - Yesterday (Live With Spoken Word Intro, New York) [Remastered 2015]",
+    "Gdig2XPTcqg\t126\tIntoTheFire2025\tThe Beatles - Yesterday (Remastered 2015)",
+    "NajvYJab6Pg\t126\tLyrics Of The Song\tThe Beatles - Yesterday  (Lyrics)",
+    "7HlVA-_6j3A\t126\t우리잠깐쉬자\tYesterday(Remastered 2015) - The Beatles",
+    "yeE8sJDGW_g\t124\t그래\tThe Beatles - Yesterday (Remastered 2015)"
+   ],
+   "recording": [
+    "Gdig2XPTcqg",
+    "NajvYJab6Pg",
+    "7HlVA-_6j3A",
+    "yeE8sJDGW_g"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Perfect",
+   "artist": "Ed Sheeran",
+   "duration": 263.0,
+   "results": [
+    "2Vv-BfVoq4g\t282\tEd Sheeran\tEd Sheeran - Perfect (Official Music Video)",
+    "cNGjD0VG4R8\t264\tLatinHype\tEd Sheeran - Perfect",
+    "kPhpHvnnn0Q\t264\t7clouds\tEd Sheeran - Perfect (Lyrics)",
+    "eiDiKwbGfIY\t334\tEd Sheeran and Andrea Bocelli\tEd Sheeran - Perfect Symphony [with Andrea Bocelli] (Official Music Video)",
+    "iKzRIweSBLA\t264\tEd Sheeran\tEd Sheeran - Perfect [Official Lyric Video]"
+   ],
+   "recording": [
+    "cNGjD0VG4R8",
+    "kPhpHvnnn0Q",
+    "iKzRIweSBLA"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Shallow",
+   "artist": "Lady Gaga",
+   "duration": 216.0,
+   "results": [
+    "bo_efYhYU2A\t217\tLady Gaga\tLady Gaga, Bradley Cooper - Shallow (from A Star Is Born) (Official Music Video)",
+    "JPJjwHAIny4\t238\tLady Gaga\tLady Gaga, Bradley Cooper - Shallow (From A Star Is Born/Live From The Oscars)",
+    "SlWBJ7MTV8M\t217\tCountryHype\tLady Gaga, Bradley Cooper - Shallow (Lyrics)",
+    "eWupm_cePX8\t299\tStill Watching Netflix\tA Star is Born - Shallow Sing-Along (Lady Gaga & Bradley Cooper) | Netflix",
+    "aU_bj9SxvdU\t216\t7clouds\tLady Gaga, Bradley Cooper - Shallow (Lyrics) (A Star Is Born Soundtrack)"
+   ],
+   "recording": [
+    "bo_efYhYU2A",
+    "SlWBJ7MTV8M",
+    "aU_bj9SxvdU"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Live Like You Were Dying",
+   "artist": "Tim McGraw",
+   "duration": 300.0,
+   "results": [
+    "_9TShlMkQnc\t267\tTim McGraw\tTim McGraw - Live Like You Were Dying (Official Music Video)",
+    "z5ckUav6_AE\t297\tCountry Waves\tTim McGraw - Live Like You Were Dying (Lyrics)",
+    "5PgIygaIjZA\t298\tKingscup20\tTim McGraw - Live Like You Were Dying HD (Live)",
+    "GJxtOGCQ4Bk\t320\tPARTY TYME KARAOKE CHANNEL\tTim McGraw - Live Like You Were Dying (Karaoke Version)",
+    "FAsYWhxPs7E\t284\tACM - Academy of Country Music\tTim McGraw - Live Like You Were Dying (Live from the 39th ACM Awards)"
+   ],
+   "recording": [
+    "z5ckUav6_AE"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Blinding Lights",
+   "artist": "The Weeknd",
+   "duration": 200.0,
+   "results": [
+    "4NRXx6U8ABQ\t263\tThe Weeknd\tThe Weeknd - Blinding Lights (Official Video)",
+    "fHI8X4OXluQ\t204\tThe Weeknd\tThe Weeknd - Blinding Lights (Official Audio)",
+    "BwX8OS4cegU\t201\t7clouds Indie\tThe Weeknd - Blinding Lights (Lyrics)",
+    "XwxLwG2_Sxk\t200\t7clouds\tThe Weeknd - Blinding Lights (Lyrics)",
+    "ewfdRy5jfF8\t199\tThe Weeknd\tThe Weeknd - Blinding Lights (Live On The 2020 MTV VMAs)"
+   ],
+   "recording": [
+    "fHI8X4OXluQ",
+    "BwX8OS4cegU",
+    "XwxLwG2_Sxk"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Imagine (Remastered 2010)",
+   "artist": "John Lennon",
+   "duration": 184.0,
+   "results": [
+    "bNnFFKv_NyI\t221\tVhic Playlist\tJohn Lennon - Imagine (Lyrics)🎶",
+    "VOgFZfRVaww\t195\tjohnlennon\tImagine - John Lennon & The Plastic Ono Band (w The Flux Fiddlers) (Ultimate Mix 2018) - 4K REMASTER",
+    "YkgkThdzX-8\t234\tjohnlennon\tIMAGINE. (Ultimate Mix, 2020) - John Lennon & The Plastic Ono Band (with the Flux Fiddlers) HD",
+    "JrvyHP5GB1k\t213\tAllErasRemastered\tJohn Lennon - Imagine (2025 Remastered)",
+    "MHSBRxrTTGM\t194\tReynaldo Escalera Garcia ᴴᴰ\tJOHN LENNON - Imagine ((Remastered Audio HQ)) UHD 4K"
+   ],
+   "recording": [],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Bohemian Rhapsody",
+   "artist": "Queen",
+   "duration": 354.0,
+   "results": [
+    "fJ9rUzIMcZQ\t360\tQueen Official\tQueen – Bohemian Rhapsody (Official Video Remastered)",
+    "5zLnaNY58j8\t355\t7clouds Rock\tQueen - Bohemian Rhapsody (Lyrics)",
+    "93Pn6UFCXlc\t359\tQueen Official\tQueen - Bohemian Rhapsody (Lyrics In Italian & English / Testo in Inglese e Italiano)",
+    "vbvyNnw8Qjg\t165\tLive Aid and Queen Official\tQueen - Bohemian Rhapsody (Live Aid 1985)",
+    "PadKCVBIN94\t316\tNEA ZIXNH\tQueen - Bohemian Rhapsody 1981 Live Video Full HD"
+   ],
+   "recording": [
+    "5zLnaNY58j8",
+    "fJ9rUzIMcZQ",
+    "93Pn6UFCXlc"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Let It Go (From \"Frozen\"/Soundtrack Version)",
+   "artist": "Idina Menzel",
+   "duration": 224.0,
+   "results": [
+    "YVVTZgwYwVo\t226\tDisneyMusicVEVO\tIdina Menzel - Let It Go (from Frozen) (Official Video)",
+    "L0MK7qz13bU\t223\tDisneyMusicVEVO\tIdina Menzel - Let It Go (From Frozen/Sing-Along)",
+    "FnpJBkAMk44\t232\tDisneyMusicVEVO\tIdina Menzel - Let It Go (from \"Frozen\") (Audio)",
+    "kHue-HaXXzg\t231\tDemi Lovato\tDemi Lovato - Let It Go (from \"Frozen\") (Official Video)",
+    "OWdWUzH6vEA\t222\tPillow\tLet It Go - Idina Menzel (Lyrics) 🎵"
+   ],
+   "recording": [
+    "YVVTZgwYwVo",
+    "L0MK7qz13bU",
+    "OWdWUzH6vEA",
+    "FnpJBkAMk44"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "STAY",
+   "artist": "The Kid LAROI",
+   "duration": 140.0,
+   "results": [
+    "kTJczUoc26U\t158\tThe Kid LAROI.\tThe Kid LAROI, Justin Bieber - STAY (Official Video)",
+    "yWHrYNP6j4k\t140\t7clouds\tThe Kid LAROI, Justin Bieber - Stay (Lyrics)",
+    "K2SpP0u8qA4\t143\tJustin Bieber\tJustin Bieber, The Kid LAROI - STAY (Live From The MTV VMAs / 2021)",
+    "uMt12Zh6mhM\t158\tRadioReggaeton\tThe Kid LAROI, Justin Bieber - Stay (Video Letra/Lyrics)",
+    "aexWbgJZ-uM\t178\tMusic For Life\t[Lyrics] Stay - The Kid Laroi live in Jimmy Kimmel"
+   ],
+   "recording": [
+    "yWHrYNP6j4k"
+   ],
+   "padded": [
+    "kTJczUoc26U"
+   ]
+  },
+  {
+   "split": "dev",
+   "title": "Woo",
+   "artist": "Rihanna",
+   "duration": 235.0,
+   "results": [
+    "JBb36ZvWZuA\t236\tCakes & Eclairs\tWoo - Rihanna (Lyrics) | Send for me",
+    "_dDCUKElEwk\t236\tScalez Pro\tWoo  - Rihanna",
+    "a3zmduCKuvE\t242\tAstro Verse \tRihanna - Woo ft. Travis Scott (432Hz)",
+    "bORqvFG-AnI\t235\tYaroslav_Mafin\twoo × i was never there (slowed + reverb) | i was never there × woo slowed down to perfection",
+    "JF7jP20mkZQ\t300\tJxm Slowed\tRihanna - Woo (Slowed + Reverb) w/lyrics “send for me”"
+   ],
+   "recording": [
+    "JBb36ZvWZuA",
+    "_dDCUKElEwk"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Halo (Live)",
+   "artist": "Beyoncé",
+   "duration": 392.0,
+   "results": [
+    "T2Dk0HRcen4\t326\tBeyoncé\tBeyoncé - Halo (Live From Wynn Las Vegas)",
+    "1XgTKgsnrbI\t227\tTrevor New\tBeyonce - Halo - Acoustic: LIVE! Hospital SINGAPORE 2009",
+    "H1OLN5Wqoco\t573\tEdius55\tBeyonce I Am World Tour HD - Halo.wmv",
+    "T6FDAX6p83g\t204\tTheFlyingHorse1\tBeyoncé Knowles - Halo (Live @ The Late Show with David Letterman)",
+    "O_GuHB8KqIk\t499\tMusic Top Internacional\tBeyoncé - Halo (Live at Chime For Change) HD"
+   ],
+   "recording": [],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Creep",
+   "artist": "Radiohead",
+   "duration": 238.0,
+   "results": [
+    "XFkzRNyygfk\t237\tRadiohead\tRadiohead - Creep",
+    "SLbSsv_2u4A\t241\tLyricsZone\tRadiohead - Creep (Lyrics)",
+    "X7C7EuVygho\t238\tbittersweet\tRadiohead - Creep (clean version) (Lyrics)",
+    "fAuT8_dboWo\t240\tLuis Fernando Flores\tRadiohead - Creep (Remastered) (Audio)",
+    "CZnj4pbYdmw\t240\tExoArchive\tRadiohead - Creep [HD]"
+   ],
+   "recording": [
+    "XFkzRNyygfk",
+    "SLbSsv_2u4A",
+    "X7C7EuVygho",
+    "fAuT8_dboWo",
+    "CZnj4pbYdmw"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Fix You",
+   "artist": "Coldplay",
+   "duration": 295.0,
+   "results": [
+    "k4V3Mo61fJM\t294\tColdplay\tColdplay - Fix You (Official Video)",
+    "bzRMneypG04\t296\tDan Music\t@coldplay - Fix You (Lyrics)",
+    "AEp08vVYreg\t306\tColdplay\tColdplay - Fix You (Live In São Paulo)",
+    "kM-94LhhQTs\t467\tBBC Music\tColdplay - Fix You | Glastonbury 2024",
+    "gXq-14lV79s\t296\tSee These Thoughts\tColdplay - Fix You (Lyric Video)"
+   ],
+   "recording": [
+    "k4V3Mo61fJM",
+    "bzRMneypG04",
+    "gXq-14lV79s"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Lean on Me (Live at Carnegie Hall, New York, NY - October 1972)",
+   "artist": "Bill Withers",
+   "duration": 347.0,
+   "results": [
+    "2qTo_8MiwNY\t349\tYour Music\tBill Withers - Lean on Me (Live at Carnegie Hall)",
+    "de00ajXMUX0\t282\tUniverso Cultural\tBill Withers - Lean On Me (Live From a 1973 Concert)",
+    "A07tsSjNx00\t252\tjeffcher10\tBill Withers live performance - Lean on me 1972",
+    "xG137UgLcSU\t264\tBengt Waldemarsson\tLean on me (live) - Bill Withers",
+    "8svkP0M5n4A\t364\tChris Cafiero\tLean On Me - The New Stew​ - 05.06.16 - Ardmore Music Hall​ - Bill Withers - Live From Carnegie Hall"
+   ],
+   "recording": [
+    "2qTo_8MiwNY"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "How Great Thou Art",
+   "artist": "Carrie Underwood",
+   "duration": 320.0,
+   "results": [
+    "Yf6C0L_7-CA\t331\tCarrie Underwood\tCarrie Underwood - How Great Thou Art (Official Performance Video)",
+    "MHusNDxUHNA\t262\tWei H.\tCarrie Underwood - How great thou art (feat. Vince Gill) 2011 ACM Girls Night Out",
+    "9bnSX5W57yg\t323\tCarrie Underwood\tCarrie Underwood - How Great Thou Art (Official Lyric Video)",
+    "Ca1EEYayu4M\t296\tJesusfreedme47\tHow Great Thou Art by Carrie Underwood lyrics",
+    "NDyNL4kQmyc\t221\tCarrie Underwood\t\"How Great Thou Art\" | Carrie Underwood on American Idol 2025"
+   ],
+   "recording": [
+    "9bnSX5W57yg"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "It Is Well (Live)",
+   "artist": "Bethel Music",
+   "duration": 385.0,
+   "results": [
+    "YNqo4Un2uZI\t383\tBethel Music and Kristene DiMarco\tIt Is Well - Kristene DiMarco | You Make Me Brave",
+    "K-I-1bphWdI\t658\tBethel Music and Kristene DiMarco\tIt Is Well (LIVE) - Kristene DiMarco | Bethel Worship",
+    "8Wb_WD1emFQ\t385\tBethel Music and Kristene DiMarco\tIt Is Well (Lyric Video) - Kristene DiMarco | You Make Me Brave",
+    "rLvbwO3jLjk\t656\tBethel Music\tIt Is Well (Spontaneous) - Peter Mattis | Moment",
+    "T0dIWJ4t4Jg\t443\tKristene DiMarco\tKristene DiMarco - It Is Well (Live)"
+   ],
+   "recording": [
+    "YNqo4Un2uZI",
+    "8Wb_WD1emFQ"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Jerusalema (feat. Nomcebo Zikode) (Edit)",
+   "artist": "Master KG",
+   "duration": 188.0,
+   "results": [
+    "fCZVL_8D048\t255\tOpenmic Productions\tMaster KG - Jerusalema  [Feat. Nomcebo] (Official Music Video)",
+    "9-RhCvYpxqc\t269\tOpenmic Productions\tMaster KG - Jerusalema Remix [Feat. Burna Boy and Nomcebo] (Official Music Video)",
+    "dD7TtmFmNRQ\t342\tFirebrick Nob\tMaster KG - Jerusalema",
+    "Hmzg63oZi4k\t260\tLyricsFeverReborn\tJerusalema (LYRICS) - Master KG Ft. Nomcebo With English Translation",
+    "11e4sW-Q4Ns\t299\tL2K\tL2K - Jerusalema  Chorégraphie Officiel."
+   ],
+   "recording": [],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Joro",
+   "artist": "Wizkid",
+   "duration": 262.0,
+   "results": [
+    "FCUk7rIBBAE\t264\tStarBoy TV\tWizkid - Joro (Official Video)",
+    "XAku5ndiWj0\t264\tlife + lyrics\tWizKid - Joro (Lyrics)",
+    "YV9XtDyPd6M\t264\tLatinHype\tWizkid - Joro",
+    "U_Y_x3waej8\t222\tAfroBeat Station\tWizkid - Joro",
+    "xWVYVqHk8Z8\t263\tEpiphany Hip-Hop\tWizkid - Joro (audio)"
+   ],
+   "recording": [
+    "FCUk7rIBBAE",
+    "XAku5ndiWj0",
+    "YV9XtDyPd6M",
+    "xWVYVqHk8Z8"
+   ],
+   "padded": []
+  },
+  {
+   "split": "dev",
+   "title": "Kwaku the Traveller",
+   "artist": "Black Sherif",
+   "duration": 185.0,
+   "results": [
+    "GIDiI5kyBDQ\t213\tBlack Sherif Music\tBlack Sherif - Kwaku the Traveller (Official Video)",
+    "Hb6I7GoTvzI\t189\tBlack Sherif Music\tBlack Sherif - Kwaku the Traveller (Official Audio)",
+    "o7F58b0Cpo4\t200\tJustified Melody\tBlack Sherif   - Kwaku The Traveller (Lyrics)",
+    "8QQG6G0_kOQ\t213\tEmerald Emmy\tBlack Sheriff Kwaku the Traveller Official Video",
+    "oGIFdZsmp2o\t183\tOnedayTV\tBlack Sherif_ Kwaku The Traveller(Official Video Out Now)"
+   ],
+   "recording": [
+    "Hb6I7GoTvzI",
+    "oGIFdZsmp2o"
+   ],
+   "padded": [
+    "GIDiI5kyBDQ"
+   ]
+  },
+  {
+   "split": "dev",
+   "title": "Tshwala Bam (feat. S.N.E)",
+   "artist": "Titom",
+   "duration": 203.0,
+   "results": [
+    "KK4dC7rASYs\t258\tTitoM\tTitoM & Yuppe - Tshwala Bam [Ft. S.N.E & EeQue] (Official Music Video)",
+    "Hg3aMnVU1xU\t221\tTitoM\tTitoM, Yuppe and Burna Boy - Tshwala Bam Remix [Ft. S.N.E] (Official Video)",
+    "j1n8B6J1JF8\t390\tAfricori and TitoM\tTitoM & Yuppe - Tshwala Bam [Feat. S.N.E & EeQue] (Official Audio)",
+    "jesU1ZaYIog\t199\tTitoM\tTitoM, Yuppe and Burna Boy - Tshwala Bam Remix [Ft. S.N.E] (Official Audio)",
+    "Mu5988t7QKU\t233\tSongplux\tBurna Boy - Tshwala Bam ft. (Omah Lay, Victony, TitoM & Yuppe)"
+   ],
+   "recording": [],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Chinedum",
+   "artist": "Mercy Chinwo",
+   "duration": 280.0,
+   "results": [
+    "zq0kEhxF_so\t282\tEeZee Global\tMercy Chinwo - Chinedum (Official Video)",
+    "LIX5IsD8l5o\t3641\tIke Amadi\tMercy Chinwo  - Chinedum 1 Hour Loop",
+    "n_s01dyovrw\t316\tLA VOIE DE L'EXPERTISE\tMERCY CHINWO - Chinedum - Lyrics Français",
+    "iEhaCogic44\t2938\tPOWER AND GRACE EVANGELISTIC MINISTRIES INTL\tMercy Chinwo sings Chinedum and Excess Love in Ghana at Women in Worship 2019",
+    "TBzBpjuGZcA\t281\tSaved by Grace\tCHINEDUM BY MERCY CHINWO"
+   ],
+   "recording": [
+    "zq0kEhxF_so",
+    "TBzBpjuGZcA"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "I Know Who I Am (Studio Version)",
+   "artist": "Sinach",
+   "duration": 362.0,
+   "results": [
+    "2klT7bKk37g\t363\tDavid Harmer\tSinach - I Know Who I Am (Studio version with lyrics)",
+    "WWFnmWQNVxQ\t242\tSINACH\tI KNOW WHO I AM",
+    "8rE4X-GcZKM\t371\tYan Manuel\tI Know Who I Am  - Sinach Multitracks",
+    "HWStmtj4yCk\t375\tTokyo New Life International Church\tI Know Who I Am (with lyrics) - Sinach -",
+    "iJ9AGQrGwJQ\t373\tbrandonnash83\tSinach- I Know Who I Am"
+   ],
+   "recording": [
+    "2klT7bKk37g"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Fall",
+   "artist": "Davido",
+   "duration": 240.0,
+   "results": [
+    "3Iyuym-Gci0\t258\tDavido\tDavido - Fall (Official Video)",
+    "Jfp7WHXIPF0\t240\tlife + lyrics\tDavido - Fall (Lyrics)",
+    "xzjeRJWEgoQ\t250\tFEEDIA\tDavido - Fall (official version)",
+    "ppMM0F8QPIg\t241\t7clouds Afrobeats\tDavido -  Fall (Lyrics)",
+    "yoRQg4ZIRuo\t245\tVicky Limo\tDavido-- Fall (lyrics)"
+   ],
+   "recording": [
+    "Jfp7WHXIPF0",
+    "ppMM0F8QPIg",
+    "yoRQg4ZIRuo"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Ojuelegba",
+   "artist": "Wizkid",
+   "duration": 216.0,
+   "results": [
+    "Q7QiLceJSLQ\t224\tStarBoy TV\tWIZKID  - OJUELEGBA",
+    "NkjaHmR5sLg\t237\tQUICK GIST\tWizkid - Ojuelegba (Lyrics)",
+    "uhVi5kkXXFQ\t224\tNaijakit TV\tWizkid - Ojuelegba (Official Video) | Naijakit com",
+    "0xMKf5BiodM\t254\tDrake\tWizkid - Ojuelegba feat. Drake, Skepta (Remix)",
+    "GoELpRAkTag\t219\tBmusicTV NGA®\tWizkid - Ojuelegba (OFFICIAL AUDIO 2014)"
+   ],
+   "recording": [
+    "GoELpRAkTag",
+    "Q7QiLceJSLQ",
+    "uhVi5kkXXFQ"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "On the Low",
+   "artist": "Burna Boy",
+   "duration": 185.0,
+   "results": [
+    "Ecl8Aod0Tl0\t203\tBurna Boy\tBurna Boy - On The Low [Official Music Video]",
+    "PCR8YTOzSKQ\t186\tQueen Lee music\tBurna Boy – On The Low Lyrics video",
+    "IvJpo697LPY\t186\tMiziki\tBurna Boy - On the Low [Audio]",
+    "ixyeMYmc_Ck\t248\tafro house \tBurna Boy - On the Low (Lyrics)",
+    "bkZ1_gNDQkg\t188\tOmonka Lite\tBurna Boy – On The Low"
+   ],
+   "recording": [
+    "PCR8YTOzSKQ",
+    "IvJpo697LPY",
+    "bkZ1_gNDQkg"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Soweto",
+   "artist": "Victony",
+   "duration": 219.0,
+   "results": [
+    "DPBRGWUgQsA\t158\tVictony\tVictony & Tempoe - Soweto (Official Video)",
+    "OGAngW1BZ04\t222\tVictony\tVictony - Soweto with Don Toliver, Rema & Tempoe (Official Video)",
+    "5iye89GiK5w\t220\tVibe Music\tVictony - Soweto (Lyrics) ft. Don Toliver, Rema & Tempoe",
+    "agjgfxKIIgM\t220\tVictony\tVictony - Soweto with Don Toliver, Rema & Tempoe (Official Lyric Video)",
+    "y2lROhDWE3g\t367\tJori\tVictony - Soweto Remix with. Various Artist"
+   ],
+   "recording": [
+    "OGAngW1BZ04",
+    "5iye89GiK5w",
+    "agjgfxKIIgM"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Sungba (Remix)",
+   "artist": "Asake",
+   "duration": 210.0,
+   "results": [
+    "7WU__JQuB8g\t216\tASAKE\tAsake - Sungba (Remix) (Official Video) ft. Burna Boy",
+    "k4Gx4XFzkNY\t216\tJustified Melody\tAsake - Sungba Remix (Lyrics) feat  Burna Boy|hello! you carry barka like a philo,philo",
+    "5A-CjKOQWvg\t194\tASAKE\tAsake - Sungba (Official Video)",
+    "bDwaOKFjkZ8\t215\tOfofo Loaded TV\tAsake ft Burna Boy - Sungba (Remix)",
+    "T10Uo3La-us\t231\tOluwatosin Drums\t\"Sungba\" - Asake Live at the Red Bull Symphonic | OTDrums"
+   ],
+   "recording": [
+    "7WU__JQuB8g",
+    "k4Gx4XFzkNY",
+    "bDwaOKFjkZ8"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Terminator",
+   "artist": "Asake",
+   "duration": 155.0,
+   "results": [
+    "qrIP_igi76U\t169\tASAKE\tAsake - Terminator (Official Video)",
+    "5Y19AMa3GME\t217\tafro house \tAsake - Terminator (Lyrics)",
+    "x_9JtryloAU\t175\tGenius\tAsake “Terminator” (Live Performance) | Open Mic",
+    "go32EIksu5c\t121\t ♛ 𝑺𝒐𝒏𝒏𝒚 ♛\tTerminator- Asake (Red Bull symphonic) 2026",
+    "HQVRDycNNRE\t235\tThe Vibe Guide\tKing Promise - Terminator (Lyrics)"
+   ],
+   "recording": [],
+   "padded": [
+    "qrIP_igi76U"
+   ]
+  },
+  {
+   "split": "test",
+   "title": "Commas",
+   "artist": "Ayra Starr",
+   "duration": 155.0,
+   "results": [
+    "EhyzYPSHRQU\t157\tAyra Starr\tAyra Starr - Commas (Lyric Video)",
+    "iQQAnps8E9s\t154\t7clouds Afrobeats\tAyra Starr - Commas (Lyrics)",
+    "7UzUgPSqpjg\t191\tAyra Starr\tAyra Starr - Commas Live Performance",
+    "-y-LffpRP_4\t158\tMinimal Sounds\tAyra Starr - Commas (Audio)",
+    "HSoriNzindk\t164\tAyra Starr\tAyra Starr - Commas ((Live Performance) | Vevo)"
+   ],
+   "recording": [
+    "EhyzYPSHRQU",
+    "iQQAnps8E9s",
+    "-y-LffpRP_4"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Sability",
+   "artist": "Ayra Starr",
+   "duration": 166.0,
+   "results": [
+    "KYn3k8dpRJI\t225\tAyra Starr\tAyra Starr - Sability (Official Music Video)",
+    "AKZ7Ccf3_Ps\t164\tLyrics of African Music\tAyra Starr - Sability (Lyrics)",
+    "zJD_dRlpbNI\t225\tMmaness Vlog\tSability by Ayra Starr (Video Lyrics)",
+    "2DV-KLqUCYQ\t166\tAyra Starr\tHonda Stage | Live Performance by Ayra Starr – Sability",
+    "5tBq5SSR97Y\t203\tᴋᴀꜱɪ - ʙᴇᴀᴛꜱ\tAyra Starr - Sability (slowed + reverb)"
+   ],
+   "recording": [
+    "AKZ7Ccf3_Ps"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "FEEL",
+   "artist": "Davido",
+   "duration": 154.0,
+   "results": [
+    "GoWGGiWDsac\t216\tDavido\tDavido - FEEL (Official Video)",
+    "QL0KV5xMjvo\t157\tDavido\tDavido - FEEL (Official Audio)",
+    "HiF0mfwQutc\t157\tThe Other Side\tDavido - FEEL (Lyrics)",
+    "dwKhoUJ03Dc\t182\tDavido\tDavido - FEEL (Orchestral Version - Amazon Music Original - Official Video)",
+    "QU28LSsINy0\t133\tDavido\tDavido - Feel (Live) | Vevo Studio Performance"
+   ],
+   "recording": [
+    "QL0KV5xMjvo",
+    "HiF0mfwQutc"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Monalisa",
+   "artist": "Lojay",
+   "duration": 212.0,
+   "results": [
+    "to8nQNGarRw\t214\tLojay\tLOJAY X SARZ - MONALISA",
+    "jQcb9_eCzpc\t215\tLojay\tMONALISA  - LOJAY X SARZ X CHRIS BROWN",
+    "3Sxg8kBO_UM\t214\tRoyal Tunes\tLojay, Sarz - Monalisa (Lyrics)",
+    "QDhwrv0zIZw\t214\tjustin Nyemba\tMonalisa Remix  Lojay ft Sarz & Chris Brown",
+    "83qDNBaC_h4\t210\tAfro Soul Orchestra\tMONALISA | Lojay & Sarz | Epic Afro Soul Orchestra 🔥"
+   ],
+   "recording": [
+    "to8nQNGarRw",
+    "3Sxg8kBO_UM"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Graves Into Gardens (Remix) (feat. ELEVATION RHYTHM)",
+   "artist": "Elevation Worship",
+   "duration": 217.0,
+   "results": [
+    "O6-N71Ek8Zs\t217\tELEVATION RHYTHM\tGRAVES INTO GARDENS (REMIX) - ELEVATION RHYTHM",
+    "KwX1f2gYKZ4\t453\tElevation Worship\tGraves Into Gardens ft. Brandon Lake | Live | Elevation Worship",
+    "Z8i18DJm0eQ\t179\tReyer\tElevation Worship - Graves Into Gardens (Reyer Remix)",
+    "nka-RBdwW20\t217\tFaithful Lyrics\tGraves Into Gardens (Remix) | Elevation Rhythm (Lyrics)",
+    "UcgmX4Exffk\t217\tWorship Nation\tElevation Worship - Graves Into Gardens (Elevation Rhythm Remix)"
+   ],
+   "recording": [
+    "O6-N71Ek8Zs",
+    "nka-RBdwW20",
+    "UcgmX4Exffk"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Way Maker (Live)",
+   "artist": "Leeland",
+   "duration": 503.0,
+   "results": [
+    "iJCV_2H9xD0\t504\tLeeland\tLeeland - Way Maker (Official Live Video)",
+    "29IxnsqOkmQ\t204\tIntegrity Music\tWay Maker (Lyric Video) - Leeland [ Official ]",
+    "uJ_HgETEvus\t440\tThrive Worship\tWay Maker - Thrive Worship & LEELAND (Live)",
+    "vsypFJ5mNw0\t1714\tJesus Image\tWay Maker | Jesus Image | Steffany Gretzinger | John Wilds",
+    "iSaRXASfzss\t509\tBorn Again Christian Music Ministry \tLeeland - Way Maker (Passion of Christ )@Creative Music  Vlog"
+   ],
+   "recording": [
+    "iJCV_2H9xD0",
+    "iSaRXASfzss"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Build My Life",
+   "artist": "Housefires",
+   "duration": 491.0,
+   "results": [
+    "FYMjO9mL0Tw\t492\tHousefires\tHousefires - Build My Life (feat. Pat Barrett)",
+    "G2bGxCJHnkM\t266\tOfficialChristianRadioHD\tBuild My Life [Radio Edit] - Housefires, Pat Barrett",
+    "Z32HiCoFzlU\t309\tPat Barrett and Chris Tomlin\tPat Barrett - Build My Life (feat. Chris Tomlin) (Live)",
+    "QZW4_8_zCBE\t264\tPat Barrett\tPat Barrett - Build My Life (Lyric Video) (ft. Cory Asbury)",
+    "wi__A1n2fGM\t463\tWorshipMob\tBuild My Life - Housefires + Spontaneous | WorshipMob Cover"
+   ],
+   "recording": [
+    "FYMjO9mL0Tw"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Reckless Love",
+   "artist": "Cory Asbury",
+   "duration": 333.0,
+   "results": [
+    "Sc6SSHuZvQE\t333\tBethel Music\tReckless Love (Official Lyric Video)",
+    "6xx0d3R2LoU\t717\tBethel Music\tReckless Love (Live with story) - Cory Asbury | Heaven Come 2017",
+    "U00OamUrBP4\t316\tPURPOSE\tRECKLESS LOVE - Cory Asbury (Lyrics)",
+    "aZyvhtvNO4I\t621\tCory Asbury\tReckless Love (Live from Rutherford County Correctional Center) - Cory Asbury",
+    "ZLFak6N04GY\t338\tBethel Music\tReckless Love (Acoustic) - Cory Asbury"
+   ],
+   "recording": [
+    "Sc6SSHuZvQE"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Who You Say I Am (Bonus) (Live Acoustic)",
+   "artist": "Hillsong Worship",
+   "duration": 191.0,
+   "results": [
+    "k-rjczm7uCo\t192\tHillsong Worship\tWho You Say I Am (Acoustic) - Hillsong Worship",
+    "1xbwV4DHuEM\t188\tAnchor Lyrics Oficial\tWho You Say I Am Acoustic   Hillsong Worship Lyrics   Album There Is More s6HBSIaEZ5o",
+    "0wvwiJR0d2E\t407\tTouch In Worship\tWho You Say I Am (Hillsong Worship) New Song Cafe (2018)",
+    "Q6l1uyworMA\t190\tMeg\tWho You Say I Am (Acoustic Video with Lyrics) Hillsong Worship",
+    "TJiONzpgWXA\t186\tHey! It's Sheila\tWho You Say I Am by Hillsong Worship ( lyric video 2021)"
+   ],
+   "recording": [
+    "k-rjczm7uCo",
+    "1xbwV4DHuEM",
+    "Q6l1uyworMA",
+    "TJiONzpgWXA"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Great Are You Lord (Live)",
+   "artist": "All Sons & Daughters",
+   "duration": 289.0,
+   "results": [
+    "r7V2Ja7LzWg\t289\tAllSonsDaughtersVEVO\tAll Sons & Daughters - Great Are You Lord (Live)",
+    "vQLMnPYoR9k\t289\tPastor Madeline\tGreat Are You Lord w/ Lyrics (All Sons & Daughters)",
+    "uHz0w-HG4iU\t302\tIntegrity Music\tGreat Are You Lord - All Sons & Daughters (Official Live Concert)",
+    "hpb02shcAis\t294\tAllSonsDaughtersVEVO\tAll Sons & Daughters - Great Are You Lord (Lyric Video)",
+    "XRGjxoVWg_w\t71\tIntegrity Music\tAll Sons & Daughters -  Great Are You Lord (Live)"
+   ],
+   "recording": [
+    "r7V2Ja7LzWg",
+    "vQLMnPYoR9k",
+    "hpb02shcAis"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Rolling In The Deep",
+   "artist": "Hello I'm Adele",
+   "duration": 228.0,
+   "results": [
+    "KzwDd_ZFe0g\t222\tTyoxy\tBLACK OPS 3 IS FINALLY HERE!"
+   ],
+   "recording": [],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Thinking out Loud",
+   "artist": "Ed Sheeran",
+   "duration": 281.0,
+   "results": [
+    "lp-EO5I60KA\t290\tEd Sheeran\tEd Sheeran - Thinking Out Loud (Official Music Video)",
+    "qepZ2A0SJ64\t282\tloveeeeee songs\ted sheeran ✨ thinking out loud ✨ ~ lyrics",
+    "Q5z6RHIpi2Y\t282\tEd Sheeran\tEd Sheeran - Thinking Out Loud (Official Lyric Video)",
+    "f6Cswdm601A\t266\tEd Sheeran\tEd Sheeran - Thinking Out Loud (x Acoustic Session)",
+    "WpyfrixXBqU\t293\tEd Sheeran\tEd Sheeran - Thinking Out Loud [Official Audio]"
+   ],
+   "recording": [
+    "qepZ2A0SJ64",
+    "Q5z6RHIpi2Y"
+   ],
+   "padded": [
+    "WpyfrixXBqU"
+   ]
+  },
+  {
+   "split": "test",
+   "title": "Shape of You",
+   "artist": "Ed Sheeran",
+   "duration": 233.0,
+   "results": [
+    "JGwWNGJdvx8\t264\tEd Sheeran\tEd Sheeran - Shape of You (Official Music Video)",
+    "liTfD88dbCo\t232\t7clouds\tEd Sheeran - Shape of You (Lyrics)",
+    "erd3fTm-2t8\t234\tLatin City\tEd Sheeran – Shape of You (Lyrics)",
+    "P9pYLDKmFSA\t234\tVibe Music\tEd Sheeran - Shape of You (Lyrics)",
+    "_dK2tDK9grQ\t235\tEd Sheeran\tEd Sheeran - Shape Of You [Official Lyric Video]"
+   ],
+   "recording": [
+    "liTfD88dbCo",
+    "erd3fTm-2t8",
+    "P9pYLDKmFSA",
+    "_dK2tDK9grQ"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Hurt",
+   "artist": "Johnny Cash",
+   "duration": 216.0,
+   "results": [
+    "8AHCfZTRGiI\t229\tJohnny Cash\tJohnny Cash - Hurt",
+    "4ahHWROn8M0\t221\tv94j\tjohnny cash - hurt (lyrics)",
+    "CG-1JDi4240\t217\tThe Match Me Podcast\tJohnny Cash- Hurt (HQ)",
+    "SnEVnvWUJgM\t229\tJohnny Cash\tJohnny Cash - Hurt (Official Lyric Video)",
+    "yL0RzgUpGjk\t198\tJ Tan\tJohnny Cash - Hurt (Logan Version)"
+   ],
+   "recording": [
+    "CG-1JDi4240",
+    "4ahHWROn8M0"
+   ],
+   "padded": [
+    "SnEVnvWUJgM"
+   ]
+  },
+  {
+   "split": "test",
+   "title": "Hurt",
+   "artist": "Nine Inch Nails",
+   "duration": 375.0,
+   "results": [
+    "6oGqIfnIAEA\t301\tGod bat Reigns\tNine Inch Nails - Hurt Lyrics Video",
+    "PbHz9p7Z4OU\t312\tCesar Garate\tNine Inch Nails   Hurt official video ",
+    "KR4DjYczINM\t285\tNine Inch Nails\tNine Inch Nails - Hurt (VEVO Presents)",
+    "42V6ho11NSw\t373\tBrian Martens Music\tNine Inch Nails - Hurt - Remastered",
+    "vQRmCy6LfjI\t280\tFelipe NIN\tTrent Reznor - Hurt (Unplugged)"
+   ],
+   "recording": [
+    "42V6ho11NSw"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Africa",
+   "artist": "Toto",
+   "duration": 296.0,
+   "results": [
+    "FTQbiNvZqaY\t272\tTOTO\tToto - Africa (Official HD Video)",
+    "U1LB_OerHCE\t295\t7clouds\tToto - Africa (Lyrics)",
+    "Kb7lAMjFuA0\t296\tNielson Lucas\tToto - Africa (Official Audio)",
+    "07OWseh4qDg\t679\tGIGS\tToto - Africa [Live]",
+    "w2bJ5CGplB4\t428\tGerald Chen\tToto - Africa (2003) [HD] (CC)"
+   ],
+   "recording": [
+    "U1LB_OerHCE",
+    "Kb7lAMjFuA0"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Billie Jean",
+   "artist": "Michael Jackson",
+   "duration": 293.0,
+   "results": [
+    "Zi_XLOBDo_Y\t296\tMichael Jackson\tMichael Jackson - Billie Jean (Official Video)",
+    "QRidtXn0u7k\t295\tPizza Music\tBillie Jean - Michael Jackson (Lyrics)",
+    "tSi6Dn1H36Y\t299\tallanwv\tMichael Jackson - Billie Jean (Live) - 1983",
+    "p1ct1plRUtw\t295\tMichael Jackson\tBillie Jean",
+    "VOj_xsc-EBM\t638\tLiveMJHD\tMichael Jackson - Billie Jean - Live Munich 1997 - Widescreen HD"
+   ],
+   "recording": [
+    "Zi_XLOBDo_Y",
+    "QRidtXn0u7k",
+    "p1ct1plRUtw"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Stand By Me",
+   "artist": "Ben E. King",
+   "duration": 174.0,
+   "results": [
+    "hwZNL7QVJjE\t178\tSoulful Sounds\tBen E. King - Stand By Me (Audio)",
+    "7rZyI7kPZMI\t184\tYoung Pilgrim Music\tBen E  King - Stand By Me (Lyrics)",
+    "dTd2ylacYNU\t181\tPRIMITIV RECORD\tBen E. King - Stand By Me (HQ Video Remastered In 1080p)",
+    "bGn6DzYu7d8\t175\tair lyrics\tBen E. King - Stand By Me (lyrics)",
+    "VApqDYplKtY\t180\thobortdonos\tBen E  KING Stand By Me 1961"
+   ],
+   "recording": [
+    "hwZNL7QVJjE",
+    "bGn6DzYu7d8",
+    "dTd2ylacYNU",
+    "VApqDYplKtY"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Hallelujah",
+   "artist": "Pentatonix",
+   "duration": 268.0,
+   "results": [
+    "LRP8d7hhpoQ\t306\tPentatonix\tPentatonix - Hallelujah (Official Video)",
+    "Gwcb70P6aMk\t269\tLatinHype\tPentatonix - Hallelujah",
+    "haFHrfmfHbc\t269\tPentatonix\tHallelujah – Pentatonix (From A Pentatonix Christmas Special)",
+    "G4ZLyT7AOH4\t3751\tHouse of Music\tPentatonix - Hallelujah (1 Hour Music)",
+    "oqDfLunw_BU\t273\tPentatonix\t[SING-ALONG VIDEO] Hallelujah – Pentatonix"
+   ],
+   "recording": [
+    "Gwcb70P6aMk",
+    "haFHrfmfHbc",
+    "oqDfLunw_BU"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Respect",
+   "artist": "Aretha Franklin",
+   "duration": 147.0,
+   "results": [
+    "A134hShx_gw\t151\tAretha Franklin\tAretha Franklin - Respect (Official Lyric Video)",
+    "NRqkyJpnka4\t158\tYoung Pilgrim Music\tAretha Franklin - Respect (Lyrics)",
+    "U0yIf9Tkgu4\t143\tAretha Franklin\tAretha Franklin - Respect Official Video Winner",
+    "s3Itb17PXvw\t145\tBlack Music Archive LIVE!\tAretha Franklin | Respect | 1967 | Best Version",
+    "6FOUqQt3Kg0\t150\tTatánMorenoR\tAretha Franklin - Respect [1967] (Aretha's Original Version)"
+   ],
+   "recording": [
+    "A134hShx_gw",
+    "U0yIf9Tkgu4",
+    "s3Itb17PXvw",
+    "6FOUqQt3Kg0"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Sweet Child O' Mine",
+   "artist": "Guns N' Roses",
+   "duration": 355.0,
+   "results": [
+    "1w7OgIMMRc4\t303\tGuns N' Roses\tGuns N' Roses - Sweet Child O' Mine (Official Music Video)",
+    "qoflJn7zkFM\t357\t7clouds Rock\tGuns N' Roses - Sweet Child O' Mine (Lyrics)",
+    "HlEuo9aR7Qo\t312\tGuns N' Roses\tGuns N' Roses - Sweet Child O' Mine (Alternate Version)",
+    "D2gWc5Sw75w\t355\tRock And Metal Tv\tGuns N' Roses - Sweet Child O' Mine",
+    "23LT0E89m1s\t372\tGuns N' Roses\tGuns N Roses: Sweet Child O' Mine in Dublin"
+   ],
+   "recording": [
+    "qoflJn7zkFM",
+    "D2gWc5Sw75w"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Don't Stop Believin'",
+   "artist": "Journey",
+   "duration": 249.0,
+   "results": [
+    "1k8craCGpgs\t251\tjourney\tJourney - Don't Stop Believin' (Official Audio)",
+    "VcjzHMhBtf0\t252\tjourney\tJourney - Don't Stop Believin' (Escape Tour 1981: Live In Houston)",
+    "Pze8Dyqiky8\t249\t7clouds Rock\tJourney - Don't Stop Believin' (Lyrics)",
+    "Dtx2JfFbUSc\t249\t7clouds\tJourney - Don't Stop Believin' (Lyrics)",
+    "x3idGV-7kSQ\t249\tJourney Forever\tJourney - Don't Stop Believin' (Official Video RCF)"
+   ],
+   "recording": [
+    "1k8craCGpgs",
+    "Pze8Dyqiky8",
+    "Dtx2JfFbUSc",
+    "x3idGV-7kSQ"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Smells Like Teen Spirit (Live In Del Mar, California/1991)",
+   "artist": "Nirvana",
+   "duration": 289.0,
+   "results": [
+    "Lm5ypWX2-4k\t283\ttomhut5\tNirvana-Smells like teen spirit",
+    "N1G-k8zi-Sk\t287\tIncesticide23\tNirvana - Smells Like Teen Spirit (Wishkah) [Lyrics]",
+    "SurIAumHE_s\t288\tbuzzyzero\tNirvana smells like teen spirit From the Muddy Banks of the Whiskah",
+    "I3nlsZ61O8o\t291\tNoahBones 12\tNirvana - Smells Like Teen Spirit (Live in Del Mar 1991) Studio Style Remaster (AUDIO)",
+    "wOYC-ycR6vY\t274\tg manderin olf linnlie\tNirvana - \"Smells Like Teen Spirit (Live - 12-28-1991 - Del Mar, CA)\" (No Crowd)"
+   ],
+   "recording": [
+    "I3nlsZ61O8o"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Jolene",
+   "artist": "Dolly Parton",
+   "duration": 160.0,
+   "results": [
+    "Ixrje2rXLMA\t164\tDolly Parton\tDolly Parton - Jolene (Official Audio)",
+    "wxhKU0QGdnY\t160\t7clouds Rock\tDolly Parton - Jolene (Lyrics)",
+    "q9Yc5zMerKU\t160\textra Music\tDolly Parton - Jolene (Lyrics)",
+    "L0eeSoU35wM\t209\tSidsCardShop\tDolly Parton - Jolene 19880110",
+    "GFPlF6rXnik\t162\tDolly Parton\tDolly Parton - Jolene (Official Lyric Video)"
+   ],
+   "recording": [
+    "wxhKU0QGdnY",
+    "q9Yc5zMerKU",
+    "GFPlF6rXnik",
+    "Ixrje2rXLMA"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Wonderwall",
+   "artist": "Oasis",
+   "duration": 258.0,
+   "results": [
+    "6hzrDeceEKc\t280\tOasis\tOasis - Wonderwall (Official Video)",
+    "8LaTzWMbShY\t259\tYoung Pilgrim Music\tOasis - Wonderwall (Lyrics)",
+    "2AwgAisWCAU\t259\tLyricLandia\tOasis - Wonderwall (Lyrics)",
+    "Ve1EbKsNCdw\t247\tOasis\tOasis - Wonderwall (Live at Knebworth, 10 August ’96)",
+    "ajHr7fEmfms\t257\tWE ARE ROBOT\tOasis 'Wonderwall' Live in Dublin 16th August 2025 PRO ish SHOT in 4K"
+   ],
+   "recording": [
+    "8LaTzWMbShY",
+    "2AwgAisWCAU"
+   ],
+   "padded": [
+    "6hzrDeceEKc"
+   ]
+  },
+  {
+   "split": "test",
+   "title": "Amazing Grace",
+   "artist": "Judy Collins",
+   "duration": 248.0,
+   "results": [
+    "AtteRD5bBNQ\t246\tTrebonis\tJudy Collins - Amazing Grace (Best Version)",
+    "p5NCyuRhoGY\t308\tBeta Hi-Fi Archive\tJUDY COLLINS - \"Amazing Grace\" with Boys' Choir Of Harlem 1993",
+    "JdG2JYQzsVo\t246\tLyrics\tJudy Collins//Amazing Grace Lyric Video",
+    "CqqJRGLnWw0\t248\tChristian Davies\tJudy Collins - Amazing Grace",
+    "HY_hxghmDho\t271\tblacknwhitenblue\tAmazing Grace - Judy Collins and the choir (1970 RARE!!)"
+   ],
+   "recording": [
+    "AtteRD5bBNQ",
+    "JdG2JYQzsVo",
+    "CqqJRGLnWw0"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Mercy",
+   "artist": "Duffy",
+   "duration": 220.0,
+   "results": [
+    "y7ZEVA5dy-Y\t210\tDuffy\tDuffy - Mercy",
+    "h1-7kuIuqh8\t223\t7clouds Indie\tDuffy - Mercy (Lyrics)",
+    "rOu4wwI0xF8\t220\tDUFFY ARCHIVES\tDuffy - Mercy (Official HQ Audio)",
+    "eJCrb1oNbH4\t224\tMsMusChannel\tDuffy - Mercy (Lyrics)",
+    "n-id1ESMVYs\t273\tDuffy\tDuffy - Mercy (Live at Café de Paris, 2010)"
+   ],
+   "recording": [
+    "rOu4wwI0xF8",
+    "h1-7kuIuqh8",
+    "eJCrb1oNbH4"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "OZEBA",
+   "artist": "Rema",
+   "duration": 137.0,
+   "results": [
+    "UzswywOA1qU\t144\tRema\tRema - OZEBA (Official Music Video)",
+    "CAyD5xr1yGY\t140\tRema\tRema - OZEBA (Lyric Visualizer)",
+    "jdJVFYxkCdc\t138\tSounds Divine \tREMA - OZEBA (lyrics)",
+    "MEA7FBnL1fU\t262\tRema\tRema - OZEBA (Live at Rock in Rio Lisbon 2026)",
+    "UWduUAB8nBo\t202\tWORLDOFAFRO\tWOA - OZEBA 'Remake' | Ozeba - Rema"
+   ],
+   "recording": [
+    "CAyD5xr1yGY",
+    "jdJVFYxkCdc",
+    "UzswywOA1qU"
+   ],
+   "padded": []
+  },
+  {
+   "split": "test",
+   "title": "Gimme Dat",
+   "artist": "Ayra Starr",
+   "duration": 225.0,
+   "results": [
+    "JKe5rMTVJC8\t262\tAyra Starr\tAyra Starr - Gimme Dat",
+    "QxaxnlVyA1I\t226\tAyra Starr\tAyra Starr & Wizkid - Gimme Dat (Lyric Video)",
+    "b70Ox8gYsBM\t226\tLyricsZone\tAyra Starr & Wizkid - Gimme Dat (Lyrics)",
+    "mazkffKsTWw\t226\tMusic To The Ear\tAyra Starr & Wizkid - Gimme Dat (Official Audio)",
+    "TaGHH0HCpyg\t225\tSoundplux\tAyra Starr Feat. Wizkid - Gimme Dat [Official Video Edit]."
+   ],
+   "recording": [
+    "QxaxnlVyA1I",
+    "b70Ox8gYsBM",
+    "mazkffKsTWw",
+    "TaGHH0HCpyg"
+   ],
+   "padded": []
+  }
+ ]
+}

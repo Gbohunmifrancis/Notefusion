@@ -268,7 +268,7 @@ def test_a_store_song_tries_the_next_match_when_the_first_is_gone(monkeypatch, t
 def test_only_clean_uploads_of_the_right_length_are_runners_up():
     assert links._rank_results(SEARCH.splitlines(), _song()) == ["AAAAAAAAAAA", "BBBBBBBBBBB"]
     covers = "CCCCCCCCCCC\t40\tSomeone\tNever Gonna Give You Up (cover)"
-    assert links._rank_results([covers], _song()) == ["CCCCCCCCCCC"]  # a cover beats nothing
+    assert links._rank_results([covers], _song()) == []  # no cover is taken for the song
 
 
 def test_a_later_match_starts_on_the_rung_the_refusals_reached(monkeypatch, tmp_path):

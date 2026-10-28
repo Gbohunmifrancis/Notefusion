@@ -324,12 +324,48 @@ def test_search_choice_matches_length_and_skips_covers():
     ]
     assert links._choose_result(lines, _song()) == "CCCCCCCCCCC"  # the label's own upload
     assert links._choose_result(lines[:4], _song()) == "dQw4w9WgXcQ"  # length agrees, not a cover
-    assert links._choose_result(lines[:3], _song()) == "AAAAAAAAAAA"  # nothing else: a cover beats nothing
-    # Without a known length the first clean upload wins.
+    # Nothing else: no cover, karaoke or loop is taken for the song; the store's preview stands in.
+    assert links._choose_result(lines[:3], _song()) is None
+    # Without a known length the first clean upload naming the artist wins.
     assert links._choose_result(lines[:4], _song(duration=None)) == "dQw4w9WgXcQ"
     # "Live" in the song's own name is not a live take.
     live_song = _song(title="Live Like You Were Dying", artist="Tim McGraw", duration=300.0)
     assert links._choose_result(["DDDDDDDDDDD\t301\tTim McGraw - Topic\tLive Like You Were Dying"], live_song) == "DDDDDDDDDDD"
+    # ...but a live take of it is ("Live" a second time, outside the song's name).
+    assert links._choose_result(["EEEEEEEEEEE\t298\tKingscup20\tTim McGraw - Live Like You Were Dying HD (Live)"], live_song) is None
+
+
+def test_a_search_result_must_name_the_song_and_be_its_recording():
+    onise = _song(title="Onise Iyanu", artist="Nathaniel Bassey", duration=368.0)
+    other_song = "Jx84DLwIII4\t364\tNathaniel Bassey Main\tIMELA (Thank You) - Nathaniel Bassey feat  Enitan Adaba"
+    assert links._rank_results([other_song], onise) == []  # the same artist's other song, of the same length
+    reasons = _song(title="10,000 Reasons (Bless The Lord) (Live)", artist="Matt Redman", duration=342.0)
+    assert links._rank_results([
+        "vFj_JMTL0Ws\t342\tKeith Groom\t10000 Reasons Bless the Lord -  Matt Redman - Lyrics - 432 hz",
+        "DXDGE_lRI0E\t343\tGloryToFatherGod\t10,000 Reasons (Bless the Lord) - Matt Redman (with Lyrics)",
+    ], reasons) == ["DXDGE_lRI0E"]  # retuned to 432 Hz is not the recording; "10,000" and "10000" are one title
+    tshwala = _song(title="Tshwala Bam (feat. S.N.E)", artist="Titom", duration=203.0)
+    assert links._rank_results(["jesU1ZaYIog\t199\tTitoM\tTitoM, Yuppe and Burna Boy - Tshwala Bam Remix [Ft. S.N.E]"],
+                               tshwala) == []  # a remix of the right length
+    # The store's own version is no other recording: a "(Live)" album takes its live upload.
+    goodness = _song(title="Goodness of God (Live)", artist="Bethel Music", duration=296.0)
+    assert links._rank_results(["n0FBb6hnwTo\t304\tBethel Music and Jenn Johnson\tGoodness Of God (LIVE) - Jenn Johnson | VICTORY"],
+                               goodness) == ["n0FBb6hnwTo"]
+
+
+def test_the_artists_own_official_upload_may_run_longer_as_a_last_resort():
+    terminator = _song(title="Terminator", artist="Asake", duration=155.0)
+    lines = [
+        "qrIP_igi76U\t169\tASAKE\tAsake - Terminator (Official Video)",  # an intro around the recording
+        "5Y19AMa3GME\t217\tafro house\tAsake - Terminator (Lyrics)",
+        "HQVRDycNNRE\t235\tThe Vibe Guide\tKing Promise - Terminator (Lyrics)",  # another artist's song
+    ]
+    assert links._rank_results(lines, terminator) == ["qrIP_igi76U"]
+    # Someone else's upload of that length is not taken.
+    assert links._rank_results(["XXXXXXXXXXX\t169\tSomeone\tAsake - Terminator (Official Video)"], terminator) == []
+    # And it comes after every upload of the right length.
+    assert links._rank_results([lines[0], "YYYYYYYYYYY\t156\tLyrics\tAsake - Terminator (Lyrics)"], terminator) == [
+        "YYYYYYYYYYY", "qrIP_igi76U"]
 
 
 def _fake_ytdlp(calls, *, search="", info_duration=214, fail_on=None, stderr="", probe_seconds=22.0):
