@@ -1123,3 +1123,8 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 @media (max-width: 400px) {
   body.guest .topbar .side-help { font-size: 0; gap: 0; min-width: 44px; justify-content: center; padding: 8px; }
 }
+
+/* Fix a note: what the change did (or why it could not be followed), and its Undo. */
+.fix-said { margin: 10px 0 0; font-weight: 600; }
+.fix-said:empty { display: none; }
+#fix-undo { margin-top: 8px; }

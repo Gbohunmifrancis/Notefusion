@@ -15,11 +15,14 @@ namespace NoteFusion.Application.Library.Commands;
 /// because a correction may delete a note, and that shifts every index after it.
 /// </summary>
 /// <remarks>
+/// <c>MusicXml</c>, when sent, is the staff the client wrote from the corrected notes (the web app's "Fix a note"),
+/// stored with them so the sheet opens with a staff that agrees with its solfa; left out (the phone, which draws its
+/// staff from the notes), the stored score is kept as it was.
 /// Only pitch, position, duration and confidence are read off the wire. The solfa fields on
 /// <see cref="NoteEventDto"/> are derived, never stored, so whatever the client sends for them is
 /// ignored and the response carries solfa re-derived for the *stored* key.
 /// </remarks>
-public sealed record UpdateTranscriptionNotesCommand(Guid Id, IReadOnlyList<NoteEventDto> Notes)
+public sealed record UpdateTranscriptionNotesCommand(Guid Id, IReadOnlyList<NoteEventDto> Notes, string? MusicXml = null)
     : IRequest<Result<SavedTranscriptionDto>>;
 
 public sealed class UpdateTranscriptionNotesCommandValidator : AbstractValidator<UpdateTranscriptionNotesCommand>
@@ -31,6 +34,7 @@ public sealed class UpdateTranscriptionNotesCommandValidator : AbstractValidator
             .NotEmpty()
             .WithMessage("A transcription must keep at least one note.")
             .WithinNoteCount();
+        RuleFor(x => x.MusicXml).WithinScoreSize();
 
         RuleForEach(x => x.Notes).ChildRules(note =>
         {
@@ -72,7 +76,7 @@ public sealed class UpdateTranscriptionNotesCommandHandler
             StartBeat = n.StartBeat,
             DurationBeats = n.DurBeats,
             Confidence = n.Conf
-        }));
+        }), string.IsNullOrWhiteSpace(request.MusicXml) ? null : request.MusicXml);
 
         await _db.SaveChangesAsync(cancellationToken);
 

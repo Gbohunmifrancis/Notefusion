@@ -48,7 +48,7 @@ test("Stop sharing stands apart from Copy and only shows with a link", () => {
 
 test("the result's tools are named by what they do; the verdict and Pro follow the card", () => {
   const tiles = [...between(html, '<div class="result-actions"', "</div>").matchAll(/<span>([^<]+)<\/span>/g)].map((m) => m[1]);
-  assert.deepEqual(tiles, ["Learn my part", "Slow &amp; loop", "Save &amp; share", "Download", "Transpose", "Add lyrics", "See chords", "Add parts", "Mark my singing"]);
+  assert.deepEqual(tiles, ["Learn my part", "Slow &amp; loop", "Save &amp; share", "Download", "Transpose", "Fix a note", "Add lyrics", "See chords", "Add parts", "Mark my singing"]);
   assert.match(app, /showsParts \? "See parts" : "Add parts"/);
   const card = between(html, '<div class="card hidden" id="result">', "<!-- The sheet's card ends");
   assert.doesNotMatch(card, /id="r-verdict"|id="r-upgrade"/);

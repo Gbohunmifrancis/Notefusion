@@ -595,8 +595,13 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   link for a whole folder (`GET /api/shared/folders/{token}`), which lists every sheet filed in it,
   opened through the folder link (`GET /api/shared/folders/{token}/sheets/{id}`, only while filed in it); a
   folder share never gives a sheet a token of its own. "Transpose for my
-  choir" is the one edit that moves the notes: `Transcription.Transpose` shifts melody, parts
+  choir" is the one edit that moves every note: `Transcription.Transpose` shifts melody, parts
   and key and respells both scores with `Core/Notation/MusicXmlTransposer`, and counts `TransposedBy` (0 = as heard).
+  "Fix a note" (web `/app` result tool; phones not yet) takes a correction in words, fixed phrasings only ("make the second m
+  an f", "change note 5 to s", "move the last d up an octave", "change every t to ta", "delete note 6"; bars numbered as the
+  staff numbers them, the pickup bar 0): pure `assets/sheet-edit.js` reads and makes it on the labelled notes, `assets/musicxml.js`
+  (a port of mobile `lib/musicxml.ts`) writes the staff afresh from them, the words under the old staff kept note for note
+  (`wordsFor`), and a saved sheet keeps both through `PUT /api/library/{id}/notes` (its optional `musicXml`); Undo steps back.
   Song backing (board o-backing): filing keeps `BeatOriginSec`/`BeatTimesSec` (written out at the heard tempo when a sheet
   with a backing has none, so tempo edits never move it) and, for the owner's own upload only (never
   `FromLink`), the separated instrumental (`IBackingStorage`: R2 photo bucket, unguessable `BackingKey`, not backed up;

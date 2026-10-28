@@ -3340,6 +3340,7 @@
     setupSing(result);
     setupPractice(result);
     renderTranspose();
+    renderFixUndo();
     renderSave();
 
     isPro() ? hide($("r-watermark")) : show($("r-watermark"));
@@ -4238,6 +4239,63 @@
       alertIn($("app-alert"), "danger", "Could not transpose: " + (err.message || err));
     });
   }
+
+  // ── Fix a note, said in words (assets/sheet-edit.js; the staff written again by assets/musicxml.js) ──
+  var fixing = false;
+  /**
+   * Makes the change typed and shows the sheet with it: the notes, their solfa, and a staff written from those
+   * notes. A saved sheet keeps it (its notes and that staff, PUT /api/library/{id}/notes); a fresh one carries it to
+   * Save. Each change can be undone, newest first.
+   */
+  function fixNote(text) {
+    if (!current || !current.result || fixing) return;
+    var r = current.result, out = window.NfSheetEdit.edit(r.notes || [], r.key, r.timeSignature, text);
+    if (out.error) { $("fix-said").textContent = out.error; track("Fix a note: not followed"); return; }
+    // The words printed under the staff stay with their notes.
+    var X = window.NfMusicXml, words = X.wordsFor(r.notes, r.musicXml);
+    var next = Object.assign({}, r, {
+      notes: out.notes,
+      musicXml: X.build(out.notes, r.key, r.timeSignature, r.tempo, words && out.from.map(function (k) { return words[k]; })) || r.musicXml,
+      solfaLines: C.renderLines(out.notes, C.keyHeader(r.key), r.timeSignature)
+    });
+    var before = r;
+    keepFix(next, out.said, function () {
+      (current.fixUndo = current.fixUndo || []).push({ result: before, said: out.said });
+      $("fix-text").value = "";
+    });
+    track("Fixed a note");
+  }
+  function keepFix(next, said, done) {
+    var owner = current, at = epoch;
+    fixing = true; $("fix-apply").disabled = true; $("fix-undo").disabled = true;
+    var kept = current.savedId
+      ? request("/api/library/" + current.savedId + "/notes", { method: "PUT", body: { notes: next.notes, musicXml: next.musicXml } })
+      : Promise.resolve();
+    kept.then(function () {
+      if (at !== epoch || current !== owner) return;
+      done();
+      // A sheet corrected by hand is not asked which doh or which hymn it is: either answer would undo the correction.
+      current.dohAnswered = true; current.hymnAnswered = true;
+      current.result = next;
+      showResult(next);
+      $("fix-said").textContent = said;
+    }).catch(function (err) {
+      if (at !== epoch) return;
+      $("fix-said").textContent = "Could not keep that change: " + (err.message || err);
+    }).finally(function () { fixing = false; $("fix-apply").disabled = false; $("fix-undo").disabled = false; });
+  }
+  function renderFixUndo() {
+    var any = !!(current && current.fixUndo && current.fixUndo.length);
+    (any ? show : hide)($("fix-undo"));
+    if (!any) $("fix-said").textContent = "";
+  }
+  $("fix-form").addEventListener("submit", function (e) { e.preventDefault(); fixNote($("fix-text").value); });
+  $("fix-undo").addEventListener("click", function () {
+    if (!current || !current.fixUndo || !current.fixUndo.length || fixing) return;
+    var last = current.fixUndo[current.fixUndo.length - 1];
+    keepFix(last.result, "Undone: " + last.said.charAt(0).toLowerCase() + last.said.slice(1), function () { current.fixUndo.pop(); });
+    track("Undid a note fix");
+  });
 
   // ── One screen at a time: focus mode, the framed sheet, the tools in pop-ups ──
   /** Restarts the one-off entrance on an element that is shown again (CSS .rise, reduced-motion aware). */
