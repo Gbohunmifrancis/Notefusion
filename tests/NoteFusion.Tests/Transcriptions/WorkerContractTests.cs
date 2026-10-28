@@ -343,6 +343,20 @@ public class WorkerContractTests
     }
 
     [Fact]
+    public async Task The_workers_step_and_reason_ride_on_the_refusal_for_the_log()
+    {
+        var blocked = await Client(StubHttpMessageHandler.Returning(HttpStatusCode.UnprocessableEntity,
+                """{"detail":{"message":"YouTube is refusing.","code":"refused","stage":"metadata"}}"""))
+            .ResolveLinkAsync("https://youtu.be/dQw4w9WgXcQ");
+        var noMatch = await Client(StubHttpMessageHandler.Returning(HttpStatusCode.UnprocessableEntity,
+                """{"detail":{"message":"No copy found.","code":"no_match","stage":"search"}}"""))
+            .SubmitLinkAsync("https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT", new TranscribeOptions());
+
+        Assert.Equal(("TRANS_LINK_REFUSED", "metadata", "refused"), (blocked.Error.Code, blocked.Error.Stage, blocked.Error.Cause));
+        Assert.Equal(("TRANS_INVALID_LINK", "search", "no_match"), (noMatch.Error.Code, noMatch.Error.Stage, noMatch.Error.Cause));
+    }
+
+    [Fact]
     public async Task A_chosen_section_reaches_the_worker_and_an_unchosen_one_is_not_sent()
     {
         var handler = new CapturingHandler();

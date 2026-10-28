@@ -170,6 +170,11 @@ export function TranscriptionLogTable({
                       {row.failureReason}
                     </div>
                   )}
+                  {row.failureStage && (
+                    <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">
+                      {row.failureStage} · {row.failureCode ?? "unknown"}
+                    </div>
+                  )}
                 </td>
                 <td className={`${TD} text-right`}>
                   {row.saved ? <Badge tone="success">Saved</Badge> : <span className="text-muted-foreground">No</span>}

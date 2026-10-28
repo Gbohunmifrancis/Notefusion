@@ -172,7 +172,11 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   ways: a cache-busted Dockerfile layer every build, a weekly scheduled deploy, and the worker installing the
   newest nightly beside the image's at startup and daily (`app/ingest/ytdlp_update.py`, `NF_YTDLP_UPDATE_*`).
   Each resolve that asks yt-dlp and each link job logs one `link_attempt` line (outcome, rung, running
-  totals, block rate; no URL), and expired cookies log `ytdlp_cookies_rejected`. A nonexistent, private,
+  totals, block rate; no URL), and expired cookies log `ytdlp_cookies_rejected`. Every failure says where it stopped:
+  `links.STAGES` (parse, resolve, metadata, search, download, decode, separation, transcription) and a code
+  (`failure_code`), on a refusal's detail and a failed job's `failure_stage`/`failure_code`; the API keeps them on
+  `TranscriptionLog.FailureStage`/`FailureCode` (its own refusals as parse, gate, request or worker) and the console's
+  Activity › Transcriptions counts them ("Where they stop"). A nonexistent, private,
   live or over-long (`NF_LINK_MAX_VIDEO_SECONDS`)
   video is refused at `/v1/links/resolve` with a `LinkError.code` the C# `TranscriptionErrors.ForLink`
   turns into its own sentence, and the refusal is remembered so the submit is refused at once. Sections

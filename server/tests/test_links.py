@@ -959,7 +959,7 @@ def test_resolve_route_turns_an_unusable_link_into_a_plain_422(client, monkeypat
     c, _ = client
     r = c.post("/v1/links/resolve", json={"url": "https://example.com/song.mp3"})
     assert r.status_code == 422
-    assert r.json()["detail"] == "url must be a YouTube video, Spotify track or Apple Music song link."
+    assert (r.json()["detail"]["code"], r.json()["detail"]["stage"]) == ("not_a_song_link", "parse")
 
     def refuse(text):
         raise LinkError("That Spotify link does not point to a song. Share the song itself and paste that link.")
@@ -967,7 +967,10 @@ def test_resolve_route_turns_an_unusable_link_into_a_plain_422(client, monkeypat
     monkeypatch.setattr(links, "resolve_link", refuse)
     r = c.post("/v1/links/resolve", json={"url": "https://spotify.link/qKr2CFxMQwb"})
     assert r.status_code == 422
-    assert r.json()["detail"].startswith("That Spotify link does not point to a song.")
+    detail = r.json()["detail"]
+    assert detail["message"].startswith("That Spotify link does not point to a song.")
+    # Every refusal names its reason and the step it stopped at, for the API's log.
+    assert (detail["code"], detail["stage"]) == ("other", "resolve")
     assert c.post("/v1/links/resolve", json={}).status_code == 422
 
 
@@ -1153,3 +1156,62 @@ def test_a_missing_tiktok_video_is_unavailable(monkeypatch):
     with pytest.raises(LinkError) as caught:
         links.resolve_link("https://www.tiktok.com/@a/video/7312345678901234567")
     assert caught.value.code == "unavailable" and "TikTok" in str(caught.value)
+
+
+# ── Where a link's way in stopped ────────────────────────────────────────────
+
+
+def test_a_store_song_with_no_youtube_match_stops_at_the_search(monkeypatch, tmp_path):
+    monkeypatch.setattr(links.subprocess, "run", _fake_ytdlp([], search=""))
+    monkeypatch.setattr(links, "_itunes_preview", lambda source: None)
+    source = Source("spotify", f"https://open.spotify.com/track/{SPOTIFY_ID}", "Song", "Singer", duration=200.0)
+    with pytest.raises(LinkError) as caught:
+        links.fetch_audio(source, 60, work_dir=tmp_path)
+    assert (caught.value.stage, links.failure_code(caught.value)) == ("search", "no_match")
+
+
+def test_a_refused_download_stops_at_the_download_and_reads_as_blocked(monkeypatch, tmp_path):
+    def run(args, **kwargs):
+        if "-J" in args:
+            return _Completed(0, '{"id": "dQw4w9WgXcQ", "duration": 200}')
+        return _Completed(1, "", "ERROR: [youtube] dQw4w9WgXcQ: HTTP Error 403: Forbidden")
+
+    monkeypatch.setattr(links.subprocess, "run", run)
+    monkeypatch.setattr(links.settings, "ytdlp_fallback_clients", "")
+    monkeypatch.setattr(links.settings, "ytdlp_proxy", "")
+    monkeypatch.setattr(links, "_itunes_preview", lambda source: None)
+    source = Source("youtube", YOUTUBE, "T", "A", audio_url=YOUTUBE)
+    with pytest.raises(LinkError) as caught:
+        links.fetch_audio(source, 60, work_dir=tmp_path)
+    assert (caught.value.stage, links.failure_code(caught.value)) == ("download", "blocked")
+
+
+def test_audio_that_will_not_decode_stops_at_the_decode(monkeypatch, tmp_path):
+    def run(args, **kwargs):
+        if args[0] == "ffmpeg":
+            return _Completed(1, "", "Invalid data found when processing input")
+        if "-J" in args:
+            return _Completed(0, '{"id": "dQw4w9WgXcQ", "duration": 20}')
+        Path(args[args.index("-o") + 1].replace("%(ext)s", "m4a")).write_bytes(b"m4a")
+        return _Completed()
+
+    monkeypatch.setattr(links.subprocess, "run", run)
+    source = Source("youtube", YOUTUBE, "T", "A", audio_url=YOUTUBE)
+    with pytest.raises(LinkError) as caught:
+        links.fetch_audio(source, 60, work_dir=tmp_path)
+    assert (caught.value.stage, links.failure_code(caught.value)) == ("decode", "decode_failed")
+
+
+def test_a_failed_link_job_says_where_it_stopped_and_why(monkeypatch):
+    def refused(text):
+        raise LinkError("YouTube is refusing automated downloads right now.", "refused", stage="metadata")
+
+    monkeypatch.setattr(links, "resolve_source", refused)
+    q = JobQueue()
+    job_id = q.submit_link("https://youtu.be/dQw4w9WgXcQ", mode="melody", key=None, tempo=None)
+    for _ in range(100):
+        job = q.get(job_id)
+        if job.status == STATUS_FAILED:
+            break
+        time.sleep(0.02)
+    assert (job.status, job.failure_stage, job.failure_code) == (STATUS_FAILED, "metadata", "refused")

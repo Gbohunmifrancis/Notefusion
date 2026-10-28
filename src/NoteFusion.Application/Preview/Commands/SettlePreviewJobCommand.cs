@@ -110,7 +110,8 @@ public static class PreviewOutcome
         if (succeeded)
             await ActivityRecorder.FinishAsync(db, preview.JobId, job!.Result!, now, ct);
         else
-            await ActivityRecorder.FailAsync(db, preview.JobId, reason, now, ct);
+            await ActivityRecorder.FailAsync(db, preview.JobId, reason, now, ct,
+                job?.FailureStage ?? "worker", job?.FailureCode ?? (reason == LostReason ? "job_lost" : "no_answer"));
         await db.SaveChangesAsync(ct);
         return true;
     }

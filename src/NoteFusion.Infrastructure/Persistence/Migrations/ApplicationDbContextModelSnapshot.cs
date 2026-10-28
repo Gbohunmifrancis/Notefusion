@@ -2121,9 +2121,17 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<double?>("EndSeconds")
                         .HasColumnType("double precision");
 
+                    b.Property<string>("FailureCode")
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
+
                     b.Property<string>("FailureReason")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
+
+                    b.Property<string>("FailureStage")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("FileName")
                         .HasMaxLength(255)

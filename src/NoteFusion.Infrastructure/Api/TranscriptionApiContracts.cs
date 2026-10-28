@@ -91,7 +91,10 @@ internal sealed record JobResponse(
     /// </summary>
     string? Error,
     /// <summary>How many jobs run before this one; only while <c>Stage</c> is <c>queued</c>.</summary>
-    int? QueuePosition = null);
+    int? QueuePosition = null,
+    /// <summary>A failed job's step and its reason in one word (the worker's <c>links.STAGES</c> / <c>failure_code</c>).</summary>
+    string? FailureStage = null,
+    string? FailureCode = null);
 
 internal sealed record JobResultResponse(
     string Key,

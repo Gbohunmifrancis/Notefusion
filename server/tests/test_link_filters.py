@@ -230,7 +230,8 @@ def test_youtubes_own_trouble_still_reads_as_an_unreadable_link(monkeypatch):
     monkeypatch.setattr(links, "_http_json", _http_error(503))
     with pytest.raises(LinkError, match="Could not read that link") as caught:
         links.resolve_link(YOUTUBE)
-    assert caught.value.code is None
+    # No code the API has words for (it answers an invalid link), but a reason and a step for its log.
+    assert (caught.value.code, caught.value.stage) == ("unreadable", "resolve")
 
 
 @pytest.mark.parametrize(
@@ -323,20 +324,23 @@ def test_the_resolve_route_names_the_reason_for_the_api(client, monkeypatch):
     r = c.post("/v1/links/resolve", json={"url": YOUTUBE})
     assert r.status_code == 422
     assert r.json() == {"detail": {"message": "That's a live stream. Paste a link to the recorded song instead.",
-                                   "code": "live"}}
+                                   "code": "live", "stage": "resolve"}}
 
     def long(text):
         raise LinkError("That video runs 3 hours. Links up to 2 hours are supported.", "too_long", limit_seconds=7200.0)
 
     monkeypatch.setattr(links, "resolve_link", long)
     assert c.post("/v1/links/resolve", json={"url": YOUTUBE}).json()["detail"] == {
-        "message": "That video runs 3 hours. Links up to 2 hours are supported.", "code": "too_long", "limit_seconds": 7200.0}
+        "message": "That video runs 3 hours. Links up to 2 hours are supported.", "code": "too_long", "stage": "resolve",
+        "limit_seconds": 7200.0}
 
     def plain(text):
         raise LinkError("That Spotify link does not point to a song.")
 
     monkeypatch.setattr(links, "resolve_link", plain)
-    assert c.post("/v1/links/resolve", json={"url": YOUTUBE}).json() == {"detail": "That Spotify link does not point to a song."}
+    # A refusal with no code of its own still says its step and "other", the API's plain invalid link.
+    assert c.post("/v1/links/resolve", json={"url": YOUTUBE}).json() == {
+        "detail": {"message": "That Spotify link does not point to a song.", "code": "other", "stage": "resolve"}}
 
 
 def test_a_submit_of_a_refused_link_is_answered_at_once(client, monkeypatch):

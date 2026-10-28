@@ -91,7 +91,8 @@ public sealed class GetTranscriptionLogQueryHandler
             Running: await query.CountAsync(l => l.Status == TranscriptionLog.Submitted, ct),
             Saved: await query.CountAsync(l => l.JobId != null && _db.Transcriptions.Any(t => t.SourceJobId == l.JobId), ct),
             StorePreviews: await query.CountAsync(l => l.UsedStorePreview, ct),
-            TotalBytes: await query.SumAsync(l => (long?)l.SizeBytes, ct) ?? 0L);
+            TotalBytes: await query.SumAsync(l => (long?)l.SizeBytes, ct) ?? 0L,
+            Stops: await StopsAsync(query, ct));
 
         var rows = await query
             .OrderByDescending(l => l.CreatedAtUtc)
@@ -126,10 +127,24 @@ public sealed class GetTranscriptionLogQueryHandler
                 l.KeyRequested, l.TempoRequested, l.TimeSignatureRequested, l.StartSeconds, l.EndSeconds,
                 l.Status, l.FailureReason, l.FinishedAtUtc, l.AudioSeconds,
                 l.DetectedKey, l.DetectedTempo, l.NoteCount, l.Confidence, l.UsedStorePreview,
-                r.Saved, ownerId, owner?.FullName, owner?.Email, l.DeviceHash);
+                r.Saved, ownerId, owner?.FullName, owner?.Email, l.DeviceHash, l.FailureStage, l.FailureCode);
         }).ToList();
 
         return new TranscriptionLogPageDto(
             new PagedResultDto<TranscriptionLogRowDto>(items, page, pageSize, summary.Total), summary);
     }
+
+    /// <summary>The steps and reasons the matched transcriptions stopped at, most first (those logged before steps were kept are left out).</summary>
+    internal static async Task<IReadOnlyList<FailureStopDto>> StopsAsync(IQueryable<TranscriptionLog> query, CancellationToken ct)
+        => (await query
+                .Where(l => (l.Status == TranscriptionLog.Failed || l.Status == TranscriptionLog.Refused) && l.FailureStage != null)
+                .GroupBy(l => new { l.FailureStage, l.FailureCode })
+                .Select(g => new { g.Key.FailureStage, g.Key.FailureCode, Count = g.Count() })
+                .ToListAsync(ct))
+            .OrderByDescending(g => g.Count).ThenBy(g => g.FailureStage).ThenBy(g => g.FailureCode)
+            .Take(MaxStops)
+            .Select(g => new FailureStopDto(g.FailureStage!, g.FailureCode ?? "unknown", g.Count))
+            .ToList();
+
+    private const int MaxStops = 30;
 }

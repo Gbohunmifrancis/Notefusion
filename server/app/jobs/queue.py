@@ -91,6 +91,11 @@ class Job:
     #: Where the job sits in the heap while it waits, so its place in line can be counted.
     rank: int = 0
     seq: int = 0
+    #: Where a failed job stopped (``links.STAGES``: resolve … decode for a link's way in, then
+    #: separation, transcription) and why, as one word (``links.failure_code``): for the API's log and
+    #: the console, never shown as they are.
+    failure_stage: str | None = None
+    failure_code: str | None = None
     #: Title/artist of a linked song, known as soon as the link resolves — before the
     #: result exists — so a client can show what is being transcribed while it waits.
     source: dict | None = None
@@ -675,6 +680,7 @@ class JobQueue:
         except LowConfidenceError as ex:
             self._failed(job, str(ex), "Score job", ex)
         except Exception as ex:  # noqa: BLE001
+            self._note_failure(job, ex)
             job.status = STATUS_FAILED
             job.error = "An unexpected error occurred during score transcription. Please try uploading again."
             logger.exception("Score job %s EXCEPTION: %s%s",
@@ -694,13 +700,28 @@ class JobQueue:
                     label, job.id[:8], note_count, conf, self._trail(job))
 
     def _failed(self, job: Job, message: str, label: str, ex: Exception) -> None:
+        self._note_failure(job, ex)
         job.status = STATUS_FAILED
         job.error = message
         job.stage = None
         # Expected outcome, not a defect: the clip was too noisy, or the link unusable.
         logger.warning("%s %s FAILED: %s%s", label, job.id[:8], ex, self._trail(job))
 
+    @staticmethod
+    def _note_failure(job: Job, ex: Exception) -> None:
+        """Where the job stopped and why (``Job.failure_stage``/``failure_code``), read before ``stage`` is cleared:
+        a link's refusal names its own step; otherwise the part that was running."""
+        from app.ingest.links import LinkError, failure_code
+
+        if isinstance(ex, LinkError):
+            job.failure_stage = ex.stage or "download"
+            job.failure_code = failure_code(ex)
+            return
+        job.failure_stage = {STAGE_FETCHING: "download", STAGE_SEPARATING: "separation"}.get(job.stage, "transcription")
+        job.failure_code = "low_confidence" if isinstance(ex, LowConfidenceError) else "internal"
+
     def _crashed(self, job: Job, label: str, ex: Exception) -> None:
+        self._note_failure(job, ex)
         job.status = STATUS_FAILED
         job.error = _GENERIC_ERROR
         job.stage = None
@@ -727,7 +748,8 @@ class JobQueue:
             result_payload = ResultDto.model_validate(p)
 
         jr = JobResponse(status=job.status, progress=job.progress, stage=job.stage,
-                         source=job.source, result=result_payload, error=job.error)
+                         source=job.source, result=result_payload, error=job.error,
+                         failure_stage=job.failure_stage, failure_code=job.failure_code)
 
         payload = jr.model_dump(by_alias=True, exclude_none=True)
         headers = _webhook_headers()

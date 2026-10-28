@@ -23,6 +23,21 @@ public sealed record Error(string Code, string Message, ErrorType Type)
 {
     public static readonly Error None = new(string.Empty, string.Empty, ErrorType.Failure);
 
+    /// <summary>
+    /// Where on its way in a submission stopped (the worker's stages: parse, resolve, metadata, search, download, decode,
+    /// separation, transcription; or this API's own gate), for the activity log only: never shown. Not part of equality,
+    /// so an error carrying it is still the error it names.
+    /// </summary>
+    public string? Stage { get; init; }
+
+    /// <summary>The reason in one word as the worker gave it (blocked, unavailable, no_match…), for the log only.</summary>
+    public string? Cause { get; init; }
+
+    public bool Equals(Error? other)
+        => other is not null && Code == other.Code && Message == other.Message && Type == other.Type;
+
+    public override int GetHashCode() => HashCode.Combine(Code, Message, Type);
+
     public static Error Failure(string code, string message) => new(code, message, ErrorType.Failure);
     public static Error Validation(string code, string message) => new(code, message, ErrorType.Validation);
     public static Error NotFound(string code, string message) => new(code, message, ErrorType.NotFound);

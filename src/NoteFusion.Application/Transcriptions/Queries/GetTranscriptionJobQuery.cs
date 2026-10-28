@@ -102,7 +102,8 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
                     // Closed here, uncharged, so it stops holding a free place (TrialUsage counts open jobs)
                     // and the sweep has nothing left to say about it: the client is being told now.
                     job.Settle(null, _clock.UtcNow, TranscriptionJob.LostCode);
-                    await ActivityRecorder.FailAsync(_db, request.JobId, "The transcription service restarted and lost the job.", _clock.UtcNow, cancellationToken);
+                    await ActivityRecorder.FailAsync(_db, request.JobId, "The transcription service restarted and lost the job.", _clock.UtcNow, cancellationToken,
+                        stage: "worker", code: "job_lost");
                     await _db.SaveChangesAsync(cancellationToken);
                     return Lost(request.JobId);
                 }
@@ -120,7 +121,8 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
             // does not push a failure the client is looking at in this very response. The code (a job the
             // worker could not finish across its restarts) is kept for a later poll answered from this row.
             job.Settle(null, _clock.UtcNow, result.Value.ErrorCode);
-            await ActivityRecorder.FailAsync(_db, request.JobId, result.Value.Error, _clock.UtcNow, cancellationToken);
+            await ActivityRecorder.FailAsync(_db, request.JobId, result.Value.Error, _clock.UtcNow, cancellationToken,
+                result.Value.FailureStage, result.Value.FailureCode);
             await _db.SaveChangesAsync(cancellationToken);
             return result;
         }

@@ -107,7 +107,7 @@ public sealed class NotifyTranscriptionReadyCommandHandler
             // The last ask of a job past its deadline timed out (the HTTP client throws rather than answers).
             // No answer at the deadline is the same as a lost job: closing it here is what stops a worker
             // that hangs from keeping the job open — and holding a free place or a song credit — forever.
-            return await CloseAsFailedAsync(job, null, TranscriptionJob.LostCode, now, ct);
+            return await CloseAsFailedAsync(job, null, TranscriptionJob.LostCode, now, ct, "worker", "no_answer");
         }
 
         if (poll.IsFailure)
@@ -118,8 +118,8 @@ public sealed class NotifyTranscriptionReadyCommandHandler
             // user's place for the rest of the deadline. Any other failure (unreachable, a 5xx) proves
             // nothing: a young job is tried again next tick, one past the deadline is given up on.
             if (poll.Error.Type == ErrorType.NotFound)
-                return await CloseAsFailedAsync(job, LostReason, TranscriptionJob.LostCode, now, ct);
-            return expired ? await CloseAsFailedAsync(job, null, TranscriptionJob.LostCode, now, ct) : Result.Success();
+                return await CloseAsFailedAsync(job, LostReason, TranscriptionJob.LostCode, now, ct, "worker", "job_lost");
+            return expired ? await CloseAsFailedAsync(job, null, TranscriptionJob.LostCode, now, ct, "worker", "no_answer") : Result.Success();
         }
 
         return poll.Value.Status switch
@@ -128,16 +128,16 @@ public sealed class NotifyTranscriptionReadyCommandHandler
                 => await CloseAsDoneAsync(job, result, now, ct),
 
             TranscriptionStatus.Failed
-                => await CloseAsFailedAsync(job, poll.Value.Error, poll.Value.ErrorCode, now, ct),
+                => await CloseAsFailedAsync(job, poll.Value.Error, poll.Value.ErrorCode, now, ct, poll.Value.FailureStage, poll.Value.FailureCode),
 
             // A Done with no result attached: malformed enough that the age cutoff is the only honest way to end it.
             TranscriptionStatus.Done
-                => expired ? await CloseAsFailedAsync(job, null, TranscriptionJob.LostCode, now, ct) : Result.Success(),
+                => expired ? await CloseAsFailedAsync(job, null, TranscriptionJob.LostCode, now, ct, "worker", "no_answer") : Result.Success(),
 
             // Still queued or running: the worker has it, so it is waited for (and keeps holding its place)
             // until it finishes, or for GiveUpOnRunningAfter at most.
             _ => now - job.CreatedAtUtc > NotifyTranscriptionReadyCommand.GiveUpOnRunningAfter
-                ? await CloseAsFailedAsync(job, null, TranscriptionJob.LostCode, now, ct)
+                ? await CloseAsFailedAsync(job, null, TranscriptionJob.LostCode, now, ct, "worker", "no_answer")
                 : Result.Success()
         };
     }
@@ -211,13 +211,14 @@ public sealed class NotifyTranscriptionReadyCommandHandler
     /// <see cref="TranscriptionJob.LostCode"/> when the service lost the job or never answered; kept on the row so
     /// a client asking later is still told, after the worker has forgotten it.
     /// </param>
+    /// <param name="stage">Where it stopped and why in one word (<paramref name="cause"/>), for the activity log.</param>
     private async Task<Result> CloseAsFailedAsync(
-        TranscriptionJob job, string? reason, string? code, DateTime now, CancellationToken ct)
+        TranscriptionJob job, string? reason, string? code, DateTime now, CancellationToken ct, string? stage, string? cause)
     {
         // No result cached, which is how a tap on this notification knows it has nothing to show.
         job.Settle(null, now, code);
         await Activity.ActivityRecorder.FailAsync(
-            _db, job.JobId, reason ?? "No result by the deadline; the job was lost.", now, ct);
+            _db, job.JobId, reason ?? "No result by the deadline; the job was lost.", now, ct, stage, cause);
         await _db.SaveChangesAsync(ct);
 
         // A job from days ago that a sweep is only now clearing (a backlog the sweep could not close before)
