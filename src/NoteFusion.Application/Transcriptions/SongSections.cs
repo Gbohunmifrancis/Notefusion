@@ -1,5 +1,6 @@
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Application.Transcriptions;
@@ -15,6 +16,20 @@ public readonly record struct SongSection(double? StartSeconds, double? EndSecon
 /// </summary>
 public static class SongSections
 {
+    /// <summary>
+    /// How long a submit waits on the song's length. It is read again only to check a picked section, and the worker
+    /// trims the section itself, so a worker slow to say never holds the job up for longer than this.
+    /// </summary>
+    public static readonly TimeSpan LengthWait = TimeSpan.FromSeconds(5);
+
+    /// <summary>
+    /// The refusals that are the link's for good, so there is no section of it to take: no video there, a private or
+    /// removed one, a live stream, one over the cap. "Not just now" (YouTube, Instagram or TikTok refusing a
+    /// read at this moment) is not one of them: the job reads the link again itself, and a failed job costs nothing.
+    /// </summary>
+    public static bool IsForGood(Error refusal)
+        => refusal.Code is "TRANS_LINK_NOT_FOUND" or "TRANS_LINK_UNAVAILABLE" or "TRANS_LINK_LIVE" or "TRANS_LINK_TOO_LONG";
+
     public static async Task<Result<SongSection>> ChooseAsync(
         ITranscriptionApi api, string url, double? startSeconds, double? endSeconds, double maxSeconds, CancellationToken ct)
     {
@@ -34,11 +49,23 @@ public static class SongSections
         if (end <= start)
             return TranscriptionErrors.SectionEndsBeforeItStarts;
 
-        // The length is a courtesy, not a condition: a worker that cannot answer right now still gets the
-        // job, and trims the section itself. A link the worker has turned away for good (a live stream, a
-        // video over its cap, one that is private or gone) is another matter: there is no section of it.
-        var resolved = await api.ResolveLinkAsync(url, ct);
-        if (resolved.IsFailure && resolved.Error.Code.StartsWith("TRANS_LINK_", StringComparison.Ordinal))
+        // The length is a courtesy, not a condition: a worker that cannot answer right now (or within LengthWait)
+        // still gets the job, and trims the section itself. A link the worker has turned away for good (a live
+        // stream, a video over its cap, one that is private or gone) is another matter: there is no section of it.
+        Result<SourceDto> resolved;
+        using (var wait = CancellationTokenSource.CreateLinkedTokenSource(ct))
+        {
+            wait.CancelAfter(LengthWait);
+            try
+            {
+                resolved = await api.ResolveLinkAsync(url, wait.Token);
+            }
+            catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+            {
+                resolved = TranscriptionErrors.ServiceUnavailable;
+            }
+        }
+        if (resolved.IsFailure && IsForGood(resolved.Error))
             return Result.Failure<SongSection>(resolved.Error);
         if (resolved.IsSuccess && resolved.Value.DurationSeconds is { } length)
         {

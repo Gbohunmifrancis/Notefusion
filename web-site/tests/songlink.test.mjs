@@ -45,3 +45,14 @@ test("any link is sent on: whether it is a song is the server's to say", () => {
   ]) assert.deepEqual(extract(url), { url }, url);
   assert.match(hint(), /^Paste a link to a YouTube, Instagram or TikTok video/);
 });
+
+test("a lookup refused only for now keeps Transcribe, as the phone's lookupNotNow and the API's SongSections.IsForGood", () => {
+  const { notNow, NOT_NOW, GRACE_MS } = window.NfSongLink;
+  assert.equal(notNow("TRANS_LINK_REFUSED"), true);
+  assert.equal(notNow("TRANS_LINK_POST_REFUSED"), true);
+  for (const code of ["TRANS_LINK_NOT_FOUND", "TRANS_LINK_UNAVAILABLE", "TRANS_LINK_LIVE", "TRANS_LINK_TOO_LONG", "TRANS_INVALID_LINK", undefined]) {
+    assert.equal(notNow(code), false, String(code));
+  }
+  assert.match(NOT_NOW, /Transcribe still tries it/);
+  assert.equal(GRACE_MS, 6000);
+});

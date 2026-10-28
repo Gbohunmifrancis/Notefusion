@@ -66,3 +66,18 @@ export function extractSongUrl(text: string | null | undefined): { url: string; 
 export function songLinkHint(): string {
   return "Paste a link to a YouTube, Instagram or TikTok video, a Spotify track or an Apple Music song.";
 }
+
+/**
+ * A lookup refused only for now (YouTube, Instagram or TikTok not answering at this moment): the job reads the link
+ * again itself and a failed one costs nothing, so Transcribe stays, with `NOT_NOW_LINE` said instead of the refusal.
+ * A refusal for good (no video, private, live, too long) or a link that is not a song still stops it. Mirrors
+ * web-site/assets/songlink.js `notNow` and the C# `SongSections.IsForGood`.
+ */
+export function lookupNotNow(code: string | null | undefined): boolean {
+  return code === "TRANS_LINK_REFUSED" || code === "TRANS_LINK_POST_REFUSED";
+}
+
+export const NOT_NOW_LINE = "We couldn't read this song's details just now. Transcribe still tries it, from the start.";
+
+/** The longest Transcribe waits on a lookup still going before it sends the link from the start (the web's GRACE_MS). */
+export const LOOKUP_GRACE_MS = 6000;

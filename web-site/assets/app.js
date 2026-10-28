@@ -2302,15 +2302,15 @@
   // card under the form lets the person pick the part to transcribe (assets/rangepicker.js). The
   // selection is sent with the link; with no card (length unknown, lookup failed) the song is
   // transcribed from the start as before.
-  var linkInfo = { url: null, card: null, timer: null, seq: 0, pending: false, sending: false, wanted: null };
+  var linkInfo = { url: null, card: null, timer: null, seq: 0, pending: false, slow: false, sending: false, wanted: null };
   function clearLinkCard() {
     linkInfo.seq++; // an answer still on its way is for a link no longer in the box
     if (linkInfo.card) linkInfo.card.destroy();
-    linkInfo.card = null; linkInfo.url = null; linkInfo.pending = false; $("link-section").innerHTML = "";
+    linkInfo.card = null; linkInfo.url = null; linkInfo.pending = false; linkInfo.slow = false; $("link-section").innerHTML = "";
     syncLinkSubmit();
   }
-  /** Transcribe waits while the song is being looked up and while a link is being sent. */
-  function syncLinkSubmit() { $("link-submit").disabled = linkInfo.pending || linkInfo.sending; }
+  /** Transcribe waits while the song is being looked up (for GRACE_MS at most) and while a link is being sent. */
+  function syncLinkSubmit() { $("link-submit").disabled = (linkInfo.pending && !linkInfo.slow) || linkInfo.sending; }
   /** The plain line about the limit, beside what is selected. */
   function allowanceLine(maxSeconds) {
     var fmt = window.NfRangePicker.formatTime;
@@ -2328,6 +2328,13 @@
       linkInfo.url = found.url; linkInfo.pending = true; syncLinkSubmit();
       var seq = linkInfo.seq, host = $("link-section");
       var looking = document.createElement("p"); looking.className = "small studio-status link-looking"; looking.textContent = "Finding the song…"; host.appendChild(looking);
+      // A lookup that runs on stops holding Transcribe; pressed meanwhile, the song goes now, from the start.
+      setTimeout(function () {
+        if (seq !== linkInfo.seq || !linkInfo.pending) return;
+        linkInfo.slow = true; syncLinkSubmit();
+        looking.textContent = "Still finding the song… Transcribe takes it from the start.";
+        if (linkInfo.wanted === found.url) { linkInfo.wanted = null; clearLinkCard(); submitLink(found.url); }
+      }, window.NfSongLink.GRACE_MS);
       request(guest ? "/api/preview/link/info" : "/api/transcriptions/link/info", { method: "POST", anonymous: guest, body: { url: found.url } })
         .then(function (info) {
           if (seq !== linkInfo.seq) return;
@@ -2337,6 +2344,7 @@
         .catch(function (err) {
           if (seq !== linkInfo.seq) return;
           host.innerHTML = "";
+          if (window.NfSongLink.notNow(err.code)) { linkHint(window.NfSongLink.NOT_NOW); return; }
           if (err.code === "TRANS_INVALID_LINK" || err.status === 422) { linkInfo.url = null; linkHint(err.message); return; }
           linkHint("We couldn't read the song's length just now. We'll transcribe it from the start.");
         })
@@ -2358,8 +2366,10 @@
     var found = window.NfSongLink.extract(raw);
     if (!found) { linkHint(window.NfSongLink.hint(raw)); $("link-url").focus(); return; }
     $("link-url").value = found.url; linkHint("");
-    // The song's card comes first, so the part to transcribe is seen and picked before it is sent.
-    if (linkInfo.url !== found.url || linkInfo.pending) { linkInfo.wanted = found.url; if (linkInfo.url !== found.url) lookupLink(true); return; }
+    // The song's card comes first, so the part to transcribe is seen and picked before it is sent; a lookup
+    // still going after GRACE_MS (`slow`) no longer holds it: its late answer is dropped and the song goes from the start.
+    if (linkInfo.url !== found.url || (linkInfo.pending && !linkInfo.slow)) { linkInfo.wanted = found.url; if (linkInfo.url !== found.url) lookupLink(true); return; }
+    if (linkInfo.pending) clearLinkCard();
     submitLink(found.url);
   });
   function submitLink(url) {

@@ -38,6 +38,18 @@
   }
 
   /**
+   * A lookup refused only for now (YouTube, Instagram or TikTok not answering at this moment): the job reads the
+   * link again itself and a failed one costs nothing, so Transcribe stays, with NOT_NOW said instead of the refusal.
+   * A refusal for good (no video, private, live, too long) or a link that is not a song still stops it.
+   */
+  function notNow(code) {
+    return code === "TRANS_LINK_REFUSED" || code === "TRANS_LINK_POST_REFUSED";
+  }
+  var NOT_NOW = "We couldn't read this song's details just now. Transcribe still tries it, from the start.";
+  /** The longest Transcribe waits on a lookup still going before it sends the link from the start. */
+  var GRACE_MS = 6000;
+
+  /**
    * Pasted share text is cut down to its link as it lands, with a plain hint when there is none,
    * and an optional Paste button reads the clipboard (shown only where the browser allows that).
    * ``say`` puts the hint on screen; an empty string clears it. ``onChange``, when given, is told
@@ -68,5 +80,5 @@
     });
   }
 
-  window.NfSongLink = { extract: extract, hint: hint, wire: wire };
+  window.NfSongLink = { extract: extract, hint: hint, wire: wire, notNow: notNow, NOT_NOW: NOT_NOW, GRACE_MS: GRACE_MS };
 })();

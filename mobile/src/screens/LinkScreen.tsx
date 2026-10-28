@@ -59,7 +59,15 @@ import { useAuth } from "../lib/auth";
 import { linkJobStore } from "../lib/linkJobStore";
 import type { LinkJobOptions, LinkSong } from "../lib/linkJob";
 import { markPractisedToday } from "../lib/practiceReminder";
-import { asProvider, extractSongUrl, fetchesItsOwnVideo, songLinkHint } from "../lib/songLink";
+import {
+  LOOKUP_GRACE_MS,
+  NOT_NOW_LINE,
+  asProvider,
+  extractSongUrl,
+  fetchesItsOwnVideo,
+  lookupNotNow,
+  songLinkHint,
+} from "../lib/songLink";
 import { defaultRange, fitsWhole, formatClock, isWholeSong, sectionLabel, type ClipRange } from "../lib/clipRange";
 import { toApiError } from "../api/client";
 import { isNetworkCode } from "../lib/reachability";
@@ -143,6 +151,8 @@ export function LinkScreen() {
   const [info, setInfo] = useState<{ url: string; data: LinkInfo } | null>(null);
   const [infoBusy, setInfoBusy] = useState(false);
   const [infoError, setInfoError] = useState<{ code: string; message: string } | null>(null);
+  /** The lookup has run past LOOKUP_GRACE_MS: it no longer holds Transcribe, which then takes the song from the start. */
+  const [lookupSlow, setLookupSlow] = useState(false);
   const [range, setRange] = useState<ClipRange | null>(null);
   // The last section dragged by hand, so "My pick" can bring it back after a preset.
   const [pick, setPick] = useState<ClipRange | null>(null);
@@ -152,6 +162,7 @@ export function LinkScreen() {
   useEffect(() => {
     const seq = ++lookupSeq.current;
     setPick(null);
+    setLookupSlow(false);
     if (!foundUrl) {
       setInfo(null);
       setInfoError(null);
@@ -179,7 +190,13 @@ export function LinkScreen() {
         if (lookupSeq.current === seq) setInfoBusy(false);
       }
     }, INFO_DEBOUNCE_MS);
-    return () => clearTimeout(timer);
+    const slow = setTimeout(() => {
+      if (lookupSeq.current === seq) setLookupSlow(true);
+    }, INFO_DEBOUNCE_MS + LOOKUP_GRACE_MS);
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(slow);
+    };
     // Looked up again when a bought song arrives or is spent: it decides how much of the song is allowed.
   }, [foundUrl, boughtRemaining]);
 
@@ -194,9 +211,11 @@ export function LinkScreen() {
   // says so instead of offering the button; any other failed lookup leaves the server the final say.
   // Any link is looked up, so one typed letter by letter is "not a song" until it is whole: that is
   // said once the field is left (or the link was pasted), as the no-link hint is.
+  // A refusal only for now (lookupNotNow) is no refusal: the job reads the link again, so Transcribe stays.
   const typing = focused && !pasted;
+  const notNow = lookupNotNow(infoError?.code);
   const refusal =
-    infoError && !(typing && infoError.code === "TRANS_INVALID_LINK") ? linkRefusal(infoError.code) : null;
+    infoError && !notNow && !(typing && infoError.code === "TRANS_INVALID_LINK") ? linkRefusal(infoError.code) : null;
 
   const credits = subscription?.songCreditsRemaining;
   const creditsTotal = subscription?.songCreditsTotal;
@@ -310,9 +329,11 @@ export function LinkScreen() {
   }, [busy, state.progress, barWidth]);
 
   // While the link is being read the button waits, so the song and the picker are seen before
-  // anything is transcribed; a lookup that failed leaves it enabled and the server has the final say. With nothing
-  // left for a song the bar offers the ways on instead, and the keyboard's Go does not send either.
-  const canSubmit = found !== null && !busy && !infoBusy && (entitlement === null || entitlement.kind === "send");
+  // anything is transcribed (for LOOKUP_GRACE_MS at most: then it takes the song from the start); a lookup that
+  // failed leaves it enabled and the server has the final say. With nothing left for a song the bar offers the ways
+  // on instead, and the keyboard's Go does not send either.
+  const canSubmit =
+    found !== null && !busy && (!infoBusy || lookupSlow) && (entitlement === null || entitlement.kind === "send");
 
   async function submit() {
     if (!found || !canSubmit) return;
@@ -618,12 +639,14 @@ export function LinkScreen() {
               // The cover's shape holds its place while the link is read, so the song lands where it waited.
               <View accessible accessibilityLabel="Reading the link" accessibilityLiveRegion="polite">
                 <Skeleton height={196} radius={24} style={styles.coverSkeleton} />
-                <Text style={[styles.readingText, styles.reading]}>Reading the link…</Text>
+                <Text style={[styles.readingText, styles.reading]}>
+                  {lookupSlow ? "Still reading the link… Transcribe takes it from the start." : "Reading the link…"}
+                </Text>
               </View>
             ) : infoError ? (
               <View style={styles.note}>
                 <Icon name="problem" size={16} color={colors.warning} />
-                <Text style={styles.noteText}>{infoError.message}</Text>
+                <Text style={styles.noteText}>{notNow ? NOT_NOW_LINE : infoError.message}</Text>
               </View>
             ) : null}
 
