@@ -212,9 +212,12 @@ input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shado
 .studio::before { display: none; }
 
 /* Where the music comes from: one choice at a time, so the page asks one thing. */
-.source-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 8px; background: var(--wash); margin: 0 0 16px; }
+.source-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 8px; background: var(--wash); margin: 0 0 16px; }
 :root[data-theme="dark"] .source-tabs { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.07); }
-.source-tab { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 8px 10px; border: 0; border-radius: 8px; background: none; color: var(--muted); font: inherit; font-weight: 600; font-size: 0.92rem; cursor: pointer; white-space: nowrap; }
+/* Four tabs on a phone: the icon over its words, which may take two lines ("Sheet / music" at 360 px); side by side
+   on one line from 560 px. */
+.source-tab { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 60px; padding: 8px 4px; border: 0; border-radius: 8px; background: none; color: var(--muted); font: inherit; font-weight: 600; font-size: 0.8rem; line-height: 1.15; text-align: center; cursor: pointer; }
+@media (min-width: 560px) { .source-tab { flex-direction: row; gap: 8px; min-height: 42px; padding: 8px 10px; font-size: 0.92rem; white-space: nowrap; } }
 .source-tab .ic { width: 20px; height: 20px; }
 .source-tab[aria-selected=true] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(16, 24, 40, 0.12); }
 :root[data-theme="dark"] .source-tab[aria-selected=true] { background: rgba(255, 255, 255, 0.10); box-shadow: none; }

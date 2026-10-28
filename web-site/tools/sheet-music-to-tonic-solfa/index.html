@@ -5,22 +5,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="/assets/theme-boot.js?v=2" data-default="system"></script>
-<title>Convert Sheet Music and Staff Notation to Tonic Solfa | NoteFusion</title>
-<meta name="description" content="Convert staff notation to Tonic Solfa: import a MusicXML, MIDI or ABC file, or play the music in, and get the solfa with doh where the key puts it.">
+<title>Convert Sheet Music to Tonic Solfa from a Photo or PDF | NoteFusion</title>
+<meta name="description" content="Convert sheet music to Tonic Solfa: photograph the printed page or upload the PDF, and NoteFusion reads the tune and writes it in solfa.">
 <link rel="canonical" href="https://notefusion.studio/tools/sheet-music-to-tonic-solfa">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="NoteFusion">
 <meta property="og:locale" content="en_GB">
-<meta property="og:title" content="Convert Sheet Music and Staff Notation to Tonic Solfa | NoteFusion">
-<meta property="og:description" content="Convert staff notation to Tonic Solfa: import a MusicXML, MIDI or ABC file, or play the music in, and get the solfa with doh where the key puts it.">
+<meta property="og:title" content="Convert Sheet Music to Tonic Solfa from a Photo or PDF | NoteFusion">
+<meta property="og:description" content="Convert sheet music to Tonic Solfa: photograph the printed page or upload the PDF, and NoteFusion reads the tune and writes it in solfa.">
 <meta property="og:url" content="https://notefusion.studio/tools/sheet-music-to-tonic-solfa">
 <meta property="og:image" content="https://notefusion.studio/assets/og-card.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="NoteFusion: audio to Tonic Solfa and staff notation">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Convert Sheet Music and Staff Notation to Tonic Solfa | NoteFusion">
-<meta name="twitter:description" content="Convert staff notation to Tonic Solfa: import a MusicXML, MIDI or ABC file, or play the music in, and get the solfa with doh where the key puts it.">
+<meta name="twitter:title" content="Convert Sheet Music to Tonic Solfa from a Photo or PDF | NoteFusion">
+<meta name="twitter:description" content="Convert sheet music to Tonic Solfa: photograph the printed page or upload the PDF, and NoteFusion reads the tune and writes it in solfa.">
 <meta name="twitter:image" content="https://notefusion.studio/assets/og-card.jpg">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" href="/assets/favicon.ico" sizes="16x16 32x32 48x48">
@@ -38,7 +38,7 @@
   "@type": "WebApplication",
   "name": "Sheet music to Tonic Solfa",
   "url": "https://notefusion.studio/tools/sheet-music-to-tonic-solfa",
-  "description": "Convert staff notation to Tonic Solfa: import a MusicXML, MIDI or ABC file, or play the music in, and get the solfa with doh where the key puts it.",
+  "description": "Convert sheet music to Tonic Solfa: photograph the printed page or upload the PDF, and NoteFusion reads the tune and writes it in solfa.",
   "applicationCategory": "MultimediaApplication",
   "operatingSystem": "Any (web browser), Android",
   "browserRequirements": "Requires JavaScript; a microphone to record.",
@@ -91,7 +91,15 @@
       "name": "Can I convert a PDF of sheet music to Tonic Solfa?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Not by reading the PDF itself. Play the music on a keyboard or sing it into NoteFusion and it writes the solfa from what it hears, or open the score in MuseScore (or the program it was made in) and export it as MusicXML, then import that file in the NoteFusion Android app."
+        "text": "Yes. In the NoteFusion web app, open the Sheet music tab and upload the PDF, or a photo of the page. NoteFusion reads the tune off its first four pages and writes it in Tonic Solfa with the staff under it; check the notes against the page before you rely on them."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it read all four parts?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No: it reads the tune, the top line of the top staff. On Pro, NoteFusion can write alto, tenor and bass under the tune."
       }
     },
     {
@@ -152,7 +160,7 @@
   <header class="post-header">
     <p class="kicker">Free tool</p>
     <h1>Convert sheet music to Tonic Solfa</h1>
-    <p class="post-lede">Have the staff notation but read from solfa? Bring the music in as a file or play it in, and NoteFusion writes the same tune in Tonic Solfa, with doh where the key puts it.</p>
+    <p class="post-lede">Have the staff notation but read from solfa? Photograph the page or upload the PDF, and NoteFusion reads the tune off it and writes it in Tonic Solfa, with doh where the key puts it.</p>
   </header>
 <div class="home tool-try">
   <div class="try-box" id="try">
@@ -194,10 +202,18 @@
 </figure>
 </div>
   <div class="post-body">
-<h2>Three ways to convert it</h2>
+<h2>From a photo or a PDF</h2>
+<p>In the <a href="/app?source=sheet&amp;signup=1" data-track="Tool: sheet music">NoteFusion web app</a>, open the <strong>Sheet music</strong> tab and choose a photo of the page (JPEG, PNG or WebP) or the PDF; a PDF is read for its first four pages. NoteFusion reads the tune off the staff and writes it in Tonic Solfa, with the staff notation under it. It needs a free account, and counts as one of your transcriptions.</p>
+<ul>
+  <li><strong>It reads the tune:</strong> the top line of the top staff. Alto, tenor and bass are not read off the page; on Pro, NoteFusion can write them under the tune for you.</li>
+  <li><strong>Printed music reads best.</strong> Take the photo straight on, in good light, with the whole staff in the frame. Handwritten music is unlikely to read well.</li>
+  <li><strong>Check the notes against the page.</strong> On photographed hymn-book pages it got 99 in every 100 notes right; on old, faded scans fewer, and note lengths suffer most. NoteFusion asks you to look it over before you rely on it.</li>
+</ul>
+
+<h2>Other ways to convert it</h2>
 <ol>
   <li><strong>From a file:</strong> a MusicXML, MIDI or ABC file, the kind MuseScore, Sibelius, Finale and Dorico export and many hymn websites offer. In the NoteFusion Android app, open Record, then Import, and choose the file. NoteFusion reads the notes straight from the score, so the solfa is exact; it counts as one of your transcriptions.</li>
-  <li><strong>From printed music or a PDF:</strong> play it on a keyboard or sing it into the recorder above, and NoteFusion writes the solfa from what it hears. It doesn't read photos or PDFs of sheet music.</li>
+  <li><strong>By playing it in:</strong> play it on a keyboard or sing it into the recorder above, and NoteFusion writes the solfa from what it hears.</li>
   <li><strong>From our hymnal:</strong> over 250 hymns with their words, and over 500 more hymn tunes, are already written out in Tonic Solfa beside their staff notation. <a href="/hymns">Find yours in the hymns</a>.</li>
 </ol>
 
@@ -229,7 +245,9 @@
 <section class="faq" aria-labelledby="faq-title">
   <h2 id="faq-title">Questions</h2>
   <h3>Can I convert a PDF of sheet music to Tonic Solfa?</h3>
-  <p>Not by reading the PDF itself. Play the music on a keyboard or sing it into NoteFusion and it writes the solfa from what it hears, or open the score in MuseScore (or the program it was made in) and export it as MusicXML, then import that file in the NoteFusion Android app.</p>
+  <p>Yes. In the NoteFusion web app, open the Sheet music tab and upload the PDF, or a photo of the page. NoteFusion reads the tune off its first four pages and writes it in Tonic Solfa with the staff under it; check the notes against the page before you rely on them.</p>
+  <h3>Does it read all four parts?</h3>
+  <p>No: it reads the tune, the top line of the top staff. On Pro, NoteFusion can write alto, tenor and bass under the tune.</p>
   <h3>Is the solfa from a file exact?</h3>
   <p>Yes. From a MusicXML, MIDI or ABC file NoteFusion reads the written notes and rhythm directly, so nothing is guessed from a recording; it then names each note from the key.</p>
   <h3>How is a minor key written in Tonic Solfa?</h3>
