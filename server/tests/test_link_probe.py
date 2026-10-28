@@ -7,6 +7,11 @@ from app.config import settings
 from app.ingest import links, probe
 
 
+def _json_lines(out: str) -> list[dict]:
+    """The probe's own lines: a job thread left running by another test may print to stdout meanwhile."""
+    return [json.loads(line) for line in out.splitlines() if line.startswith("{")]
+
+
 def _fake_run(refuse_rungs):
     def run(args, timeout):
         out = args[args.index("-o") + 1]
@@ -28,7 +33,7 @@ def test_each_rung_fetches_a_few_seconds_on_its_own(monkeypatch, capsys):
     monkeypatch.setattr(links, "_run_group", _fake_run({"direct", "clients"}))
 
     assert probe.main(["dQw4w9WgXcQ"]) == 0
-    lines = [json.loads(line) for line in capsys.readouterr().out.splitlines()]
+    lines = _json_lines(capsys.readouterr().out)
 
     assert lines[0]["ladder"]["rungs"] == ["direct", "clients", "proxy"]
     assert lines[0]["ladder"]["proxy"] is True and lines[0]["ladder"]["pot_sidecar_answers"] is None
@@ -73,7 +78,7 @@ def test_the_link_matrix_says_where_each_case_ended(monkeypatch, tmp_path, capsy
     monkeypatch.setattr(links, "fetch_audio", fetch)
 
     assert probe.main(["--links"]) == 1  # one case ended otherwise
-    lines = [json.loads(line) for line in capsys.readouterr().out.splitlines()]
+    lines = _json_lines(capsys.readouterr().out)
     assert [(l["case"], l["outcome"], l["as_expected"]) for l in lines[:3]] == [
         ("watch", "fetched", True), ("tiktok", "unavailable", False), ("playlist", "not_a_song_link", True)]
     assert lines[1]["stage"] == "metadata" and lines[3] == {"cases": 3, "as_expected": 2}
