@@ -353,3 +353,12 @@ def test_a_submit_of_a_refused_link_is_answered_at_once(client, monkeypatch):
     monkeypatch.setattr(links, "cached_refusal", lambda text: None)
     assert c.post("/v1/transcribe/link", data={"url": YOUTUBE}).status_code == 202
     assert submitted == [YOUTUBE]
+
+
+def test_a_tiktok_link_is_refused_by_both_routes_while_tiktok_is_off(client):
+    c, submitted = client
+    tiktok = "https://www.tiktok.com/@singer/video/7312345678901234567"
+    for r in (c.post("/v1/links/resolve", json={"url": tiktok}), c.post("/v1/transcribe/link", data={"url": tiktok})):
+        assert r.status_code == 422
+        assert r.json()["detail"]["code"] == "not_supported" and r.json()["detail"]["stage"] == "parse"
+    assert submitted == []

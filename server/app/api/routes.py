@@ -358,7 +358,7 @@ async def submit_link_transcription(
     ``start_seconds``/``end_seconds`` pick the section of the song; the cap still bounds
     how much of it is transcribed.
     """
-    from app.ingest.links import cached_refusal, provider_of
+    from app.ingest.links import cached_refusal, not_supported, provider_of
 
     mode = _mode(mode)
     keyboard_transpose = _keyboard_transpose(keyboard_transpose)
@@ -369,11 +369,11 @@ async def submit_link_transcription(
     key = _clean_key(key)
     url = (url or "").strip()
     if len(url) > 2048 or provider_of(url) is None:
-        raise HTTPException(422, {"message": "url must be a YouTube, Instagram or TikTok video, a Spotify track or an "
+        raise HTTPException(422, {"message": "url must be a YouTube or Instagram video, a Spotify track or an "
                                              "Apple Music song link.", "code": "not_a_song_link", "stage": "parse"})
-    # A link the resolve already turned away (a live stream, a video over the cap) is
-    # refused here and now rather than queued for a job that would only fail.
-    refusal = cached_refusal(url)
+    # A link the resolve already turned away (a live stream, a video over the cap), or one to a service not
+    # taken here yet, is refused here and now rather than queued for a job that would only fail.
+    refusal = not_supported(url) or cached_refusal(url)
     if refusal is not None:
         raise _refused_link(refusal)
     cap = settings.link_max_seconds
@@ -408,12 +408,14 @@ def resolve_link_info(body: LinkInfoRequest) -> LinkInfoResponse:
     for a YouTube video, one bounded yt-dlp call answer within seconds, and the answer is
     remembered so the job that follows asks for none of it again.  An unusable link is a
     422 whose detail is the plain sentence to show."""
-    from app.ingest.links import LinkError, provider_of, resolve_link
+    from app.ingest.links import LinkError, not_supported, provider_of, resolve_link
 
     url = (body.url or "").strip()
     if len(url) > 2048 or provider_of(url) is None:
-        raise HTTPException(422, {"message": "url must be a YouTube, Instagram or TikTok video, a Spotify track or an "
+        raise HTTPException(422, {"message": "url must be a YouTube or Instagram video, a Spotify track or an "
                                              "Apple Music song link.", "code": "not_a_song_link", "stage": "parse"})
+    if (refusal := not_supported(url)) is not None:
+        raise _refused_link(refusal)
     try:
         source = resolve_link(url)
     except LinkError as ex:

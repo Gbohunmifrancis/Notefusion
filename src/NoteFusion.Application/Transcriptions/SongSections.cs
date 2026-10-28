@@ -28,7 +28,8 @@ public static class SongSections
     /// read at this moment) is not one of them: the job reads the link again itself, and a failed job costs nothing.
     /// </summary>
     public static bool IsForGood(Error refusal)
-        => refusal.Code is "TRANS_LINK_NOT_FOUND" or "TRANS_LINK_UNAVAILABLE" or "TRANS_LINK_LIVE" or "TRANS_LINK_TOO_LONG";
+        => refusal.Code is "TRANS_LINK_NOT_FOUND" or "TRANS_LINK_UNAVAILABLE" or "TRANS_LINK_LIVE" or "TRANS_LINK_TOO_LONG"
+            or "TRANS_LINK_NOT_SUPPORTED";
 
     public static async Task<Result<SongSection>> ChooseAsync(
         ITranscriptionApi api, string url, double? startSeconds, double? endSeconds, double maxSeconds, CancellationToken ct)

@@ -22,7 +22,7 @@ public static class TranscriptionErrors
 
     public static readonly Error InvalidLink =
         Error.Validation("TRANS_INVALID_LINK",
-            "Paste a link to a YouTube, Instagram or TikTok video, a Spotify track or an Apple Music song.");
+            "Paste a link to a YouTube or Instagram video, a Spotify track or an Apple Music song.");
 
     /// <summary>The worker looked at the link and found no video behind it.</summary>
     public static readonly Error LinkNotFound =
@@ -40,7 +40,12 @@ public static class TranscriptionErrors
     /// <summary>An Instagram or TikTok video the service keeps to signed-in viewers (or would not hand over just now).</summary>
     public static readonly Error LinkPostRefused =
         Error.Validation("TRANS_LINK_POST_REFUSED",
-            "Instagram and TikTok keep some videos to signed-in viewers, so we couldn't fetch this one. Save it to your phone and upload the file instead.");
+            "Instagram keeps some videos to signed-in viewers, so we couldn't fetch this one. Save it to your phone and upload the file instead.");
+
+    /// <summary>A link to a service the worker does not take yet (TikTok, until it passes the link test matrix).</summary>
+    public static readonly Error LinkNotSupported =
+        Error.Validation("TRANS_LINK_NOT_SUPPORTED",
+            "TikTok links aren't supported yet. Save the video to your phone and upload the file instead.");
 
     /// <summary>The video outruns the worker's cap on a linked video; <paramref name="limitSeconds"/> is that cap when it was named.</summary>
     public static Error LinkTooLong(double? limitSeconds) =>
@@ -60,6 +65,7 @@ public static class TranscriptionErrors
         "live" => LinkLive,
         "refused" => LinkRefused,
         "post_refused" => LinkPostRefused,
+        "not_supported" => LinkNotSupported,
         "too_long" => LinkTooLong(limitSeconds),
         _ => null,
     };

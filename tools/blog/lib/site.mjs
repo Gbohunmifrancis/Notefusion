@@ -38,7 +38,7 @@ export const OSMD = {
 /** Cache-busting versions for the hand-written assets the generated pages load (/assets is cached a week). */
 export const ASSET_VERSION = { blogCss: 13, sitePagesCss: 7, hymnJs: 3, hymnsIndexJs: 6, choirJs: 8, track: 7, supportJs: 2, themeBoot: 2, siteTheme: 2, blogJs: 1, blogTrack: 2, recorderJs: 9, backJs: 1, recorderCss: 5, hymnIdentifyJs: 5, hymnIdentifyCss: 4, seasonJs: 4,
   // The home page's try box on the tool pages (lib/render-tools.mjs): the same files at the same versions as web-site/index.html loads.
-  homeCss: 7, previewJs: 17, songlinkJs: 6, rangepickerJs: 1, rangepickerCss: 4, meterJs: 1, toolsCss: 1 };
+  homeCss: 7, previewJs: 17, songlinkJs: 7, rangepickerJs: 1, rangepickerCss: 4, meterJs: 1, toolsCss: 1 };
 
 /** The call to action every post and hymn page ends with. */
 export const APP_URL = "/app";

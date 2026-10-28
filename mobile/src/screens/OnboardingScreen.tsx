@@ -49,7 +49,7 @@ const SLIDES: Slide[] = [
     key: "song",
     eyebrow: "02 · Any song",
     title: "Paste a link.\nGet the melody.",
-    body: "From YouTube, TikTok, Instagram, Spotify or Apple Music. The lead voice is lifted out of the band and written down.",
+    body: "From YouTube, Instagram, Spotify or Apple Music. The lead voice is lifted out of the band and written down.",
     glow: "#FF5A3C",
     Art: SourcesArt,
   },

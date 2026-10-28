@@ -34,7 +34,7 @@
 
   /** What to tell someone whose text holds no link at all. */
   function hint() {
-    return "Paste a link to a YouTube, Instagram or TikTok video, a Spotify track or an Apple Music song.";
+    return "Paste a link to a YouTube or Instagram video, a Spotify track or an Apple Music song.";
   }
 
   /**

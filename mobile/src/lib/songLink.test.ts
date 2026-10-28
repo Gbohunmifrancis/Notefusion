@@ -50,7 +50,7 @@ test("any link is looked up: whether it is a song is the server's to say", () =>
   assert.deepEqual(extractSongUrl("https://www.youtube.com/v/dQw4w9WgXcQ"), { url: "https://www.youtube.com/v/dQw4w9WgXcQ", provider: "youtube" });
   assert.equal(extractSongUrl("just words"), null);
   assert.equal(extractSongUrl(null), null);
-  assert.match(songLinkHint(), /^Paste a link to a YouTube, Instagram or TikTok video/);
+  assert.match(songLinkHint(), /^Paste a link to a YouTube or Instagram video/);
 });
 
 test("a link's service is read off its host, for its mark only", () => {

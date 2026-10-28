@@ -267,6 +267,20 @@ public class LinkSectionTests
         Assert.Empty(h.Db.TranscriptionJobs);
     }
 
+    [Fact]
+    public async Task A_tiktok_link_while_tiktok_is_off_is_refused_before_the_job()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        GoPro(h, user);
+
+        var off = new FakeApi { Resolve = TranscriptionErrors.LinkNotSupported };
+        var result = await Submit(h, user, off, start: 10, end: 40);
+
+        Assert.Equal(TranscriptionErrors.LinkNotSupported, result.Error);
+        Assert.Null(off.LastOptions);
+    }
+
     [Theory]
     [InlineData("TRANS_LINK_REFUSED")]
     [InlineData("TRANS_LINK_POST_REFUSED")]
