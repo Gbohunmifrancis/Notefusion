@@ -7,6 +7,10 @@
 //                       blurred so it rounds, as a normal map (rgb = xyz * 0.5 + 0.5, z towards the viewer) for puffy.luau
 //
 //   node design/rive/faces.mjs     write them all into design/rive/practice/
+//
+// and Doh's two poses the reward moments use (design/rive/moments/moments.py):
+//
+//   node design/rive/faces.mjs moments     doh-wave.png and doh-cheer.png, 300px wide, into design/rive/moments/
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
@@ -82,9 +86,21 @@ async function shot(svg, size, file) {
   await page.locator("svg").screenshot({ path: path.join(OUT, file), omitBackground: true });
 }
 
-for (let i = 0; i < LEVELS.length; i++) await shot(emblem(i), EMBLEM_SIZE, `emblem-${i + 1}.png`);
-
 const art = new Map(assets());
+
+if (process.argv[2] === "moments") {
+  const MOMENTS = path.join(path.dirname(OUT), "moments");
+  for (const pose of ["doh-wave", "doh-cheer"]) {
+    const svg = art.get(pose).replace("<svg ", '<svg width="300" height="300" ');
+    await page.setContent(`<html><body style="margin:0;background:transparent">${svg}</body></html>`);
+    await page.locator("svg").screenshot({ path: path.join(MOMENTS, `${pose}.png`), omitBackground: true });
+  }
+  await browser.close();
+  console.log("Doh's two poses for the moments at 300px");
+  process.exit(0);
+}
+
+for (let i = 0; i < LEVELS.length; i++) await shot(emblem(i), EMBLEM_SIZE, `emblem-${i + 1}.png`);
 for (const name of STICKERS) {
   await shot(art.get(name), STICKER_SIZE, `${name}.png`);
   const png = fs.readFileSync(path.join(OUT, `${name}.png`)).toString("base64");

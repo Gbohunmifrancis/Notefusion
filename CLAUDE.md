@@ -536,7 +536,15 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   emblems, badges, flame, freeze and stars (`art/stills.ts`, `assets/practice-art-3d/`, framed like the 2D art), and `live.py` signs
   one small `.riv` per level-up and earned badge (`assets/practice-3d/`, `rive login` needed) that the web plays over the reward
   (`moment3d`: the pinned @rive-app/webgl2 fetched once a take starts, never with reduced motion, data saving or no WebGL2; CSP
-  allows it and `'wasm-unsafe-eval'` on /app). The phone's live moment waits for a store build with the Rive player. Doh beyond Practice (mobile `components/doh`) is
+  allows it and `'wasm-unsafe-eval'` on /app). The phone's live moment waits for a store build with the Rive player.
+  The reward moments (design/rive/moments: Luau pieces + `helpers.luau`, built and signed by `moments.py`, each an RML
+  artboard whose view model carries its values; `--verify`/`--preview` need no login) are six more signed files in
+  `assets/practice-moments/`, each on its own Night card, played once: stars (Playful's 1-3), streak (the day's first take,
+  `days`), goal (the week's goal met by it, `done`/`target`), combo (5+ in tune in a row, `run`/`perfect`), musicbox (a unit or
+  grade finished, `label`) and doh (Playful's three stars with nothing bigger; the drill card's Doh steps aside). Pure
+  `assets/practice-moments.js` chooses them (Playful's stars, then a level/badge's 3D piece or else the biggest of the rest;
+  `alongMoments` for play-along's end), `assets/moments.js` plays every moment (3D ones too): one player, fetched once a
+  take or play-along starts, one moment at a time, values set on the view model as it loads. Doh beyond Practice (mobile `components/doh`) is
   only: one Home card (`lib/dohSuggestion`; a sheet saved in the last 24 h → Practise this tune, i.e. Learn my part, else Rehearse;
   after 18:00 a 2+-day streak no freeze covers, today unsung → today's drill; the account's first week (`/api/me` `createdAt`) while it can
   transcribe → hello; never two, a card's key on Home one day only, × hides it for good; Settings' "Doh's suggestions", per device, turns
