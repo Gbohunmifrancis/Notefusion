@@ -43,7 +43,7 @@ test("any link is sent on: whether it is a song is the server's to say", () => {
     "https://www.youtube.com/v/dQw4w9WgXcQ",
     "https://music.apple.com/gb/song/1559885424",
   ]) assert.deepEqual(extract(url), { url }, url);
-  assert.match(hint(), /^Paste a link to a YouTube or Instagram video/);
+  assert.match(hint(), /^Paste a link to a YouTube video, a Spotify track/);
 });
 
 test("a lookup refused only for now keeps Transcribe, as the phone's lookupNotNow and the API's SongSections.IsForGood", () => {

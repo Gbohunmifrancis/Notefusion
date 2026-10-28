@@ -10,8 +10,7 @@
   {"name": "YouTube playlist", "url": "https://www.youtube.com/playlist?list=PL4fGSI1pDJn6puJdseH2Rt9sMvt9E2M4i", "expect": "not_a_song_link"},
   {"name": "Spotify track", "url": "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT", "expect": "fetched"},
   {"name": "Spotify album", "url": "https://open.spotify.com/album/6N9PS4QXF1D0OWPk0Sxtb4", "expect": "not_a_song_link"},
-  {"name": "Instagram reel", "url": "https://www.instagram.com/reel/Chunk8-jurw/", "expect": "fetched"},
-  {"name": "Instagram post", "url": "https://www.instagram.com/p/BQ0eAlwhDrw/", "expect": "fetched"},
+  {"name": "Instagram reel (off: NF_INSTAGRAM_LINKS)", "url": "https://www.instagram.com/reel/Chunk8-jurw/", "expect": "not_supported"},
   {"name": "TikTok video (off: NF_TIKTOK_LINKS)", "url": "https://www.tiktok.com/@leenabhushan/video/6748451240264420610", "expect": "not_supported"}
  ]
 }

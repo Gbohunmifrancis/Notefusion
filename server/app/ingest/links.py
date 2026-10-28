@@ -614,13 +614,16 @@ def _cache_put(entry: _Cached, *keys: str | None) -> None:
 
 
 #: The sentence for a link to a service this worker does not take yet (``not_supported``).
-NOT_SUPPORTED = "TikTok links aren't supported yet. Save the video to your phone and upload the file instead."
+NOT_SUPPORTED = "{name} links aren't supported yet. Save the video to your phone and upload the file instead."
 
 
 def not_supported(text: str) -> LinkError | None:
-    """The refusal for a link to a service turned off here (TikTok, ``settings.tiktok_links``); None otherwise."""
-    if provider_of(text) == "tiktok" and not settings.tiktok_links:
-        return LinkError(NOT_SUPPORTED, "not_supported", stage="parse")
+    """The refusal for a link to a service turned off here (TikTok, ``settings.tiktok_links``; Instagram,
+    ``settings.instagram_links``); None otherwise."""
+    provider = provider_of(text)
+    off = {"tiktok": not settings.tiktok_links, "instagram": not settings.instagram_links}
+    if off.get(provider or ""):
+        return LinkError(NOT_SUPPORTED.format(name=_NAMES[provider]), "not_supported", stage="parse")
     return None
 
 
@@ -631,7 +634,7 @@ def resolve_source(text: str) -> Source:
     """
     provider = provider_of(text)
     if provider is None:
-        raise LinkError("That link is not a YouTube or Instagram video, a Spotify track or an Apple Music song.")
+        raise LinkError("That link is not a YouTube video, a Spotify track or an Apple Music song.")
     if (refusal := not_supported(text)) is not None:
         raise refusal
     url = extract_url(text)

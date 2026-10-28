@@ -48,6 +48,9 @@ class Settings:
     #: yt-dlp's TikTok extractor wants browser impersonation, which the image does not install; while
     #: off, a TikTok link is refused at once with ``not_supported`` rather than failing as "unavailable".
     tiktok_links: bool = os.getenv("NF_TIKTOK_LINKS", "0").strip() == "1"
+    #: Instagram links: off for the same reason. Signed out, Instagram serves a reel's video without its audio
+    #: track (the matrix's reels end ``decode_failed``); cookies of a signed-in account would be needed.
+    instagram_links: bool = os.getenv("NF_INSTAGRAM_LINKS", "0").strip() == "1"
     #: Where the worker keeps the yt-dlp it updates itself to (``app.ingest.ytdlp_update``).
     #: Empty (the default, and tests): the yt-dlp the image was built with, never updated.
     ytdlp_update_dir: str = os.getenv("NF_YTDLP_UPDATE_DIR", "").strip()

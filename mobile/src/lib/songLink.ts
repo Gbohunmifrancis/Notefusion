@@ -64,7 +64,7 @@ export function extractSongUrl(text: string | null | undefined): { url: string; 
 
 /** What to tell someone whose text holds no link at all. */
 export function songLinkHint(): string {
-  return "Paste a link to a YouTube or Instagram video, a Spotify track or an Apple Music song.";
+  return "Paste a link to a YouTube video, a Spotify track or an Apple Music song.";
 }
 
 /**
