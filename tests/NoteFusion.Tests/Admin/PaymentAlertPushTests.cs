@@ -343,6 +343,32 @@ public class PaymentAlertPushTests
     }
 
     [Fact]
+    public async Task A_phone_whose_code_made_v2_channels_is_sent_them_until_older_code_says_otherwise()
+    {
+        using var h = new TestHarness(Now);
+        var admin = Admin(h);
+        Device(h, admin, "ExponentPushToken[mine]", alerts: false);
+        var caller = new StubCurrentUser(admin.Id, UserRole.Admin);
+        var settings = new SetPaymentAlertSettingsCommandHandler(h.Db, caller, h.Clock);
+
+        await settings.Handle(new SetPaymentAlertSettingsCommand(
+            "ExponentPushToken[mine]", true, "chime", true, false, false, true, Channels: 2), default);
+        var (_, tx) = SeedPayment(h, Customer(h));
+        await Fulfil(h, tx);
+        await Send(h);
+        Assert.Equal("payments-v2", Assert.Single(h.Push.DeviceSends).Message.ChannelId);
+
+        // The same phone's settings sent by code that names no version (an older update): its v1 channels again.
+        await settings.Handle(new SetPaymentAlertSettingsCommand(
+            "ExponentPushToken[mine]", true, "chime", true, false, false, true), default);
+        Assert.Equal(1, h.Db.DeviceTokens.Single(t => t.Token == "ExponentPushToken[mine]").PaymentChannelVersion);
+        // A version the server does not know is not named to the phone.
+        await settings.Handle(new SetPaymentAlertSettingsCommand(
+            "ExponentPushToken[mine]", true, "chime", true, false, false, true, Channels: 9), default);
+        Assert.Equal(1, h.Db.DeviceTokens.Single(t => t.Token == "ExponentPushToken[mine]").PaymentChannelVersion);
+    }
+
+    [Fact]
     public async Task Mute_for_an_hour_then_unmute()
     {
         using var h = new TestHarness(Now);

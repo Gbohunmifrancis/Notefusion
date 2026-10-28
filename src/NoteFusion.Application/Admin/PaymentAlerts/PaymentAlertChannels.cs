@@ -10,15 +10,29 @@ namespace NoteFusion.Application.Admin.PaymentAlerts;
 /// <remarks>
 /// A channel's sound and vibration are fixed once Android has created it, so every choice in Payment alerts is a
 /// channel of its own and the server picks one per phone. The ids carry a version: a new sound means a new id.
-/// Quiet hours and "Mute 1 hour" use the silent, still channel, which every phone with alerts keeps.
+/// Quiet hours and "Mute 1 hour" use the silent, still channel, which every phone with alerts keeps. A phone says which
+/// version its code made (<see cref="DeviceToken.PaymentChannelVersion"/>): 2 from the store build that keeps the chime.
 /// </remarks>
 public static class PaymentAlertChannels
 {
-    /// <summary>The chime with the two-pulse vibration: the default.</summary>
+    /// <summary>The chime with the two-pulse vibration: the default (v1).</summary>
     public const string Main = "payments-v1";
 
-    /// <summary>No sound, no vibration: the banner only (quiet hours, a mute, or both switched off).</summary>
+    /// <summary>No sound, no vibration: the banner only (quiet hours, a mute, or both switched off). v1.</summary>
     public const string Quiet = "payments-v1-none-still";
+
+    /// <summary>
+    /// The newest channel version a phone can make. v1 phones' release builds had the chime stripped by the resource
+    /// shrinker, so Android made their channels with the phone's own sound, which a channel never changes; v2 is the
+    /// code of a build that keeps it (mobile <c>plugins/withKeepPaymentSound</c>) and makes new ids with the chime.
+    /// </summary>
+    public const int Latest = 2;
+
+    /// <summary>A version a phone sent, as one the server names channels in (anything unknown: 1).</summary>
+    public static int Known(int? version) => version is >= 1 and <= Latest ? version.Value : 1;
+
+    /// <summary>The silent, still channel of a phone whose channels are <paramref name="version"/>.</summary>
+    public static string QuietFor(int version) => $"payments-v{Known(version)}-none-still";
 
     /// <summary>The admins' payment-problem alerts (paid with no Pro, stuck checkouts), apart from the payments.</summary>
     public const string Problems = "payment-problems";
@@ -36,10 +50,10 @@ public static class PaymentAlertChannels
     public const int QuietFromHour = 22;
     public const int QuietUntilHour = 7;
 
-    public static string ChannelFor(string sound, bool vibrate)
+    public static string ChannelFor(string sound, bool vibrate, int version = 1)
         => sound == PaymentAlertSounds.Chime && vibrate
-            ? Main
-            : $"payments-v1-{sound}{(vibrate ? "" : "-still")}";
+            ? $"payments-v{Known(version)}"
+            : $"payments-v{Known(version)}-{sound}{(vibrate ? "" : "-still")}";
 
     public static string? IosSound(string sound) => sound switch
     {
@@ -60,9 +74,9 @@ public static class PaymentAlertChannels
     /// quiet at night on) in the quiet hours.
     /// </summary>
     public static (string Channel, string? Sound) For(
-        string sound, bool vibrate, bool quietAtNight, DateTime? mutedUntilUtc, string? timeZone, DateTime utcNow)
+        string sound, bool vibrate, bool quietAtNight, DateTime? mutedUntilUtc, string? timeZone, DateTime utcNow, int version = 1)
     {
         var hushed = (mutedUntilUtc is { } until && until > utcNow) || (quietAtNight && IsQuietHour(utcNow, timeZone));
-        return hushed ? (Quiet, null) : (ChannelFor(sound, vibrate), IosSound(sound));
+        return hushed ? (QuietFor(version), null) : (ChannelFor(sound, vibrate, version), IosSound(sound));
     }
 }

@@ -371,7 +371,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `…/device/mute`, `…/test`; More › Payment alerts): sound chime / phone / none, vibrate, quiet 22–07 on
   `users.TimeZone` (off by default), names left out ("Tap to see who paid."), problems. An Android channel's sound is
   fixed, so each choice is its own channel (`payments-v1` for the chime with vibration, else
-  `payments-v1-{sound}[-still]`; quiet hours and Mute use `payments-v1-none-still`; problems
+  `payments-v1-{sound}[-still]`; quiet hours and Mute use `payments-v1-none-still`; code with the keep plugin makes
+  `payments-v2…` and says so (`channels: 2` on its PUT, `DeviceToken.PaymentChannelVersion`, never the build number): release
+  builds' resource shrinker had stripped the chime, so v1 channels were made with the phone's sound for good, and
+  `plugins/withKeepPaymentSound` now writes `res/raw/keep.xml`; problems
   `payment-problems`, `NotifyAdminsOfPaymentIssuesCommand`); the chime is `assets/sounds/payment.wav` (expo-notifications
   `sounds`: a store build).
 

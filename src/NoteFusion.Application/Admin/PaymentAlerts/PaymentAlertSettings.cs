@@ -88,6 +88,8 @@ public sealed class GetPaymentAlertSettingsQueryHandler
 // ── PUT /api/admin/alerts/device ────────────────────────────────────────────────────────────────────────────────────
 
 /// <summary>Sets this phone's payment alerts. Sent by app code that has created the matching channels.</summary>
+/// <param name="Channels">Which channel version that code made (<see cref="PaymentAlertChannels.Latest"/>); older code
+/// leaves it out, which is 1.</param>
 public sealed record SetPaymentAlertSettingsCommand(
     string Token,
     bool On,
@@ -95,7 +97,8 @@ public sealed record SetPaymentAlertSettingsCommand(
     bool Vibrate,
     bool QuietAtNight,
     bool HideNames,
-    bool Problems) : IRequest<Result<PaymentAlertSettingsDto>>;
+    bool Problems,
+    int? Channels = null) : IRequest<Result<PaymentAlertSettingsDto>>;
 
 public sealed class SetPaymentAlertSettingsCommandValidator : AbstractValidator<SetPaymentAlertSettingsCommand>
 {
@@ -133,7 +136,8 @@ public sealed class SetPaymentAlertSettingsCommandHandler
 
         var now = _clock.UtcNow;
         device.SetPaymentAlerts(
-            request.On, request.Sound, request.Vibrate, request.QuietAtNight, request.HideNames, request.Problems, now);
+            request.On, request.Sound, request.Vibrate, request.QuietAtNight, request.HideNames, request.Problems, now,
+            PaymentAlertChannels.Known(request.Channels));
         await _db.SaveChangesAsync(ct);
         return PaymentAlertDevice.ToDto(device, now);
     }
@@ -228,7 +232,7 @@ public sealed class SendTestPaymentAlertCommandHandler
 
         var now = _clock.UtcNow;
         var (channel, sound) = PaymentAlertChannels.For(
-            device.Sound, device.Vibrate, device.QuietAtNight, device.MutedUntilUtc, device.TimeZone, now);
+            device.Sound, device.Vibrate, device.QuietAtNight, device.MutedUntilUtc, device.TimeZone, now, device.ChannelVersion);
         var words = PaymentPushCopy.Test();
 
         var delivery = await _push.SendToDevicesAsync(

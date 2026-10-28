@@ -116,7 +116,7 @@ public sealed class SendPaymentAlertsCommandHandler : IRequestHandler<SendPaymen
         string? error = null;
         foreach (var group in devices
                      .Select(d => (Device: d, Ring: PaymentAlertChannels.For(
-                         d.Sound, d.Vibrate, d.QuietAtNight, d.MutedUntilUtc, d.TimeZone, now)))
+                         d.Sound, d.Vibrate, d.QuietAtNight, d.MutedUntilUtc, d.TimeZone, now, d.ChannelVersion)))
                      .GroupBy(x => (x.Ring.Channel, x.Ring.Sound, x.Device.HideNames)))
         {
             var words = PaymentPushCopy.Summary(facts, group.Key.HideNames);

@@ -177,6 +177,22 @@ public class PaymentPushCopyTests
     }
 
     [Fact]
+    public void A_phone_whose_code_made_v2_channels_is_sent_them_and_an_older_one_its_v1()
+    {
+        var night = new DateTime(2026, 10, 18, 22, 30, 0, DateTimeKind.Utc); // 23:30 in Lagos
+        var evening = new DateTime(2026, 10, 18, 17, 42, 0, DateTimeKind.Utc);
+
+        Assert.Equal((1, 1, 2, 1), (PaymentAlertChannels.Known(null), PaymentAlertChannels.Known(0),
+            PaymentAlertChannels.Known(2), PaymentAlertChannels.Known(PaymentAlertChannels.Latest + 1)));
+        Assert.Equal("payments-v2", PaymentAlertChannels.ChannelFor("chime", vibrate: true, version: 2));
+        Assert.Equal("payments-v2-phone-still", PaymentAlertChannels.ChannelFor("phone", vibrate: false, version: 2));
+        Assert.Equal(("payments-v2", "payment.wav"), PaymentAlertChannels.For("chime", true, true, null, null, evening, 2));
+        Assert.Equal(("payments-v2-none-still", (string?)null), PaymentAlertChannels.For("chime", true, true, null, null, night, 2));
+        // Older code keeps the channels it made, quiet hours included.
+        Assert.Equal(("payments-v1-none-still", (string?)null), PaymentAlertChannels.For("chime", true, true, null, null, night, 1));
+    }
+
+    [Fact]
     public void The_channel_is_the_sound_and_vibration_chosen_and_quiet_or_muted_is_silent()
     {
         Assert.Equal("payments-v1", PaymentAlertChannels.ChannelFor("chime", vibrate: true));
