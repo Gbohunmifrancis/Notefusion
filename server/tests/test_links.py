@@ -1176,6 +1176,7 @@ def test_a_tiktok_video_is_named_by_its_sound_and_fetched_itself(monkeypatch, tm
 
 
 def test_an_instagram_reel_without_a_song_credit_is_named_by_its_caption(monkeypatch):
+    monkeypatch.setattr(links.settings, "instagram_links", True)
     info = '{"id": "C9xYz12AbCd", "duration": 45, "description": "Our choir singing Amazing Grace in four parts at ' \
            'the Sunday evening service, recorded live in the chapel\\nmore below", "uploader": "stpaulschoir"}'
     monkeypatch.setattr(links.subprocess, "run", _fake_post([], info))
@@ -1186,6 +1187,7 @@ def test_an_instagram_reel_without_a_song_credit_is_named_by_its_caption(monkeyp
 
 
 def test_a_sign_in_wall_is_a_plain_refusal_with_no_preview(monkeypatch, tmp_path):
+    monkeypatch.setattr(links.settings, "instagram_links", True)
     calls = []
     wall = ("ERROR: [Instagram] C9xYz12AbCd: Requested content is not available, rate-limit reached or login required. "
             "Use --cookies")
@@ -1279,3 +1281,15 @@ def test_a_tiktok_link_is_refused_at_once_while_tiktok_is_off(monkeypatch):
     assert "TikTok links aren't supported yet" in str(caught.value)
     assert calls == []  # nothing asked of TikTok
     assert links.not_supported("https://www.youtube.com/watch?v=dQw4w9WgXcQ") is None
+
+
+def test_an_instagram_link_is_refused_at_once_while_instagram_is_off(monkeypatch):
+    calls = []
+    monkeypatch.setattr(links.subprocess, "run", lambda *a, **k: calls.append(a) or None)
+    with pytest.raises(LinkError) as caught:
+        links.resolve_link("https://www.instagram.com/reel/C9xYz12AbCd/?igsh=x")
+    assert (caught.value.code, caught.value.stage) == ("not_supported", "parse")
+    assert "Instagram links aren't supported yet" in str(caught.value)
+    assert calls == []  # nothing asked of Instagram
+    monkeypatch.setattr(links.settings, "instagram_links", True)
+    assert links.not_supported("https://www.instagram.com/reel/C9xYz12AbCd/") is None

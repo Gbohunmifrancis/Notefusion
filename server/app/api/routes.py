@@ -369,7 +369,7 @@ async def submit_link_transcription(
     key = _clean_key(key)
     url = (url or "").strip()
     if len(url) > 2048 or provider_of(url) is None:
-        raise HTTPException(422, {"message": "url must be a YouTube or Instagram video, a Spotify track or an "
+        raise HTTPException(422, {"message": "url must be a YouTube video, a Spotify track or an "
                                              "Apple Music song link.", "code": "not_a_song_link", "stage": "parse"})
     # A link the resolve already turned away (a live stream, a video over the cap), or one to a service not
     # taken here yet, is refused here and now rather than queued for a job that would only fail.
@@ -412,7 +412,7 @@ def resolve_link_info(body: LinkInfoRequest) -> LinkInfoResponse:
 
     url = (body.url or "").strip()
     if len(url) > 2048 or provider_of(url) is None:
-        raise HTTPException(422, {"message": "url must be a YouTube or Instagram video, a Spotify track or an "
+        raise HTTPException(422, {"message": "url must be a YouTube video, a Spotify track or an "
                                              "Apple Music song link.", "code": "not_a_song_link", "stage": "parse"})
     if (refusal := not_supported(url)) is not None:
         raise _refused_link(refusal)

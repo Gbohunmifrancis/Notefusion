@@ -355,10 +355,10 @@ def test_a_submit_of_a_refused_link_is_answered_at_once(client, monkeypatch):
     assert submitted == [YOUTUBE]
 
 
-def test_a_tiktok_link_is_refused_by_both_routes_while_tiktok_is_off(client):
+def test_tiktok_and_instagram_links_are_refused_by_both_routes_while_off(client):
     c, submitted = client
-    tiktok = "https://www.tiktok.com/@singer/video/7312345678901234567"
-    for r in (c.post("/v1/links/resolve", json={"url": tiktok}), c.post("/v1/transcribe/link", data={"url": tiktok})):
-        assert r.status_code == 422
-        assert r.json()["detail"]["code"] == "not_supported" and r.json()["detail"]["stage"] == "parse"
+    for url in ("https://www.tiktok.com/@singer/video/7312345678901234567", "https://www.instagram.com/reel/C9xYz12AbCd/"):
+        for r in (c.post("/v1/links/resolve", json={"url": url}), c.post("/v1/transcribe/link", data={"url": url})):
+            assert r.status_code == 422
+            assert r.json()["detail"]["code"] == "not_supported" and r.json()["detail"]["stage"] == "parse"
     assert submitted == []
