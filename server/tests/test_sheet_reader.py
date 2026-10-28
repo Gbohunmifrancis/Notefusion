@@ -100,6 +100,19 @@ def test_a_pdf_that_will_not_draw_is_a_plain_sentence(tmp_path):
     assert str(caught.value) == sheet_reader.UNREADABLE
 
 
+def test_a_machine_without_the_readers_answers_in_plain_words(tmp_path, monkeypatch):
+    # No pdftoppm (the CI runner has none) and no homr where NF_OMR_BIN points: no traceback, the plain sentences.
+    monkeypatch.setenv("PATH", str(tmp_path / "empty"))
+    monkeypatch.setenv("NF_OMR_BIN", str(tmp_path / "missing-homr"))
+    pdf, photo = tmp_path / "hymns.pdf", tmp_path / "hymn.jpg"
+    pdf.write_bytes(b"%PDF-1.4")
+    photo.write_bytes(b"jpeg")
+    with pytest.raises(LowConfidenceError, match="couldn't be opened"):
+        sheet_reader.read_sheet(pdf, tmp_path)
+    with pytest.raises(LowConfidenceError, match="couldn't find printed music"):
+        sheet_reader.read_sheet(photo, tmp_path)
+
+
 def test_the_score_route_takes_a_photo_and_the_job_writes_its_tune(tmp_path, monkeypatch):
     import io
     import time

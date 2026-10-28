@@ -63,8 +63,12 @@ def _pages(path: Path, work: Path) -> list[Path]:
     if path.suffix.lower() in IMAGE_SUFFIXES:
         return [path]
     prefix = work / "page"
-    done = subprocess.run(["pdftoppm", "-r", str(PDF_DPI), "-png", "-f", "1", "-l", str(MAX_PAGES), str(path), str(prefix)],
-                          capture_output=True, timeout=PAGE_TIMEOUT_SECONDS)
+    try:
+        done = subprocess.run(["pdftoppm", "-r", str(PDF_DPI), "-png", "-f", "1", "-l", str(MAX_PAGES), str(path), str(prefix)],
+                              capture_output=True, timeout=PAGE_TIMEOUT_SECONDS)
+    except (OSError, subprocess.TimeoutExpired) as exc:  # no poppler on this machine, or a PDF that never ends
+        logger.error("pdftoppm could not run: %s: %s", type(exc).__name__, exc)
+        raise LowConfidenceError(UNREADABLE) from exc
     pages = sorted(work.glob("page*.png"))
     if done.returncode != 0 or not pages:
         logger.warning("pdftoppm could not draw the PDF (exit %d): %s", done.returncode, done.stderr[-300:])
@@ -79,6 +83,9 @@ def _read_page(page: Path) -> str | None:
                               timeout=PAGE_TIMEOUT_SECONDS)
     except subprocess.TimeoutExpired:
         logger.warning("homr took longer than %ds on a page", PAGE_TIMEOUT_SECONDS)
+        return None
+    except OSError as exc:  # homr is not installed where NF_OMR_BIN says
+        logger.error("homr could not run (%s): %s", _homr(), exc)
         return None
     out = page.with_suffix(".musicxml")
     if done.returncode != 0 or not out.exists():
