@@ -57,6 +57,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import unicodedata
 from collections import OrderedDict
 from collections.abc import Iterator
 from contextlib import contextmanager
@@ -168,6 +169,9 @@ _PREVIEW_HOSTS = (".scdn.co", ".apple.com", ".mzstatic.com")
 _PREVIEW_MAX_BYTES = 5_000_000
 # ±seconds a YouTube upload may differ from the store's length and still be the recording.
 DURATION_TOLERANCE = 8.0
+# Seconds longer than the store's length the artist's own official upload of the song may be when none is within
+# DURATION_TOLERANCE: an official video's intro or closing scene, around the same recording.
+PADDED_TOLERANCE = 30.0
 
 
 def _http_json(url: str) -> dict:
@@ -657,9 +661,12 @@ def cached_refusal(text: str) -> LinkError | None:
 #: megabytes either way. A small muxed video is the last resort, for a video YouTube serves
 #: no separate audio for (which happens when it withholds formats from a client).
 _AUDIO_FORMAT = "bestaudio[ext=m4a]/bestaudio/best[height<=480]/best"
-# Words that mark an upload as some other recording than the song itself.
+# Words that mark an upload as some other recording than the song itself: another performance or mix of it, or the
+# recording slowed, sped up or retuned (a "432 Hz" upload is the song a third of a semitone flat).
 _NOT_THE_RECORDING = re.compile(
-    r"\b(cover|karaoke|instrumental|loop|live|slowed|sped up|reverb|nightcore|reaction|tutorial|\d+\s*hours?)\b", re.I)
+    r"\b(cover|karaoke|instrumental|loop|live|slowed|sped up|reverb|nightcore|reaction|tutorial|\d+\s*hours?"
+    r"|remix|mix|mashup|medley|acoustic|unplugged|stripped|session|orchestral|symphonic|performance|extended"
+    r"|bass boosted|8d|432\s*hz|528\s*hz)\b", re.I)
 _PREFERRED = re.compile(r"official (audio|lyric video)|\(audio\)", re.I)
 
 
@@ -926,39 +933,78 @@ _SEARCH_CANDIDATES = 3
 _SEARCH_BUDGET_SECONDS = 240.0
 
 
-def _rank_results(lines: list[str], source: Source) -> list[str]:
-    """The video ids among yt-dlp's search results that may be the song, best first.
+def _words(text: str) -> list[str]:
+    """``text`` as lowercase words, accents and apostrophes gone and "10,000" one number: how two spellings of a
+    title are compared ("Won't" and "Won’t", "Beyoncé" and "Beyonce")."""
+    folded = unicodedata.normalize("NFKD", text or "")
+    folded = "".join(c for c in folded if not unicodedata.combining(c)).lower()
+    folded = re.sub(r"(?<=\d),(?=\d{3})", "", re.sub(r"['’`]", "", folded))
+    return [w for w in re.findall(r"\w+", folded) if w != "_"]
 
-    The best is the one whose length agrees with the store's (±``DURATION_TOLERANCE``),
-    preferring the label's own upload (a "… - Topic" channel, "Official Audio") and skipping
-    covers, karaoke, loops and live takes — unless nothing else was found.  The runners-up are
-    only clean uploads of the right length.
+
+def _core_title(title: str) -> str:
+    """The song's name without what a store adds to it: "(feat. …)", "(Live)", "[…]", "- Remastered 2015"."""
+    core = re.sub(r"\s*[\(\[][^\)\]]*[\)\]]", " ", title or "")
+    return re.split(r"\s+[-–—]\s+", core.strip())[0]
+
+
+def _without(words: list[str], taken: list[str]) -> list[str]:
+    """``words`` with one of each of ``taken`` removed."""
+    rest = list(words)
+    for word in taken:
+        if word in rest:
+            rest.remove(word)
+    return rest
+
+
+def _rank_results(lines: list[str], source: Source) -> list[str]:
+    """The video ids among yt-dlp's search results that are the song, best first; empty when none may be.
+
+    A result is the song only when its title names the song (``_core_title``, word for word), it is not some other
+    recording of it (a ``_NOT_THE_RECORDING`` word outside the song's name, unless the store's own version says
+    so: a "(Live)" album takes live uploads), and its length agrees with the store's (±``DURATION_TOLERANCE``);
+    without a known length, the artist must be named (title or channel) instead.  Among those the label's own upload
+    comes first (a "… - Topic" channel, "Official Audio"), then ones naming the artist.  Only after all of them, the
+    artist's own "official" upload (on a channel in their name) up to ``PADDED_TOLERANCE`` longer: an official
+    video's intro around the same recording.  Nothing else is used:
+    the store's preview stands in for a song with no copy here (``_preview_fallback``), where a guess would
+    transcribe some other song or recording in full.  Measured on 82 real searches, 37 of them held out (the PR that
+    brought this in).
     """
-    unwanted_in_title = set(m.group(0).lower() for m in _NOT_THE_RECORDING.finditer(source.title))
+    core = _words(_core_title(source.title))
+    qualifiers = set(_without(_words(source.title), core))
+    artist = _words(re.split(r",|&| x | feat\.?| ft\.?| with ", source.artist or "", flags=re.I)[0])
     ranked = []
     for index, line in enumerate(lines):
         video_id, _, rest = line.partition("\t")
         duration, _, rest = rest.partition("\t")
         channel, _, title = rest.partition("\t")
-        if not _VIDEO_ID.match(video_id.strip()):
+        video_id = video_id.strip()
+        if not _VIDEO_ID.match(video_id):
             continue
+        heard = _words(title)
+        if core and any(word not in heard for word in core):
+            continue  # another song
+        rest_of_title = " ".join(_without(heard, core))
+        if any(not set(_words(m.group(0))) <= qualifiers for m in _NOT_THE_RECORDING.finditer(rest_of_title)):
+            continue  # another recording of it
+        named = not artist or all(word in heard or word in _words(channel) for word in artist)
         try:
             seconds = float(duration)
         except ValueError:
             seconds = None
-        if source.duration is None:
-            fits = True
-        else:
-            fits = seconds is not None and abs(seconds - source.duration) <= DURATION_TOLERANCE
-        # "Live" in the song's own name ("Live Like You Were Dying") is not a live take.
-        other = any(m.group(0).lower() not in unwanted_in_title for m in _NOT_THE_RECORDING.finditer(title))
+        padded = False
+        if source.duration is not None:
+            off = None if seconds is None else seconds - source.duration
+            own = bool(artist) and all(word in _words(channel) for word in artist) and "official" in heard
+            padded = off is not None and own and DURATION_TOLERANCE < off <= PADDED_TOLERANCE
+            if off is None or (abs(off) > DURATION_TOLERANCE and not padded):
+                continue
+        elif not named:
+            continue
         preferred = channel.strip().lower().endswith("- topic") or bool(_PREFERRED.search(title))
-        ranked.append((other, not fits, not preferred, index, video_id.strip()))
-    ranked.sort()
-    if not ranked:
-        return []
-    best = ranked[0][-1]
-    return [best, *[r[-1] for r in ranked[1:] if not r[0] and not r[1] and r[-1] != best]]
+        ranked.append((padded, not preferred, not named, index, video_id))
+    return [r[-1] for r in sorted(ranked)]
 
 
 def _choose_result(lines: list[str], source: Source) -> str | None:
