@@ -1,0 +1,18 @@
+{
+ "about": "The controlled link test matrix (app/ingest/probe.py --links): one public link per shape a person pastes, run through the worker's own parse, resolve and a ten-second fetch. 'expect' is 'fetched', 'preview' (the store's preview stood in) or the failure code it should end with. Instagram and TikTok posts are ones yt-dlp's own extractor tests use. Add a case for every shape a client offers, and check the matrix in production before a provider is shown on a client.",
+ "cases": [
+  {"name": "YouTube watch", "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "expect": "fetched"},
+  {"name": "YouTube short link", "url": "https://youtu.be/dQw4w9WgXcQ?si=abc", "expect": "fetched"},
+  {"name": "YouTube Music", "url": "https://music.youtube.com/watch?v=dQw4w9WgXcQ", "expect": "fetched"},
+  {"name": "YouTube embed", "url": "https://www.youtube.com/embed/dQw4w9WgXcQ", "expect": "fetched"},
+  {"name": "YouTube, a Nigerian gospel upload", "url": "https://www.youtube.com/watch?v=awexlghI7gM", "expect": "fetched"},
+  {"name": "YouTube, no such video", "url": "https://www.youtube.com/watch?v=aaaaaaaaaaa", "expect": "not_found"},
+  {"name": "YouTube playlist", "url": "https://www.youtube.com/playlist?list=PL4fGSI1pDJn6puJdseH2Rt9sMvt9E2M4i", "expect": "not_a_song_link"},
+  {"name": "Spotify track", "url": "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT", "expect": "fetched"},
+  {"name": "Spotify album", "url": "https://open.spotify.com/album/6N9PS4QXF1D0OWPk0Sxtb4", "expect": "not_a_song_link"},
+  {"name": "Instagram reel", "url": "https://www.instagram.com/reel/Chunk8-jurw/", "expect": "fetched"},
+  {"name": "Instagram post", "url": "https://www.instagram.com/p/BQ0eAlwhDrw/", "expect": "fetched"},
+  {"name": "TikTok video", "url": "https://www.tiktok.com/@leenabhushan/video/6748451240264420610", "expect": "fetched"},
+  {"name": "TikTok short link", "url": "https://vm.tiktok.com/ZTR45GpSF/", "expect": "fetched"}
+ ]
+}

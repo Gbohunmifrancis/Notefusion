@@ -183,7 +183,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   Each resolve that asks yt-dlp and each link job logs one `link_attempt` line (outcome, rung, running
   totals, block rate; no URL), and expired cookies log `ytdlp_cookies_rejected`. `python -m app.ingest.probe` (run by
   `check-ec2.yml`) prints the ladder as configured and has each rung fetch ten seconds of two videos, a download and not
-  only the details, with the jobs' cookies, tokens and proxy (never printing the proxy or cookies). Every failure says where it stopped:
+  only the details, with the jobs' cookies, tokens and proxy (never printing the proxy or cookies); `--links` runs the
+  controlled link test matrix (`app/ingest/link_matrix.json`: a public link per shape, through parse, resolve and a ten-second
+  fetch, against its expected outcome), which a provider passes in production before a client offers it. Every failure says where it stopped:
   `links.STAGES` (parse, resolve, metadata, search, download, decode, separation, transcription) and a code
   (`failure_code`), on a refusal's detail and a failed job's `failure_stage`/`failure_code`; the API keeps them on
   `TranscriptionLog.FailureStage`/`FailureCode` (its own refusals as parse, gate, request or worker) and the console's

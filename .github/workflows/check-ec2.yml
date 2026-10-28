@@ -73,4 +73,8 @@ jobs:
             echo "== youtube probe from inside the worker"
             cd /opt/notefusion
             timeout 600 docker compose -f docker-compose.prod.yml exec -T transcriber python -m app.ingest.probe || echo "(probe did not finish)"
+            # The controlled link test matrix (app/ingest/link_matrix.json): one public link per shape a person pastes,
+            # through the worker's parse, resolve and a ten-second fetch, and whether each ended as expected.
+            echo "== link test matrix"
+            timeout 600 docker compose -f docker-compose.prod.yml exec -T transcriber python -m app.ingest.probe --links || echo "(some cases ended otherwise, or the matrix did not finish)"
             } 2>&1 | redact

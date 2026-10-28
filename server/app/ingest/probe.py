@@ -2,12 +2,18 @@
 fetch ten seconds of a video, with the cookies, proof-of-origin tokens and proxy the jobs use.
 
     docker compose exec transcriber python -m app.ingest.probe [VIDEO_ID ...]
+    docker compose exec transcriber python -m app.ingest.probe --links     # the link test matrix
 
 Prints the ladder as configured, then one line per video and rung: fetched (bytes, seconds) or not (yt-dlp's
 words read as blocked / unavailable / age_restricted / other, and the last lines of its error, a proxy's
 credentials masked).  A download, not only the video's details: YouTube can answer the details and still refuse
 the audio, which a details-only probe passes and every job fails.  Never prints the proxy's address or the
 cookies; asks YouTube once per video and rung and leaves nothing behind.  Run by ``.github/workflows/check-ec2.yml``.
+
+``--links`` runs the controlled link test matrix instead (``link_matrix.json``): one public link per shape a person
+pastes, each through the worker's own parse (``provider_of``), resolve (``resolve_link``) and a ten-second fetch
+(``fetch_audio``), the way a job takes it, and whether it ended as expected: fetched, the store's preview, or the
+failure code (``links.failure_code``) at the step it stopped (``links.STAGES``).
 """
 
 from __future__ import annotations
@@ -90,7 +96,47 @@ def fetch(video_id: str, route: links._Route, seconds: int = SECONDS) -> dict:
         shutil.rmtree(work, ignore_errors=True)
 
 
+MATRIX = Path(__file__).with_name("link_matrix.json")
+
+
+def try_link(url: str) -> dict:
+    """One link the way a job takes it: parse, resolve, then ten seconds of its audio."""
+    started = time.monotonic()
+    line: dict = {}
+    if links.provider_of(url) is None:
+        return {"outcome": "not_a_song_link", "stage": "parse", "seconds": 0.0}
+    work = Path(tempfile.mkdtemp(prefix="nf_matrix_"))
+    try:
+        source = links.resolve_link(url)
+        line.update(provider=source.provider, title=source.title[:60], artist=source.artist[:40], duration=source.duration)
+        got = links.fetch_audio(source, SECONDS, work_dir=work, start_seconds=0.0, end_seconds=float(SECONDS))
+        line.update(outcome="preview" if got.preview else "fetched", wav_bytes=got.path.stat().st_size)
+    except links.LinkError as refusal:
+        line.update(outcome=links.failure_code(refusal), stage=refusal.stage, said=str(refusal)[:120])
+    except Exception as exc:  # noqa: BLE001 - anything else is this link's answer too
+        line.update(outcome=links.failure_code(exc), stage="other", said=type(exc).__name__)
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+    line["seconds"] = round(time.monotonic() - started, 1)
+    return line
+
+
+def matrix() -> int:
+    """Runs ``link_matrix.json``; prints a line per case and a summary, and is 1 when any case ended otherwise."""
+    cases = json.loads(MATRIX.read_text(encoding="utf-8"))["cases"]
+    missed = 0
+    for case in cases:
+        line = {"case": case["name"], "expect": case["expect"], **try_link(case["url"])}
+        line["as_expected"] = line["outcome"] == case["expect"]
+        missed += not line["as_expected"]
+        print(json.dumps(line), flush=True)
+    print(json.dumps({"cases": len(cases), "as_expected": len(cases) - missed}))
+    return 1 if missed else 0
+
+
 def main(argv: list[str]) -> int:
+    if argv[:1] == ["--links"]:
+        return matrix()
     print(json.dumps({"ladder": ladder()}))
     for video_id in argv or DEFAULT_VIDEOS:
         for route in links._routes("youtube"):

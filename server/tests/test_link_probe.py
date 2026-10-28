@@ -44,3 +44,36 @@ def test_a_rung_that_times_out_says_so(monkeypatch):
     monkeypatch.setattr(links, "_run_group", slow)
     line = probe.fetch("dQw4w9WgXcQ", links._Route("direct", ()))
     assert line["fetched"] is False and line["why"] == "TimeoutExpired"
+
+
+def test_the_link_matrix_says_where_each_case_ended(monkeypatch, tmp_path, capsys):
+    from pathlib import Path
+
+    from app.ingest.links import FetchedAudio, LinkError, Source
+
+    def resolve(url):
+        if "tiktok" in url:
+            raise LinkError("That TikTok video is private or unavailable, so it can't be fetched.", "unavailable",
+                            stage="metadata")
+        return Source("youtube", url, "Song", "Singer", duration=200.0)
+
+    def fetch(source, max_seconds, work_dir=None, start_seconds=0.0, end_seconds=None):
+        wav = Path(work_dir) / "song.wav"
+        wav.write_bytes(b"\0" * 100)
+        return FetchedAudio(wav, 200.0)
+
+    matrix = tmp_path / "m.json"
+    matrix.write_text(json.dumps({"cases": [
+        {"name": "watch", "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "expect": "fetched"},
+        {"name": "tiktok", "url": "https://vm.tiktok.com/ZTR45GpSF/", "expect": "fetched"},
+        {"name": "playlist", "url": "https://www.youtube.com/playlist?list=PL1", "expect": "not_a_song_link"},
+    ]}))
+    monkeypatch.setattr(probe, "MATRIX", matrix)
+    monkeypatch.setattr(links, "resolve_link", resolve)
+    monkeypatch.setattr(links, "fetch_audio", fetch)
+
+    assert probe.main(["--links"]) == 1  # one case ended otherwise
+    lines = [json.loads(line) for line in capsys.readouterr().out.splitlines()]
+    assert [(l["case"], l["outcome"], l["as_expected"]) for l in lines[:3]] == [
+        ("watch", "fetched", True), ("tiktok", "unavailable", False), ("playlist", "not_a_song_link", True)]
+    assert lines[1]["stage"] == "metadata" and lines[3] == {"cases": 3, "as_expected": 2}
