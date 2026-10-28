@@ -24,7 +24,7 @@
 <link rel="preload" href="/assets/fonts/geist-v5-latin.woff2" as="font" type="font/woff2" crossorigin>
 <!-- Only what the first screen needs; the range picker's and the recorder's styles load at the end of the body. -->
 <link rel="stylesheet" href="/assets/theme.css?v=7">
-<link rel="stylesheet" href="/assets/app.css?v=40">
+<link rel="stylesheet" href="/assets/app.css?v=41">
 <link rel="stylesheet" href="/assets/night.css?v=17">
 </head>
 <body class="guest">
@@ -641,6 +641,7 @@
         <button class="act" type="button" data-tool="save-section"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-save"/></svg><span>Save &amp; share</span></button>
         <button class="act" type="button" data-tool="downloads-section"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-download"/></svg><span>Download</span></button>
         <button class="act" type="button" data-tool="transpose-section"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-shift"/></svg><span>Transpose</span></button>
+        <button class="act" type="button" data-tool="fix-section"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-swap"/></svg><span>Fix a note</span></button>
         <button class="act" type="button" data-tool="lyrics-section"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-text"/></svg><span>Add lyrics</span></button>
         <button class="act" type="button" data-tool="chords-card"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-keys"/></svg><span>See chords</span></button>
         <button class="act act-pro" type="button" data-tool="harmony" data-pro="1"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-choir"/></svg><span>Add parts</span><svg class="ic act-lock" role="img" aria-label="Pro"><use href="/assets/icons.svg#i-lock"/></svg></button>
@@ -778,6 +779,20 @@
         </div>
         <p class="bk-line hidden" id="tr-backing-note"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-disc"/></svg><span>The song’s backing can’t move with it, so it will be off until you move it back.</span></p>
         <table class="ranges" id="ranges"></table>
+      </div>
+
+      <!-- A correction typed in words (assets/sheet-edit.js), the staff written again from the notes (assets/musicxml.js). -->
+      <div class="section" id="fix-section">
+        <h2><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-swap"/></svg>Fix a note</h2>
+        <p class="card-lead">Say what to change, the way you would tell a choir member.</p>
+        <form id="fix-form" class="link-form fix-form" novalidate>
+          <label class="sr-only" for="fix-text">The change to make</label>
+          <input id="fix-text" type="text" placeholder="make the second m an f" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="120" aria-describedby="fix-hint fix-said">
+          <button class="btn btn-primary" id="fix-apply" type="submit">Change it</button>
+        </form>
+        <p class="small muted" id="fix-hint">Or “change note 5 to s”, “move the last d up an octave”, “change every t to ta”, “delete note 6”. Bars are counted as the staff numbers them.</p>
+        <p class="fix-said" id="fix-said" aria-live="polite"></p>
+        <button class="btn btn-ghost btn-sm hidden" id="fix-undo" type="button"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-restart"/></svg>Undo</button>
       </div>
 
       <div class="section" id="save-section">
@@ -1139,7 +1154,9 @@
 <script src="/assets/freeweek.js?v=2" defer></script>
 <script src="/assets/sse.js?v=1" defer></script>
 <script src="/assets/library-groups.js?v=1" defer></script>
-<script src="/assets/app.js?v=77" defer></script>
+<script src="/assets/sheet-edit.js?v=1" defer></script>
+<script src="/assets/musicxml.js?v=1" defer></script>
+<script src="/assets/app.js?v=78" defer></script>
 <script src="/assets/season.js?v=4" defer></script>
 <script src="/assets/track.js?v=8" defer></script>
   <script src="/assets/support.js?v=2" defer></script>

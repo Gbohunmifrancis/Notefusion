@@ -137,6 +137,33 @@ public class UpdateNotesTests
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     /// <summary>The sample list with one note swapped out, as the editor would send it.</summary>
+    [Fact]
+    public async Task A_staff_written_from_the_corrected_notes_is_kept_with_them_and_none_keeps_the_old()
+    {
+        using var h = new TestHarness();
+        var userId = await SeedUser(h);
+        var saved = await Save(h, userId);
+        var corrected = Edited(index: 1, new(65, 1.0, 1.0, 0, "", "", 1.0));
+
+        // The phone draws its staff from the notes and sends none: the stored score stays.
+        await Handler(h, userId).Handle(new UpdateTranscriptionNotesCommand(saved.Id, corrected), default);
+        Assert.Equal("<score/>", h.Db.Transcriptions.Single(t => t.Id == saved.Id).MusicXml);
+
+        // The web app's "Fix a note" sends the staff it wrote from them.
+        var result = await Handler(h, userId)
+            .Handle(new UpdateTranscriptionNotesCommand(saved.Id, corrected, "<score-partwise>F</score-partwise>"), default);
+        Assert.True(result.IsSuccess);
+        Assert.Equal("<score-partwise>F</score-partwise>", h.Db.Transcriptions.Single(t => t.Id == saved.Id).MusicXml);
+    }
+
+    [Fact]
+    public void A_staff_past_the_score_size_is_refused()
+    {
+        var validator = new UpdateTranscriptionNotesCommandValidator();
+        var huge = new string('x', SheetLimits.MaxMusicXmlBytes + 1);
+        Assert.False(validator.Validate(new UpdateTranscriptionNotesCommand(Guid.NewGuid(), SampleNotes, huge)).IsValid);
+    }
+
     private static IReadOnlyList<NoteEventDto> Edited(int index, NoteEventDto note)
     {
         var notes = SampleNotes.ToList();

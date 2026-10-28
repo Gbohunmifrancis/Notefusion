@@ -68,7 +68,7 @@ public sealed class LibraryController : ApiControllerBase
     /// </summary>
     [HttpPut("{id:guid}/notes")]
     public async Task<IActionResult> UpdateNotes(Guid id, UpdateNotesBody body, CancellationToken ct)
-        => HandleResult(await _sender.Send(new UpdateTranscriptionNotesCommand(id, body.Notes), ct));
+        => HandleResult(await _sender.Send(new UpdateTranscriptionNotesCommand(id, body.Notes, body.MusicXml), ct));
 
     /// <summary>Sets the words under the solfa.</summary>
     [HttpPut("{id:guid}/lyrics")]
@@ -164,7 +164,7 @@ public sealed class LibraryController : ApiControllerBase
     public sealed record UpdateTimeSignatureBody(string TimeSignature);
 
     /// <summary>Body for a note-correction request.</summary>
-    public sealed record UpdateNotesBody(IReadOnlyList<NoteEventDto> Notes);
+    public sealed record UpdateNotesBody(IReadOnlyList<NoteEventDto> Notes, string? MusicXml = null);
 
     /// <summary>Body for a lyrics update.</summary>
     public sealed record UpdateLyricsBody(string? Lyrics);

@@ -323,7 +323,8 @@ public class Transcription : BaseEntity
     /// comparable with an untouched one instead of keeping a figure the notes no longer support.
     /// </para>
     /// </remarks>
-    public void ReplaceNotes(IEnumerable<NoteEvent> notes)
+    /// <param name="musicXml">The staff written from these notes, when the client wrote one; null keeps the stored one.</param>
+    public void ReplaceNotes(IEnumerable<NoteEvent> notes, string? musicXml = null)
     {
         List<NoteEvent> corrected = [.. Guard.NotNull(notes)];
         if (corrected.Count == 0)
@@ -332,5 +333,7 @@ public class Transcription : BaseEntity
         _notes.Clear();
         _notes.AddRange(corrected);
         OverallConfidence = Math.Round(corrected.Average(n => n.Confidence), 3);
+        if (musicXml is not null)
+            MusicXml = musicXml;
     }
 }
