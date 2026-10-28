@@ -181,7 +181,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   ways: a cache-busted Dockerfile layer every build, a weekly scheduled deploy, and the worker installing the
   newest nightly beside the image's at startup and daily (`app/ingest/ytdlp_update.py`, `NF_YTDLP_UPDATE_*`).
   Each resolve that asks yt-dlp and each link job logs one `link_attempt` line (outcome, rung, running
-  totals, block rate; no URL), and expired cookies log `ytdlp_cookies_rejected`. Every failure says where it stopped:
+  totals, block rate; no URL), and expired cookies log `ytdlp_cookies_rejected`. `python -m app.ingest.probe` (run by
+  `check-ec2.yml`) prints the ladder as configured and has each rung fetch ten seconds of two videos, a download and not
+  only the details, with the jobs' cookies, tokens and proxy (never printing the proxy or cookies). Every failure says where it stopped:
   `links.STAGES` (parse, resolve, metadata, search, download, decode, separation, transcription) and a code
   (`failure_code`), on a refusal's detail and a failed job's `failure_stage`/`failure_code`; the API keeps them on
   `TranscriptionLog.FailureStage`/`FailureCode` (its own refusals as parse, gate, request or worker) and the console's
