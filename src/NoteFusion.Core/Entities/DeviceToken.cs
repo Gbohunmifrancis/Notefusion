@@ -76,8 +76,17 @@ public class DeviceToken : BaseEntity
     /// </summary>
     public DateTime? PaymentAlertsSetAtUtc { get; private set; }
 
+    /// <summary>
+    /// Which payment channels this phone's code made: 1 (<c>payments-v1-…</c>) or 2 (<c>payments-v2-…</c>, the chime kept
+    /// in the build). Said by the code with every setting it sends, as <see cref="ServerReminders"/> is: not derivable
+    /// from <see cref="AppBuild"/>, which EAS numbers for every build made, released or not; a phone on older code
+    /// sending its settings (without it) goes back to 1.
+    /// </summary>
+    public int PaymentChannelVersion { get; private set; } = 1;
+
     public void SetPaymentAlerts(
-        bool on, string sound, bool vibrate, bool quietAtNight, bool hideNames, bool problems, DateTime utcNow)
+        bool on, string sound, bool vibrate, bool quietAtNight, bool hideNames, bool problems, DateTime utcNow,
+        int channelVersion = 1)
     {
         PaymentAlerts = on;
         if (!PaymentAlertSounds.IsKnown(sound))
@@ -88,6 +97,7 @@ public class DeviceToken : BaseEntity
         PaymentAlertHideNames = hideNames;
         PaymentProblemAlerts = problems;
         PaymentAlertsSetAtUtc = utcNow;
+        PaymentChannelVersion = channelVersion;
     }
 
     /// <summary>Silences the alerts until <paramref name="untilUtc"/>; null (or a moment passed) unmutes.</summary>

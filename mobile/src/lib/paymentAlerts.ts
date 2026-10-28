@@ -5,7 +5,8 @@
  *
  * Mirrors C# `Application/Admin/PaymentAlerts/PaymentAlertChannels`, which names one of these channels per phone in
  * every push: keep the two in step. A channel's sound and vibration are fixed once Android has created it, so every
- * choice is a channel of its own, and the ids carry a version (`payments-v1`): a new sound is a new id.
+ * choice is a channel of its own, and the ids carry a version (`payments-v1`): a new sound is a new id. This code makes
+ * `payments-v2-…` (`PAYMENT_CHANNEL_VERSION`) and tells the server so; older code made v1 and is still sent v1.
  */
 
 export type PaymentAlertSound = "chime" | "phone" | "none";
@@ -34,10 +35,26 @@ export const DEFAULT_PAYMENT_ALERTS: PaymentAlertPrefs = {
   problems: true,
 };
 
-/** The chime with the pulses: the main channel. */
+/** The chime with the pulses: the main channel (v1, older code). */
 export const PAYMENTS_CHANNEL = "payments-v1";
 /** No sound, no vibration: quiet hours and "Mute 1 hour". Every phone with alerts keeps it. */
 export const PAYMENTS_QUIET_CHANNEL = "payments-v1-none-still";
+
+export type ChannelVersion = 1 | 2;
+
+/**
+ * The channels this code makes, sent to the server as `channels` with the phone's settings (C#
+ * `DeviceToken.PaymentChannelVersion`). Release builds before plugins/withKeepPaymentSound had res/raw/payment
+ * stripped by the resource shrinker, so Android made `payments-v1` with the phone's own sound, which a channel never
+ * changes. This code can only run on a build with that plugin (it is part of the fingerprint runtime, so no older
+ * build is offered this update), so its new ids, `payments-v2-…`, are made with the chime.
+ */
+export const PAYMENT_CHANNEL_VERSION: ChannelVersion = 2;
+
+/** No sound, no vibration, in a version's ids. */
+export function quietChannel(version: ChannelVersion = 1): string {
+  return `payments-v${version}-none-still`;
+}
 /** The admins' payment-problem alerts, apart from the payments. */
 export const PAYMENT_PROBLEMS_CHANNEL = "payment-problems";
 /** Every payment channel id starts with this; one no longer chosen is deleted. */
@@ -59,8 +76,8 @@ export const MUTE_MINUTES = 60;
 export const QUIET_FROM_HOUR = 22;
 export const QUIET_UNTIL_HOUR = 7;
 
-export function channelFor(sound: PaymentAlertSound, vibrate: boolean): string {
-  return sound === "chime" && vibrate ? PAYMENTS_CHANNEL : `payments-v1-${sound}${vibrate ? "" : "-still"}`;
+export function channelFor(sound: PaymentAlertSound, vibrate: boolean, version: ChannelVersion = 1): string {
+  return sound === "chime" && vibrate ? `payments-v${version}` : `payments-v${version}-${sound}${vibrate ? "" : "-still"}`;
 }
 
 export interface PaymentChannelSpec {
@@ -78,9 +95,9 @@ const SOUND_NAMES: Record<PaymentAlertSound, string> = {
   none: " · no sound",
 };
 
-function spec(sound: PaymentAlertSound, vibrate: boolean): PaymentChannelSpec {
-  const id = channelFor(sound, vibrate);
-  const name = id === PAYMENTS_QUIET_CHANNEL ? "Payments · quiet" : `Payments${SOUND_NAMES[sound]}${vibrate ? "" : " · no vibration"}`;
+function spec(sound: PaymentAlertSound, vibrate: boolean, version: ChannelVersion): PaymentChannelSpec {
+  const id = channelFor(sound, vibrate, version);
+  const name = id === quietChannel(version) ? "Payments · quiet" : `Payments${SOUND_NAMES[sound]}${vibrate ? "" : " · no vibration"}`;
   return { id, name, sound: sound === "chime" ? CHIME_FILE : sound === "none" ? null : undefined, vibrate };
 }
 
@@ -88,9 +105,11 @@ function spec(sound: PaymentAlertSound, vibrate: boolean): PaymentChannelSpec {
  * The payment channels this phone should have: the one its choices name, and the quiet one the server uses while it
  * is muted or in its quiet hours. Every other `payments-v*` channel is deleted, so Android's settings list only these.
  */
-export function channelsToKeep(prefs: Pick<PaymentAlertPrefs, "sound" | "vibrate">): PaymentChannelSpec[] {
-  const chosen = spec(prefs.sound, prefs.vibrate);
-  return chosen.id === PAYMENTS_QUIET_CHANNEL ? [chosen] : [chosen, spec("none", false)];
+export function channelsToKeep(
+  prefs: Pick<PaymentAlertPrefs, "sound" | "vibrate">, version: ChannelVersion = 1,
+): PaymentChannelSpec[] {
+  const chosen = spec(prefs.sound, prefs.vibrate, version);
+  return chosen.id === quietChannel(version) ? [chosen] : [chosen, spec("none", false, version)];
 }
 
 /** Payment channel ids found on the phone that are no longer wanted. */

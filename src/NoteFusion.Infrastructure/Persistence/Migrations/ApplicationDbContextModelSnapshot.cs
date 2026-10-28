@@ -1104,6 +1104,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("PaymentAlertsSetAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("PaymentChannelVersion")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("PaymentProblemAlerts")
                         .HasColumnType("boolean");
 

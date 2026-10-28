@@ -15,6 +15,7 @@ import {
   PAYMENT_PROBLEMS_CHANNEL,
   PAYMENT_VIBRATION,
   VIEW_PAYMENT_ACTION,
+  PAYMENT_CHANNEL_VERSION,
   channelsToDelete,
   channelsToKeep,
   readPrefs,
@@ -69,7 +70,7 @@ export async function ensurePaymentChannels(prefs: PaymentAlertPrefs): Promise<v
   if (!N) return;
   try {
     if (Platform.OS === "android") {
-      const keep = channelsToKeep(prefs);
+      const keep = channelsToKeep(prefs, PAYMENT_CHANNEL_VERSION);
       for (const c of keep) {
         await N.setNotificationChannelAsync(c.id, {
           name: c.name,
@@ -141,7 +142,8 @@ export async function savePaymentAlerts(prefs: PaymentAlertPrefs): Promise<Alert
   const token = await pushToken();
   if (!token) return { kind: "no-push" };
 
-  const body = { token, ...prefs };
+  // `channels`: the ids just made, which the server names in this phone's alerts from now on.
+  const body = { token, ...prefs, channels: PAYMENT_CHANNEL_VERSION };
   try {
     return { kind: "saved", settings: await adminApi.setAlertSettings(body) };
   } catch (first) {

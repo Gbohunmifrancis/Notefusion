@@ -17,6 +17,7 @@ import { showToast } from "../../lib/toast";
 import { getPushPermission } from "../../lib/push";
 import {
   DEFAULT_PAYMENT_ALERTS,
+  PAYMENT_CHANNEL_VERSION,
   QUIET_HOURS_LABEL,
   channelFor,
   mutedLine,
@@ -147,7 +148,7 @@ export function AdminAlertsScreen() {
     const pkg = Application.applicationId ?? "com.notefusion.com";
     void Linking.sendIntent("android.settings.CHANNEL_NOTIFICATION_SETTINGS", [
       { key: "android.provider.extra.APP_PACKAGE", value: pkg },
-      { key: "android.provider.extra.CHANNEL_ID", value: channelFor(prefs.sound, prefs.vibrate) },
+      { key: "android.provider.extra.CHANNEL_ID", value: channelFor(prefs.sound, prefs.vibrate, PAYMENT_CHANNEL_VERSION) },
     ]).catch(() => Linking.openSettings());
   }
 

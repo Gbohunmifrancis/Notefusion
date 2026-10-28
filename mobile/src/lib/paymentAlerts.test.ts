@@ -7,6 +7,8 @@ import {
   PAYMENTS_QUIET_CHANNEL,
   PAYMENT_PROBLEMS_CHANNEL,
   channelFor,
+  PAYMENT_CHANNEL_VERSION,
+  quietChannel,
   channelsToDelete,
   channelsToKeep,
   isQuietHour,
@@ -83,4 +85,17 @@ test("a mute is said in the phone's time until it has passed", () => {
   assert.equal(mutedLine(new Date(2026, 9, 18, 18, 0).toISOString(), now), null);
   assert.equal(mutedLine(null, now), null);
   assert.equal(mutedLine("not a date", now), null);
+});
+
+
+test("this code makes channels of its own, v2, with the chime; older code's v1 ids are as they were", () => {
+  assert.equal(PAYMENT_CHANNEL_VERSION, 2);
+  assert.equal(channelFor("chime", true, 2), "payments-v2");
+  assert.equal(channelFor("phone", false, 2), "payments-v2-phone-still");
+  assert.equal(quietChannel(2), "payments-v2-none-still");
+  const keep = channelsToKeep({ sound: "chime", vibrate: true }, 2);
+  assert.deepEqual(keep.map((c) => [c.id, c.sound]), [["payments-v2", "payment.wav"], ["payments-v2-none-still", null]]);
+  // The broken v1 channels are deleted once a v2 build makes its own.
+  assert.deepEqual(channelsToDelete(["payments-v1", "payments-v1-none-still", "payment-problems", "payments-v2"], keep),
+    ["payments-v1", "payments-v1-none-still"]);
 });

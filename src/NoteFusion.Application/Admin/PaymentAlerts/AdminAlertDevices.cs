@@ -16,7 +16,9 @@ public sealed record AdminAlertDevice(
     bool Problems,
     DateTime? MutedUntilUtc,
     DateTime? SetAtUtc,
-    string? TimeZone);
+    string? TimeZone,
+    /// <summary>Which payment channels the phone's code made (<see cref="DeviceToken.PaymentChannelVersion"/>).</summary>
+    int ChannelVersion = 1);
 
 /// <summary>
 /// The phones an admin alert may go to. The role is read from the account row now, never a token's claim, so an admin
@@ -43,7 +45,8 @@ public static class AdminAlertDevices
                 t.PaymentProblemAlerts,
                 t.PaymentAlertsMutedUntilUtc,
                 t.PaymentAlertsSetAtUtc,
-                db.Users.Where(u => u.Id == t.UserId).Select(u => u.TimeZone).FirstOrDefault()))
+                db.Users.Where(u => u.Id == t.UserId).Select(u => u.TimeZone).FirstOrDefault(),
+                t.PaymentChannelVersion))
             .ToListAsync(ct);
 
     /// <summary>Admin phones with "Alert me when someone pays" on.</summary>

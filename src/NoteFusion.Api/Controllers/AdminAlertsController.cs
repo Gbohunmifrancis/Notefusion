@@ -28,12 +28,12 @@ public sealed class AdminAlertsController : ApiControllerBase
 
     /// <summary>
     /// Sets them: <c>on</c>, <c>sound</c> ("chime" | "phone" | "none"), <c>vibrate</c>, <c>quietAtNight</c>,
-    /// <c>hideNames</c>, <c>problems</c>. 404 <c>ADMIN_ALERTS_DEVICE_UNKNOWN</c> for a token not registered to the caller.
+    /// <c>hideNames</c>, <c>problems</c>, and <c>channels</c>, the channel version the phone's code made (absent: 1). 404 <c>ADMIN_ALERTS_DEVICE_UNKNOWN</c> for a token not registered to the caller.
     /// </summary>
     [HttpPut("device")]
     public async Task<IActionResult> SetDevice(SetPaymentAlertsRequest body, CancellationToken ct)
         => HandleResult(await _sender.Send(new SetPaymentAlertSettingsCommand(
-            body.Token, body.On, body.Sound, body.Vibrate, body.QuietAtNight, body.HideNames, body.Problems), ct));
+            body.Token, body.On, body.Sound, body.Vibrate, body.QuietAtNight, body.HideNames, body.Problems, body.Channels), ct));
 
     /// <summary>"Mute 1 hour": <c>minutes</c> 1–1440 of alerts without a sound, or 0 to unmute.</summary>
     [HttpPost("device/mute")]
@@ -75,7 +75,7 @@ public sealed record ConfirmAdminPasswordRequest(string Password);
 
 /// <summary>JSON body of <c>PUT /api/admin/alerts/device</c>.</summary>
 public sealed record SetPaymentAlertsRequest(
-    string Token, bool On, string Sound, bool Vibrate, bool QuietAtNight, bool HideNames, bool Problems);
+    string Token, bool On, string Sound, bool Vibrate, bool QuietAtNight, bool HideNames, bool Problems, int? Channels = null);
 
 /// <summary>JSON body of <c>POST /api/admin/alerts/device/mute</c>.</summary>
 public sealed record MutePaymentAlertsRequest(string Token, int Minutes);

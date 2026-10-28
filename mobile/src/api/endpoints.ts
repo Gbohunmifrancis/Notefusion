@@ -968,6 +968,8 @@ export const adminApi = {
     quietAtNight: boolean;
     hideNames: boolean;
     problems: boolean;
+    /** The payment channel version this code made (C# `SetPaymentAlertsRequest.Channels`). */
+    channels?: number;
   }) => api.put<PaymentAlertSettings>("/api/admin/alerts/device", body).then((r) => r.data),
 
   /** "Mute 1 hour": `minutes` of alerts without a sound, or 0 to unmute. */

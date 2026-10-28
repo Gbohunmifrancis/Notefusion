@@ -96,9 +96,10 @@ public sealed class SendAdminActivityAlertsCommandHandler
         int accepted = 0;
         string? error = null;
         foreach (var group in devices
-                     .Select(d => (Device: d, Hushed: PaymentAlertChannels.For(
-                         d.Sound, d.Vibrate, d.QuietAtNight, d.MutedUntilUtc, d.TimeZone, now).Channel == PaymentAlertChannels.Quiet))
-                     .GroupBy(x => (x.Hushed, x.Device.HideNames)))
+                     .Select(d => (Device: d, Quiet: PaymentAlertChannels.QuietFor(d.ChannelVersion), Hushed: PaymentAlertChannels.For(
+                         d.Sound, d.Vibrate, d.QuietAtNight, d.MutedUntilUtc, d.TimeZone, now, d.ChannelVersion).Channel
+                         == PaymentAlertChannels.QuietFor(d.ChannelVersion)))
+                     .GroupBy(x => (x.Hushed, x.Quiet, x.Device.HideNames)))
         {
             var words = AdminActivityPushCopy.Summary(signups, transcriptions, group.Key.HideNames);
             var delivery = await _push.SendToDevicesAsync(
@@ -106,7 +107,7 @@ public sealed class SendAdminActivityAlertsCommandHandler
                 new PushMessage(
                     words.Title, words.Body, data,
                     Sound: group.Key.Hushed ? null : "default",
-                    ChannelId: group.Key.Hushed ? PaymentAlertChannels.Quiet : SendAdminActivityAlertsCommand.Channel,
+                    ChannelId: group.Key.Hushed ? group.Key.Quiet : SendAdminActivityAlertsCommand.Channel,
                     TimeToLiveSeconds: SendAdminActivityAlertsCommand.TimeToLiveSeconds),
                 ct);
             accepted += delivery.Accepted;
