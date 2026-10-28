@@ -1128,3 +1128,25 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 .fix-said { margin: 10px 0 0; font-weight: 600; }
 .fix-said:empty { display: none; }
 #fix-undo { margin-top: 8px; }
+
+/* The Piano view: the notes falling onto the keys (assets/piano-roll.js). */
+/* A keyboard wider than the screen scrolls sideways inside its frame (keys a finger wide), never the page. */
+.roll-scroll { overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; border: 1px solid var(--border); border-radius: var(--r-md); scrollbar-width: thin; }
+/* Tall enough to see the notes coming, short enough that the keys sit above a phone's tab bar under the sheet's header. */
+.roll-canvas { display: block; width: 100%; height: 380px; height: clamp(300px, calc(100dvh - 430px), 460px); touch-action: pan-x; cursor: pointer; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
+.sheet-stage.is-full .roll-canvas { height: calc(100dvh - 160px); }
+/* The chat button sits over the right-hand keys on a phone, so it steps aside while they are on screen. */
+@media (max-width: 640px) { body.nf-at-keys .nf-support-btn { display: none !important; } }
+.roll-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+.roll-bar .btn { min-height: 44px; }
+.roll-speed { display: inline-flex; border: 1px solid var(--border); border-radius: var(--r-pill); padding: 2px; }
+.roll-speed button { min-width: 56px; min-height: 40px; border: 0; border-radius: var(--r-pill); background: none; color: var(--text); font: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+.roll-speed button[aria-pressed="true"] { background: var(--blue-soft); color: var(--blue-deep); }
+/* The Piano tab is its keyboard alone on a phone, and each tab is as wide as its words, so on a 360 px phone the others keep
+   their words, Four parts included. */
+.result-views .tab { flex: 1 1 auto; }
+.result-views .tab-roll { flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.tab-roll .ic { width: 18px; height: 18px; }
+@media (max-width: 640px) { .result-views .tabs .tab-roll { padding-inline: 12px; } .tab-roll .tab-word { display: none; } }
+.tab-short { display: none; }
+@media (max-width: 400px) { .result-views .tabs { gap: 1px; } .result-views .tabs .tab { padding-inline: 5px; } .result-views .tabs .tab-roll { padding-inline: 8px; min-width: 44px; } .result-views .tab-long { display: none; } .result-views .tab-short { display: inline; } }

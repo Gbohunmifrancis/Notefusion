@@ -3353,7 +3353,12 @@
     hide($("r-parts"));
     var hasParts = P.hasParts(result);
     hasParts ? show($("tab-parts")) : hide($("tab-parts"));
-    $("tab-parts").textContent = result.partsSource === "heard" ? "Parts as sung" : "Four parts";
+    // "Parts" on a narrow phone, where the full name would push the tabs past one row; the full name is the tab's name.
+    var partsName = result.partsSource === "heard" ? "Parts as sung" : "Four parts", partsTab = $("tab-parts");
+    partsTab.textContent = ""; partsTab.setAttribute("aria-label", partsName);
+    [[partsName, "tab-long"], ["Parts", "tab-short"]].forEach(function (w) {
+      var span = document.createElement("span"); span.className = w[1]; span.textContent = w[0]; span.setAttribute("aria-hidden", "true"); partsTab.appendChild(span);
+    });
     hasParts ? hide($("harmony")) : show($("harmony"));
     hide($("harmony-alert"));
     renderHarmonyOffer();
@@ -3609,12 +3614,14 @@
         for (var i = 0; i < hymnCells.length; i++) if (hymnCells[i].beat <= t.beat + 1e-6) now = i;
         hymnCells.forEach(function (c, i) { c.el.className = t.playing && i === now ? "now" : ""; });
         practiceTick(t);
+        rollTick(t);
       });
     }
     var voices = rehearsalVoices(result);
     // The beats placed in the song's recording, so its backing and the notes keep one clock (assets/backing-clock.js).
     player.load({ voices: voices, tempoBpm: result.tempo, timeSignature: result.timeSignature, beatOriginSec: result.beatOriginSec, beatTimesSec: result.beatTimesSec });
     loadBacking(result);
+    if (roll) roll.set({ voices: voices, timeSignature: result.timeSignature, key: result.key });
     var bars = C.barCount(result.notes || [], result.timeSignature);
     $("loop-from").max = bars; $("loop-to").max = bars; $("loop-to").value = Math.min(4, bars); $("loop-from").value = 1; $("loop-on").checked = false;
     var box = $("voices"), hear = $("part-mix-voices");
@@ -4605,11 +4612,68 @@
       view === "staff" ? show($("r-staff")) : hide($("r-staff"));
       view === "solfa" ? show($("r-solfa")) : hide($("r-solfa"));
       view === "parts" ? show($("r-parts")) : hide($("r-parts"));
+      view === "roll" ? show($("r-roll")) : hide($("r-roll"));
+      if (view === "roll") openRoll();
       if (view === "parts" && current && current.result && current.result.parts && !$("sheet-parts").childElementCount) {
         engraveInto($("sheet-parts"), current.result.partsMusicXml, true);
       }
     });
   });
+
+  // ── The Piano view (assets/piano-roll.js): the notes falling onto the keys, in time with the player ──
+  var ROLL_ASSET = "/assets/piano-roll.js?v=1";
+  var roll = null, rollFrame = 0;
+  function rollShown() { return !$("r-roll").classList.contains("hidden"); }
+  function openRoll() {
+    var at = epoch;
+    loadAsset(ROLL_ASSET).then(function () {
+      if (at !== epoch || !current || !current.result || !rollShown()) return;
+      if (!roll) {
+        // A tapped key sounds through the player's piano; a tap on the falling notes plays or pauses.
+        roll = window.NfPianoRoll.create($("roll-canvas"), $("roll-scroll"), {
+          key: function (midi) { if (player) player.tap(midi); track("Played a piano key"); },
+          roll: function () { if (player) player.toggle(); }
+        });
+        if (window.ResizeObserver) new ResizeObserver(function () { if (rollShown()) roll.resize(); }).observe($("roll-scroll"));
+        if (window.IntersectionObserver) {
+          new IntersectionObserver(function (seen) { document.body.classList.toggle("nf-at-keys", seen[seen.length - 1].isIntersecting); }).observe($("roll-scroll"));
+        }
+      }
+      roll.set({ voices: rehearsalVoices(current.result), timeSignature: current.result.timeSignature, key: current.result.key });
+      syncRollSpeed();
+      rollTick({ beat: player ? player.beat() : 0, playing: !!(player && player.isPlaying()) });
+      track("Opened the piano view");
+    }, function () {
+      if (at === epoch) alertIn($("app-alert"), "danger", "The piano view didn't load. Check your connection and try again.");
+    });
+  }
+  /** Each tick of the player: the button's word, and while playing a frame per screen refresh (the tick is 60 ms). */
+  function rollTick(t) {
+    label($("roll-play"), t.playing ? "pause" : "play", t.playing ? "Pause" : "Play");
+    if (!roll || !rollShown()) return;
+    if (!t.playing) { roll.draw(t.beat, false); return; }
+    if (!rollFrame) rollFrame = requestAnimationFrame(rollStep);
+  }
+  function rollStep() {
+    rollFrame = 0;
+    if (!roll || !rollShown() || !player) return;
+    roll.draw(player.beat(), true);
+    if (player.isPlaying()) rollFrame = requestAnimationFrame(rollStep);
+  }
+  function syncRollSpeed() {
+    var rate = $("rate").value;
+    document.querySelectorAll(".roll-speed [data-rate]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.rate === rate)); });
+  }
+  $("roll-play").addEventListener("click", function () { if (player) player.toggle(); });
+  document.querySelectorAll(".roll-speed [data-rate]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      // The same speed as Slow & loop's: one player, one setting.
+      $("rate").value = b.dataset.rate;
+      $("rate").dispatchEvent(new Event("change"));
+      track("Piano view speed " + b.dataset.rate);
+    });
+  });
+  $("rate").addEventListener("change", syncRollSpeed);
 
   /**
    * The parts, on the sheet. The "Write the four parts" panel is in the tool pop-up when this runs from

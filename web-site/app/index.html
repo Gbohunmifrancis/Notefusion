@@ -24,7 +24,7 @@
 <link rel="preload" href="/assets/fonts/geist-v5-latin.woff2" as="font" type="font/woff2" crossorigin>
 <!-- Only what the first screen needs; the range picker's and the recorder's styles load at the end of the body. -->
 <link rel="stylesheet" href="/assets/theme.css?v=7">
-<link rel="stylesheet" href="/assets/app.css?v=41">
+<link rel="stylesheet" href="/assets/app.css?v=42">
 <link rel="stylesheet" href="/assets/night.css?v=17">
 </head>
 <body class="guest">
@@ -581,7 +581,8 @@
           <div class="tabs result-tabs" role="tablist">
             <button class="tab" role="tab" aria-selected="true" data-view="staff" type="button">Staff</button>
             <button class="tab" role="tab" aria-selected="false" data-view="solfa" type="button">Tonic Solfa</button>
-            <button class="tab hidden" role="tab" aria-selected="false" data-view="parts" type="button" id="tab-parts">Four parts</button>
+            <button class="tab hidden" role="tab" aria-selected="false" data-view="parts" type="button" id="tab-parts" aria-label="Four parts"><span class="tab-long" aria-hidden="true">Four parts</span><span class="tab-short" aria-hidden="true">Parts</span></button>
+            <button class="tab tab-roll" role="tab" aria-selected="false" data-view="roll" type="button" id="tab-roll" aria-label="Piano" title="Piano"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-keys"/></svg><span class="tab-word">Piano</span></button>
           </div>
           <button class="btn btn-ghost btn-icon" id="r-expand" type="button" aria-label="Show the sheet full screen" aria-pressed="false" title="Full screen"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-expand"/></svg></button>
         </div>
@@ -602,6 +603,20 @@
           </div>
         </div>
         <div id="r-solfa" class="hidden"><div class="solfa" id="r-solfa-text"></div><div id="r-hymn"></div></div>
+        <!-- The notes falling onto the keys they are played on, in time with Play (assets/piano-roll.js, loaded on first open). -->
+        <div id="r-roll" class="hidden">
+          <div class="roll-bar">
+            <button class="btn btn-primary btn-sm" id="roll-play" type="button"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-play"/></svg>Play</button>
+            <div class="roll-speed" role="group" aria-label="Speed">
+              <button type="button" data-rate="0.5" aria-pressed="false">0.5×</button>
+              <button type="button" data-rate="0.75" aria-pressed="false">0.75×</button>
+              <button type="button" data-rate="1" aria-pressed="true">1×</button>
+            </div>
+          </div>
+          <div class="roll-scroll" id="roll-scroll">
+            <canvas class="roll-canvas" id="roll-canvas" role="img" aria-label="The notes falling onto a piano keyboard as they play, each key marked with its solfa. Tap a key to hear it; tap the falling notes to play or pause."></canvas>
+          </div>
+        </div>
         <div id="r-parts" class="hidden">
           <div id="r-parts-locked" class="upgrade-note hidden" style="margin-top:0">
             <strong>Four-part harmony is a Pro feature.</strong> Alto, tenor and bass are written under the tune the way a hymn arranger would — ready for your choir.
@@ -1138,7 +1153,7 @@
 <!-- The engraver (once the app is open) and the PDF library (on the first PDF) are loaded by app.js from pinned,
      integrity-checked CDN URLs. -->
 <script src="/assets/backing-clock.js?v=2" defer></script>
-<script src="/assets/choir.js?v=9" defer></script>
+<script src="/assets/choir.js?v=10" defer></script>
 <script src="/assets/chords.js?v=2" defer></script>
 <script src="/assets/songlink.js?v=8" defer></script>
 <script src="/assets/rangepicker.js?v=1" defer></script>
@@ -1156,7 +1171,7 @@
 <script src="/assets/library-groups.js?v=1" defer></script>
 <script src="/assets/sheet-edit.js?v=1" defer></script>
 <script src="/assets/musicxml.js?v=1" defer></script>
-<script src="/assets/app.js?v=78" defer></script>
+<script src="/assets/app.js?v=79" defer></script>
 <script src="/assets/season.js?v=4" defer></script>
 <script src="/assets/track.js?v=8" defer></script>
   <script src="/assets/support.js?v=2" defer></script>
