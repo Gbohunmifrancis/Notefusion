@@ -59,7 +59,7 @@ import { useAuth } from "../lib/auth";
 import { linkJobStore } from "../lib/linkJobStore";
 import type { LinkJobOptions, LinkSong } from "../lib/linkJob";
 import { markPractisedToday } from "../lib/practiceReminder";
-import { extractSongUrl, fetchesItsOwnVideo, songLinkHint } from "../lib/songLink";
+import { asProvider, extractSongUrl, fetchesItsOwnVideo, songLinkHint } from "../lib/songLink";
 import { defaultRange, fitsWhole, formatClock, isWholeSong, sectionLabel, type ClipRange } from "../lib/clipRange";
 import { toApiError } from "../api/client";
 import { isNetworkCode } from "../lib/reachability";
@@ -132,10 +132,9 @@ export function LinkScreen() {
   /** "More options" unfolded: the Beats-in-a-bar chips, folded away by default (board l-ux-high 02b). */
   const [moreOpen, setMoreOpen] = useState(false);
   const inputRef = useRef<TextInput>(null);
-  // Share text ("Listen to … on Spotify: https://…") is read down to its link, the one rule the
-  // worker applies (lib/songLink); only the link itself is sent.
+  // Share text ("Listen to … on Spotify: https://…") is read down to its link (lib/songLink); only the link itself is
+  // sent, and any link is looked up: whether it is a song is the server's to say.
   const found = useMemo(() => extractSongUrl(url), [url]);
-  const provider = found?.provider ?? null;
   const busy = state.status === "pending" || state.status === "processing";
 
   // ── The song behind the link, and the section of it to take ─────────────
@@ -185,13 +184,19 @@ export function LinkScreen() {
   }, [foundUrl, boughtRemaining]);
 
   const song = info && info.url === foundUrl ? info.data : null;
+  // The service the server read the link as, or until it answers the one its host belongs to (for the mark only).
+  const provider = asProvider(song?.provider) ?? found?.provider ?? null;
   const duration = song ? knownLength(song.durationSeconds) : null;
   const maxSeconds = song?.maxSeconds ?? null;
   // The section to send: only when the song's length is known, so the thumbs mean something.
   const section = song && duration != null && maxSeconds != null && range ? range : null;
   // A link the API turned away by name (live, private, too long…) can never work, so the screen
   // says so instead of offering the button; any other failed lookup leaves the server the final say.
-  const refusal = infoError ? linkRefusal(infoError.code) : null;
+  // Any link is looked up, so one typed letter by letter is "not a song" until it is whole: that is
+  // said once the field is left (or the link was pasted), as the no-link hint is.
+  const typing = focused && !pasted;
+  const refusal =
+    infoError && !(typing && infoError.code === "TRANS_INVALID_LINK") ? linkRefusal(infoError.code) : null;
 
   const credits = subscription?.songCreditsRemaining;
   const creditsTotal = subscription?.songCreditsTotal;
@@ -314,7 +319,7 @@ export function LinkScreen() {
     void logAnalyticsEvent("beats_in_a_bar", { meter: meterEventValue(meter), source: "link" });
     // Where the song is from and how much of it, never the link itself.
     logAppEvent("link_submitted", {
-      provider: found.provider,
+      provider: provider ?? "other",
       sec: section ? Math.round(section.end - section.start) : null,
     });
     const opts: LinkJobOptions = {
@@ -371,11 +376,11 @@ export function LinkScreen() {
     boughtBefore.current = boughtRemaining;
   }, [boughtRemaining, wantsUpgrade, reset]);
 
-  // Ready: nothing we can read yet, so the screen introduces itself and the services.
-  const ready = !provider;
+  // Ready: no link in the field yet, so the screen introduces itself and the services.
+  const ready = !found;
   // A link we can send: Transcribe and its entitlement line sit in a bar pinned to the bottom edge, where the
   // thumb is (Song link opens over the tabs, so there is no tab bar under it).
-  const docked = !busy && provider !== null && !refusal;
+  const docked = !busy && found !== null && !refusal;
 
   // Which preset the section matches, for the chips. A song that fits whole starts as the whole song.
   const first = duration != null && maxSeconds != null ? defaultRange(duration, maxSeconds) : null;
@@ -480,10 +485,10 @@ export function LinkScreen() {
           </View>
         ) : null}
 
-        {!busy && url.trim().length > 0 && !provider && (pasted || !focused) ? (
+        {!busy && url.trim().length > 0 && !found && (pasted || !focused) ? (
           <View style={styles.note}>
             <Icon name="problem" size={16} color={colors.warning} />
-            <Text style={styles.noteText}>{songLinkHint(url)}</Text>
+            <Text style={styles.noteText}>{songLinkHint()}</Text>
           </View>
         ) : null}
 
@@ -546,7 +551,7 @@ export function LinkScreen() {
           </>
         ) : null}
 
-        {!busy && provider && refusal && infoError ? (
+        {!busy && found && refusal && infoError ? (
           <>
             <NoticeCard icon={refusal.icon} title={refusal.title} message={infoError.message}>
               <Button label="Try another link" variant="secondary" size="sm" onPress={tryAnother} />
@@ -556,9 +561,9 @@ export function LinkScreen() {
           </>
         ) : null}
 
-        {!busy && provider && !refusal ? (
+        {!busy && found && !refusal ? (
           <>
-            {!fetchesItsOwnVideo(provider) && !song ? (
+            {provider && !fetchesItsOwnVideo(provider) && !song ? (
               <Text style={styles.hint}>
                 {PROVIDER_LABEL[provider]} — we'll find the song on YouTube by its title and artist.
               </Text>
@@ -566,7 +571,7 @@ export function LinkScreen() {
 
             {song ? (
               <>
-                <SongCover song={song} provider={provider} duration={duration} />
+                {provider ? <SongCover song={song} provider={provider} duration={duration} /> : null}
 
                 {duration != null && maxSeconds != null && range ? (
                   <>

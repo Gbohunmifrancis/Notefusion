@@ -2354,7 +2354,7 @@
   $("form-link").addEventListener("submit", function (e) {
     e.preventDefault();
     var raw = $("link-url").value.trim();
-    if (!raw) { linkHint("Paste a link to a YouTube, Instagram or TikTok video, a Spotify track or an Apple Music song."); $("link-url").focus(); return; }
+    if (!raw) { linkHint(window.NfSongLink.hint()); $("link-url").focus(); return; }
     var found = window.NfSongLink.extract(raw);
     if (!found) { linkHint(window.NfSongLink.hint(raw)); $("link-url").focus(); return; }
     $("link-url").value = found.url; linkHint("");

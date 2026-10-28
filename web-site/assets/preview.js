@@ -228,7 +228,7 @@
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     var raw = urlInput.value.trim();
-    if (!raw) { sayLink("Paste a link to a YouTube video, a Spotify track or an Apple Music song."); urlInput.focus(); return; }
+    if (!raw) { sayLink(links.hint()); urlInput.focus(); return; }
     var found = links.extract(raw);
     if (!found) { sayLink(links.hint(raw)); urlInput.focus(); return; }
     urlInput.value = found.url;

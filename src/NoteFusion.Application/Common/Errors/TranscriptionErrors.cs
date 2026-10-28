@@ -22,7 +22,7 @@ public static class TranscriptionErrors
 
     public static readonly Error InvalidLink =
         Error.Validation("TRANS_INVALID_LINK",
-            "Paste a link to a YouTube video, a Spotify track or an Apple Music song.");
+            "Paste a link to a YouTube, Instagram or TikTok video, a Spotify track or an Apple Music song.");
 
     /// <summary>The worker looked at the link and found no video behind it.</summary>
     public static readonly Error LinkNotFound =

@@ -132,6 +132,21 @@ SPOTIFY_ID = "4cOdK2wGLETKBW3PvgPWqT"
         ("https://m.tiktok.com/v/7312345678901234567.html", "https://m.tiktok.com/v/7312345678901234567.html", "tiktok"),
         ("https://www.tiktok.com/@singer", "https://www.tiktok.com/@singer", None),
         ("https://www.tiktok.com/music/original-sound-7312345678901234567", "https://www.tiktok.com/music/original-sound-7312345678901234567", None),
+        # Formerly judged by the API and the clients as well; this is now the one parser (they only find the link).
+        ("https://www.youtube.com/v/dQw4w9WgXcQ", "https://www.youtube.com/v/dQw4w9WgXcQ", "youtube"),
+        ("http://youtu.be/dQw4w9WgXcQ", "http://youtu.be/dQw4w9WgXcQ", "youtube"),
+        ("HTTPS://YOUTU.BE/dQw4w9WgXcQ", "HTTPS://YOUTU.BE/dQw4w9WgXcQ", "youtube"),
+        (f"https://open.spotify.com/intl-pt-BR/track/{SPOTIFY_ID}", f"https://open.spotify.com/intl-pt-BR/track/{SPOTIFY_ID}", "spotify"),
+        ("https://music.apple.com/us/artist/rick-astley/669771", "https://music.apple.com/us/artist/rick-astley/669771", None),
+        ("https://music.apple.com/us/song/never-gonna-give-you-up/abc", "https://music.apple.com/us/song/never-gonna-give-you-up/abc", None),
+        ("https://www.youtube.com/watch?v=short", "https://www.youtube.com/watch?v=short", None),
+        ("https://youtu.be/", "https://youtu.be/", None),
+        ("https://spotify.link/", "https://spotify.link/", None),
+        ("https://vm.tiktok.com/", "https://vm.tiktok.com/", None),
+        ("https://www.instagram.com/explore/tags/choir/", "https://www.instagram.com/explore/tags/choir/", None),
+        ("ftp://example.com/song", None, None),
+        ("https://", None, None),
+        ("Check this out, it's on YouTube", None, None),
     ],
 )
 def test_extract_url_and_provider_of_follow_the_shared_link_rule(text, url, provider):

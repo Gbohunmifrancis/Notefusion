@@ -3,9 +3,9 @@ using NoteFusion.Application.Transcriptions;
 namespace NoteFusion.Tests.Transcriptions;
 
 /// <summary>
-/// The one rule for finding a song link in pasted text, mirrored from the worker's <c>extract_url</c> and
-/// <c>provider_of</c>: the first http(s) link, trailing punctuation trimmed, on a supported service. Real
-/// share-sheet text is the point — the apps wrap the link in words and users paste the lot.
+/// The one rule for finding the link in pasted text, mirrored from the worker's <c>extract_url</c>: the first http(s)
+/// link, trailing punctuation trimmed. Real share-sheet text is the point — the apps wrap the link in words and users
+/// paste the lot. Whether it is a song is the worker's <c>provider_of</c> alone (server/tests/test_links.py).
 /// </summary>
 public class SongLinksTests
 {
@@ -86,33 +86,28 @@ public class SongLinksTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData("not a link")]
-    [InlineData("notyoutube.com/watch?v=dQw4w9WgXcQ")]                    // no scheme, and not YouTube
+    [InlineData("notyoutube.com/watch?v=dQw4w9WgXcQ")]                    // no scheme, and not one of the services
     [InlineData("example.com/watch?v=dQw4w9WgXcQ")]
-    [InlineData("youtube.com/@RickAstleyYT")]                             // no scheme, a channel
     [InlineData("ftp://example.com/song")]
     [InlineData("https://")]
-    [InlineData("https://example.com/watch?v=dQw4w9WgXcQ")]
-    [InlineData("https://www.youtube.com/@RickAstleyYT")]                 // a channel
-    [InlineData("https://www.youtube.com/playlist?list=PL1234567890")]   // a playlist
-    [InlineData("https://www.youtube.com/watch?v=short")]                 // not an 11-character id
-    [InlineData("https://youtu.be/")]
-    [InlineData("https://notyoutube.com/watch?v=dQw4w9WgXcQ")]
-    [InlineData("https://open.spotify.com/album/4cOdK2wGLETKBW3PvgPWqT")]
-    [InlineData("https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M")]
-    [InlineData("https://spotify.link/")]
-    [InlineData("https://music.apple.com/us/album/never-gonna-give-you-up/1559885421")] // a whole album
-    [InlineData("https://music.apple.com/us/artist/rick-astley/669771")]
-    [InlineData("https://music.apple.com/us/song/never-gonna-give-you-up/abc")]
-    [InlineData("https://www.instagram.com/someone/")]                  // a profile
-    [InlineData("https://www.instagram.com/explore/tags/choir/")]
-    [InlineData("https://www.tiktok.com/@singer")]                       // a profile
-    [InlineData("https://www.tiktok.com/music/original-sound-7312345678901234567")]
-    [InlineData("https://vm.tiktok.com/")]
     [InlineData("Check this out, it's on YouTube")]
-    public void Anything_else_is_refused(string? text)
+    public void Text_without_a_link_is_refused(string? text)
     {
         Assert.False(SongLinks.TryExtract(text, out var url));
         Assert.Equal(string.Empty, url);
+    }
+
+    [Theory]
+    [InlineData("https://www.youtube.com/@RickAstleyYT")]                 // a channel
+    [InlineData("https://www.youtube.com/playlist?list=PL1234567890")]   // a playlist
+    [InlineData("https://open.spotify.com/album/4cOdK2wGLETKBW3PvgPWqT")]
+    [InlineData("https://music.apple.com/us/album/never-gonna-give-you-up/1559885421")] // a whole album
+    [InlineData("https://www.tiktok.com/@singer")]                       // a profile
+    [InlineData("https://example.com/watch?v=dQw4w9WgXcQ")]
+    public void A_link_that_is_not_a_song_is_still_passed_on_for_the_worker_to_judge(string link)
+    {
+        Assert.True(SongLinks.TryExtract(link, out var url));
+        Assert.Equal(link, url);
     }
 
     [Fact]

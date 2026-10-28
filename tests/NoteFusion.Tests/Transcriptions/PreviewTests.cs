@@ -1,3 +1,4 @@
+using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Preview;
 using NoteFusion.Application.Preview.Commands;
@@ -129,7 +130,9 @@ public class PreviewTests
         var api = new FakeApi();
 
         var bad = await Link(h, api).Handle(new SubmitPreviewLinkCommand("not a link"), default);
-        var channel = await Link(h, api).Handle(new SubmitPreviewLinkCommand("https://www.youtube.com/@RickAstleyYT"), default);
+        // A link that is not a song is the worker's to turn away.
+        var channel = await Link(h, new FakeApi { RefusesLink = TranscriptionErrors.InvalidLink })
+            .Handle(new SubmitPreviewLinkCommand("https://www.youtube.com/@RickAstleyYT"), default);
         var ok = await Link(h, api).Handle(new SubmitPreviewLinkCommand("Check this out https://youtu.be/dQw4w9WgXcQ."), default);
 
         Assert.Equal("TRANS_INVALID_LINK", bad.Error.Code);
@@ -266,6 +269,8 @@ public class PreviewTests
         public TranscriptionStatus Status { get; set; } = TranscriptionStatus.Pending;
         public TranscribeOptions? LastOptions { get; private set; }
         public string? LastLink { get; private set; }
+        /// <summary>The worker's refusal of the link (its <c>provider_of</c> is the one judge of a song link).</summary>
+        public Error? RefusesLink { get; init; }
 
         public Task<Result<string>> SubmitAsync(Stream audio, string fileName, TranscribeOptions options, CancellationToken ct = default)
         {
@@ -278,7 +283,7 @@ public class PreviewTests
         public Task<Result<string>> SubmitLinkAsync(string url, TranscribeOptions options, CancellationToken ct = default)
         {
             LastLink = url;
-            return SubmitAsync(Stream.Null, url, options, ct);
+            return RefusesLink is { } refusal ? Task.FromResult(Result.Failure<string>(refusal)) : SubmitAsync(Stream.Null, url, options, ct);
         }
 
         public Task<Result<TranscriptionJobDto>> GetJobAsync(string jobId, CancellationToken ct = default)
@@ -297,7 +302,9 @@ public class PreviewTests
 
         public Task<Result<GradeResultDto>> GradeAsync(Stream audio, string fileName, GradeTargetDto target, double? maxTakeSeconds = null, CancellationToken ct = default) => throw new NotSupportedException();
         public Task<Result<SourceDto>> ResolveLinkAsync(string url, CancellationToken ct = default)
-            => Task.FromResult(Result<SourceDto>.Success(new SourceDto("youtube", url, "Way Maker", "Sinach", null)));
+            => Task.FromResult(RefusesLink is { } refusal
+                ? Result.Failure<SourceDto>(refusal)
+                : Result<SourceDto>.Success(new SourceDto("youtube", url, "Way Maker", "Sinach", null)));
 
         public Task<Result<int>> PingAsync(CancellationToken ct = default) => Task.FromResult(Result<int>.Success(1));
     }
