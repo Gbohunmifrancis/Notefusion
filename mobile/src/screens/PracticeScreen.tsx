@@ -51,6 +51,7 @@ import { GradeMarks } from "../components/GradeMarks";
 import { TrackPicker } from "../components/practice/TrackPicker";
 import { StarGrade } from "../components/practice/StarGrade";
 import { Confetti } from "../components/practice/Confetti";
+import { Moments, type MomentBatch } from "../components/practice/Moments";
 import { Art } from "../components/practice/Art";
 import type { ArtName } from "../components/practice/art/svgs";
 import { practiceApi } from "../api/endpoints";
@@ -96,6 +97,7 @@ import { GameTiles } from "../components/practice/GameTiles";
 import { MarkingBar } from "../components/practice/MarkingBar";
 import { MARK_STEP_MS } from "../components/practice/useMarkReveal";
 import { hubModes, modesHeading, progressStrip } from "../lib/practiceModes";
+import { momentsFor, type MomentPiece } from "../lib/practiceMoments";
 import type { RootStackParams } from "../navigation/types";
 
 type Phase = "idle" | "leadin" | "singing" | "grading";
@@ -119,6 +121,9 @@ export function PracticeScreen() {
   const recorder = useAudioRecorder(RECORDING);
 
   const [progress, setProgress] = useState<PracticeProgress | null>(null);
+  // The reward moments a marked take earned (components/practice/Moments), and the one on screen now.
+  const [moments, setMoments] = useState<MomentBatch | null>(null);
+  const [momentPiece, setMomentPiece] = useState<MomentPiece | null>(null);
   const [drill, setDrill] = useState<Drill | null>(null);
   /** The path's drill after a marked take, fetched with the fresh progress: what "Continue" opens. */
   const [next, setNext] = useState<Drill | null>(null);
@@ -384,6 +389,7 @@ export function PracticeScreen() {
    * or by our fault, is kept to send again; one the server turned down is not (sending it again would be too).
    */
   async function mark(sung: Drill, uri: string, lead: number) {
+    const before = progress;
     setPhase("grading");
     setUnsent(null);
     setMarking("upload");
@@ -410,6 +416,11 @@ export function PracticeScreen() {
         if (!live.current) return;
         if (how === "burst") setBurst((b) => b + 1);
         if (toasted && earned) showToast(earned, rewardArt(result.reward));
+        const earnedMoments = momentsFor(sung.track, before, result);
+        if (earnedMoments.length && !reduceMotion) {
+          setMoments({ id: Date.now(), moments: earnedMoments });
+          earnedMoments.forEach((m) => void logAnalyticsEvent("practice_moment", { piece: m.piece }));
+        }
       }, landed);
       setRewardToasted(toasted);
       const line = result.milestone?.title ?? earned;
@@ -505,7 +516,8 @@ export function PracticeScreen() {
   const pathSeason = seasonPath ? seasonOf(seasonPath.season) : null;
   const costume = costumeOf(pathSeason ?? activeSeason(seasonFlag));
   const cardDoh = !!seasonPath && !showPicker && (pathSeason === "halloween" ? playful : !playful);
-  const buddyShown = playful && !showPicker && !!drill && !(cardDoh && pathSeason === "halloween");
+  // A reward moment's Doh is the one Doh on screen while it cheers.
+  const buddyShown = playful && !showPicker && !!drill && !(cardDoh && pathSeason === "halloween") && momentPiece !== "doh";
 
   return (
     <View style={styles.flex}>
@@ -707,7 +719,7 @@ export function PracticeScreen() {
             {seasonPath && pathSeason && !showPicker ? (
               <SeasonPathCard
                 season={seasonPath}
-                doh={cardDoh}
+                doh={cardDoh && momentPiece !== "doh"}
                 costume={costume}
                 styles={styles}
                 c={colors}
@@ -761,6 +773,7 @@ export function PracticeScreen() {
       </Screen>
 
       <Confetti burst={burst} reduceMotion={reduceMotion} />
+      <Moments batch={moments} reduceMotion={reduceMotion} onPlaying={setMomentPiece} />
 
       {toast ? (
         <Animated.View
