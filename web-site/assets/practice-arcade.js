@@ -38,6 +38,17 @@
   var STAFF_NEW = [null, "D and B♭", "A and E♭", "E and A♭, and ledger lines", "B and D♭, low C to top C", "F♯ and G♭"];
   var HYMN_CHOICES = [3, 3, 4, 4, 5, 5, 6];
 
+  /** Which scale?'s levels, as the server brings them (PracticeGames.ScaleLevels), with each scale's short name. */
+  var SCALE_NEW = [["major", "natural-minor"], ["harmonic-minor"], ["major-pentatonic", "minor-pentatonic"], ["blues"], ["melodic-minor"],
+    ["dorian", "mixolydian"], ["phrygian", "lydian"], ["hijaz", "whole-tone"], ["japanese-in", "double-harmonic"], ["hungarian-minor", "locrian"]];
+  var SCALE_NAMES = {
+    "major": "major", "natural-minor": "minor", "harmonic-minor": "harmonic minor", "major-pentatonic": "major pentatonic",
+    "minor-pentatonic": "minor pentatonic", "blues": "blues", "melodic-minor": "melodic minor", "dorian": "Dorian",
+    "mixolydian": "Mixolydian", "phrygian": "Phrygian", "lydian": "Lydian", "hijaz": "Hijaz", "whole-tone": "whole-tone",
+    "japanese-in": "Japanese in", "double-harmonic": "double harmonic", "hungarian-minor": "Hungarian minor", "locrian": "Locrian"
+  };
+  function scaleTempo(level) { return Math.min(200, 96 + 8 * Math.max(0, level - SCALE_NEW.length)); }
+
   function staffSeconds(level) { return Math.max(1.5, 6 - 0.5 * (Math.max(1, level) - 1)); }
   function hymnChoices(level) { return HYMN_CHOICES[Math.min(HYMN_CHOICES.length, Math.max(1, level)) - 1]; }
   function hymnNotes(level) { return level <= 2 ? null : Math.max(4, 12 - 2 * (level - 3)); }
@@ -49,6 +60,11 @@
     if (game === "which-note") {
       if (l <= EAR_FULL) return (l === 1 ? "Notes: " : "New: ") + EAR_NEW[l - 1].join(", ");
       return "Every note, played shorter";
+    }
+    if (game === "which-scale") {
+      if (l > SCALE_NEW.length) return "Quicker: " + scaleTempo(l) + " beats a minute";
+      var names = SCALE_NEW[l - 1].map(function (c) { return SCALE_NAMES[c]; }).join(" and ");
+      return (l === 1 ? "Scales: " : "New: ") + names;
     }
     if (game === "staff") {
       if (l === 1) return "Keys: C, G and F";
@@ -65,6 +81,7 @@
     var next = [{ level: level + 1, text: levelNews(game, level + 1) }, { level: level + 2, text: levelNews(game, level + 2) }];
     var after = game === "which-note" ? "Every level after: shorter notes, quicker ears"
       : game === "staff" ? "Every level after: less time on each note"
+      : game === "which-scale" ? "Every level after: quicker scales"
       : "Every level after: less of each opening to go on";
     next.push({ level: null, text: after });
     return next;
@@ -138,9 +155,9 @@
   }
 
   window.NfPracticeArcade = {
-    LEVEL_UP: LEVEL_UP, LEVEL_DOWN: LEVEL_DOWN,
+    LEVEL_UP: LEVEL_UP, LEVEL_DOWN: LEVEL_DOWN, SCALE_LEVELS: SCALE_NEW,
     startLevel: startLevel, stageGoal: stageGoal, toLevelUp: toLevelUp, stageFraction: stageFraction, runAfter: runAfter,
-    levelNews: levelNews, comingNext: comingNext, staffSeconds: staffSeconds, recall: recall, remember: remember,
+    levelNews: levelNews, comingNext: comingNext, staffSeconds: staffSeconds, scaleTempo: scaleTempo, recall: recall, remember: remember,
     pathStops: pathStops, unitBanner: unitBanner, questsChip: questsChip, questProgress: questProgress, chestJustOpened: chestJustOpened
   };
 })();

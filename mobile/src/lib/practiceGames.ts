@@ -8,7 +8,7 @@
 import type { NoteEvent, PracticeGameGrade, PracticeGameId, PracticeGameRound, PracticeTrack } from "../api/types";
 import type { IconName } from "../components/Icon";
 
-export const GAME_IDS: readonly PracticeGameId[] = ["which-note", "staff", "hymn"];
+export const GAME_IDS: readonly PracticeGameId[] = ["which-note", "staff", "hymn", "which-scale"];
 
 /** A game as the Practice home's tile shows it. */
 export interface GameTile {
@@ -18,7 +18,7 @@ export interface GameTile {
   icon: IconName;
 }
 
-/** The three games in the home's order, named for the track (Playful's race is "Note race"). */
+/** The games in the home's order, named for the track (Playful's race is "Note race"). */
 export function gameTiles(track: PracticeTrack | null): GameTile[] {
   const playful = track === "playful";
   return GAME_IDS.map((id) => ({ id, title: gameTitle(id, track), line: GAME_LINES[id](playful), icon: GAME_ICON[id] }));
@@ -26,6 +26,7 @@ export function gameTiles(track: PracticeTrack | null): GameTile[] {
 
 export function gameTitle(id: PracticeGameId, track: PracticeTrack | null): string {
   if (id === "staff") return track === "playful" ? "Note race" : "Staff to solfa";
+  if (id === "which-scale") return "Which scale?";
   return id === "hymn" ? "Name that hymn" : "Which note?";
 }
 
@@ -33,9 +34,10 @@ const GAME_LINES: Record<PracticeGameId, (playful: boolean) => string> = {
   "which-note": (playful) => (playful ? "Hear it, find it" : "Hear doh, then the note"),
   staff: (playful) => (playful ? "Quick! Name the note" : "Read the stave as solfa"),
   hymn: () => "Hear the opening, pick it",
+  "which-scale": (playful) => (playful ? "Happy, sad or far away?" : "Hear a scale, name it"),
 };
 
-const GAME_ICON: Record<PracticeGameId, IconName> = { "which-note": "intervals", staff: "staff", hymn: "hymns" };
+const GAME_ICON: Record<PracticeGameId, IconName> = { "which-note": "intervals", staff: "staff", hymn: "hymns", "which-scale": "scales" };
 
 /** What the game's opening card says before the first round. */
 export function gameIntro(id: PracticeGameId, track: PracticeTrack | null): string {
@@ -48,6 +50,11 @@ export function gameIntro(id: PracticeGameId, track: PracticeTrack | null): stri
     return track === "playful"
       ? "A note lands on the stave. Tap its name, as many as you can in a minute."
       : "A note appears on the stave. Tap its solfa, as many as you can in 60 seconds. The key changes every ten notes.";
+  }
+  if (id === "which-scale") {
+    return track === "playful"
+      ? "A scale plays up and back down. Is it the happy major, the sad minor, or one from far away? Pick its name."
+      : "A scale plays up and back down. Pick its name: major and minor first, then the pentatonics, the modes and the world's.";
   }
   return "A hymn's opening plays on the piano. Pick its name from three.";
 }
@@ -87,6 +94,12 @@ const STEP_LINES: Record<string, string> = {
 /** What a round says once it is answered: its title and one line under it. */
 export function verdict(game: PracticeGameId, round: PracticeGameRound, tapped: string): { right: boolean; title: string; line: string } {
   const right = tapped === round.answer;
+  if (game === "which-scale") {
+    const named = (code: string) => round.scales?.find((s) => s.code === code)?.title ?? "That scale";
+    return right
+      ? { right, title: "That's it!", line: named(round.answer) }
+      : { right, title: "Not this time", line: `It was ${named(round.answer).replace(/^The /, "the ")}.` };
+  }
   if (game === "hymn") {
     const title = round.hymns?.find((h) => h.slug === round.answer)?.title ?? "That hymn";
     return right

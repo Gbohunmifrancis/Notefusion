@@ -35,10 +35,11 @@ const round = (over: Partial<PracticeGameRound>): PracticeGameRound => ({
 });
 
 test("the games are named for the track: Playful races notes", () => {
-  assert.deepEqual(gameTiles("focused").map((t) => t.title), ["Which note?", "Staff to solfa", "Name that hymn"]);
-  assert.deepEqual(gameTiles("playful").map((t) => t.title), ["Which note?", "Note race", "Name that hymn"]);
+  assert.deepEqual(gameTiles("focused").map((t) => t.title), ["Which note?", "Staff to solfa", "Name that hymn", "Which scale?"]);
+  assert.deepEqual(gameTiles("playful").map((t) => t.title), ["Which note?", "Note race", "Name that hymn", "Which scale?"]);
   assert.equal(gameTitle("staff", null), "Staff to solfa");
-  assert.deepEqual(gameTiles(null).map((t) => t.icon), ["intervals", "staff", "hymns"]);
+  assert.deepEqual(gameTiles(null).map((t) => t.icon), ["intervals", "staff", "hymns", "scales"]);
+  assert.equal(gameTiles("playful")[3]!.line, "Happy, sad or far away?");
 });
 
 test("a note sits on the treble stave in half-spaces from the bottom line", () => {
@@ -65,6 +66,9 @@ test("the key signature sits where a treble stave prints it", () => {
 });
 
 test("a round's verdict names the note heard, and what a wrong tap was", () => {
+  const scales = [{ code: "major", title: "The major scale", solfa: "d r m" }, { code: "dorian", title: "Dorian", solfa: "r m f" }];
+  assert.deepEqual(verdict("which-scale", round({ answer: "dorian", scales }), "dorian"), { right: true, title: "That's it!", line: "Dorian" });
+  assert.deepEqual(verdict("which-scale", round({ answer: "major", scales }), "dorian"), { right: false, title: "Not this time", line: "It was the major scale." });
   assert.deepEqual(verdict("which-note", round({}), "s"), { right: true, title: "Soh!", line: "The fifth note of the scale." });
   assert.deepEqual(verdict("which-note", round({}), "m"), { right: false, title: "It was soh", line: "You tapped me. Listen to both again." });
   assert.equal(verdict("which-note", round({ answer: "d'" }), "d'").title, "Doh!");

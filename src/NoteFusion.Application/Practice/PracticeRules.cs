@@ -161,7 +161,8 @@ public static class PracticeRules
     /// pitch-match set or a run is one take, so one); a part sung back (Pro) does not.
     /// </summary>
     public static bool UsesDrillAllowance(PracticeKind kind) => kind is PracticeKind.Drill
-        or PracticeKind.PitchMatch or PracticeKind.Interval or PracticeKind.Harmony or PracticeKind.Run or PracticeKind.Rhythm;
+        or PracticeKind.PitchMatch or PracticeKind.Interval or PracticeKind.Harmony or PracticeKind.Run or PracticeKind.Rhythm
+        or PracticeKind.Scale;
 
     /// <summary>The kinds that spend the day's marked drills, for a database count (<see cref="UsesDrillAllowance"/>).</summary>
     public static readonly PracticeKind[] DrillAllowanceKinds =

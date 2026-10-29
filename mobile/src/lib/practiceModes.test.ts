@@ -4,6 +4,13 @@ import {
   CLOSE_CENTS,
   IN_TUNE_CENTS,
   MODE_IDS,
+  bestMark,
+  modePath,
+  nextStop,
+  pathStars,
+  pathStarsLabel,
+  pathUnits,
+  unitJustCompleted,
   breathAt,
   breathPhases,
   breathSeconds,
@@ -99,9 +106,10 @@ const pitchSet = exercise({
 });
 
 test("the hub lists the server's live modes in its order, in the track's words, and nothing it doesn't know", () => {
-  assert.deepEqual([...MODE_IDS], ["warm-up", "pitch-match", "runs", "intervals", "harmony", "rhythm"]);
-  const focused = hubModes(["warm-up", "pitch-match", "runs", "intervals", "harmony", "rhythm"], "focused", true);
-  assert.deepEqual(focused.map((r) => r.title), ["Warm up", "Pitch match", "Riffs & runs", "Intervals", "Sing the harmony", "Rhythm"]);
+  assert.deepEqual([...MODE_IDS], ["warm-up", "pitch-match", "scales", "runs", "intervals", "harmony", "rhythm"]);
+  const focused = hubModes(["warm-up", "pitch-match", "scales", "runs", "intervals", "harmony", "rhythm"], "focused", true);
+  assert.deepEqual(focused.map((r) => r.title), ["Warm up", "Pitch match", "Scales", "Riffs & runs", "Intervals", "Sing the harmony", "Rhythm"]);
+  assert.equal(focused[2]!.subtitle, "Major, minor, the modes and the world's");
   assert.equal(focused[0]!.subtitle, "Breath, sirens, your range");
   assert.equal(focused[0]!.value, "3 min");
   assert.equal(focused[1]!.subtitle, "Hold a note in tune on a live meter");
@@ -470,4 +478,55 @@ test("one line on how the rhythm went: the tempo kept first, then extra claps, t
   assert.match(rhythmAdvice({ tempoRatio: 1, extra: 0, missed: 0, claps: [c(-60), c(-50)] })!, /early/);
   assert.equal(rhythmAdvice({ tempoRatio: 1, extra: 0, missed: 0, claps: [c(5), c(-10)] }), null);
   assert.match(rhythmAdvice({ tempoRatio: 1, extra: 0, missed: 1, claps: [c(5), c(null)] })!, /louder/);
+});
+
+// ── A mode's path (the web's practice-modes.test.mjs, same cases) ─────────────────────────────────────────────
+const stop = (code: string, group: string | null, bestScore: number | null = null, speeds: { bestScore: number | null }[] = []) =>
+  ({ code, title: code, group, bestScore, speeds });
+
+test("a stop's stars come from its best mark: one at 50, two at 80, three at 95, a run's best at any speed", () => {
+  assert.deepEqual([null, 0, 49, 50, 79, 80, 94, 95, 100].map(pathStars), [0, 0, 0, 1, 1, 2, 2, 3, 3]);
+  assert.equal(bestMark(stop("a", null, 40, [{ bestScore: 70 }, { bestScore: null }])), 70);
+  assert.equal(bestMark(stop("a", null, null, [])), null);
+});
+
+test("a mode's units are its groups where each is a unit, else runs of about four", () => {
+  const scales = [stop("major", "Major and minor"), stop("minor", "Major and minor"), stop("blues", "Pentatonic"), stop("pent", "Pentatonic")];
+  assert.deepEqual(pathUnits(scales).map((u) => [u.title, u.items]), [["Major and minor", [0, 1]], ["Pentatonic", [2, 3]]]);
+  const intervals = Array.from({ length: 11 }, (_, i) => stop("i" + i, "a fifth " + i));
+  assert.deepEqual(pathUnits(intervals).map((u) => u.items.length), [4, 4, 3]);
+  assert.deepEqual(pathUnits(Array.from({ length: 6 }, (_, i) => stop("p" + i, null))).map((u) => u.items.length), [3, 3]);
+  assert.deepEqual(pathUnits([]), []);
+});
+
+test("the path opens a unit once the one before is starred, and a locked unit can be jumped to", () => {
+  const exs = [stop("a", "One", 85), stop("b", "One", null), stop("c", "Two", null), stop("d", "Two", null)];
+  const path = modePath(exs, "Scales");
+  assert.deepEqual(path.units.map((u) => [u.title, u.eyebrow, u.tone, u.open, u.complete]), [["One", "UNIT 1 OF 2", "green", true, false], ["Two", "UNIT 2 OF 2", "blue", false, false]]);
+  assert.deepEqual(path.units[0]!.stops.map((s) => [s.state, s.stars]), [["done", 2], ["current", 0]]);
+  assert.deepEqual(path.units[1]!.stops.map((s) => s.state), ["jump", "locked"]);
+  assert.deepEqual([path.stars, path.maxStars, path.current], [2, 12, 1]);
+  assert.equal(pathStarsLabel(path), "★ 2 / 12");
+  assert.deepEqual(path.units.flatMap((u) => u.stops.map((s) => s.offset)), [0, 44, 72, 44]);
+
+  const next = modePath([stop("a", "One", 85), stop("b", "One", 50), stop("c", "Two", null), stop("d", "Two", null)], "Scales");
+  assert.deepEqual(next.units[1]!.stops.map((s) => s.state), ["current", "open"]);
+  const jumped = modePath([stop("a", "One", null), stop("b", "One", null), stop("c", "Two", null), stop("d", "Two", 30)], "Scales");
+  assert.deepEqual(jumped.units[1]!.stops.map((s) => s.state), ["current", "open"]);
+  assert.equal(jumped.current, 0);
+  assert.deepEqual(modePath([stop("a", null, 30)], "Rhythm").units[0]!.stops.map((s) => s.state), ["current"]);
+  assert.equal(modePath([stop("a", null, 30)], "Rhythm").units[0]!.title, "Rhythm");
+});
+
+test("a take that stars a unit's last stop finishes the unit, and Next goes to the stop to sing now", () => {
+  const before = modePath([stop("a", "One", 85), stop("b", "One", null), stop("c", "Two", null), stop("d", "Two", null)], "Scales");
+  const after = modePath([stop("a", "One", 85), stop("b", "One", 60), stop("c", "Two", null), stop("d", "Two", null)], "Scales");
+  assert.equal(unitJustCompleted(before, after)!.title, "One");
+  assert.equal(unitJustCompleted(after, after), null);
+  assert.equal(unitJustCompleted(null, after), null);
+  assert.equal(nextStop(after, 1, 4), 2);
+  assert.equal(nextStop(after, 2, 4), 3);
+  const done = modePath([stop("a", "One", 85), stop("b", "One", 95)], "Scales");
+  assert.equal(nextStop(done, 1, 2), 0);
+  assert.equal(nextStop(modePath([stop("a", null, 95)], "X"), 0, 1), null);
 });

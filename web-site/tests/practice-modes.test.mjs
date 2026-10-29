@@ -110,9 +110,10 @@ const pitchSet = exercise({
 });
 
 test("the hub lists the server's live modes in its order, in the track's words, and nothing it doesn't know", () => {
-  same([...MODE_IDS], ["warm-up", "pitch-match", "runs", "intervals", "harmony", "rhythm"]);
-  const focused = hubModes(["warm-up", "pitch-match", "runs", "intervals", "harmony", "rhythm"], "focused", true);
-  same(focused.map((r) => r.title), ["Warm up", "Pitch match", "Riffs & runs", "Intervals", "Sing the harmony", "Rhythm"]);
+  same([...MODE_IDS], ["warm-up", "pitch-match", "scales", "runs", "intervals", "harmony", "rhythm"]);
+  const focused = hubModes(["warm-up", "pitch-match", "scales", "runs", "intervals", "harmony", "rhythm"], "focused", true);
+  same(focused.map((r) => r.title), ["Warm up", "Pitch match", "Scales", "Riffs & runs", "Intervals", "Sing the harmony", "Rhythm"]);
+  assert.equal(focused[2].subtitle, "Major, minor, the modes and the world's");
   assert.equal(focused[0].subtitle, "Breath, sirens, your range");
   assert.equal(focused[0].value, "3 min");
   assert.equal(focused[1].subtitle, "Hold a note in tune on a live meter");
@@ -481,4 +482,57 @@ test("one line on how the rhythm went: the tempo kept first, then extra claps, t
   assert.match(rhythmAdvice({ tempoRatio: 1, extra: 0, missed: 0, claps: [c(-60), c(-50)] }), /early/);
   assert.equal(rhythmAdvice({ tempoRatio: 1, extra: 0, missed: 0, claps: [c(5), c(-10)] }), null);
   assert.match(rhythmAdvice({ tempoRatio: 1, extra: 0, missed: 1, claps: [c(5), c(null)] }), /louder/);
+});
+
+// ── A mode's path ──────────────────────────────────────────────────────────
+const stop = (code, group, bestScore, speeds) => ({ code, title: code, group, bestScore, speeds });
+
+test("a stop's stars come from its best mark: one at 50, two at 80, three at 95, a run's best at any speed", () => {
+  same([null, 0, 49, 50, 79, 80, 94, 95, 100].map(M.pathStars), [0, 0, 0, 1, 1, 2, 2, 3, 3]);
+  assert.equal(M.bestMark(stop("a", null, 40, [{ bestScore: 70 }, { bestScore: null }])), 70);
+  assert.equal(M.bestMark(stop("a", null, null, [])), null);
+});
+
+test("a mode's units are its groups where each is a unit, else runs of about four", () => {
+  const scales = [stop("major", "Major and minor"), stop("minor", "Major and minor"), stop("blues", "Pentatonic"), stop("pent", "Pentatonic")];
+  same(M.pathUnits(scales).map((u) => [u.title, u.items]), [["Major and minor", [0, 1]], ["Pentatonic", [2, 3]]]);
+  // An interval's group is the interval itself: units of one would not be units, so the path takes them in fours.
+  const intervals = Array.from({ length: 11 }, (_, i) => stop("i" + i, "a fifth " + i));
+  same(M.pathUnits(intervals).map((u) => u.items.length), [4, 4, 3]);
+  same(M.pathUnits(Array.from({ length: 6 }, (_, i) => stop("p" + i, null))).map((u) => u.items.length), [3, 3]);
+  same(M.pathUnits([]), []);
+});
+
+test("the path opens a unit once the one before is starred, and a locked unit can be jumped to", () => {
+  const exs = [stop("a", "One", 85), stop("b", "One", null), stop("c", "Two", null), stop("d", "Two", null)];
+  const path = M.modePath(exs, "Scales");
+  same(path.units.map((u) => [u.title, u.eyebrow, u.tone, u.open, u.complete]), [["One", "UNIT 1 OF 2", "green", true, false], ["Two", "UNIT 2 OF 2", "blue", false, false]]);
+  same(path.units[0].stops.map((s) => [s.state, s.stars]), [["done", 2], ["current", 0]]);
+  same(path.units[1].stops.map((s) => s.state), ["jump", "locked"]);
+  same([path.stars, path.maxStars, path.current], [2, 12, 1]);
+  assert.equal(M.pathStarsLabel(path), "★ 2 / 12");
+  same(path.units.flatMap((u) => u.stops.map((s) => s.offset)), [0, 44, 72, 44]);
+
+  // Every stop of unit one starred opens unit two; a unit sung into opens it even before.
+  const next = M.modePath([stop("a", "One", 85), stop("b", "One", 50), stop("c", "Two", null), stop("d", "Two", null)], "Scales");
+  same(next.units[1].stops.map((s) => s.state), ["current", "open"]);
+  const jumped = M.modePath([stop("a", "One", null), stop("b", "One", null), stop("c", "Two", null), stop("d", "Two", 30)], "Scales");
+  same(jumped.units[1].stops.map((s) => s.state), ["current", "open"]);
+  assert.equal(jumped.current, 0);
+  // A take under 50 is sung but earns no star: the stop is still the one to sing.
+  same(M.modePath([stop("a", null, 30)], "Rhythm").units[0].stops.map((s) => s.state), ["current"]);
+  assert.equal(M.modePath([stop("a", null, 30)], "Rhythm").units[0].title, "Rhythm");
+});
+
+test("a take that stars a unit's last stop finishes the unit, and Next goes to the stop to sing now", () => {
+  const before = M.modePath([stop("a", "One", 85), stop("b", "One", null), stop("c", "Two", null), stop("d", "Two", null)], "Scales");
+  const after = M.modePath([stop("a", "One", 85), stop("b", "One", 60), stop("c", "Two", null), stop("d", "Two", null)], "Scales");
+  assert.equal(M.unitJustCompleted(before, after).title, "One");
+  assert.equal(M.unitJustCompleted(after, after), null);
+  assert.equal(M.unitJustCompleted(null, after), null);
+  assert.equal(M.nextStop(after, 1, 4), 2);
+  assert.equal(M.nextStop(after, 2, 4), 3);
+  const done = M.modePath([stop("a", "One", 85), stop("b", "One", 95)], "Scales");
+  assert.equal(M.nextStop(done, 1, 2), 0);
+  assert.equal(M.nextStop(M.modePath([stop("a", null, 95)], "X"), 0, 1), null);
 });

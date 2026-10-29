@@ -17,6 +17,7 @@ import { useColors, useThemedStyles } from "../../lib/theme";
 export const MODE_ICON: Record<PracticeModeId, IconName> = {
   "warm-up": "warm-up",
   "pitch-match": "pitch",
+  scales: "scales",
   runs: "runs",
   intervals: "intervals",
   harmony: "harmony",

@@ -80,7 +80,7 @@
   function hearRound(r) {
     if (!r) return;
     if (g.game === "which-note") playNotes(G().earNotes(r), G().EAR_TEMPO);
-    else if (g.game === "hymn") playNotes(r.notes, r.tempoBpm || 96);
+    else if (g.game === "hymn" || g.game === "which-scale") playNotes(r.notes, r.tempoBpm || 96);
   }
 
   // ── The game ────────────────────────────────────────────────────────────
@@ -289,7 +289,7 @@
   function playing() {
     var r = round(), wrap = el("div", "pg-play");
     if (staff()) wrap.appendChild(staffRound(r));
-    else wrap.appendChild(g.game === "which-note" ? whichNote(r) : hymnRound(r));
+    else wrap.appendChild(g.game === "which-note" ? whichNote(r) : g.game === "which-scale" ? scaleRound(r) : hymnRound(r));
     if (g.picked != null && !staff()) wrap.appendChild(feedback(r));
     return wrap;
   }
@@ -390,6 +390,31 @@
         var a = el("a", "pg-hymn-link", "Open the hymn's page"); a.href = "/hymns/" + (h.slug.indexOf("tune-") === 0 ? "tunes/" + h.slug.slice(5) : h.slug);
         list.appendChild(a);
       }
+    });
+    box.appendChild(list);
+    return box;
+  }
+
+  /** Which scale?: replay the scale, the scales to pick from; the right one shows its solfa up and back down. */
+  function scaleRound(r) {
+    var box = el("div", "pg-ask");
+    box.appendChild(el("h2", "pg-q", "Which scale is this?"));
+    box.appendChild(el("p", "pg-sub", "Up and back down, on the piano"));
+    var plays = el("div", "pg-plays");
+    var play = el("button", "pg-play-big"); play.type = "button"; play.setAttribute("aria-label", "Play the scale again");
+    play.appendChild(sprite("/assets/icons.svg#i-volume"));
+    play.addEventListener("click", function () { hearRound(r); });
+    plays.appendChild(play);
+    box.appendChild(plays);
+    var list = el("div", "pg-choices");
+    (r.scales || []).forEach(function (sc) {
+      var shown = g.picked != null, isAnswer = sc.code === r.answer;
+      var b = el("button", "pg-tile pg-choice" + (shown && isAnswer ? " is-right" : "") + (shown && sc.code === g.picked && !isAnswer ? " is-wrong" : "") + (shown && !isAnswer && sc.code !== g.picked ? " is-dim" : ""));
+      b.type = "button"; b.disabled = shown;
+      b.appendChild(el("strong", null, sc.title));
+      if (shown && isAnswer) b.appendChild(el("span", "pg-solfa", sc.solfa));
+      b.addEventListener("click", function () { tap(sc.code); });
+      list.appendChild(b);
     });
     box.appendChild(list);
     return box;

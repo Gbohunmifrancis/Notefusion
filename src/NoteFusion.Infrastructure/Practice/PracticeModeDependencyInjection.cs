@@ -29,6 +29,7 @@ public static class PracticeModeDependencyInjection
             Harmony = On(nameof(PracticeModeSettings.Harmony)),
             Runs = On(nameof(PracticeModeSettings.Runs)),
             Rhythm = On(nameof(PracticeModeSettings.Rhythm)),
+            Scales = On(nameof(PracticeModeSettings.Scales)),
         };
     }
 }

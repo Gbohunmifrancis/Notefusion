@@ -1,5 +1,10 @@
 /* "More ways to practise" on the web: the mode screens (boards c-practice/6b–6d), the phone's screens/practice/* mirrored.
  *
+ * Every marked mode opens on its path (Duolingo-like): its exercises as stops in units, each with the stars of its best
+ * mark (practice-modes.js modePath); a unit opens once the one before is starred, a locked unit's first stop can be
+ * jumped to, and a take that stars a unit's last stop opens its chest (the music box moment). Back from an exercise is
+ * the path; back from the path is the hub.
+ *
  *   Warm up        breathe, lip trills and sirens (the guides played here: the piano a step higher each round, a sliding
  *                  hum for a siren), then the range finder: lowest, highest, and the range said plainly. Never marked.
  *   Pitch match    eight notes in one take, each heard then held; a live tuner needle (pitch-track.js, YIN on the mic)
@@ -7,6 +12,8 @@
  *                  The needle only guides: the set is marked once by the server.
  *   Riffs & runs   the run as blocks with its solfa, 60–100 %: marked note by note while its quick notes last 0.3 s,
  *                  past that by its shape and landing note, the singer's pitch line drawn over the pattern.
+ *   Scales         a scale up and back down, its solfa as chips: major and minor, pentatonic and blues, the church
+ *                  modes, the world's.
  *   Intervals      hear doh, then sing the note asked.
  *   Harmony        the line over (or under) a tune; the tune plays under the take only with headphones on.
  *   Rhythm         hear the claps, clap them back after the count-in; each clap in time, close or off.
@@ -36,7 +43,7 @@
 
   function fresh() {
     return {
-      mode: null, data: null, loading: false, loadError: null, index: 0, code: null, percent: null, grade: null, error: null,
+      mode: null, data: null, loading: false, loadError: null, path: true, index: 0, code: null, percent: null, grade: null, error: null,
       phase: "idle", headphones: false, takeUrl: null, warm: null, range: null, step: 0, view: "routine", breathFrom: null, heardLive: null
     };
   }
@@ -81,7 +88,7 @@
     var bar = el("div", "pm-top");
     var back = el("button", "pm-back"); back.type = "button"; back.setAttribute("aria-label", "Back");
     back.appendChild(sprite("/assets/icons.svg#i-back"));
-    back.addEventListener("click", onBack || goBack);
+    back.addEventListener("click", onBack || (m.mode !== "warm-up" && !m.path ? toPath : goBack));
     var text = el("div", "pm-top-text");
     text.appendChild(el("p", "pm-eyebrow", eyebrow));
     // The page's heading while a mode is open: the Practice view's own h1 steps aside then (practice-view.css).
@@ -201,6 +208,7 @@
     var box = el("div", "pm pm-" + m.mode + (playful() ? " is-playful" : ""));
     var view;
     if (m.mode === "warm-up") view = warmUpView();
+    else if (m.path) view = pathView();
     else if (m.mode === "pitch-match") view = pitchView();
     else if (m.mode === "runs") view = runsView();
     else if (m.mode === "rhythm") view = rhythmView();
@@ -224,6 +232,86 @@
     }
     return null;
   }
+
+  // ── The path ────────────────────────────────────────────────────────────
+  function modeName() { return M().modeTitle(m.mode, ctx.practiceTrack); }
+  function currentPath() { return M().modePath(exercises(), modeName()); }
+
+  function pathView() {
+    var out = [], wait = loadingOr(), path = m.data ? currentPath() : null;
+    out.push(header(playful() ? "Your path" : "Path", modeName(), path ? M().pathStarsLabel(path) : null));
+    if (wait) return out.concat([wait]);
+    if (!path || !path.units.length) return out;
+    out.push(allowanceLine());
+    path.units.forEach(function (u) { out.push(unitView(u)); });
+    return out;
+  }
+
+  /** A unit: its coloured banner, then its stops snaking down, then its chest (open once every stop has a star). */
+  function unitView(u) {
+    var sec = el("section", "pm-unit" + (u.open ? "" : " is-locked"));
+    sec.setAttribute("aria-label", u.eyebrow + ": " + u.title + ". " + u.stars + " of " + u.maxStars + " stars." + (u.open ? "" : " Locked."));
+    var banner = el("div", "pv-unit-banner gg-" + u.tone);
+    var text = el("div", "pv-unit-banner-text");
+    text.appendChild(el("span", "pv-unit-eyebrow", u.eyebrow));
+    text.appendChild(el("strong", null, u.title));
+    banner.appendChild(text);
+    banner.appendChild(el("span", "pm-unit-stars", u.complete ? "★ " + u.stars + "/" + u.maxStars : u.open ? "★ " + u.stars + "/" + u.maxStars : "Locked"));
+    sec.appendChild(banner);
+    var road = el("ol", "pv-road pm-road");
+    u.stops.forEach(function (st) {
+      var li = el("li", "pv-stop is-" + st.state + " tone-" + u.tone);
+      li.style.setProperty("--x", st.offset + "px");
+      if (st.state === "current") li.appendChild(el("span", "pv-start", "START"));
+      if (st.state === "jump") li.appendChild(el("span", "pv-start pm-jump-tag", "JUMP HERE"));
+      var b = el("button", "pv-stop-btn"); b.type = "button";
+      b.disabled = st.state === "locked";
+      b.setAttribute("aria-label", st.title + (st.state === "locked" ? ", locked" : st.state === "jump" ? ", jump ahead to this unit" : ", " + st.stars + " of 3 stars"));
+      b.appendChild(sprite(st.state === "done" ? "/assets/icons.svg#i-check" : st.state === "locked" || st.state === "jump" ? "/assets/icons.svg#i-lock" : "/assets/icons.svg#i-mic"));
+      b.addEventListener("click", function () { openStop(st.index); });
+      li.appendChild(b);
+      var stars = el("span", "pm-stop-stars"); stars.setAttribute("aria-hidden", "true");
+      for (var k = 0; k < 3; k++) stars.appendChild(el("i", k < st.stars ? "on" : null, "★"));
+      if (st.state !== "locked" && st.state !== "jump") li.appendChild(stars);
+      li.appendChild(el("span", "pm-stop-name", st.title));
+      road.appendChild(li);
+    });
+    var chest = el("li", "pv-stop is-chest");
+    chest.appendChild(chestIcon(u.complete));
+    road.appendChild(chest);
+    sec.appendChild(road);
+    return sec;
+  }
+
+  function chestIcon(open) {
+    var span = el("span", "pv-chest" + (open ? " is-open" : ""));
+    span.setAttribute("aria-hidden", "true");
+    span.innerHTML = open
+      ? '<svg viewBox="0 0 28 24" width="28" height="24" focusable="false"><path d="M3 11h22v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="currentColor"/><path d="M4 9 7 2h14l3 7z" fill="currentColor" opacity=".65"/><path d="M8 7l2-3M14 6V2M20 7l-2-3" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><rect x="12" y="13" width="4" height="5" rx="1" fill="#fff" opacity=".8"/></svg>'
+      : '<svg viewBox="0 0 28 24" width="28" height="24" focusable="false"><path d="M3 11h22v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="currentColor"/><path d="M3 11a4 4 0 0 1 4-6h14a4 4 0 0 1 4 6z" fill="currentColor" opacity=".65"/><rect x="12" y="9" width="4" height="7" rx="1" fill="#fff" opacity=".8"/></svg>';
+    return span;
+  }
+
+  /** A stop tapped: its exercise (a run by its code, at the speed it is up to). */
+  function openStop(i) {
+    var e = exercises()[i];
+    if (!e) return;
+    track("practice_path_stop", "mode=" + m.mode + ";code=" + e.code);
+    m.path = false;
+    if (m.mode === "runs") { m.code = e.code; m.percent = null; m.grade = null; m.error = null; stopSound(); dropTake(); render(); focusTitle(); }
+    else openExercise(i);
+  }
+
+  /** Back from an exercise to the path (nothing keeps sounding or listening). */
+  function toPath() {
+    stopSound();
+    if (take) endTake(true);
+    m.phase = "idle"; m.path = true; m.grade = null; m.error = null; dropTake();
+    render(); focusTitle();
+  }
+
+  /** The stop "Next" goes to after a take: the path's stop to sing now, else the next in order. */
+  function nextIndex() { return M().nextStop(currentPath(), m.index, exercises().length); }
 
   // ── Pitch match (board 6b) ──────────────────────────────────────────────
   function pitchView() {
@@ -254,18 +342,12 @@
     }
     if (m.error) out.push(errorLine(m.error));
     if (m.phase === "idle") out.push(allowanceLine());
-    var next = exs.length > 1 ? exs[(m.index + 1) % exs.length] : null;
+    var next = m.grade ? nextIndex() : null;
     out.push(m.phase === "idle" ? actions(
       m.grade
-        ? [button("btn-ghost", null, "Again", function () { startTake(ex); }), next && button("btn-primary", null, "Next set", function () { openExercise((m.index + 1) % exs.length); })]
+        ? [button("btn-ghost", null, "Again", function () { startTake(ex); }), next != null && button("btn-primary", null, "Next set", function () { openExercise(next); })]
         : [hearButton(function () { hearExercise(ex); }), singButton(playful() ? "Sing it!" : "Start", function () { startTake(ex); })]
     ) : liveActions());
-    if (m.phase === "idle" && exs.length > 1) {
-      var items = (m.grade ? [next] : exs.filter(function (_, i) { return i !== m.index; })).map(function (e) {
-        return { title: e.title, sub: e.notes.map(M().written).join(" "), mono: true, value: e.bestScore != null && !playful() ? "Best " + e.bestScore : e.dohHeader, onClick: function () { openExercise(exs.indexOf(e)); } };
-      });
-      out.push(list(m.grade ? "Next set" : "Other sets", items));
-    }
     return out;
   }
 
@@ -485,13 +567,13 @@
     root.querySelectorAll(".pm-run-solfa span").forEach(function (r) { r.classList.toggle("on", Number(r.getAttribute("data-i")) === i); });
   }
 
-  // ── Intervals and Sing the harmony ──────────────────────────────────────
+  // ── Scales, Intervals and Sing the harmony ──────────────────────────────
   function notesView() {
-    var exs = exercises(), ex = exs[m.index], out = [], harmony = m.mode === "harmony";
+    var exs = exercises(), ex = exs[m.index], out = [], harmony = m.mode === "harmony", scales = m.mode === "scales";
     out.push(header(M().modeTitle(m.mode, ctx.practiceTrack), ex ? ex.title : M().modeTitle(m.mode, ctx.practiceTrack), ex && ex.dohHeader));
     var wait = loadingOr(); if (wait) return out.concat([wait]);
     if (!ex) return out;
-    var jump = harmony ? null : M().intervalParts(ex);
+    var jump = m.mode === "intervals" ? M().intervalParts(ex) : null;
     if (jump) {
       var j = el("div", "pm-jump");
       j.setAttribute("role", "img"); j.setAttribute("aria-label", "From " + jump.from + ", " + (jump.up ? "up " : "down ") + (jump.size || "") + " to " + jump.to);
@@ -508,6 +590,13 @@
         }
       });
       out.push(j);
+    } else if (scales) {
+      var scale = el("div", "pm-lines");
+      scale.appendChild(el("p", "pm-line-label", "Up and back down" + (ex.key ? " · " + ex.key : "")));
+      var row = chipRow(ex.notes, "pm-chips mine pm-scale-chips");
+      row.setAttribute("aria-label", "The scale: " + ex.notes.map(M().written).join(" "));
+      scale.appendChild(row);
+      out.push(scale);
     } else {
       var lines = el("div", "pm-lines");
       lines.appendChild(el("p", "pm-line-label", "Your line" + (ex.group ? " · " + ex.group.toLowerCase() : "")));
@@ -540,16 +629,12 @@
     }
     if (m.error) out.push(errorLine(m.error));
     if (m.phase === "idle") out.push(allowanceLine());
+    var next = m.grade ? nextIndex() : null;
     out.push(m.phase === "idle" ? actions(
       m.grade
-        ? [button("btn-ghost", null, "Again", function () { startTake(ex); }), exs.length > 1 && button("btn-primary", null, harmony ? "Next line" : playful() ? "Next jump" : "Next interval", function () { openExercise((m.index + 1) % exs.length); })]
+        ? [button("btn-ghost", null, "Again", function () { startTake(ex); }), next != null && button("btn-primary", null, harmony ? "Next line" : scales ? "Next scale" : playful() ? "Next jump" : "Next interval", function () { openExercise(next); })]
         : [hearButton(function () { hearExercise(ex); }), singButton(playful() ? "Sing it!" : "Sing it", function () { startTake(ex); })]
     ) : liveActions());
-    if (m.phase === "idle" && exs.length > 1) {
-      out.push(list(harmony ? "More lines" : playful() ? "More jumps" : "More intervals", exs.map(function (e, i) {
-        return { title: e.title, sub: e.group || e.notes.map(M().written).join(" "), on: i === m.index, value: e.bestScore != null && !playful() ? "Best " + e.bestScore : null, onClick: function () { openExercise(i); } };
-      })));
-    }
     return out;
   }
 
@@ -595,16 +680,12 @@
     }
     if (m.error) out.push(errorLine(m.error));
     if (m.phase === "idle") out.push(allowanceLine());
+    var next = m.grade ? nextIndex() : null;
     out.push(m.phase === "idle" ? actions(
       m.grade
-        ? [button("btn-ghost", null, "Again", function () { startTake(ex); }), exs.length > 1 && button("btn-primary", null, "Next rhythm", function () { openExercise((m.index + 1) % exs.length); })]
+        ? [button("btn-ghost", null, "Again", function () { startTake(ex); }), next != null && button("btn-primary", null, "Next rhythm", function () { openExercise(next); })]
         : [hearButton(function () { hearRhythm(ex); }), singButton("Clap it", function () { startTake(ex); })]
     ) : liveActions());
-    if (m.phase === "idle" && exs.length > 1) {
-      out.push(list("More rhythms", exs.map(function (e, i) {
-        return { title: e.title, sub: e.claps.map(function (c) { return M().clapSyllable(c.durBeats); }).join(" "), on: i === m.index, value: e.bestScore != null && !playful() ? "Best " + e.bestScore : null, onClick: function () { openExercise(i); } };
-      })));
-    }
     return out;
   }
 
@@ -1136,6 +1217,7 @@
         form.append("audio", blob, name);
         form.append("exerciseId", ex.id);
         form.append("leadInSec", String(leadSec));
+        var before = currentPath();
         ctx.request("/api/practice/modes/grade", { method: "POST", form: form }).then(function (grade) {
           if (g !== gen) return;
           m.grade = grade; m.phase = "idle"; m.error = null;
@@ -1144,7 +1226,17 @@
           P().rewardEvents(grade.reward).forEach(function (e) { track(e.name, e.detail); });
           render();
           window.scrollTo({ top: 0 }); // smooth by the stylesheet, unless less motion is asked for
-          load(true).then(function () { if (g === gen && m.phase === "idle") render(); });
+          load(true).then(function () {
+            if (g !== gen) return;
+            if (m.phase === "idle") render();
+            // The take that stars a unit's last stop opens its chest: the music box, once.
+            var unit = M().unitJustCompleted(before, currentPath());
+            if (unit) {
+              track("practice_path_unit_done", "mode=" + m.mode + ";unit=" + unit.title);
+              if (ctx.moment) ctx.moment({ piece: "musicbox", values: { label: "Unit done!" } });
+              else if (ctx.burst) ctx.burst();
+            }
+          });
         }, function (err) {
           if (g !== gen) return;
           m.phase = "idle"; m.error = P().gradeError(err);

@@ -40,7 +40,7 @@ import { rewardMoment } from "../../lib/practiceProgress";
 import { useModeTake } from "../../lib/useModeTake";
 import { fonts, radii, spacing, typography, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
-import { AllowanceLine, LiveDot, ModeFooter, ModeState, noneLeft, useGrade, useModeExercises } from "./shared";
+import { AllowanceLine, LiveDot, ModeFooter, ModeState, noneLeft, useGrade, useModeExercises, ModePathView, useModePath } from "./shared";
 
 /** The exercise at one speed: the same notes, that speed's id, tempo and grader. */
 function atSpeed(ex: PracticeExercise, s: SpeedStep): PracticeExercise {
@@ -122,10 +122,30 @@ export function RunsScreen({ track }: { track: PracticeTrack | null }) {
   const advice = grade?.marks && sung ? runAdvice(grade.marks, sung.notes, next) : null;
   const landing = sung ? sung.notes[sung.notes.length - 1] ?? null : null;
 
+  const pathState = useModePath(data, "runs", track);
+  function backToPath() {
+    if (take.phase !== "idle") take.cancel();
+    take.stopPlaying();
+    pathState.setOnPath(true);
+  }
+  if (pathState.onPath) {
+    return (
+      <ModePathView
+        title={pathState.title}
+        path={pathState.path}
+        data={data}
+        loading={loading}
+        error={loadError}
+        onRetry={reload}
+        onOpen={(i) => { { const e = (data?.exercises ?? [])[i]; if (e) openRun(e.code); }; pathState.setOnPath(false); }}
+      />
+    );
+  }
+
   return (
     <View style={styles.flex}>
       <Screen scroll contentStyle={styles.screen}>
-        <ModeHeader eyebrow={modeTitle("runs", track)} title={ex?.title ?? "Riffs & runs"} pill={ex?.dohHeader ?? null} />
+        <ModeHeader onBack={backToPath} eyebrow={modeTitle("runs", track)} title={ex?.title ?? "Riffs & runs"} pill={ex?.dohHeader ?? null} />
         <ModeState loading={loading && !data} error={data ? null : loadError} onRetry={reload} />
         {ex && roll && step && sung ? (
           <>

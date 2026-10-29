@@ -511,7 +511,7 @@ export interface CarolDrill {
 // ── Practice modes (C# Application/Practice/Dtos/PracticeModeDtos.cs) ───────
 
 /** A practice mode's wire id ("More ways to practise"). */
-export type PracticeModeId = "warm-up" | "pitch-match" | "runs" | "intervals" | "harmony" | "rhythm";
+export type PracticeModeId = "warm-up" | "pitch-match" | "scales" | "runs" | "intervals" | "harmony" | "rhythm";
 
 /** How a mode's take is marked: note by note, a run's shape and landing note, or clap by clap. */
 export type ExerciseGrader = "notes" | "run" | "rhythm";
@@ -646,7 +646,7 @@ export interface RunSpeed {
 // ── Quick games (GET /api/practice/games/{game}, POST /api/practice/games/grade) ─────────────────────────────────
 
 /** The quick games beside the sung practice: tapped, not sung, about a minute each. */
-export type PracticeGameId = "which-note" | "staff" | "hymn";
+export type PracticeGameId = "which-note" | "staff" | "hymn" | "which-scale";
 
 /** A note a game plays, in quarter-note beats. */
 export interface GameNote {
@@ -662,11 +662,19 @@ export interface GameHymn {
   firstLine: string | null;
 }
 
+/** A scale offered as a choice (Which scale?): its code (an answer's form), its name and its solfa up and back down. */
+export interface GameScale {
+  code: string;
+  title: string;
+  solfa: string;
+}
+
 /**
  * One round, with its answer so a tap is told at once (the server marks the answers that count). Which note: play
  * `dohMidi` then `noteMidi`. Staff to solfa: draw `noteName` ("F#4") on a treble stave with `fifths` in the signature.
  * Name that hymn: play `notes` at `tempoBpm`; `hymns` names each choice; `key` labels its solfa when revealed. An arcade
- * stage's Which note? sounds each note for `noteSeconds` (the web's endless games; null otherwise).
+ * stage's Which note? sounds each note for `noteSeconds` (the web's endless games; null otherwise). Which scale?: play
+ * `notes` at `tempoBpm`, a scale up and back down; `scales` names each choice.
  */
 export interface PracticeGameRound {
   index: number;
@@ -683,6 +691,7 @@ export interface PracticeGameRound {
   notes: GameNote[] | null;
   hymns: GameHymn[] | null;
   noteSeconds?: number | null;
+  scales?: GameScale[] | null;
 }
 
 /**

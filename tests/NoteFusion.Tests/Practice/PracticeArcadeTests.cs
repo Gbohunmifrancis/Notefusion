@@ -3,6 +3,7 @@ using NoteFusion.Application.Practice;
 using NoteFusion.Application.Practice.Commands;
 using NoteFusion.Application.Practice.Dtos;
 using NoteFusion.Application.Practice.Games;
+using NoteFusion.Application.Practice.Modes;
 using NoteFusion.Application.Practice.Queries;
 using NoteFusion.Core.Entities;
 using NoteFusion.Core.Enums;
@@ -24,6 +25,7 @@ public class PracticeArcadeTests
     [InlineData(PracticeGames.WhichNote)]
     [InlineData(PracticeGames.Staff)]
     [InlineData(PracticeGames.Hymn)]
+    [InlineData(PracticeGames.WhichScale)]
     public void A_stage_is_rebuilt_exactly_from_its_id_and_a_one_off_deal_is_unchanged(string game)
     {
         var id = PracticeGames.NewDealId(game, PracticeTrack.Focused, 0x1234abcd, 7);
@@ -155,6 +157,46 @@ public class PracticeArcadeTests
             }
         }
         Assert.Equal((6, 4), PracticeGames.HymnLevel(40));
+    }
+
+    [Fact]
+    public void Which_scale_brings_more_scales_and_names_each_level_then_plays_them_ever_quicker()
+    {
+        var before = new HashSet<string>();
+        for (var level = 1; level <= 14; level++)
+        {
+            var (asked, newest, choices, tempo) = PracticeGames.ScaleLevel(level);
+            Assert.True(before.IsSubsetOf(asked));
+            Assert.All(newest, n => Assert.Contains(n, asked));
+            Assert.All(asked, code => Assert.Contains(ModeCatalogue.Scales, s => s.Code == code));
+            Assert.Equal(level <= PracticeGames.WhichScaleFullLevel ? 96 : 96 + 8 * (level - PracticeGames.WhichScaleFullLevel), tempo);
+            before = asked.ToHashSet();
+
+            var stage = PracticeGames.Deal(PracticeGames.NewDealId(PracticeGames.WhichScale, PracticeTrack.Focused, (uint)(level * 77), level))!;
+            Assert.Equal(PracticeGames.StageRounds(PracticeGames.WhichScale), stage.Rounds.Count);
+            foreach (var r in stage.Rounds)
+            {
+                Assert.Equal(choices, r.Choices.Count);
+                Assert.Equal(r.Choices.Count, r.Choices.Distinct().Count());
+                Assert.Contains(r.Answer, r.Choices);
+                Assert.All(r.Choices, c => Assert.Contains(c, asked));
+                Assert.Equal(r.Choices, r.Scales!.Select(s => s.Code));
+                Assert.Equal(tempo, r.TempoBpm);
+                var scale = ModeCatalogue.Scales.Single(s => s.Code == r.Answer);
+                Assert.Equal(scale.Solfa.Split(' ').Length, r.Notes!.Count);
+                Assert.Equal(12, r.Notes!.Max(n => n.PitchMidi) - r.Notes![0].PitchMidi);
+            }
+        }
+        // Every scale of the Scales mode is asked by the full set, and the first level is major against minor.
+        Assert.Equal(ModeCatalogue.Scales.Select(s => s.Code).Order(), PracticeGames.ScaleLevel(PracticeGames.WhichScaleFullLevel).Asked.Order());
+        Assert.Equal(new[] { "major", "natural-minor" }, PracticeGames.ScaleLevel(1).Asked);
+        Assert.Equal((5, 200), (PracticeGames.ScaleLevel(500).Choices, PracticeGames.ScaleLevel(500).TempoBpm));
+
+        // The phone's one-off game: Playful's scales as level 3's, Focused's as level 7's, eight rounds.
+        var playful = PracticeGames.Deal(PracticeGames.NewDealId(PracticeGames.WhichScale, PracticeTrack.Playful, 42))!;
+        Assert.Equal(PracticeGames.WhichScaleRounds, playful.Rounds.Count);
+        Assert.All(playful.Rounds, r => Assert.Contains(r.Answer, PracticeGames.ScaleLevel(3).Asked));
+        Assert.All(playful.Rounds, r => Assert.Equal(3, r.Choices.Count));
     }
 
     [Fact]

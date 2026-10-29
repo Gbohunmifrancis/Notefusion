@@ -62,6 +62,7 @@ export const ICONS = {
   "warm-up": "lucide:wind",
   pitch: "nf:pitch",
   runs: "nf:run",
+  scales: "nf:scale",
   intervals: "nf:interval",
   harmony: "nf:harmony",
   rhythm: "nf:rhythm",

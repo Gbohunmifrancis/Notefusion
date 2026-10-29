@@ -483,11 +483,15 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   of the day (`PracticePath`, replayed from the session rows; `GET …/drills/next`, `/today` its alias): 80+ moves on, under
   that the drill once more then an easier variant, two 90+ skip a drill, two under 50 step back; unit and grade milestones
   are derived, each once. Mobile `PracticeScreen`.
-  Modes beside the path (`Application/Practice/Modes`; Focused lists all six, Playful warm-up, pitch match, intervals and
-  rhythm): warm-up (`GET …/warm-up`, synth guides, never marked) ending in the range finder (`POST …/range`, a
+  Modes beside the path (`Application/Practice/Modes`; Focused lists all seven, Playful warm-up, pitch match, scales,
+  intervals and rhythm): warm-up (`GET …/warm-up`, synth guides, never marked) ending in the range finder (`POST …/range`, a
   low or high take → worker `/v1/range`, holds ≥1 s; kept as `users.VoiceRange{Low,High}Midi`, said as notes, solfa on doh C
   and a part by harmony.py's ranges; `GET …/range`), pitch match (8 held notes after their tones, one take, `/v1/grade` with
-  `offsetSearchSec` 0.35 so the tones cannot stand in), intervals (doh then the note, RCM order), harmony (a third above or
+  `offsetSearchSec` 0.35 so the tones cannot stand in), scales (`ModeCatalogue.Scales`, `PracticeKind.Scale`: 17 scales up
+  and back down in four units: major and minor (natural, harmonic, melodic), pentatonic and blues, the church modes sung from
+  their own degree (Dorian ray to ray, Hijaz the harmonic minor's me to me), the world's (Hijaz, Japanese in, whole-tone,
+  double harmonic, Hungarian minor; semitones only: tonic solfa has no quarter-tone syllables), each written as the solfa
+  engine labels it in every key it fits; Playful 9), intervals (doh then the note, RCM order), harmony (a third above or
   under a played tune), runs (60–100 %: note by note while every note lasts 0.3 s, else `/v1/grade/run`, DTW shape + landing
   note) and rhythm (`/v1/grade/rhythm`: clap onsets, offset + tempo fit, ±70/±140 ms). `GET …/modes/{mode}` lists a mode's
   `ModeCatalogue` exercises (keyed per singer per day; id `mode:code@doh[~speed]`); `POST …/modes/grade` marks a take: a
@@ -500,10 +504,16 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `assets/practice-modes.js` (same tests). Pitch match: a live needle on the web only (`pitch-track.js`, YIN on the mic,
   the grader's 35/80 cents, reports nothing); phones hold and mark until a store build adds a pitch stream. Harmony plays
   the tune under a take only with headphones on. Wrong notes are grey. The range card's two switches are not built yet.
+  Every marked mode opens on its path (Duolingo-like, web and phone): pure `modePath` (`assets/practice-modes.js` ↔
+  `lib/practiceModes.ts`, same tests) makes units of the mode's groups (or runs of four when a group is not a unit), each
+  stop an exercise with stars from its best mark (50/80/95), a unit open once the one before is starred or one of its own
+  is sung, a locked unit's first stop "Jump here"; a take that stars a unit's last stop plays the music box (web) or a
+  toast (phone). Web `practice-mode-view.js` `pathView`, phone `components/practice/ModePath` + `shared` `useModePath`.
   Quick games (board s-practice-fun/s3; `Application/Practice/Games`, phone and web): Which note? (doh then a note,
-  tapped on the modulator), Staff to solfa (Playful "Note race": a note on the treble stave, its syllable, 60 s) and Name
+  tapped on the modulator), Staff to solfa (Playful "Note race": a note on the treble stave, its syllable, 60 s), Name
   that hymn (`HymnOpenings`: 49 well-known hymns' openings cut from the pack by `Cut`, a test checks them against
-  `pack.json`). `GET /api/practice/games/{game}` deals rounds rebuilt from the deal id (`game:p|f:seed`, mulberry32) with
+  `pack.json`) and Which scale? (a Scales mode scale played up and back down, its name picked; `PracticeGames.ScaleLevels`
+  bring them in teaching order, past the full set ever quicker; one-off Playful as level 3, Focused as level 7). `GET /api/practice/games/{game}` deals rounds rebuilt from the deal id (`game:p|f:seed`, mulberry32) with
   their answers, so the phone tells a tap at once; `POST …/games/grade` marks the answers against the server's deal, once
   per deal, and records a `PracticeKind.Game` session (`GameXp` 5, +3 at 80; `GamesPerDay` 6 count, the rest are for fun;
   no drill allowance, never the path, never "Spot on"). Mobile `screens/practice/PracticeGameScreen`, pure `lib/practiceGames`;
