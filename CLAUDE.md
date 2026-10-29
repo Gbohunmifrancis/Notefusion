@@ -542,7 +542,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   finished, `label`) and doh (Playful's three stars with nothing bigger; the drill card's Doh steps aside). Pure
   `assets/practice-moments.js` chooses them (Playful's stars, then a level/badge's 3D piece or else the biggest of the rest;
   `alongMoments` for play-along's end), `assets/moments.js` plays every moment, one at a time, never with reduced motion
-  (the 3D ones only with WebGL2). The phone's moments wait for a store build. Doh beyond Practice (mobile `components/doh`) is
+  (the 3D ones only with WebGL2). The phone plays the same six over the air: `lib/practiceMoments` and `lib/momentArt` mirror
+  the two web files (same tests), drawn through `lib/svgCanvas` (canvas calls recorded as react-native-svg, ~30 fps) by
+  `components/practice/Moments` once the marks land; its level-up and badge stay the 3D stills until a store build. Doh beyond Practice (mobile `components/doh`) is
   only: one Home card (`lib/dohSuggestion`; a sheet saved in the last 24 h → Practise this tune, i.e. Learn my part, else Rehearse;
   after 18:00 a 2+-day streak no freeze covers, today unsung → today's drill; the account's first week (`/api/me` `createdAt`) while it can
   transcribe → hello; never two, a card's key on Home one day only, × hides it for good; Settings' "Doh's suggestions", per device, turns
