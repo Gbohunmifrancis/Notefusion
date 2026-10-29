@@ -973,7 +973,11 @@
   // ── Practice (assets/practice-view.js): the daily drill, the streak, XP and badges ──
   // The view's script, its arithmetic and its stylesheet load the first time it is opened, never with the
   // app; the home chip needs only the numbers, asked for once the app is up and the phone is idle.
-  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=14", "/assets/practice-progress.js?v=10", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=4", "/assets/practice-games.js?v=1", "/assets/practice-view.js?v=18"];
+  var MOMENT_ASSETS = ["/assets/moments.js?v=1", "/assets/moment-art.js?v=1", "/assets/practice-moments.js?v=1"];
+  // The 3D level-up and badge pieces: the Practice view only.
+  var MOMENT_3D = "/assets/moment-3d.js?v=1";
+  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=15", "/assets/practice-progress.js?v=10", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=4", "/assets/practice-games.js?v=1"]
+    .concat(MOMENT_ASSETS, [MOMENT_3D, "/assets/practice-view.js?v=19"]);
   var assetLoads = {};
   /** One stylesheet or script, once per page; a failed one is tried again next time. Scripts run in the order asked. */
   function loadAsset(url) {
@@ -4696,6 +4700,8 @@
     listenForKeyboards();
     sayAlong();
     keysInSight();
+    // The end's moments (assets/moments.js), fetched while the tune is played.
+    MOMENT_ASSETS.forEach(function (url) { loadAsset(url).catch(function () { /* no moments, no matter */ }); });
     track("Started playing along");
   }
   /** The keys are what is played: the page moves just far enough to show them above a phone's tab bar. */
@@ -4725,7 +4731,7 @@
     if (r.kind === "wrong") { alongMiss = true; roll.light(key, true); sayAlong(); return; }
     if (r.kind !== "right") return;
     alongMiss = false;
-    if (r.done) { roll.waitOn(null); sayAlong(); track("Played along to the end"); return; }
+    if (r.done) { roll.waitOn(null); sayAlong(); alongEnded(); track("Played along to the end"); return; }
     // On to the next note, at the tempo and speed: the roll falls until it lands, then waits there.
     roll.waitOn(null);
     alongTo = along.target().startBeat; alongAt = performance.now();
@@ -4745,6 +4751,11 @@
     }
     if (rollShown()) roll.draw(alongBeat, false);
     alongFrame = requestAnimationFrame(alongStep);
+  }
+  /** The end of the tune: its stars, and a perfect run's combo (assets/practice-moments.js), over the keys. */
+  function alongEnded() {
+    if (!window.NfMoments || !window.NfPracticeMoments) return;
+    window.NfPracticeMoments.alongMoments(along.score()).forEach(function (m) { window.NfMoments.play({ piece: m.piece, values: m.values }); });
   }
   function noteName(n) { return n.solfa ? n.solfa + (n.octaveMark || "") : C.pitchName(n.pitchMidi); }
   function sayAlong() {

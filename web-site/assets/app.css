@@ -1155,3 +1155,14 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 @media (max-width: 640px) { .result-views .tabs .tab-roll { padding-inline: 12px; } .tab-roll .tab-word { display: none; } }
 .tab-short { display: none; }
 @media (max-width: 400px) { .result-views .tabs { gap: 1px; } .result-views .tabs .tab { padding-inline: 5px; } .result-views .tabs .tab-roll { padding-inline: 8px; min-width: 44px; } .result-views .tab-long { display: none; } .result-views .tab-short { display: inline; } }
+
+/* A reward moment (assets/moments.js): its own Night card, played once over the page, never in the way of a tap. */
+.nf-moment {
+  position: fixed; left: 50%; top: 42%; z-index: 47; width: min(var(--mw, 360px), calc(100vw - 32px));
+  transform: translate(-50%, -50%); pointer-events: none; filter: drop-shadow(0 18px 40px rgba(5, 8, 14, 0.45));
+  animation: nf-moment-in 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.nf-moment canvas { display: block; width: 100%; height: 100%; }
+.nf-moment.out { opacity: 0; transform: translate(-50%, -50%) scale(0.92); }
+@keyframes nf-moment-in { from { opacity: 0; transform: translate(-50%, -50%) scale(0.86); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+@media (min-width: 641px) { .nf-moment { width: min(calc(var(--mw, 360px) * 0.9), 420px); } }

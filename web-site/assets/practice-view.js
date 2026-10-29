@@ -918,61 +918,29 @@
     setTimeout(function () { layer.remove(); }, 1500);
   }
 
-  // ── The 3D reward moment (board-less; design/rive/live.py) ─────────────
-  // A level reached spins its emblem in, a badge earned pops in: one small signed .riv each in /assets/practice-3d/,
-  // played by the Rive web player (@rive-app/webgl2, pinned, about 1.1 MB). The player is fetched once a take starts,
-  // never with the view, and a moment whose player is not ready by the mark is skipped: the toast's 3D still carries
-  // the reward on its own. Not with reduced motion, data saving or no WebGL2.
-  var RIVE_BASE = "https://cdn.jsdelivr.net/npm/@rive-app/webgl2@2.47.1/";
-  var LIVE_DIR = "/assets/practice-3d/", LIVE_V = "?v=1", LIVE_MS = 2600;
-  var riveLoad = null, riveReady = false;
-  function liveOk() {
-    if (reducedMotion()) return false;
-    try { if (navigator.connection && navigator.connection.saveData) return false; } catch (e) { /* no Network Information API */ }
-    try { return !!document.createElement("canvas").getContext("webgl2"); } catch (e) { return false; }
-  }
-  function warmRive() {
-    if (riveLoad || !liveOk()) return;
-    riveLoad = new Promise(function (resolve, reject) {
-      var tag = document.createElement("script");
-      tag.src = RIVE_BASE + "rive.js"; tag.async = true; tag.crossOrigin = "anonymous";
-      tag.onload = function () { resolve(window.rive); };
-      tag.onerror = function () { tag.remove(); reject(new Error("rive")); };
-      document.head.appendChild(tag);
-    }).then(function (R) {
-      R.RuntimeLoader.setWasmUrl(RIVE_BASE + "rive.wasm");
-      return R.RuntimeLoader.awaitInstance().then(function () { riveReady = true; return R; });
-    });
-    riveLoad.catch(function () { riveLoad = null; }); // a failed fetch is tried again at the next take
-  }
-  /** The live piece for a reward's picture: `level-3-me` spins in as `levelup-3`, a badge pops in as itself. */
+  // ── The reward moments (assets/moments.js) ─────────────────────────────
+  // A level reached spins its 3D emblem in and a badge earned pops in (assets/moment-3d.js, WebGL2); the rest of what a
+  // take earns (Playful's stars, a unit or grade finished, the week's goal, the day's streak, a run in tune, Doh
+  // cheering) is drawn on a canvas (assets/moment-art.js; chosen by assets/practice-moments.js).
+  /** The 3D piece for a reward's picture: `level-3-me` spins in as `levelup-3`, a badge pops in as itself. */
   function livePiece(picture) {
     var m = /^level-(\d)-/.exec(picture || "");
     return m ? "levelup-" + m[1] : /^badge-[a-z-]+$/.test(picture || "") && !/-locked$/.test(picture) ? picture : null;
   }
   function moment3d(picture) {
-    var piece = livePiece(picture), R = window.rive;
-    if (!piece || !riveReady || !R || !liveOk()) return;
-    var layer = el("div", "pv-moment"); layer.setAttribute("aria-hidden", "true");
-    var canvas = document.createElement("canvas");
-    var px = Math.min(2, window.devicePixelRatio || 1);
-    canvas.width = Math.round(200 * px); canvas.height = Math.round(200 * px);
-    layer.appendChild(canvas);
-    document.body.appendChild(layer);
-    var player = null;
-    var done = function () {
-      layer.classList.add("out");
-      setTimeout(function () { try { if (player) player.cleanup(); } catch (e) { /* already gone */ } layer.remove(); }, 260);
-    };
-    try {
-      player = new R.Rive({
-        src: LIVE_DIR + piece + ".riv" + LIVE_V, canvas: canvas, autoplay: true, enableGPUCanvas: true,
-        layout: new R.Layout({ fit: R.Fit.Contain }),
-        onLoadError: function () { layer.remove(); }
-      });
-    } catch (e) { layer.remove(); return; }
-    track("Practice 3D moment", piece);
-    setTimeout(done, LIVE_MS);
+    var piece = livePiece(picture);
+    if (piece && window.NfMoments && window.NfMoments.play({ piece: piece, className: "pv-moment" })) track("Practice 3D moment", piece);
+  }
+  /** A reward moment (practice-moments.js's {piece, values}): Doh's own steps aside while the moment's Doh cheers. */
+  function rewardMoment(m) {
+    if (!window.NfMoments) return;
+    var doh = m.piece === "doh";
+    var played = window.NfMoments.play({
+      piece: m.piece, values: m.values,
+      onStart: function () { if (doh) document.body.classList.add("nf-moment-doh"); },
+      onEnd: function () { if (doh) document.body.classList.remove("nf-moment-doh"); }
+    });
+    if (played) track("Practice moment", m.piece);
   }
 
   /** The tile of the note sounding (Hear it) or due (Sing it), lit. */
@@ -1041,7 +1009,6 @@
       s.error = P.micError({ name: "Unsupported" }); render(); return;
     }
     var gen = s.gen, AC = window.AudioContext || window.webkitAudioContext;
-    warmRive(); // the 3D reward moment's player, fetched while the take is sung
     // Made on the press, so the browser lets it play; the piano is decoded into it while the microphone opens.
     var audio = new AC();
     var mine = take = { audio: audio, cancelled: false, lead: P.leadIn(d).seconds };
@@ -1116,7 +1083,7 @@
 
   /** `lead` is the take's count-in in seconds: the server finds beat one there. */
   function send(blob, name, d, gen, lead) {
-    var P = PP(), form = new FormData();
+    var P = PP(), form = new FormData(), before = s.progress;
     form.append("audio", blob, name);
     form.append("drillId", d.id);
     form.append("leadInSec", String(lead));
@@ -1135,7 +1102,11 @@
       var line = g.milestone ? g.milestone.title : sungOn === "playful" ? T.playfulRewardLine(g.reward) : moment && moment.line;
       if (how === "burst") burst();
       if (how !== "quiet" && line) toast(line, T.rewardArt(g.reward));
+      // The moments: Playful's stars first, then a level or badge's 3D piece, or else the biggest other thing it earned.
+      var moments = window.NfPracticeMoments ? window.NfPracticeMoments.momentsFor(sungOn, before, g) : [];
+      if (moments.length && moments[0].piece === "stars") rewardMoment(moments.shift());
       if (how !== "quiet" && g.reward && (g.reward.levelUp || (g.reward.newBadges || []).length)) moment3d(T.rewardArt(g.reward));
+      moments.forEach(rewardMoment);
       refreshProgress();
       fetchNext();
     }, function (err) {
