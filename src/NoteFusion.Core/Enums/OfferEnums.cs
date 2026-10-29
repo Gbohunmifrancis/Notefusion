@@ -49,4 +49,17 @@ public enum OfferSkipReason
 
     /// <summary>Suspended, unverified, or no longer on dollar prices.</summary>
     NoLongerEligible = 4,
+
+    /// <summary>Still queued when the last call was sent: the last call goes to them instead, so nobody gets both at once.</summary>
+    LastCallInstead = 5,
+}
+
+/// <summary>Which of an offer's emails a row is (stored by name): the launch Send, or the last call before it ends.</summary>
+public enum OfferEmailRound
+{
+    /// <summary>The offer's email, queued by Send.</summary>
+    Launch = 0,
+
+    /// <summary>The follow-up near the end: the offer ending soon, with a live countdown, then the usual price.</summary>
+    LastCall = 1,
 }

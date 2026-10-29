@@ -16,8 +16,9 @@ namespace NoteFusion.Application.Offers;
 /// </summary>
 /// <remarks>
 /// <para>
-/// For each offer whose email was sent, switched on, started and not paused, the queue goes lapsed Pro first, then free
-/// accounts by when they were last seen (newest first), then Pro now. Each person is checked again at their turn: an
+/// For each offer whose email was sent, switched on, started and not paused, the queue goes last calls first (they are
+/// the ones short of time), then lapsed Pro, then free accounts by when they were last seen (newest first), then Pro
+/// now. Each row is sent as its round: the email, or the last call with its countdown. Each person is checked again at their turn: an
 /// account suspended, unverified or no longer on dollar prices is skipped (<see cref="OfferSkipReason.NoLongerEligible"/>),
 /// as is one that turned email off (<see cref="OfferSkipReason.OptedOut"/>), paid at this offer's price
 /// (<see cref="OfferSkipReason.Bought"/>), became Pro another way (free and lapsed only,
@@ -134,7 +135,8 @@ public sealed class OfferEmailService
         var plans = await OfferEmailComposer.OfferablePlansAsync(_db, ct);
 
         var ordered = queue
-            .OrderBy(e => e.Group)
+            .OrderBy(e => e.Round == OfferEmailRound.LastCall ? 0 : 1)
+            .ThenBy(e => e.Group)
             .ThenByDescending(e => users.TryGetValue(e.UserId, out var u) ? u.Seen ?? DateTime.MinValue : DateTime.MinValue)
             .ToList();
 
@@ -180,7 +182,7 @@ public sealed class OfferEmailService
                 return (sent, true);
 
             var content = OfferEmailComposer.Compose(
-                offer, plans, set!, row.Token, OfferEmailComposer.UnsubscribeUrl(_settings, _tokens, user.Id), _settings);
+                offer, plans, set!, row.Token, OfferEmailComposer.UnsubscribeUrl(_settings, _tokens, user.Id), _settings, row.Round);
             var result = await _email.SendOfferAsync(new EmailRecipient(user.Email, user.FullName), content, test: false, ct);
             if (result.IsSuccess)
             {

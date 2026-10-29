@@ -57,6 +57,22 @@ public static class OfferErrors
     public static readonly Error AlreadySent =
         Error.Conflict("OFFER_ALREADY_SENT", "This offer's email has already been sent.");
 
+    public static readonly Error LastCallBeforeSend =
+        Error.Conflict("OFFER_LAST_CALL_BEFORE_SEND", "The last call follows the offer's email. Send that first.");
+
+    public static readonly Error LastCallSent =
+        Error.Conflict("OFFER_LAST_CALL_SENT", "This offer's last call has already been sent.");
+
+    /// <summary>Its last call has gone out: those words are what was sent.</summary>
+    public static readonly Error LastCallWordsLocked =
+        Error.Conflict("OFFER_LAST_CALL_WORDS_LOCKED", "The last call has been sent, so its words can no longer change.");
+
+    public static readonly Error FilterUnknown =
+        Error.Validation("OFFER_FILTER_UNKNOWN", "Show those who opened, clicked, bought, or all.");
+
+    public static readonly Error RoundUnknown =
+        Error.Validation("OFFER_ROUND_UNKNOWN", "Choose the offer's email or its last call.");
+
     public static readonly Error NoAudience =
         Error.Validation("OFFER_NO_AUDIENCE", "Nobody in the groups you ticked can be sent this offer.");
 

@@ -5,6 +5,7 @@ using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Offers.Dtos;
 using NoteFusion.Core.Entities;
 using NoteFusion.Core.Entities.Billing;
+using NoteFusion.Core.Enums;
 using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Application.Offers;
@@ -64,7 +65,9 @@ public static class OfferAdmin
             OfferTemplates.LabelOf(offer.Template),
             offer.EarliestEndUtc,
             offer.LatestEndUtc,
-            seasonOn);
+            seasonOn,
+            OfferEmailComposer.LastCallWordsOf(offer),
+            offer.LastCallStartedAtUtc);
 
     /// <summary>The checks every create and update makes, in the order an admin would fix them; null when it is all right.</summary>
     public static Error? Check(
@@ -177,6 +180,16 @@ public static class OfferAdmin
             : string.Equals(set.Trim(), OfferPlans.Standard, StringComparison.OrdinalIgnoreCase) ? OfferPlans.Standard
             : string.Equals(set.Trim(), OfferPlans.Regional, StringComparison.OrdinalIgnoreCase) ? OfferPlans.Regional
             : null;
+
+    /// <summary>The email a request names: "launch" (the default) or "lastCall"; null for anything else.</summary>
+    public static OfferEmailRound? ParseRound(string? round)
+        => string.IsNullOrWhiteSpace(round) || string.Equals(round.Trim(), "launch", StringComparison.OrdinalIgnoreCase) ? OfferEmailRound.Launch
+            : string.Equals(round.Trim(), "lastCall", StringComparison.OrdinalIgnoreCase)
+              || string.Equals(round.Trim(), "last-call", StringComparison.OrdinalIgnoreCase) ? OfferEmailRound.LastCall
+            : null;
+
+    /// <summary>"launch" or "lastCall", as the console names the two emails.</summary>
+    public static string RoundName(OfferEmailRound round) => round == OfferEmailRound.LastCall ? "lastCall" : "launch";
 
     public static Task<Offer?> FindAsync(IApplicationDbContext db, Guid id, CancellationToken ct)
         => db.Offers.FirstOrDefaultAsync(o => o.Id == id, ct);

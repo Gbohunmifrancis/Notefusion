@@ -15,6 +15,11 @@ namespace NoteFusion.Core.Entities;
 /// marks the payment with the offer's id; fulfilment, the ledger and the receipt read it as an ordinary Pro payment.
 /// </para>
 /// <para>
+/// Near the end an admin may send a last call (<see cref="LastCallStartedAtUtc"/>): a second email with its own words
+/// (<see cref="LastCallSubject"/>…, the template's until changed), a live countdown and the usual price after it. Its
+/// words lock when it is sent, as the launch's do.
+/// </para>
+/// <para>
 /// The email's words are locked once sending starts (<see cref="SendStartedAtUtc"/>), so what was sent stays on the
 /// record. At most one enabled offer at a time: the command that switches one on checks the windows
 /// (<see cref="EarliestEndUtc"/>..<see cref="LatestEndUtc"/>) do not overlap.
@@ -71,6 +76,18 @@ public sealed class Offer : BaseEntity
 
     /// <summary>The email's opening paragraphs, split on a blank line; <c>{pct}</c> reads as the percent.</summary>
     public string Body { get; private set; } = string.Empty;
+
+    /// <summary>The last call's words; null while the template's are used.</summary>
+    public string? LastCallSubject { get; private set; }
+    public string? LastCallPreheader { get; private set; }
+    public string? LastCallHeadline { get; private set; }
+    public string? LastCallBody { get; private set; }
+
+    /// <summary>When the admin sent the last call (its audience was queued then); null until then. Locks its words.</summary>
+    public DateTime? LastCallStartedAtUtc { get; private set; }
+
+    /// <summary>The admin who sent the last call.</summary>
+    public Guid? LastCallStartedBy { get; private set; }
 
     /// <summary>When the admin pressed Send (the audience was queued then); null until then. Locks the words.</summary>
     public DateTime? SendStartedAtUtc { get; private set; }
@@ -196,6 +213,31 @@ public sealed class Offer : BaseEntity
         Preheader = Guard.NotNullOrWhiteSpace(preheader).Trim();
         Headline = Guard.NotNullOrWhiteSpace(headline).Trim();
         Body = Guard.NotNullOrWhiteSpace(body).Trim();
+        UpdatedAtUtc = utcNow;
+    }
+
+    /// <summary>The last call's words. Refused once the last call has been sent.</summary>
+    public void SetLastCallWords(string subject, string preheader, string headline, string body, DateTime utcNow)
+    {
+        if (LastCallStartedAtUtc is not null)
+            throw new InvalidOperationException("An offer's last-call words cannot change once it has been sent.");
+        LastCallSubject = Guard.NotNullOrWhiteSpace(subject).Trim();
+        LastCallPreheader = Guard.NotNullOrWhiteSpace(preheader).Trim();
+        LastCallHeadline = Guard.NotNullOrWhiteSpace(headline).Trim();
+        LastCallBody = Guard.NotNullOrWhiteSpace(body).Trim();
+        UpdatedAtUtc = utcNow;
+    }
+
+    /// <summary>The last call was sent: its audience is queued and its words are locked. Only after the launch's Send.</summary>
+    public void StartLastCall(string subject, string preheader, string headline, string body, Guid adminId, DateTime utcNow)
+    {
+        if (SendStartedAtUtc is null)
+            throw new InvalidOperationException("An offer's last call follows its email; send that first.");
+        if (LastCallStartedAtUtc is not null)
+            throw new InvalidOperationException("This offer's last call has already been sent.");
+        SetLastCallWords(subject, preheader, headline, body, utcNow);
+        LastCallStartedAtUtc = utcNow;
+        LastCallStartedBy = Guard.AgainstEmpty(adminId);
         UpdatedAtUtc = utcNow;
     }
 

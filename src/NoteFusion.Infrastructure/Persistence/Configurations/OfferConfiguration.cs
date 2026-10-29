@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NoteFusion.Core.Entities;
+using NoteFusion.Core.Enums;
 
 namespace NoteFusion.Infrastructure.Persistence.Configurations;
 
@@ -23,6 +24,10 @@ public sealed class OfferConfiguration : IEntityTypeConfiguration<Offer>
         builder.Property(o => o.Preheader).HasMaxLength(Offer.PreheaderMaxLength).IsRequired();
         builder.Property(o => o.Headline).HasMaxLength(Offer.HeadlineMaxLength).IsRequired();
         builder.Property(o => o.Body).HasMaxLength(Offer.BodyMaxLength).IsRequired();
+        builder.Property(o => o.LastCallSubject).HasMaxLength(Offer.SubjectMaxLength);
+        builder.Property(o => o.LastCallPreheader).HasMaxLength(Offer.PreheaderMaxLength);
+        builder.Property(o => o.LastCallHeadline).HasMaxLength(Offer.HeadlineMaxLength);
+        builder.Property(o => o.LastCallBody).HasMaxLength(Offer.BodyMaxLength);
         builder.Property(o => o.CreatedByEmail).HasMaxLength(Offer.EmailMaxLength);
 
         builder.Ignore(o => o.WordsLocked);
@@ -34,8 +39,8 @@ public sealed class OfferConfiguration : IEntityTypeConfiguration<Offer>
 }
 
 /// <summary>
-/// Maps <see cref="OfferEmail"/>. Unique (offer, account): one queued email per person per offer, so a second Send
-/// pressed at the same moment fails its insert. The token is unique (the click looks it up). Rows go with the account
+/// Maps <see cref="OfferEmail"/>. Unique (offer, account, round): one launch email and one last call per person per
+/// offer, so a second Send pressed at the same moment fails its insert. The token is unique (the click looks it up). Rows go with the account
 /// (cascade), like its outreach messages, and with the offer.
 /// </summary>
 public sealed class OfferEmailConfiguration : IEntityTypeConfiguration<OfferEmail>
@@ -47,6 +52,7 @@ public sealed class OfferEmailConfiguration : IEntityTypeConfiguration<OfferEmai
         builder.Property(e => e.Id).ValueGeneratedNever();
 
         builder.Property(e => e.Group).HasConversion<string>().HasMaxLength(16).IsRequired();
+        builder.Property(e => e.Round).HasConversion<string>().HasMaxLength(16).IsRequired();
         builder.Property(e => e.Status).HasConversion<string>().HasMaxLength(16).IsRequired();
         builder.Property(e => e.SkipReason).HasConversion<string>().HasMaxLength(24);
         builder.Property(e => e.Token).HasMaxLength(OfferEmail.TokenMaxLength).IsRequired();
@@ -55,7 +61,7 @@ public sealed class OfferEmailConfiguration : IEntityTypeConfiguration<OfferEmai
         builder.HasOne<Offer>().WithMany().HasForeignKey(e => e.OfferId).OnDelete(DeleteBehavior.Cascade);
         builder.HasOne<User>().WithMany().HasForeignKey(e => e.UserId).OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasIndex(e => new { e.OfferId, e.UserId }).IsUnique();
+        builder.HasIndex(e => new { e.OfferId, e.UserId, e.Round }).IsUnique();
         builder.HasIndex(e => e.Token).IsUnique();
         // The worker reads an offer's queue; the progress counts read it by status.
         builder.HasIndex(e => new { e.OfferId, e.Status });

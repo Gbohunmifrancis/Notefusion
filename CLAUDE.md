@@ -795,6 +795,14 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   651 N Broad Street, Middletown, DE 19709, USA; Send is refused while it is blank) and its unsubscribe is the founder-notes `EmailOptOut`, shown as "Notes and offers from NoteFusion".
   Opens, clicks and purchases are counted: a sent email (never a preview or test) carries a 1×1 GIF,
   `GET /api/offers/o/{token}` (`RecordOfferOpenCommand`, first load only, `OfferEmail.OpenedAtUtc`; a click counts as an open).
+  Near the end an admin sends the last call (`POST /api/admin/offers/{id}/last-call`, fresh unlock, once, after Send; audit
+  `SendOfferLastCall`): `OfferEmail.Round` `LastCall` rows (unique offer+account+round) for the email's groups as the audience
+  reads now, less buyers; a launch row still queued is skipped `LastCallInstead` (never both). Its words are the offer's
+  `LastCall*` (the template's `LastCallWords` until saved, lock when sent); the email says "ends", shows a live countdown
+  (`GET /api/offers/countdown?o={key}&m={token}`: `OfferCountdown`, an animated GIF drawn at each load, a minute of frames to
+  the person's own midnight, our own 5×7 digits and GIF encoder, no image library or fonts) and the usual price after; the
+  worker sends last calls first. The console's Offers page: Last call (words, Send, its counts) and Who opened
+  (`GET …/recipients?round=&filter=opened|clicked|bought|all`, the people, newest open first).
 - Email quota (`Application/Common/EmailBudget`, `Infrastructure/Email/EmailQuota`): every email Resend accepts is an
   `email_sends` row (kind + time); optional mail (welcome, waitlist, checkout reminder, failed-job tips, outreach) goes only
   while each capped window — last 24 h `Email__DailyLimit` (100), 7 days `Email__WeeklyLimit` (none), 31 days

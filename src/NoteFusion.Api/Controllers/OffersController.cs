@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using NoteFusion.Api.Common;
 using NoteFusion.Api.RateLimiting;
+using NoteFusion.Application.Offers;
 using NoteFusion.Application.Offers.Commands;
 using NoteFusion.Application.Offers.Queries;
 
@@ -53,6 +54,25 @@ public sealed class OffersController : ApiControllerBase
         await _sender.Send(new RecordOfferOpenCommand(token), ct);
         Response.Headers.CacheControl = "no-store, no-cache, must-revalidate, private";
         return File(TransparentGif, "image/gif");
+    }
+
+    /// <summary>
+    /// The last call's live countdown (<see cref="OfferCountdown"/>): an animated GIF of the time left until the offer
+    /// ends for the person its token names (the UK's without one), drawn fresh at every load, so it reads right whenever
+    /// the email is opened; a clock at nothing once it is over or for a key that names no offer. Never cached; limited
+    /// per address as the web events are (mail apps fetch images from shared addresses, a few per open).
+    /// </summary>
+    [HttpGet("countdown")]
+    [EnableRateLimiting(AuthRateLimiting.WebEvents)]
+    public async Task<IActionResult> Countdown([FromQuery(Name = "o")] string? key, [FromQuery(Name = "m")] string? token, CancellationToken ct)
+    {
+        var result = await _sender.Send(new GetOfferCountdownQuery(key, token), ct);
+        var left = result.IsSuccess ? result.Value.Left : TimeSpan.Zero;
+        var template = result.IsSuccess ? result.Value.Template : null;
+        Response.Headers.CacheControl = "no-store, no-cache, must-revalidate, private";
+        Response.Headers.Pragma = "no-cache";
+        Response.Headers.Expires = "0";
+        return File(OfferCountdown.Render(left, OfferCountdown.For(template)), "image/gif");
     }
 
     /// <summary>A 1×1 transparent GIF.</summary>

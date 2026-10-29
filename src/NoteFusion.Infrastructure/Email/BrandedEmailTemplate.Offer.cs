@@ -16,6 +16,9 @@ namespace NoteFusion.Infrastructure.Email;
 /// <c>prefers-color-scheme: dark</c> block puts the body on the night canvas where the client honours it.
 /// </summary>
 /// <remarks>
+/// The last call (<see cref="OfferEmailContent.LastCall"/>) is the same email near the end: "ends 31 October" in the
+/// header, a live countdown under the headline (an animated GIF the API draws when it is opened, to the person's own
+/// midnight), the usual price it goes back to, and a button that says so.
 /// Every value from outside (the name, the admin's words, the links) is HTML-encoded here; the words' only markup is
 /// the "30% off" made bold after encoding.
 /// </remarks>
@@ -80,8 +83,26 @@ public sealed partial class BrandedEmailTemplate
             (false, true) => "one year",
             _ => "one month or one year",
         };
-        var endLine = $"The offer ends at midnight on {endsOn}, your time. Each payment buys {buys} of Pro; nothing renews by itself.";
-        var button = $"Get {pct}% off Pro";
+        var usual = string.Join(" or ", offer.Prices.Select(p => $"{Usd(p.AmountMinor)} a {(p.Interval == BillingInterval.Yearly ? "year" : "month")}"));
+        var endLine = offer.LastCall
+            ? $"When the clock runs out at midnight on {endsOn}, your time, Pro goes back to its usual price{(usual.Length > 0 ? $" of {usual}" : string.Empty)}. Each payment buys {buys} of Pro; nothing renews by itself."
+            : $"The offer ends at midnight on {endsOn}, your time. Each payment buys {buys} of Pro; nothing renews by itself.";
+        var button = offer.LastCall ? $"Get {pct}% off before midnight" : $"Get {pct}% off Pro";
+        var headerLine = offer.LastCall ? $"{offer.Label} · ends {until}" : $"{offer.Label} · until {until}";
+        // The live countdown (the last call only): a picture, so it plays in every mail app; its words say the same.
+        var countdown = offer.CountdownUrl is { } countdownUrl
+            ? $"""
+
+                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 22px">
+                            <tr>
+                              <td align="center" bgcolor="#0E121A" style="padding:12px 8px 8px;border-radius:14px;background-color:#0E121A">
+                                <div style="font-family:{FontStack};font-size:12px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:{skin.Line};padding-bottom:6px">The offer ends in</div>
+                                <img src="{Encode(countdownUrl)}" width="480" height="140" alt="{Encode($"Ends at midnight on {endsOn}, your time")}" border="0" style="display:block;margin:0 auto;border:0;outline:none;width:100%;max-width:480px;height:auto" />
+                              </td>
+                            </tr>
+                          </table>
+              """
+            : string.Empty;
         var address = string.IsNullOrWhiteSpace(_settings.PostalAddress) ? PostalAddressPlaceholder : _settings.PostalAddress.Trim();
         // The 1×1 image that counts the open (real sends only; never in a preview or a test).
         var pixel = offer.OpenPixelUrl is { } pixelUrl
@@ -183,13 +204,13 @@ public sealed partial class BrandedEmailTemplate
                         <td align="center" class="nf-hpad" bgcolor="#0E121A" style="padding:26px 32px 28px;border-radius:20px 20px 0 0;background-color:#0E121A;background-image:radial-gradient(120% 90% at 50% 112%,{{skin.Glow}} 0%,rgba(0,0,0,0) 60%),linear-gradient(180deg,#07090E 0%,#151A24 100%)">
                           <img class="nf-art" src="{{Encode(art)}}" width="280" height="120" alt="" border="0" style="display:block;margin:0 auto 4px;border:0;outline:none;height:120px;width:280px;max-width:280px" />
                           <div style="font-family:{{FontStack}};font-size:27px;font-weight:700;letter-spacing:-0.6px;color:#ffffff;line-height:1.1">Notefusion</div>
-                          <div style="font-family:{{FontStack}};font-size:13px;font-weight:500;color:{{skin.Line}};letter-spacing:0.3px;padding-top:7px">{{Encode(offer.Label)}} &nbsp;·&nbsp; until {{Encode(until)}}</div>
+                          <div style="font-family:{{FontStack}};font-size:13px;font-weight:500;color:{{skin.Line}};letter-spacing:0.3px;padding-top:7px">{{Encode(offer.Label)}} &nbsp;·&nbsp; {{(offer.LastCall ? "ends" : "until")}} {{Encode(until)}}</div>
                         </td>
                       </tr>
 
                       <tr>
                         <td class="nf-pad nf-body" bgcolor="{{Surface}}" style="padding:36px 40px 34px;background-color:{{Surface}};border-left:1px solid {{Border}};border-right:1px solid {{Border}}">
-                          <h1 class="nf-h1 nf-ink" style="margin:0 0 18px;font-family:{{FontStack}};font-size:26px;font-weight:700;letter-spacing:-0.5px;color:{{Ink}};line-height:1.25">{{Encode(headline)}}</h1>{{body}}
+                          <h1 class="nf-h1 nf-ink" style="margin:0 0 18px;font-family:{{FontStack}};font-size:26px;font-weight:700;letter-spacing:-0.5px;color:{{Ink}};line-height:1.25">{{Encode(headline)}}</h1>{{countdown}}{{body}}
                           <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:22px 0 6px">
                             <tr>
                               <td class="nf-box" bgcolor="{{skin.BoxFill}}" style="padding:18px 22px 20px;background-color:{{skin.BoxFill}};border:1px solid {{skin.BoxBorder}};border-radius:14px">
@@ -242,7 +263,10 @@ public sealed partial class BrandedEmailTemplate
             </html>
             """;
 
-        var text = new List<string> { $"{offer.Label} · until {until}", "", headline, "", greeting, "" };
+        var text = new List<string> { headerLine, "", headline, "" };
+        if (offer.LastCall)
+            text.AddRange([$"Ends at midnight on {endsOn}, your time.", ""]);
+        text.AddRange([greeting, ""]);
         foreach (var paragraph in paragraphs)
             text.AddRange([paragraph, ""]);
         text.Add($"{offer.Label.ToUpperInvariant()} · {pct}% OFF PRO");

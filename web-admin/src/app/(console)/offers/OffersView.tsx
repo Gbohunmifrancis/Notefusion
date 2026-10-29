@@ -36,6 +36,7 @@ import {
   type OfferChange,
   type OfferInterval,
   type OfferPriceSet,
+  type OfferRound,
   type OfferTemplate,
   type OfferTemplateDefaults,
   type OfferWords,
@@ -74,6 +75,7 @@ import {
 import { getReportingOffset } from "@/lib/reporting";
 import { cn } from "@/lib/utils";
 
+import { OfferLastCallCard, OfferRecipientsCard } from "./OfferLastCall";
 import { OfferPreviewPanel } from "./OfferPreview";
 import { OfferProgressCard } from "./OfferProgress";
 import { OfferSendCards } from "./OfferSending";
@@ -149,6 +151,8 @@ function Offers({ offers, chosen, onChoose }: { offers: AdminOffer[]; chosen: st
   const [confirm, setConfirm] = useState<ConfirmRequest | null>(null);
   const [priceSet, setPriceSet] = useState<OfferPriceSet>("standard");
   const [wordsDirty, setWordsDirty] = useState(false);
+  const [lastCallDirty, setLastCallDirty] = useState(false);
+  const [round, setRound] = useState<OfferRound>("launch");
 
   return (
     <>
@@ -158,12 +162,21 @@ function Offers({ offers, chosen, onChoose }: { offers: AdminOffer[]; chosen: st
         <div className="min-w-0 space-y-6">
           {offer.send && <OfferProgressCard key={`p-${offer.id}`} offer={offer} onConfirm={setConfirm} />}
           <OfferCard key={`o-${offer.id}`} offer={offer} onConfirm={setConfirm} />
+          {offer.send && <OfferLastCallCard key={`l-${offer.id}`} offer={offer} onConfirm={setConfirm} onDirty={setLastCallDirty} />}
+          {offer.send && <OfferRecipientsCard key={`r-${offer.id}`} offer={offer} />}
           <EmailCard key={`e-${offer.id}`} offer={offer} onDirty={setWordsDirty} />
           {!offer.send && (
             <OfferSendCards key={`s-${offer.id}`} offer={offer} wordsDirty={wordsDirty} onConfirm={setConfirm} />
           )}
         </div>
-        <OfferPreviewPanel offer={offer} priceSet={priceSet} onPriceSet={setPriceSet} wordsDirty={wordsDirty} />
+        <OfferPreviewPanel
+          offer={offer}
+          priceSet={priceSet}
+          onPriceSet={setPriceSet}
+          wordsDirty={round === "lastCall" ? lastCallDirty : wordsDirty}
+          round={offer.send ? round : "launch"}
+          onRound={offer.send ? setRound : undefined}
+        />
       </div>
 
       <ConfirmDialog request={confirm} onClose={() => setConfirm(null)} />

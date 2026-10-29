@@ -22,7 +22,8 @@ public sealed record GetOfferTemplatesQuery : IRequest<Result<IReadOnlyList<Offe
 /// <see cref="Set"/> prices called <see cref="FirstName"/> ("Hello," without one). The unsubscribe link in it leads
 /// nowhere, so clicking around the preview changes nothing.
 /// </summary>
-public sealed record PreviewOfferEmailQuery(Guid Id, string? Set = null, string? FirstName = null) : IRequest<Result<OfferPreviewDto>>;
+/// <summary>The email (or, <c>round=lastCall</c>, its last call) as it goes out.</summary>
+public sealed record PreviewOfferEmailQuery(Guid Id, string? Set = null, string? FirstName = null, string? Round = null) : IRequest<Result<OfferPreviewDto>>;
 
 /// <summary><c>GET /api/admin/offers/{id}/audience</c>: who Send would reach with these groups ticked, and the quota's pace.</summary>
 public sealed record GetOfferAudienceQuery(Guid Id, bool Free = true, bool Lapsed = true, bool ProNow = false)
@@ -90,6 +91,8 @@ public sealed class AdminOfferQueryHandlers :
     {
         if (OfferAdmin.ParseSet(request.Set) is not { } set)
             return OfferErrors.SetUnknown;
+        if (OfferAdmin.ParseRound(request.Round) is not { } round)
+            return OfferErrors.RoundUnknown;
         if (await _db.Offers.AsNoTracking().FirstOrDefaultAsync(o => o.Id == request.Id, ct) is not { } offer)
             return OfferErrors.NotFound;
 
@@ -98,7 +101,7 @@ public sealed class AdminOfferQueryHandlers :
             name = name[..FirstNameMaxLength];
         var content = OfferEmailComposer.Compose(
             offer, await OfferEmailComposer.OfferablePlansAsync(_db, ct), set, token: null,
-            OfferEmailComposer.PreviewUnsubscribeUrl(_settings), _settings);
+            OfferEmailComposer.PreviewUnsubscribeUrl(_settings), _settings, round);
         var rendered = _renderer.Render(new EmailRecipient("preview@notefusion.studio", name), content);
         return new OfferPreviewDto(rendered.Subject, rendered.Preheader, rendered.Html, rendered.Text);
     }
@@ -189,8 +192,10 @@ public sealed class AdminOfferQueryHandlers :
 
         var emails = await _db.OfferEmails.AsNoTracking()
             .Where(e => e.OfferId == offer.Id)
-            .Select(e => new { e.UserId, e.Status, e.SkipReason, e.SentAtUtc, e.ClickedAtUtc, e.OpenedAtUtc })
+            .Select(e => new { e.UserId, e.Round, e.Status, e.SkipReason, e.SentAtUtc, e.ClickedAtUtc, e.OpenedAtUtc })
             .ToListAsync(ct);
+        var lastCalls = emails.Where(e => e.Round == OfferEmailRound.LastCall).ToList();
+        emails = emails.Where(e => e.Round == OfferEmailRound.Launch).ToList();
         var payments = await _db.PaymentTransactions.AsNoTracking()
             .Where(t => t.OfferId == offer.Id)
             .Select(t => new { t.UserId, t.PlanId, t.Status, t.AmountMinor, t.Currency, t.UpdatedAtUtc })
@@ -199,15 +204,19 @@ public sealed class AdminOfferQueryHandlers :
         var planIds = bought.Select(p => p.PlanId).Distinct().ToList();
         var plans = await _db.Plans.AsNoTracking().Where(p => planIds.Contains(p.Id)).ToDictionaryAsync(p => p.Id, ct);
 
-        var sentAt = emails.Where(e => e.SentAtUtc is not null).ToDictionary(e => e.UserId, e => e.SentAtUtc!.Value);
+        var sentAt = emails.Concat(lastCalls)
+            .Where(e => e.SentAtUtc is not null)
+            .GroupBy(e => e.UserId)
+            .ToDictionary(g => g.Key, g => g.Min(e => e.SentAtUtc!.Value));
         var fromEmail = bought.Count(p => sentAt.TryGetValue(p.UserId, out var at) && p.UpdatedAtUtc >= at);
         int Skipped(OfferSkipReason reason) => emails.Count(e => e.Status == OfferEmailStatus.Skipped && e.SkipReason == reason);
 
         // By UK day, from the first day anything happened (or the start) to the last (or today, while it runs).
-        var sentDays = emails.Where(e => e.SentAtUtc is not null).Select(e => OfferWindow.UkDate(e.SentAtUtc!.Value)).ToList();
-        var clickDays = emails.Where(e => e.ClickedAtUtc is not null).Select(e => OfferWindow.UkDate(e.ClickedAtUtc!.Value)).ToList();
+        var both = emails.Concat(lastCalls).ToList();
+        var sentDays = both.Where(e => e.SentAtUtc is not null).Select(e => OfferWindow.UkDate(e.SentAtUtc!.Value)).ToList();
+        var clickDays = both.Where(e => e.ClickedAtUtc is not null).Select(e => OfferWindow.UkDate(e.ClickedAtUtc!.Value)).ToList();
         // Opened when its image loaded or, images blocked, when its button was clicked: whichever came first.
-        var openDays = emails
+        var openDays = both
             .Select(e => e.OpenedAtUtc is { } o && e.ClickedAtUtc is { } c ? (o < c ? o : c) : e.OpenedAtUtc ?? e.ClickedAtUtc)
             .Where(at => at is not null)
             .Select(at => OfferWindow.UkDate(at!.Value))
@@ -250,7 +259,8 @@ public sealed class AdminOfferQueryHandlers :
                 Skipped(OfferSkipReason.Bought),
                 Skipped(OfferSkipReason.BecamePro),
                 Skipped(OfferSkipReason.Ended),
-                Skipped(OfferSkipReason.NoLongerEligible)),
+                Skipped(OfferSkipReason.NoLongerEligible),
+                Skipped(OfferSkipReason.LastCallInstead)),
             emails.Count(e => e.Status == OfferEmailStatus.Failed),
             emails.Count(e => e.ClickedAtUtc is not null),
             bought.Count,
@@ -259,6 +269,16 @@ public sealed class AdminOfferQueryHandlers :
             bought.Where(p => string.Equals(p.Currency, "USD", StringComparison.OrdinalIgnoreCase)).Sum(p => p.AmountMinor),
             byDay,
             byPlan,
-            openDays.Count);
+            emails.Count(e => e.OpenedAtUtc is not null || e.ClickedAtUtc is not null),
+            offer.LastCallStartedAtUtc is null && lastCalls.Count == 0
+                ? null
+                : new OfferLastCallProgressDto(
+                    lastCalls.Count(e => e.Status == OfferEmailStatus.Queued),
+                    lastCalls.Count(e => e.Status == OfferEmailStatus.Sent),
+                    lastCalls.Count(e => e.Status == OfferEmailStatus.Skipped),
+                    lastCalls.Count(e => e.Status == OfferEmailStatus.Failed),
+                    lastCalls.Count(e => e.OpenedAtUtc is not null || e.ClickedAtUtc is not null),
+                    lastCalls.Count(e => e.ClickedAtUtc is not null),
+                    bought.Count(p => lastCalls.Any(e => e.UserId == p.UserId && e.SentAtUtc is { } at && p.UpdatedAtUtc >= at))));
     }
 }
