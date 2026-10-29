@@ -919,24 +919,17 @@
   }
 
   // ── The reward moments (assets/moments.js) ─────────────────────────────
-  // A level reached spins its 3D emblem in and a badge earned pops in (/assets/practice-3d/, design/rive/live.py, played
-  // by the Rive web player, fetched once a take starts and skipped if it is not ready by the mark: the toast's 3D still
-  // carries the reward on its own); the rest of what a take earns (Playful's stars, a unit or grade finished, the week's
-  // goal, the day's streak, a run in tune, Doh cheering) are drawn on a canvas (assets/moment-art.js; chosen by
-  // assets/practice-moments.js).
-  var LIVE_DIR = "/assets/practice-3d/", LIVE_V = "?v=1", LIVE_MS = 2600;
-  function warmRive() { if (window.NfMoments) window.NfMoments.warm(); }
-  /** The live piece for a reward's picture: `level-3-me` spins in as `levelup-3`, a badge pops in as itself. */
+  // A level reached spins its 3D emblem in and a badge earned pops in (assets/moment-3d.js, WebGL2); the rest of what a
+  // take earns (Playful's stars, a unit or grade finished, the week's goal, the day's streak, a run in tune, Doh
+  // cheering) is drawn on a canvas (assets/moment-art.js; chosen by assets/practice-moments.js).
+  /** The 3D piece for a reward's picture: `level-3-me` spins in as `levelup-3`, a badge pops in as itself. */
   function livePiece(picture) {
     var m = /^level-(\d)-/.exec(picture || "");
     return m ? "levelup-" + m[1] : /^badge-[a-z-]+$/.test(picture || "") && !/-locked$/.test(picture) ? picture : null;
   }
   function moment3d(picture) {
     var piece = livePiece(picture);
-    if (!piece || !window.NfMoments) return;
-    if (window.NfMoments.play({ src: LIVE_DIR + piece + ".riv" + LIVE_V, width: 200, height: 200, ms: LIVE_MS, className: "pv-moment" })) {
-      track("Practice 3D moment", piece);
-    }
+    if (piece && window.NfMoments && window.NfMoments.play({ piece: piece, className: "pv-moment" })) track("Practice 3D moment", piece);
   }
   /** A reward moment (practice-moments.js's {piece, values}): Doh's own steps aside while the moment's Doh cheers. */
   function rewardMoment(m) {
@@ -1016,7 +1009,6 @@
       s.error = P.micError({ name: "Unsupported" }); render(); return;
     }
     var gen = s.gen, AC = window.AudioContext || window.webkitAudioContext;
-    warmRive(); // the 3D reward moment's player, fetched while the take is sung
     // Made on the press, so the browser lets it play; the piano is decoded into it while the microphone opens.
     var audio = new AC();
     var mine = take = { audio: audio, cancelled: false, lead: P.leadIn(d).seconds };
