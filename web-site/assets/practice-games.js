@@ -48,8 +48,12 @@
   // ── Which note? ─────────────────────────────────────────────────────────
   var SYLLABLE_NAMES = { d: "doh", r: "ray", m: "me", f: "fah", s: "soh", l: "lah", t: "te", "d'": "doh" };
 
-  /** "soh" for "s"; the top doh is "doh" too. */
-  function syllableName(syllable) { return SYLLABLE_NAMES[syllable] || syllable; }
+  /** "soh" for "s"; the top doh is "doh" too; a note an octave off says so ("high ray", "low lah"); chromatics as they are. */
+  function syllableName(syllable) {
+    if (SYLLABLE_NAMES[syllable]) return SYLLABLE_NAMES[syllable];
+    var base = String(syllable || "").replace(/[',]+$/, ""), name = SYLLABLE_NAMES[base] || base;
+    return /'$/.test(syllable) ? "high " + name : /,$/.test(syllable) ? "low " + name : name;
+  }
 
   var STEP_LINES = {
     r: "The second note of the scale.",
@@ -58,7 +62,17 @@
     s: "The fifth note of the scale.",
     l: "The sixth note of the scale.",
     t: "The seventh, just under doh.",
-    "d'": "Doh again, an octave up."
+    "d'": "Doh again, an octave up.",
+    "r'": "Ray, an octave up.",
+    "m'": "Me, an octave up.",
+    "t,": "Te below doh, leaning up to it.",
+    "l,": "Lah below doh.",
+    "s,": "Soh below doh.",
+    de: "Doh raised a semitone.",
+    ma: "Me lowered a semitone.",
+    fe: "Fah raised a semitone, leaning to soh.",
+    se: "Soh raised a semitone, leaning to lah.",
+    ta: "Te lowered a semitone, leaning to lah."
   };
 
   function capitalise(text) { return text.charAt(0).toUpperCase() + text.slice(1); }
@@ -90,8 +104,16 @@
   /** Which note? plays doh, then the note: one beat each with a breath between, at this tempo. */
   var EAR_TEMPO = 80;
 
+  /** An arcade round's `noteSeconds` (shorter at the higher levels) sounds each note that long at EAR_TEMPO instead. */
   function earNotes(round) {
     if (round.dohMidi == null || round.noteMidi == null) return [];
+    if (round.noteSeconds > 0) {
+      var beats = round.noteSeconds * EAR_TEMPO / 60;
+      return [
+        { pitchMidi: round.dohMidi, startBeat: 0, durBeats: beats },
+        { pitchMidi: round.noteMidi, startBeat: beats * 1.25, durBeats: beats }
+      ];
+    }
     return [
       { pitchMidi: round.dohMidi, startBeat: 0, durBeats: 1 },
       { pitchMidi: round.noteMidi, startBeat: 1.25, durBeats: 1.5 }

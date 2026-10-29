@@ -501,8 +501,25 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   their answers, so the phone tells a tap at once; `POST …/games/grade` marks the answers against the server's deal, once
   per deal, and records a `PracticeKind.Game` session (`GameXp` 5, +3 at 80; `GamesPerDay` 6 count, the rest are for fun;
   no drill allowance, never the path, never "Spot on"). Mobile `screens/practice/PracticeGameScreen`, pure `lib/practiceGames`;
-  web the Practice view's Quick games row, `assets/practice-game-view.js` + `practice-games.css` (on first open), pure
-  `assets/practice-games.js` (same tests), the rehearsal piano for sound.
+  web the Practice view's Arcade row, `assets/practice-game-view.js` + `practice-games.css` (on first open), pure
+  `assets/practice-games.js` (same tests), the rehearsal piano for sound. The web plays them as the endless arcade: a deal
+  at a level (`?level=`, id `game:p|f:seed:L7`, `PracticeGames.StageRounds` a stage) is harder every level with no top —
+  Which note? adds notes (the scale, above and below it, fe ta se de ma) then plays them shorter (`noteSeconds`), Staff to
+  solfa adds keys to six sharps/flats and ledger lines and gives each note less time (`secondsPerRound`, a note let run out
+  sent as ""), Name that hymn more names and less of each opening; the grade says `nextLevel` (up at 80, down under 50,
+  never under the track's first: Playful 1, Focused 3), stage after stage until the singer stops; the level and best are kept
+  in the browser (`assets/practice-arcade.js`, `nf.arcade.<game>`). One-off deals (the phone's) are unchanged.
+  The hub is game-coloured (Duolingo-like, web): a top bar of level, streak, XP and quests; the unit's banner and its drills as
+  a winding path of stops (done, START, locked, the unit's chest; Playful's Doh beside START); chunky fills on a darker lip in
+  green, blue, orange, cyan and pink (`--gg-*` in practice-view.css, never Pro gold, the choir's violet or red).
+  Daily quests (`DailyQuests`, read off the day's session rows like XP, the same three for everyone that day: a warm-up, an
+  effort, a quality one; progress `quests`): all three done opens the day's chest, `PracticeRules.QuestChestXp` (20) on top of
+  the daily cap in `PracticeMath.XpByDay`, so the take that finishes them earns it (the web says "Chest opened!").
+  The path never ends: past Grade 7 (Playful) and Advanced 2 (Focused) come Mastery 1, 2, 3… (`MasteryCatalogue`,
+  `MasteryCatalogue.Tiers` 200; no track chosen keeps the ladder): the hardest lines already in the catalogue, each tier
+  `TempoStep` quicker up to `MaxTempo` and never a note under `ShortestNoteSeconds`, every key, and lines of two joined and
+  labelled afresh by the solfa engine (`DrillCatalogue.EngineLabels`; one it would label differently in any key is left out);
+  Playful's own three units of its gentle tunes, plain beats and held notes only. Codes `mf3u5-a+b`/`mp2u1-a+b`.
   The tab (board s1): the strip card (flame + days · level emblem + XP · week ring, opens `PracticeProgress`:
   `components/practice/ProgressCards`, stat cards, week, badges), the drill card (Playful's Doh inside it, no bubble row),
   the season card as one compact row, Quick games, and the modes as a two-column grid (`ModeList grid`; "Sing more",

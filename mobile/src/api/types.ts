@@ -425,6 +425,27 @@ export interface PracticeProgress {
   modes: PracticeModeId[] | null;
   /** The seasonal side-path (the Christmas carols, Halloween's Midnight path) while its season is on for the singer, else null. */
   season?: PracticeSeason | null;
+  /** The day's three quests and its chest (C# `DailyQuestsDto`). */
+  quests?: DailyQuests | null;
+}
+
+/**
+ * The day's three quests, the same for everyone that day, read off the day's marked takes (C# `DailyQuestsDto`):
+ * `chestOpened` once all three are done, worth `chestXp` on top of the day's cap.
+ */
+export interface DailyQuests {
+  quests: DailyQuest[];
+  chestOpened: boolean;
+  chestXp: number;
+}
+
+/** One quest: its code ("drills-2"), what it asks, how far today's takes got, its target and whether it is done. */
+export interface DailyQuest {
+  code: string;
+  title: string;
+  progress: number;
+  target: number;
+  done: boolean;
 }
 
 /**
@@ -644,7 +665,8 @@ export interface GameHymn {
 /**
  * One round, with its answer so a tap is told at once (the server marks the answers that count). Which note: play
  * `dohMidi` then `noteMidi`. Staff to solfa: draw `noteName` ("F#4") on a treble stave with `fifths` in the signature.
- * Name that hymn: play `notes` at `tempoBpm`; `hymns` names each choice; `key` labels its solfa when revealed.
+ * Name that hymn: play `notes` at `tempoBpm`; `hymns` names each choice; `key` labels its solfa when revealed. An arcade
+ * stage's Which note? sounds each note for `noteSeconds` (the web's endless games; null otherwise).
  */
 export interface PracticeGameRound {
   index: number;
@@ -660,9 +682,13 @@ export interface PracticeGameRound {
   timeSignature: string | null;
   notes: GameNote[] | null;
   hymns: GameHymn[] | null;
+  noteSeconds?: number | null;
 }
 
-/** A fresh deal; `timeLimitSeconds` is set for a race (Staff to solfa). `gamesToday` of `gamesPerDay` earned XP today. */
+/**
+ * A fresh deal; `timeLimitSeconds` is set for a race (Staff to solfa). `gamesToday` of `gamesPerDay` earned XP today.
+ * An arcade stage (`?level=`, the web's endless games) carries its `level`, and its Staff to solfa `secondsPerRound`.
+ */
 export interface PracticeGame {
   game: PracticeGameId;
   dealId: string;
@@ -671,11 +697,14 @@ export interface PracticeGame {
   gamesToday: number;
   gamesPerDay: number;
   rounds: PracticeGameRound[];
+  level?: number | null;
+  secondsPerRound?: number | null;
 }
 
 /**
  * A deal's answers marked by the server. `counted`: it earned XP and is a day of practice; when not, `notCounted` says
- * why ("daily": the day's games that earn XP are used; "few": too few rounds answered) and `reward` is null.
+ * why ("daily": the day's games that earn XP are used; "few": too few rounds answered) and `reward` is null. An arcade
+ * stage says the `nextLevel` to deal.
  */
 export interface PracticeGameGrade {
   game: PracticeGameId;
@@ -688,6 +717,7 @@ export interface PracticeGameGrade {
   counted: boolean;
   notCounted: "daily" | "few" | null;
   reward: PracticeReward | null;
+  nextLevel?: number | null;
 }
 
 /**

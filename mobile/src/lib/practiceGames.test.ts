@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
+  EAR_TEMPO,
   accidentalOf,
   clock,
   comboOf,
@@ -125,4 +126,18 @@ test("the end card says how many were right and what it earned, or why it earned
     resultLine(grade({ game: "staff", counted: false, notCounted: "few", reward: null, answered: 3, score: 100 }), 6),
     "100% of the 3 you answered. Answer at least five notes for a race to count.",
   );
+});
+
+test("the arcade's notes: one an octave off says so, chromatics by their own names, and a level's shorter notes", () => {
+  assert.equal(syllableName("r'"), "high ray");
+  assert.equal(syllableName("l,"), "low lah");
+  assert.equal(syllableName("fe"), "fe");
+  assert.equal(syllableName("d'"), "doh");
+  const round = { dohMidi: 60, noteMidi: 66, noteSeconds: 0.6 } as Parameters<typeof earNotes>[0];
+  const notes = earNotes(round);
+  assert.deepEqual(notes.map((n) => n.pitchMidi), [60, 66]);
+  assert.equal((notes[0]!.durBeats * 60) / EAR_TEMPO, 0.6);
+  assert.equal(notes[1]!.durBeats, notes[0]!.durBeats);
+  assert.ok(notes[1]!.startBeat > notes[0]!.durBeats);
+  assert.deepEqual(earNotes({ dohMidi: 60, noteMidi: 67 } as Parameters<typeof earNotes>[0]).map((n) => n.durBeats), [1, 1.5]);
 });

@@ -4,11 +4,17 @@ using NoteFusion.Core.Enums;
 
 namespace NoteFusion.Application.Practice.Games;
 
-/// <summary>A deal rebuilt from its id: the game, the track it was dealt for, and its rounds with their answers.</summary>
-public sealed record GameDeal(string Game, string DealId, bool Playful, IReadOnlyList<PracticeGameRoundDto> Rounds)
+/// <summary>
+/// A deal rebuilt from its id: the game, the track it was dealt for, its rounds with their answers, and the arcade level
+/// it was dealt at (null for a one-off game, the older apps' kind).
+/// </summary>
+public sealed record GameDeal(string Game, string DealId, bool Playful, IReadOnlyList<PracticeGameRoundDto> Rounds, int? Level = null)
 {
-    /// <summary>A race (Staff to solfa) is answered for a time; the others round by round to the end.</summary>
-    public bool IsRace => Game == PracticeGames.Staff;
+    /// <summary>A one-off Staff to solfa is a race, answered for a time; every other deal round by round to the end.</summary>
+    public bool IsRace => Game == PracticeGames.Staff && Level is null;
+
+    /// <summary>A level's Staff to solfa gives each note this long (an unanswered note is sent as "" and marked wrong).</summary>
+    public double? SecondsPerRound => Game == PracticeGames.Staff && Level is { } level ? PracticeGames.StaffSecondsPerNote(level) : null;
 }
 
 /// <summary>A deal's answers as the server marks them (<see cref="PracticeGames.Mark"/>).</summary>
@@ -25,6 +31,15 @@ public sealed record GameMark(int Score, int Right, int Answered, IReadOnlyList<
 /// own), so the rounds a tap is marked against are always the server's, as a mode's exercise is rebuilt from its id. The
 /// app is handed every round's answer so it can say at once whether a tap was right, which a game needs; what counts is
 /// the server's mark of the answers sent back, and a deal is marked once.
+/// </para>
+/// <para>
+/// <b>The arcade: levels without end.</b> A deal may be dealt at a level (<c>game:track:seed:L7</c>): a short stage
+/// (<see cref="StageRounds"/>), harder at every level and with no top. Which note? adds notes to hear (the scale, then
+/// above and below it, then fe, ta, se, de and ma) and from <see cref="WhichNoteFullLevel"/> plays them ever shorter;
+/// Staff to solfa adds keys up to six sharps and flats and ledger lines, and gives each note less time; Name that hymn
+/// offers more names to pick from and plays less of each opening. A stage passed (<see cref="LevelUpScore"/>) deals the
+/// next level; a poor one (under <see cref="LevelDownScore"/>) the one below, never under the track's first
+/// (<see cref="StartLevel"/>). The app plays stage after stage until the singer stops.
 /// </para>
 /// <para>
 /// <b>What it earns.</b> Less than a sung drill (<see cref="PracticeRules.GameXp"/>), on
@@ -71,6 +86,13 @@ public static class PracticeGames
         new("F", 3, -1, 65), new("Bb", 6, -2, 58), new("Eb", 2, -3, 63)
     ];
 
+    /// <summary>The arcade's Staff to solfa keys, in the order its levels bring them: three, then pairs out to six sharps and flats.</summary>
+    private static readonly GameKey[] StaffLevelKeys =
+    [
+        Keys[0], Keys[1], Keys[4], Keys[2], Keys[5], Keys[3], Keys[6],
+        new("E", 2, 4, 64), new("Ab", 5, -4, 56), new("B", 6, 5, 59), new("Db", 1, -5, 61), new("F#", 3, 6, 54), new("Gb", 4, -6, 54)
+    ];
+
     /// <summary>Playful's staff keys: none, one sharp, one flat.</summary>
     private static readonly GameKey[] PlayfulStaffKeys = [Keys[0], Keys[1], Keys[4]];
 
@@ -79,30 +101,80 @@ public static class PracticeGames
     private const int HighestPosition = 5 * 7 + 4;
     private const int PlayfulHighestPosition = 5 * 7 + 3;
 
+    // ── The arcade's levels ─────────────────────────────────────────────────
+
+    /// <summary>A stage passed at this score deals the next level.</summary>
+    public const int LevelUpScore = 80;
+
+    /// <summary>A stage under this score deals the level below (never under the track's first).</summary>
+    public const int LevelDownScore = 50;
+
+    /// <summary>The highest level a deal is made at: far past any level a singer reaches, to keep ids sane.</summary>
+    public const int MaxLevel = 999;
+
+    /// <summary>From this level Which note? has every note it asks, and plays them ever shorter instead.</summary>
+    public const int WhichNoteFullLevel = 10;
+
+    /// <summary>A stage's rounds: each game's is about a minute.</summary>
+    public static int StageRounds(string game) => game switch
+    {
+        WhichNote => 8,
+        Staff => 10,
+        _ => 6
+    };
+
+    /// <summary>The level a track starts each game at: Playful at the gentle first, Focused where its one-off games are.</summary>
+    public static int StartLevel(PracticeTrack? track) => track == PracticeTrack.Playful ? 1 : 3;
+
+    /// <summary>
+    /// The level after a stage marked <paramref name="score"/> at <paramref name="level"/>: a poor stage steps down, but
+    /// never under the track's first level (nor up to it, from a level already under it).
+    /// </summary>
+    public static int NextLevel(int level, int score, bool playful)
+        => score >= LevelUpScore ? Math.Min(MaxLevel, level + 1)
+            : score < LevelDownScore ? Math.Max(Math.Min(level, StartLevel(playful ? PracticeTrack.Playful : PracticeTrack.Focused)), level - 1)
+            : level;
+
+    /// <summary>Seconds a level's Staff to solfa gives each note: six at the first, half a second less a level, never under 1.5.</summary>
+    public static double StaffSecondsPerNote(int level) => Math.Max(1.5, 6.0 - 0.5 * (Math.Max(1, level) - 1));
+
     public static bool Exists(string game) => All.Contains(game);
 
-    /// <summary>A new deal's id for <paramref name="game"/> on <paramref name="track"/> (no track deals as Focused).</summary>
-    public static string NewDealId(string game, PracticeTrack? track, uint seed)
-        => $"{game}:{(track == PracticeTrack.Playful ? "p" : "f")}:{seed.ToString("x8", CultureInfo.InvariantCulture)}";
+    /// <summary>A new deal's id for <paramref name="game"/> on <paramref name="track"/> (no track deals as Focused), at an arcade level when one is given.</summary>
+    public static string NewDealId(string game, PracticeTrack? track, uint seed, int? level = null)
+        => $"{game}:{(track == PracticeTrack.Playful ? "p" : "f")}:{seed.ToString("x8", CultureInfo.InvariantCulture)}"
+           + (level is { } l ? $":L{l.ToString(CultureInfo.InvariantCulture)}" : "");
 
     /// <summary>The deal an id names, rebuilt; null for an id the server never deals.</summary>
     public static GameDeal? Deal(string? dealId)
     {
         var parts = (dealId ?? string.Empty).Split(':');
-        if (parts.Length != 3 || !Exists(parts[0]) || parts[1] is not ("p" or "f") || parts[2].Length != 8
-            || !uint.TryParse(parts[2], NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out var seed)
-            || NewDealId(parts[0], parts[1] == "p" ? PracticeTrack.Playful : PracticeTrack.Focused, seed) != dealId)
+        if (parts.Length is not (3 or 4) || !Exists(parts[0]) || parts[1] is not ("p" or "f") || parts[2].Length != 8
+            || !uint.TryParse(parts[2], NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out var seed))
+            return null;
+        int? level = null;
+        if (parts.Length == 4)
+        {
+            if (!parts[3].StartsWith('L') || !int.TryParse(parts[3][1..], NumberStyles.None, CultureInfo.InvariantCulture, out var l)
+                || l < 1 || l > MaxLevel)
+                return null;
+            level = l;
+        }
+        var playful = parts[1] == "p";
+        if (NewDealId(parts[0], playful ? PracticeTrack.Playful : PracticeTrack.Focused, seed, level) != dealId)
             return null;
 
-        var playful = parts[1] == "p";
         var rng = new Rng(seed);
-        var rounds = parts[0] switch
+        var rounds = (parts[0], level) switch
         {
-            WhichNote => WhichNoteRoundsFor(rng, playful),
-            Staff => StaffRoundsFor(rng, playful),
-            _ => HymnRoundsFor(rng)
+            (WhichNote, null) => WhichNoteRoundsFor(rng, playful),
+            (Staff, null) => StaffRoundsFor(rng, playful),
+            (_, null) => HymnRoundsFor(rng),
+            (WhichNote, { } at) => WhichNoteLevelRounds(rng, at),
+            (Staff, { } at) => StaffLevelRounds(rng, at),
+            (_, { } at) => HymnLevelRounds(rng, at)
         };
-        return new GameDeal(parts[0], dealId!, playful, rounds);
+        return new GameDeal(parts[0], dealId!, playful, rounds, level);
     }
 
     /// <summary>
@@ -160,6 +232,65 @@ public static class PracticeGames
 
     private static string SyllableOf(int degree) => degree == 7 ? "d'" : Syllables[degree];
 
+    /// <summary>A note Which note? asks: its syllable and how far above the doh it sounds.</summary>
+    private sealed record EarNote(string Syllable, int Semitones);
+
+    private static readonly EarNote[] EarScale =
+    [
+        new("s,", -5), new("l,", -3), new("t,", -1), new("d", 0), new("de", 1), new("r", 2), new("ma", 3), new("m", 4),
+        new("f", 5), new("fe", 6), new("s", 7), new("se", 8), new("l", 9), new("ta", 10), new("t", 11), new("d'", 12),
+        new("r'", 14), new("m'", 16)
+    ];
+
+    /// <summary>The notes each level brings to Which note?, cumulatively (doh itself is played, never asked).</summary>
+    private static readonly string[][] EarLevels =
+    [
+        ["m", "s", "d'"],
+        ["r", "f"],
+        ["l", "t"],
+        ["r'", "m'"],
+        ["t,", "l,", "s,"],
+        ["fe"],
+        ["ta"],
+        ["se"],
+        ["de"],
+        ["ma"]
+    ];
+
+    /// <summary>The notes asked at a level, and the newest of them (asked more often, so the level says what it brought).</summary>
+    public static (IReadOnlyList<string> Asked, IReadOnlyList<string> Newest) EarNotesAt(int level)
+    {
+        var upTo = Math.Clamp(level, 1, EarLevels.Length);
+        return (EarLevels.Take(upTo).SelectMany(x => x).ToList(), EarLevels[upTo - 1]);
+    }
+
+    /// <summary>How long Which note? sounds the doh and the note at a level: a second, then 10% shorter each level past the full set, never under 0.35 s.</summary>
+    public static double EarNoteSeconds(int level)
+        => level <= WhichNoteFullLevel ? 1.0 : Math.Max(0.35, Math.Round(Math.Pow(0.9, level - WhichNoteFullLevel), 2));
+
+    private static List<PracticeGameRoundDto> WhichNoteLevelRounds(Rng rng, int level)
+    {
+        var (asked, newest) = EarNotesAt(level);
+        // The ladder shows the doh and every note asked, low to high.
+        var choices = EarScale.Where(n => n.Syllable == "d" || asked.Contains(n.Syllable)).Select(n => n.Syllable).ToList();
+        var seconds = EarNoteSeconds(level);
+        var rounds = new List<PracticeGameRoundDto>();
+        string? last = null;
+        for (var i = 0; i < StageRounds(WhichNote); i++)
+        {
+            var key = Keys[rng.Below(Keys.Length)];
+            string syllable;
+            do syllable = rng.Below(10) < 3 ? newest[rng.Below(newest.Count)] : asked[rng.Below(asked.Count)];
+            while (syllable == last && asked.Count > 1);
+            last = syllable;
+            var note = EarScale.First(n => n.Syllable == syllable);
+            rounds.Add(new PracticeGameRoundDto(
+                i, syllable, choices, key.Doh, $"{key.Doh} major", key.Fifths, key.EarDohMidi, key.EarDohMidi + note.Semitones,
+                null, null, null, null, null, seconds));
+        }
+        return rounds;
+    }
+
     // ── Staff to solfa ──────────────────────────────────────────────────────
 
     private static List<PracticeGameRoundDto> StaffRoundsFor(Rng rng, bool playful)
@@ -182,16 +313,48 @@ public static class PracticeGames
             while (position == lastPosition);
             lastPosition = position;
 
-            var letter = position % 7;
-            var octave = position / 7;
-            var accidental = AccidentalIn(key!, letter);
-            var name = $"{Letters[letter]}{(accidental > 0 ? "#" : accidental < 0 ? "b" : "")}{octave}";
-            var midi = 12 * (octave + 1) + NaturalSemitones[letter] + accidental;
-            var syllable = Syllables[((letter - key!.Letter) % 7 + 7) % 7];
-            rounds.Add(new PracticeGameRoundDto(
-                i, syllable, Syllables, key.Doh, $"{key.Doh} major", key.Fifths, null, midi, name, null, null, null, null));
+            rounds.Add(StaffRound(i, key!, position));
         }
         return rounds;
+    }
+
+    /// <summary>The keys and the stave positions a level of the arcade's Staff to solfa asks.</summary>
+    public static (int Keys, int Lowest, int Highest) StaffLevel(int level) => Math.Max(1, level) switch
+    {
+        1 => (3, LowestPosition, PlayfulHighestPosition),
+        2 => (5, LowestPosition, HighestPosition),
+        3 => (7, LowestPosition, HighestPosition),
+        4 => (9, 4 * 7 + 1, 5 * 7 + 5),
+        5 => (11, 4 * 7 + 0, 6 * 7 + 0),
+        _ => (13, 4 * 7 + 0, 6 * 7 + 0)
+    };
+
+    private static List<PracticeGameRoundDto> StaffLevelRounds(Rng rng, int level)
+    {
+        var (keyCount, lowest, highest) = StaffLevel(level);
+        var key = StaffLevelKeys[rng.Below(keyCount)];
+        var rounds = new List<PracticeGameRoundDto>();
+        var lastPosition = -1;
+        for (var i = 0; i < StageRounds(Staff); i++)
+        {
+            int position;
+            do position = lowest + rng.Below(highest - lowest + 1);
+            while (position == lastPosition);
+            lastPosition = position;
+            rounds.Add(StaffRound(i, key, position));
+        }
+        return rounds;
+    }
+
+    private static PracticeGameRoundDto StaffRound(int index, GameKey key, int position)
+    {
+        var letter = position % 7;
+        var octave = position / 7;
+        var accidental = AccidentalIn(key, letter);
+        var name = $"{Letters[letter]}{(accidental > 0 ? "#" : accidental < 0 ? "b" : "")}{octave}";
+        var midi = 12 * (octave + 1) + NaturalSemitones[letter] + accidental;
+        var syllable = Syllables[((letter - key.Letter) % 7 + 7) % 7];
+        return new PracticeGameRoundDto(index, syllable, Syllables, key.Doh, $"{key.Doh} major", key.Fifths, null, midi, name, null, null, null, null);
     }
 
     /// <summary>+1 where the key signature sharpens <paramref name="letter"/>, −1 where it flattens it.</summary>
@@ -217,6 +380,33 @@ public static class PracticeGames
                 hymn.TempoBpm, hymn.TimeSignature,
                 hymn.Notes.Select(n => new GameNoteDto(n.PitchMidi, n.StartBeat, n.DurBeats)).ToList(),
                 offered.Select(h => new GameHymnDto(h.Slug, h.Title, h.FirstLine)).ToList()));
+        }
+        return rounds;
+    }
+
+    /// <summary>Name that hymn at a level: names to pick from (three, then up to six) and opening notes played (all, then two fewer a level, never under four).</summary>
+    public static (int Choices, int? Notes) HymnLevel(int level)
+    {
+        var l = Math.Max(1, level);
+        var choices = l switch { <= 2 => 3, <= 4 => 4, <= 6 => 5, _ => 6 };
+        return (choices, l <= 2 ? null : Math.Max(4, 12 - 2 * (l - 3)));
+    }
+
+    private static List<PracticeGameRoundDto> HymnLevelRounds(Rng rng, int level)
+    {
+        var (choices, keep) = HymnLevel(level);
+        var all = HymnOpenings.All;
+        var order = Shuffled(rng, Enumerable.Range(0, all.Count).ToList());
+        var rounds = new List<PracticeGameRoundDto>();
+        for (var i = 0; i < StageRounds(Hymn); i++)
+        {
+            var hymn = all[order[i]];
+            var others = Shuffled(rng, Enumerable.Range(0, all.Count).Where(j => j != order[i]).ToList()).Take(choices - 1);
+            var offered = Shuffled(rng, others.Append(order[i]).ToList()).Select(j => all[j]).ToList();
+            var notes = hymn.Notes.Take(keep ?? hymn.Notes.Count).Select(n => new GameNoteDto(n.PitchMidi, n.StartBeat, n.DurBeats)).ToList();
+            rounds.Add(new PracticeGameRoundDto(
+                i, hymn.Slug, offered.Select(h => h.Slug).ToList(), null, hymn.Key, null, null, null, null,
+                hymn.TempoBpm, hymn.TimeSignature, notes, offered.Select(h => new GameHymnDto(h.Slug, h.Title, h.FirstLine)).ToList()));
         }
         return rounds;
     }

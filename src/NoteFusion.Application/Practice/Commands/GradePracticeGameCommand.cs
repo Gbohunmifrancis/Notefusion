@@ -77,6 +77,7 @@ public sealed class GradePracticeGameCommandHandler : IRequestHandler<GradePract
         }
 
         return new PracticeGameGradeDto(
-            deal.Game, deal.DealId, mark.Score, mark.Right, mark.Answered, deal.Rounds.Count, mark.Marks, reward is not null, notCounted, reward);
+            deal.Game, deal.DealId, mark.Score, mark.Right, mark.Answered, deal.Rounds.Count, mark.Marks, reward is not null, notCounted, reward,
+            deal.Level is { } level ? PracticeGames.NextLevel(level, mark.Score, deal.Playful) : null);
     }
 }

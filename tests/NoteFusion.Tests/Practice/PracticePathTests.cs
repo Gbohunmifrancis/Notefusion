@@ -50,22 +50,30 @@ public class PracticePathTests
     }
 
     [Fact]
-    public void Playful_sings_the_first_units_of_grades_one_to_seven_and_Focused_reaches_the_advanced_grades()
+    public void Playful_sings_the_first_units_of_grades_one_to_seven_and_Focused_reaches_the_advanced_grades_then_both_go_on_into_mastery()
     {
         var playful = PracticePath.UnitsFor(PracticeTrack.Playful);
         Assert.All(playful, u =>
         {
-            Assert.InRange(u.Tier, 0, PracticeRules.PlayfulTopTier);
+            Assert.True(u.Tier <= PracticeRules.PlayfulTopTier || MasteryCatalogue.IsMastery(u.Tier), $"tier {u.Tier}");
             Assert.InRange(u.Step, 1, PracticeRules.PlayfulTopStep);
             Assert.Equal(PracticeRules.PlayfulDrillsPerUnit, u.DrillCount);
-            Assert.All(DrillCatalogue.UnitPatterns(PracticeTrack.Playful, u.Tier, u.Step), p => Assert.True(DrillCatalogue.IsPlayful(p)));
         });
-        Assert.Equal(Enumerable.Range(0, PracticeRules.PlayfulTopTier + 1), playful.Select(u => u.Tier).Distinct());
+        var ladder = playful.Where(u => !MasteryCatalogue.IsMastery(u.Tier)).ToList();
+        Assert.Equal(Enumerable.Range(0, PracticeRules.PlayfulTopTier + 1), ladder.Select(u => u.Tier).Distinct());
+        Assert.All(ladder, u => Assert.All(DrillCatalogue.UnitPatterns(PracticeTrack.Playful, u.Tier, u.Step), p => Assert.True(DrillCatalogue.IsPlayful(p))));
         Assert.True(playful.Zip(playful.Skip(1)).All(p => (p.First.Tier, p.First.Step).CompareTo((p.Second.Tier, p.Second.Step)) < 0));
+        // Past Grade 7 Playful goes on into its own Mastery, three units a tier, for as long as anyone sings.
+        Assert.Equal(("Mastery 1", "Longer tunes"), (playful[ladder.Count].Grade.Label, playful[ladder.Count].Unit.Title));
+        Assert.Equal($"Mastery {MasteryCatalogue.Tiers}", playful[^1].Grade.Label);
+        Assert.Equal(ladder.Count + MasteryCatalogue.Tiers * PracticeRules.PlayfulTopStep, playful.Count);
 
         var focused = PracticePath.UnitsFor(PracticeTrack.Focused);
-        Assert.Equal((DrillCatalogue.TopTier + 1) * DrillSyllabus.UnitsPerGrade, focused.Count);
-        Assert.Equal("Advanced 2", focused[^1].Grade.Label);
+        Assert.Equal((DrillCatalogue.TopTier + 1 + MasteryCatalogue.Tiers) * DrillSyllabus.UnitsPerGrade, focused.Count);
+        var advanced = focused.Last(u => !MasteryCatalogue.IsMastery(u.Tier));
+        Assert.Equal("Advanced 2", advanced.Grade.Label);
+        Assert.Equal(("Mastery 1", "Hymn lines, quicker"), (focused[advanced.Position + 1].Grade.Label, focused[advanced.Position + 1].Unit.Title));
+        Assert.Equal($"Mastery {MasteryCatalogue.Tiers}", focused[^1].Grade.Label);
     }
 
     [Theory]
@@ -280,24 +288,29 @@ public class PracticePathTests
     }
 
     [Fact]
-    public void Past_the_end_of_the_path_the_last_unit_is_sung_again_without_milestones()
+    public void Past_the_last_grade_the_path_goes_on_into_mastery_quicker_each_tier_with_its_milestones()
     {
         var s = new Singer { Track = PracticeTrack.Playful, Level = 9 }; // Playful's last grade from the start
         var units = PracticePath.UnitsFor(PracticeTrack.Playful).Count(u => u.Tier == PracticeRules.PlayfulTopTier);
         for (var i = 0; i < units * PracticeRules.PlayfulDrillsPerUnit; i++)
             s.Sing(85);
-        var milestones = s.Reading.Milestones.Count;
         Assert.Contains(s.Reading.Milestones, m => m.Kind == MilestoneKind.Grade);
 
-        var review = new List<string>();
-        for (var i = 0; i < 2 * PracticeRules.PlayfulDrillsPerUnit; i++)
-        {
-            Assert.True(s.Next.Review);
-            review.Add(s.Sing(85).Drill.Id);
-        }
+        // The next drill is Mastery 1's: a longer tune, found again by its id, and no review.
+        Assert.False(s.Next.Review);
+        Assert.Equal(("Mastery 1", 1), (s.Next.Unit.Grade.Label, s.Next.Unit.Step));
+        var first = s.Next.Drill;
+        Assert.StartsWith("mp1u1-", first.Pattern.Code);
+        Assert.Equal(first.Notes.Select(n => n.PitchMidi), DrillCatalogue.Find(first.Id)!.Notes.Select(n => n.PitchMidi));
 
-        Assert.Equal(milestones, s.Reading.Milestones.Count);
-        Assert.True(review.Distinct().Count() > 1);
+        // Through Mastery 1 to Mastery 2, its unit and grade milestones on the way, each tier's beat quicker.
+        var milestones = s.Reading.Milestones.Count;
+        var mastery1Tempo = DrillCatalogue.TempoFor(MasteryCatalogue.FirstTier, 2);
+        for (var i = 0; i < PracticeRules.PlayfulTopStep * PracticeRules.PlayfulDrillsPerUnit; i++)
+            s.Sing(85);
+        Assert.Equal("Mastery 2", s.Next.Unit.Grade.Label);
+        Assert.Equal(milestones + PracticeRules.PlayfulTopStep + 1, s.Reading.Milestones.Count); // three units and the tier
+        Assert.True(DrillCatalogue.TempoFor(MasteryCatalogue.FirstTier + 1, 2) > mastery1Tempo);
     }
 
     [Fact]

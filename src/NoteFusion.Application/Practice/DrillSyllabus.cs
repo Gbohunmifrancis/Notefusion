@@ -190,5 +190,7 @@ public sealed record DrillSyllabus(
             ]),
     ];
 
-    public static DrillSyllabus For(int tier) => All[Math.Clamp(tier, 0, All.Count - 1)];
+    /// <summary>A tier's grade: the ten above, and past them the Mastery tiers (<see cref="MasteryCatalogue.Syllabus"/>).</summary>
+    public static DrillSyllabus For(int tier)
+        => MasteryCatalogue.IsMastery(tier) ? MasteryCatalogue.Syllabus(tier) : All[Math.Clamp(tier, 0, All.Count - 1)];
 }

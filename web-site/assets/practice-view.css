@@ -333,17 +333,135 @@ body.nf-moment-doh .pv-drill-doh { visibility: hidden; }
 }
 @media (min-width: 1100px) { .pv-badges { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
-/* Quick games (board s-practice-fun/s3): three tiles side by side; a game's screen is practice-games.css. */
+/* The arcade: the quick games as three coloured tiles, each with its level; a game's screen is practice-games.css. */
 .pv-games { margin: 8px 0 20px; }
-.pv-games-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
-.pv-games-note { font-size: 0.82rem; color: var(--faint); }
+.pv-games-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.pv-games-note { font-size: 0.82rem; font-weight: 600; color: var(--muted); }
 .pv-game-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .pv-game {
-  display: flex; flex-direction: column; gap: 6px; min-height: 128px; padding: 12px; border-radius: 16px; border: 1px solid var(--line);
-  background: var(--surface); color: var(--ink); font: inherit; text-align: left; cursor: pointer;
+  display: flex; flex-direction: column; gap: 4px; min-height: 112px; padding: 12px 10px 14px; border-radius: 18px; border: 0;
+  background: var(--g-fill); color: var(--g-ink); box-shadow: 0 5px 0 var(--g-lip); font: inherit; text-align: left; cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
 }
-.pv-game:hover { background: var(--wash); }
-.pv-game:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
-.pv-game strong { font-size: 0.95rem; line-height: 1.25; }
-.pv-game span:last-child { font-size: 0.8rem; line-height: 1.3; color: var(--muted); }
+.pv-game:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--g-lip); }
+.pv-game:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+.pv-game strong { font-size: 0.98rem; font-weight: 800; line-height: 1.2; }
+.pv-game span:last-child { font-size: 0.8rem; font-weight: 700; line-height: 1.3; opacity: 0.85; }
+.pv-game .pv-game-ic { width: 28px; height: 28px; margin-bottom: 4px; color: currentColor; }
+.pv-game .pv-game-ic .ic { width: 28px; height: 28px; }
 
+
+
+/* ── The game-coloured Practice (Duolingo-like): chunky colour, a path of stops, quests, the arcade ─────────────────
+   Bright fills with a darker lip under them, pressed down when tapped. The colours: green, blue, orange, cyan and
+   pink — never the Pro amber, the choir's violet or a red (a wrong answer stays grey). Ink on each fill passes 4.5:1. */
+:root {
+  --gg-green: #1FB874; --gg-green-lip: #138A54; --gg-green-ink: #04261A;
+  --gg-blue: #2F6FED; --gg-blue-lip: #1E4FB5; --gg-blue-ink: #FFFFFF;
+  --gg-orange: #FF9640; --gg-orange-lip: #CC6A16; --gg-orange-ink: #2A1300;
+  --gg-cyan: #1FB6D6; --gg-cyan-lip: #12819A; --gg-cyan-ink: #032A33;
+  --gg-pink: #FF6FAE; --gg-pink-lip: #CF4886; --gg-pink-ink: #3A0A20;
+  --gg-locked: #E6EAF2; --gg-locked-lip: #C9D1DF; --gg-locked-ink: #7A869E;
+  --gg-gem: #0EA5C9;
+}
+:root[data-theme="dark"] {
+  --gg-green: #3DDC97; --gg-green-lip: #22A06E; --gg-green-ink: #04261A;
+  --gg-blue: #4C8DFF; --gg-blue-lip: #2B5FD0; --gg-blue-ink: #FFFFFF;
+  --gg-orange: #FF9F43; --gg-orange-lip: #D9771E; --gg-orange-ink: #2A1300;
+  --gg-cyan: #2EC5E6; --gg-cyan-lip: #1B95B3; --gg-cyan-ink: #032A33;
+  --gg-pink: #FF6FAE; --gg-pink-lip: #D44A86; --gg-pink-ink: #3A0A20;
+  --gg-locked: #232C44; --gg-locked-lip: #161D30; --gg-locked-ink: #6E7A96;
+  --gg-gem: #2EC5E6;
+}
+.gg-green { --g-fill: var(--gg-green); --g-lip: var(--gg-green-lip); --g-ink: var(--gg-green-ink); }
+.gg-blue { --g-fill: var(--gg-blue); --g-lip: var(--gg-blue-lip); --g-ink: var(--gg-blue-ink); }
+.gg-orange { --g-fill: var(--gg-orange); --g-lip: var(--gg-orange-lip); --g-ink: var(--gg-orange-ink); }
+.gg-cyan { --g-fill: var(--gg-cyan); --g-lip: var(--gg-cyan-lip); --g-ink: var(--gg-cyan-ink); }
+.gg-pink { --g-fill: var(--gg-pink); --g-lip: var(--gg-pink-lip); --g-ink: var(--gg-pink-ink); }
+
+/* The top bar: level, streak, XP and quests in one row of chunky counters, the style pill under it. */
+.pv-gtop { display: flex; flex-direction: column; gap: 8px; }
+.pv-gtop .pv-track-pill { align-self: flex-end; min-height: 36px; padding: 4px 12px 4px 8px; font-size: 0.8rem; }
+.pv-gbar { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 6px 4px 12px; border-bottom: 2px solid var(--line); }
+.pv-gbar-item { display: inline-flex; align-items: center; gap: 5px; min-height: 44px; min-width: 0; font-weight: 800; font-size: 1rem; color: var(--ink); }
+.pv-gbar-item b { font-weight: 800; white-space: nowrap; }
+.pv-gbar-item.is-level b { overflow: hidden; text-overflow: ellipsis; max-width: 6.5em; color: var(--blue-dark); }
+.pv-gbar-item.is-streak.is-on b { color: var(--gg-orange-lip); }
+:root[data-theme="dark"] .pv-gbar-item.is-streak.is-on b { color: var(--gg-orange); }
+.pv-gbar-item.is-xp b { color: var(--gg-cyan-lip); }
+:root[data-theme="dark"] .pv-gbar-item.is-xp b { color: var(--gg-cyan); }
+.pv-gem { display: inline-grid; color: var(--gg-gem); }
+.pv-gbar-item.is-quests { padding: 0 10px; border: 2px solid var(--line); border-radius: 999px; background: var(--surface); font: inherit; font-weight: 800; cursor: pointer; color: var(--ink); }
+.pv-gbar-item.is-quests:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.pv-chest { display: inline-grid; color: var(--gg-orange); }
+.pv-chest.is-open { color: var(--gg-green); }
+
+/* The unit as a winding path: its banner, then stops snaking down, the one to sing pulsing with START. */
+.pv-path-map { display: flex; flex-direction: column; gap: 6px; }
+.pv-unit-banner {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-radius: 18px;
+  background: var(--g-fill); color: var(--g-ink); box-shadow: 0 5px 0 var(--g-lip);
+}
+.pv-unit-banner-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.pv-unit-eyebrow { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.08em; opacity: 0.85; }
+.pv-unit-banner strong { font-size: 1.2rem; font-weight: 800; line-height: 1.2; }
+.pv-unit-badge { flex: none; width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; font-size: 1.6rem; font-weight: 900; background: rgba(255, 255, 255, 0.28); }
+.pv-road { list-style: none; margin: 8px 0 4px; padding: 6px 0 4px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.pv-stop { position: relative; transform: translateX(var(--x, 0)); display: grid; place-items: center; }
+.pv-stop-btn {
+  width: 68px; height: 62px; border-radius: 50%; border: 0; display: grid; place-items: center; font: inherit;
+  background: var(--gg-locked); color: var(--gg-locked-ink); box-shadow: 0 6px 0 var(--gg-locked-lip);
+}
+.pv-stop-btn .ic { width: 28px; height: 28px; stroke-width: 2.6; }
+.pv-stop.is-done .pv-stop-btn { background: var(--g-fill, var(--gg-green)); color: var(--g-ink, #fff); box-shadow: 0 6px 0 var(--g-lip, var(--gg-green-lip)); }
+.pv-stop.is-current .pv-stop-btn {
+  width: 78px; height: 70px; cursor: pointer; background: var(--g-fill, var(--gg-blue)); color: var(--g-ink, #fff);
+  box-shadow: 0 6px 0 var(--g-lip, var(--gg-blue-lip)); outline: 4px solid var(--g-fill, var(--gg-blue)); outline-offset: 5px;
+  animation: pv-stop-pulse 1.8s ease-out infinite;
+}
+.pv-stop.is-current .pv-stop-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--g-lip, var(--gg-blue-lip)); }
+.tone-green { --g-fill: var(--gg-green); --g-lip: var(--gg-green-lip); --g-ink: var(--gg-green-ink); }
+.tone-blue { --g-fill: var(--gg-blue); --g-lip: var(--gg-blue-lip); --g-ink: var(--gg-blue-ink); }
+.tone-orange { --g-fill: var(--gg-orange); --g-lip: var(--gg-orange-lip); --g-ink: var(--gg-orange-ink); }
+.tone-cyan { --g-fill: var(--gg-cyan); --g-lip: var(--gg-cyan-lip); --g-ink: var(--gg-cyan-ink); }
+.tone-pink { --g-fill: var(--gg-pink); --g-lip: var(--gg-pink-lip); --g-ink: var(--gg-pink-ink); }
+.pv-start {
+  position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%); padding: 6px 12px; border-radius: 12px;
+  background: var(--surface); color: var(--g-lip, var(--blue-dark)); border: 2px solid var(--line); font-size: 0.8rem; font-weight: 900;
+  letter-spacing: 0.06em; white-space: nowrap; animation: pv-start-bob 1.6s ease-in-out infinite;
+}
+.pv-stop.is-current { margin-top: 34px; }
+.pv-stop-doh { position: absolute; right: calc(100% + 14px); top: 50%; width: 92px; transform: translateY(-50%); }
+.pv-stop-doh .pv-drill-doh { margin: 0; }
+.pv-stop-doh .pv-art { max-width: none; }
+.pv-stop.is-chest .pv-chest { color: var(--gg-locked-ink); }
+.pv-stop.is-chest .pv-chest svg { width: 52px; height: 44px; }
+@keyframes pv-stop-pulse { 0% { box-shadow: 0 6px 0 var(--g-lip, var(--gg-blue-lip)), 0 0 0 0 var(--g-fill, var(--gg-blue)); } 100% { box-shadow: 0 6px 0 var(--g-lip, var(--gg-blue-lip)), 0 0 0 16px transparent; } }
+@keyframes pv-start-bob { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -5px); } }
+@media (prefers-reduced-motion: reduce) { .pv-stop.is-current .pv-stop-btn, .pv-start { animation: none; } }
+
+/* Daily quests: three bars and the chest they open. */
+.pv-quests { display: flex; flex-direction: column; gap: 10px; }
+.pv-quests:focus { outline: none; }
+.pv-quests:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.pv-quests-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.pv-quests-chest { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 800; color: var(--gg-orange-lip); }
+:root[data-theme="dark"] .pv-quests-chest { color: var(--gg-orange); }
+.pv-quests-chest.is-open { color: var(--success-text, var(--success)); }
+.pv-quest-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.pv-quest { display: flex; flex-direction: column; gap: 6px; }
+.pv-quest-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.pv-quest-title { font-weight: 700; font-size: 0.95rem; color: var(--ink); }
+.pv-quest-count { font-weight: 800; font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pv-quest.is-done .pv-quest-count { color: var(--success-text, var(--success)); }
+.pv-quest-bar { height: 14px; border-radius: 999px; background: var(--wash); overflow: hidden; }
+.pv-quest-bar i { display: block; height: 100%; border-radius: inherit; background: var(--gg-orange); box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.35); }
+.pv-quest.is-done .pv-quest-bar i { background: var(--gg-green); }
+
+/* The drill card's buttons: chunky, pressed down when tapped. */
+.pv-drill .btn-primary, .pv-drill .btn-ghost { border-radius: 16px; min-height: 52px; font-weight: 800; transition: transform 0.08s ease, box-shadow 0.08s ease; }
+.pv-drill .btn-primary { background: var(--gg-blue); color: var(--gg-blue-ink); box-shadow: 0 5px 0 var(--gg-blue-lip); border-color: transparent; }
+.pv-drill .btn-primary:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 1px 0 var(--gg-blue-lip); }
+.pv-drill .btn-ghost { box-shadow: 0 4px 0 var(--line); border-width: 2px; }
+.pv-drill .btn-ghost:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--line); }
+.pv-drill .pv-tiles li { border-radius: 12px; font-weight: 700; }

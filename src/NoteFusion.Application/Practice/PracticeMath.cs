@@ -27,11 +27,19 @@ public sealed record PracticeStats(
 /// </summary>
 public static class PracticeMath
 {
-    /// <summary>XP earned on each local day: the day's takes summed and held to <see cref="PracticeRules.DailyXpCap"/>.</summary>
+    /// <summary>
+    /// XP earned on each local day: the day's takes summed and held to <see cref="PracticeRules.DailyXpCap"/>, and the
+    /// day's chest (<see cref="PracticeRules.QuestChestXp"/>) on top once its three quests are done.
+    /// </summary>
     public static Dictionary<DateOnly, int> XpByDay(IEnumerable<PracticeFact> facts)
         => facts
             .GroupBy(f => f.LocalDate)
-            .ToDictionary(g => g.Key, g => Math.Min(PracticeRules.DailyXpCap, g.Sum(f => PracticeRules.BaseXp(f.Kind, f.Score))));
+            .ToDictionary(g => g.Key, g =>
+            {
+                var day = g.ToList();
+                return Math.Min(PracticeRules.DailyXpCap, day.Sum(f => PracticeRules.BaseXp(f.Kind, f.Score)))
+                       + (DailyQuests.ChestOpened(g.Key, day) ? PracticeRules.QuestChestXp : 0);
+            });
 
     public static int TotalXp(IEnumerable<PracticeFact> facts) => XpByDay(facts).Values.Sum();
 
@@ -171,6 +179,7 @@ public static class PracticeMath
             PracticeBadges.Describe(stats, earned, season),
             lastSeven,
             drills,
-            track);
+            track,
+            Quests: DailyQuests.Describe(today, facts));
     }
 }
