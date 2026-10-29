@@ -192,8 +192,10 @@ public sealed class AdminOfferQueryHandlers :
 
         var emails = await _db.OfferEmails.AsNoTracking()
             .Where(e => e.OfferId == offer.Id)
-            .Select(e => new { e.UserId, e.Round, e.Status, e.SkipReason, e.SentAtUtc, e.ClickedAtUtc, e.OpenedAtUtc })
+            .Select(e => new { e.UserId, e.Round, e.Channel, e.Status, e.SkipReason, e.SentAtUtc, e.ClickedAtUtc, e.OpenedAtUtc })
             .ToListAsync(ct);
+        var notifications = emails.Where(e => e.Channel != OfferChannel.Email).ToList();
+        emails = emails.Where(e => e.Channel == OfferChannel.Email).ToList();
         var lastCalls = emails.Where(e => e.Round == OfferEmailRound.LastCall).ToList();
         emails = emails.Where(e => e.Round == OfferEmailRound.Launch).ToList();
         var payments = await _db.PaymentTransactions.AsNoTracking()
@@ -279,6 +281,18 @@ public sealed class AdminOfferQueryHandlers :
                     lastCalls.Count(e => e.Status == OfferEmailStatus.Failed),
                     lastCalls.Count(e => e.OpenedAtUtc is not null || e.ClickedAtUtc is not null),
                     lastCalls.Count(e => e.ClickedAtUtc is not null),
-                    bought.Count(p => lastCalls.Any(e => e.UserId == p.UserId && e.SentAtUtc is { } at && p.UpdatedAtUtc >= at))));
+                    bought.Count(p => lastCalls.Any(e => e.UserId == p.UserId && e.SentAtUtc is { } at && p.UpdatedAtUtc >= at))),
+            notifications
+                .GroupBy(e => e.Round)
+                .OrderBy(g => g.Key)
+                .Select(g => new OfferPushProgressDto(
+                    OfferAdmin.RoundName(g.Key),
+                    g.Any(e => e.Channel == OfferChannel.PhoneAndWebPush),
+                    g.Count(e => e.Status == OfferEmailStatus.Queued),
+                    g.Count(e => e.Status == OfferEmailStatus.Sent),
+                    g.Count(e => e.Status == OfferEmailStatus.Skipped),
+                    g.Count(e => e.Status == OfferEmailStatus.Failed),
+                    g.Count(e => e.ClickedAtUtc is not null)))
+                .ToList());
     }
 }

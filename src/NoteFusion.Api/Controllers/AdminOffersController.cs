@@ -94,8 +94,19 @@ public sealed class AdminOffersController : ApiControllerBase
     /// </summary>
     [HttpGet("{id:guid}/recipients")]
     public async Task<IActionResult> Recipients(
-        Guid id, [FromQuery] string? round, [FromQuery] string? filter, [FromQuery] int skip = 0, CancellationToken ct = default)
-        => HandleResult(await _sender.Send(new GetOfferRecipientsQuery(id, round, filter, skip), ct));
+        Guid id, [FromQuery] string? round, [FromQuery] string? filter, [FromQuery] int skip = 0, [FromQuery] string? channel = null,
+        CancellationToken ct = default)
+        => HandleResult(await _sender.Send(new GetOfferRecipientsQuery(id, round, filter, skip, channel), ct));
+
+    /// <summary>
+    /// Sends one of the offer's emails (<c>round</c>: "launch" or "lastCall") as a notification too: to the web app's
+    /// subscribed browsers, and with <c>phones</c> to the app's phones (opening its Upgrade screen). Once per round, after its
+    /// email; not held by the email quota.
+    /// </summary>
+    [HttpPost("{id:guid}/push")]
+    [FreshPhoneUnlock]
+    public async Task<IActionResult> Push(Guid id, OfferPushBody? body, CancellationToken ct)
+        => HandleResult(await _sender.Send(new SendOfferPushCommand(id, body?.Round, body?.Phones ?? false), ct));
 
     /// <summary>Pauses or resumes the email's queue.</summary>
     [HttpPut("{id:guid}/sending")]
@@ -127,6 +138,9 @@ public sealed record OfferEnabledBody(bool Enabled);
 
 /// <summary><c>set</c>: "standard" (the default) or "regional"; <c>round</c>: "launch" (the default) or "lastCall".</summary>
 public sealed record OfferTestBody(string? Set, string? Round = null);
+
+/// <summary>Body of <c>POST /api/admin/offers/{id}/push</c>: <c>round</c> "launch" or "lastCall"; <c>phones</c> to include the app's phones.</summary>
+public sealed record OfferPushBody(string? Round, bool Phones = false);
 
 /// <summary>Body of <c>POST /api/admin/offers/{id}/last-call</c>: its words, when changed from those saved.</summary>
 public sealed record OfferLastCallBody(OfferWords? Words);

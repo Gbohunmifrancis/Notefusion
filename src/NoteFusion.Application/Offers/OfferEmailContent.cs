@@ -47,6 +47,36 @@ public interface IOfferEmailRenderer
     RenderedOfferEmail Render(EmailRecipient to, OfferEmailContent content);
 }
 
+/// <summary>
+/// An offer's email as a notification: its subject as the title and its preview line as the body (the percent filled in),
+/// cut to what a phone's notification shows. The web app's opens the offer (<c>/app?offer={key}&amp;m={token}</c>, its tap
+/// counted like the email's button); a phone's opens the app's own Upgrade screen and reports its tap with the token.
+/// </summary>
+public static class OfferPushComposer
+{
+    public const int TitleMax = 65;
+    public const int BodyMax = 178;
+
+    public static (string Title, string Body) Words(Offer offer, OfferEmailRound round)
+    {
+        var words = round == OfferEmailRound.LastCall
+            ? OfferEmailComposer.LastCallWordsOf(offer)
+            : new OfferWords(offer.Subject, offer.Preheader, offer.Headline, offer.Body);
+        return (Clip(OfferTemplates.Fill(words.Subject, offer.PercentOff), TitleMax), Clip(OfferTemplates.Fill(words.Preheader, offer.PercentOff), BodyMax));
+    }
+
+    /// <summary>The web app's notification opens the offer on its own page, the token counting the tap.</summary>
+    public static string WebUrl(Offer offer, string token)
+        => $"/app?offer={Uri.EscapeDataString(offer.Key)}&m={Uri.EscapeDataString(token)}";
+
+    /// <summary>Its tag: one notification per offer and round in a browser, a second one replacing the first.</summary>
+    public static string Tag(Offer offer, OfferEmailRound round)
+        => $"nf-offer-{offer.Key}-{(round == OfferEmailRound.LastCall ? "last-call" : "launch")}";
+
+    private static string Clip(string text, int max)
+        => text.Length <= max ? text : text[..(max - 1)].TrimEnd() + "…";
+}
+
 /// <summary>Builds <see cref="OfferEmailContent"/> for one person from the offer and the dollar plans on sale.</summary>
 public static class OfferEmailComposer
 {

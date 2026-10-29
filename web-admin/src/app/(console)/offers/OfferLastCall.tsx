@@ -11,8 +11,10 @@ import {
   getOfferProgress,
   getOfferRecipients,
   sendOfferLastCall,
+  sendOfferPush,
   updateOffer,
   type AdminOffer,
+  type OfferChannelName,
   type OfferRecipientFilter,
   type OfferRound,
   type OfferWords,
@@ -24,6 +26,7 @@ import { Segmented } from "@/components/Segmented";
 import { StatCard } from "@/components/StatCard";
 import { ErrorView, LoadingView } from "@/components/StateView";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -258,6 +261,99 @@ export function OfferLastCallCard({
   );
 }
 
+/**
+ * Each sent email as a notification too: the web app's browsers that turned notifications on, and, ticked, the app's
+ * phones. Not mail, so the email quota never holds it; it goes 09:00–19:00 in each person's own time like the email. The
+ * offer's price is on the website and Google Play does not let an app send its users to pay outside Play, so phones are
+ * off unless ticked, and a phone's notification opens the app's own Upgrade screen.
+ */
+export function OfferPushCard({ offer, onConfirm }: { offer: AdminOffer; onConfirm: (request: ConfirmRequest) => void }) {
+  const queryClient = useQueryClient();
+  const [phones, setPhones] = useState(false);
+  const phonesId = useId();
+  const progress = useQuery({
+    queryKey: offerKeys.progress(offer.id),
+    queryFn: ({ signal }) => getOfferProgress(offer.id, signal),
+    refetchInterval: 60_000,
+  });
+  const ended = offer.state === "ended";
+  const rounds: { round: OfferRound; name: string; sentAt: string | null }[] = [
+    { round: "launch", name: "The email", sentAt: offer.send?.startedAtUtc ?? null },
+    { round: "lastCall", name: "The last call", sentAt: offer.lastCallStartedAtUtc ?? null },
+  ];
+  const pushed = progress.data?.notifications ?? [];
+
+  function ask(round: OfferRound, name: string) {
+    onConfirm({
+      title: `Send ${name.toLowerCase()} as a notification?`,
+      body: (
+        <>
+          <p>
+            To everyone in its groups with notifications on{phones ? " (the web app and phones)" : " in the web app"}, less anyone who has bought.
+            Its subject is the title and its preview line the text.
+          </p>
+          <p>It is not mail, so the email limit does not hold it. Each goes between 09:00 and 19:00 in the person's own time.</p>
+          {phones && <p>Phones open the app's Upgrade screen, never the website, as Google Play requires.</p>}
+        </>
+      ),
+      confirmLabel: "Send the notification",
+      confirmIdentity: true,
+      onConfirm: async () => {
+        let queued = 0;
+        try {
+          queued = (await sendOfferPush(offer.id, round, phones)).queued;
+        } catch (caught) {
+          throw offerError(caught, "The notification couldn't be sent. Try again.");
+        }
+        void queryClient.invalidateQueries({ queryKey: offerKeys.progress(offer.id) });
+        void queryClient.invalidateQueries({ queryKey: ["offer-recipients", offer.id] });
+        toast.success(`Notifying ${formatCount(queued)} ${people(queued)}`, { description: "From 09:00 in each person's own time." });
+      },
+    });
+  }
+
+  return (
+    <Card
+      title="As a notification"
+      hint="The same words to the web app's notifications (and phones, ticked). Not mail: the email limit never holds it."
+    >
+      <div className="space-y-3">
+        {rounds.map(({ round, name, sentAt }) => {
+          const done = pushed.find((p) => p.round === round);
+          return (
+            <div key={round} className="flex flex-wrap items-center justify-between gap-3 rounded-[8px] border border-border px-3.5 py-3">
+              <div className="min-w-0">
+                <p className="text-[13px] font-medium text-foreground">{name}</p>
+                <p className="text-xs text-muted-foreground">
+                  {done
+                    ? `Sent ${formatCount(done.sent)} · tapped ${formatCount(done.tapped)}${done.queued > 0 ? ` · ${formatCount(done.queued)} waiting` : ""}${done.phones ? " · web and phones" : " · web app"}`
+                    : sentAt
+                      ? "Not sent as a notification yet"
+                      : "Send the email first"}
+                </p>
+              </div>
+              {!done && (
+                <Button size="sm" variant="outline" disabled={!sentAt || ended || !offer.enabled} onClick={() => ask(round, name)}>
+                  <Megaphone aria-hidden="true" />
+                  Notify
+                </Button>
+              )}
+            </div>
+          );
+        })}
+        <div className="flex items-start gap-3 pt-1">
+          <Checkbox id={phonesId} checked={phones} onCheckedChange={(next) => setPhones(next === true)} />
+          <label htmlFor={phonesId} className="cursor-pointer text-xs leading-relaxed text-muted-foreground">
+            <span className="block text-[13px] font-medium text-foreground">Phones too</span>
+            The price is on the website, and Google Play does not let an app send its users to pay outside Play. Phones open the app's
+            Upgrade screen. Leave this off unless the app sells through the website.
+          </label>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
 const FILTERS: { value: OfferRecipientFilter; label: string }[] = [
   { value: "opened", label: "Opened" },
   { value: "clicked", label: "Clicked" },
@@ -273,14 +369,15 @@ const FILTERS: { value: OfferRecipientFilter; label: string }[] = [
 export function OfferRecipientsCard({ offer }: { offer: AdminOffer }) {
   const [round, setRound] = useState<OfferRound>(offer.lastCallStartedAtUtc ? "lastCall" : "launch");
   const [filter, setFilter] = useState<OfferRecipientFilter>("opened");
+  const [channel, setChannel] = useState<OfferChannelName>("email");
   const [pages, setPages] = useState(1);
   const list = useQuery({
-    queryKey: ["offer-recipients", offer.id, round, filter, pages],
+    queryKey: ["offer-recipients", offer.id, round, filter, pages, channel],
     queryFn: async ({ signal }) => {
-      const first = await getOfferRecipients(offer.id, round, filter, 0, signal);
+      const first = await getOfferRecipients(offer.id, round, filter, 0, signal, channel);
       const items = [...first.items];
       for (let page = 1; page < pages && items.length < first.total; page++)
-        items.push(...(await getOfferRecipients(offer.id, round, filter, items.length, signal)).items);
+        items.push(...(await getOfferRecipients(offer.id, round, filter, items.length, signal, channel)).items);
       return { ...first, items };
     },
     placeholderData: (previous) => previous,
@@ -308,6 +405,18 @@ export function OfferRecipientsCard({ offer }: { offer: AdminOffer }) {
             ]}
           />
         )}
+        <Segmented
+          label="Channel"
+          value={channel}
+          onChange={(next) => {
+            setChannel(next);
+            setPages(1);
+          }}
+          options={[
+            { value: "email", label: "Email" },
+            { value: "push", label: "Notification" },
+          ]}
+        />
         <Segmented
           label="Show"
           value={filter}

@@ -182,7 +182,12 @@ export interface OfferProgress {
   byPlan: { code: string; name: string; set: OfferPriceSet; count: number; revenueMinor: number }[];
   /** The last call's own counts; null until it is sent. The counts above are the email's. */
   lastCall?: { queued: number; sent: number; skipped: number; failed: number; opened: number; clicked: number; boughtAfter: number } | null;
+  /** Each round sent as a notification too: its counts (`tapped` opened the app from it). */
+  notifications?: { round: OfferRound; phones: boolean; queued: number; sent: number; skipped: number; failed: number; tapped: number }[] | null;
 }
+
+/** Who opened which: the emails, or the same rounds as notifications (an open is a tap). */
+export type OfferChannelName = "email" | "push";
 
 /** Who opened (or clicked, bought, or every one sent) of one of the offer's emails. */
 export type OfferRecipientFilter = "opened" | "clicked" | "bought" | "all";
@@ -211,6 +216,7 @@ export interface OfferRecipients {
   /** Everyone who opened this email. */
   opened: number;
   items: OfferRecipient[];
+  channel?: OfferChannelName;
 }
 
 const base = "/api/admin/offers";
@@ -250,9 +256,17 @@ export const sendOfferTest = (id: string, set: OfferPriceSet, round: OfferRound 
 export const sendOfferLastCall = (id: string, words?: OfferWords) =>
   request<unknown>(`${one(id)}/last-call`, { method: "POST", body: { words: words ?? null } });
 
-/** Who one email went to: those who opened it first. */
-export const getOfferRecipients = (id: string, round: OfferRound, filter: OfferRecipientFilter, skip: number, signal?: AbortSignal) =>
-  request<OfferRecipients>(`${one(id)}/recipients${query({ round, filter, skip })}`, opts(signal));
+/** Who one email (or its notification) went to: those who opened it first. */
+export const getOfferRecipients = (
+  id: string, round: OfferRound, filter: OfferRecipientFilter, skip: number, signal?: AbortSignal, channel: OfferChannelName = "email",
+) => request<OfferRecipients>(`${one(id)}/recipients${query({ round, filter, skip, channel })}`, opts(signal));
+
+/**
+ * Sends a round's email as a notification too: the web app's browsers, and with `phones` the app's phones (its Upgrade
+ * screen). Not held by the email quota; once per round; wants a fresh confirmation. Audit `SendOfferPush`.
+ */
+export const sendOfferPush = (id: string, round: OfferRound, phones: boolean) =>
+  request<{ round: OfferRound; queued: number; phones: boolean }>(`${one(id)}/push`, { method: "POST", body: { round, phones } });
 
 export const getOfferAudience = (id: string, choice: OfferAudienceChoice, signal?: AbortSignal) =>
   request<OfferAudience>(`${one(id)}/audience${query({ ...choice })}`, opts(signal));

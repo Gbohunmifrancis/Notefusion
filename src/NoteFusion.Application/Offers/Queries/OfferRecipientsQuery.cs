@@ -11,9 +11,10 @@ namespace NoteFusion.Application.Offers.Queries;
 /// <summary>
 /// <c>GET /api/admin/offers/{id}/recipients</c>: who one of the offer's emails (<c>round</c>: "launch" or "lastCall")
 /// went to. <c>filter</c>: "opened" (the default: opened or clicked, the newest open first), "clicked", "bought" or
-/// "all" (sent first, the newest first). A page of <see cref="PageSize"/> from <c>skip</c>. Admins only: it names people.
+/// "all" (sent first, the newest first). A page of <see cref="PageSize"/> from <c>skip</c>. <c>channel</c>: "email" (the
+/// default) or "push" (the same round as a notification, whose open is its tap). Admins only: it names people.
 /// </summary>
-public sealed record GetOfferRecipientsQuery(Guid Id, string? Round = null, string? Filter = null, int Skip = 0)
+public sealed record GetOfferRecipientsQuery(Guid Id, string? Round = null, string? Filter = null, int Skip = 0, string? Channel = null)
     : IRequest<Result<OfferRecipientsDto>>;
 
 public sealed class GetOfferRecipientsQueryHandler : IRequestHandler<GetOfferRecipientsQuery, Result<OfferRecipientsDto>>
@@ -33,13 +34,17 @@ public sealed class GetOfferRecipientsQueryHandler : IRequestHandler<GetOfferRec
         var filter = string.IsNullOrWhiteSpace(request.Filter) ? "opened" : request.Filter.Trim().ToLowerInvariant();
         if (!Filters.Contains(filter))
             return OfferErrors.FilterUnknown;
+        var channel = string.IsNullOrWhiteSpace(request.Channel) ? "email" : request.Channel.Trim().ToLowerInvariant();
+        if (channel is not ("email" or "push"))
+            return OfferErrors.ChannelUnknown;
+        var push = channel == "push";
         if (!await _db.Offers.AnyAsync(o => o.Id == request.Id, ct))
             return OfferErrors.NotFound;
 
         var rows = await (
                 from e in _db.OfferEmails.AsNoTracking()
                 join u in _db.Users.AsNoTracking() on e.UserId equals u.Id
-                where e.OfferId == request.Id && e.Round == round
+                where e.OfferId == request.Id && e.Round == round && (push ? e.Channel != OfferChannel.Email : e.Channel == OfferChannel.Email)
                 select new
                 {
                     e.UserId, u.FullName, u.Email, u.Country, e.Group, e.Status, e.SkipReason, e.SentAtUtc, e.OpenedAtUtc, e.ClickedAtUtc,
@@ -72,6 +77,7 @@ public sealed class GetOfferRecipientsQueryHandler : IRequestHandler<GetOfferRec
 
         return new OfferRecipientsDto(
             OfferAdmin.RoundName(round), filter, matching.Count, all.Count(r => r.OpenedAtUtc is not null),
-            matching.Skip(Math.Max(0, request.Skip)).Take(PageSize).ToList());
+            matching.Skip(Math.Max(0, request.Skip)).Take(PageSize).ToList(),
+            channel);
     }
 }

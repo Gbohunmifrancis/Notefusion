@@ -93,5 +93,8 @@ public enum AdminAuditAction
     SetOfferSending = 31,
 
     /// <summary>An admin sent an offer's last call: the follow-up before it ends was queued (the count is in the summary).</summary>
-    SendOfferLastCall = 32
+    SendOfferLastCall = 32,
+
+    /// <summary>An admin sent an offer's email (or its last call) as a notification too (the count is in the summary).</summary>
+    SendOfferPush = 33
 }

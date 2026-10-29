@@ -159,7 +159,8 @@ public sealed record OfferProgressDto(
     IReadOnlyList<OfferDayDto> ByDay,
     IReadOnlyList<OfferPlanSalesDto> ByPlan,
     int Opened,
-    OfferLastCallProgressDto? LastCall = null);
+    OfferLastCallProgressDto? LastCall = null,
+    IReadOnlyList<OfferPushProgressDto>? Notifications = null);
 
 /// <summary>
 /// The last call's own queue and what came of it (null until it is sent); the progress's other counts are the email's.
@@ -167,11 +168,20 @@ public sealed record OfferProgressDto(
 /// </summary>
 public sealed record OfferLastCallProgressDto(int Queued, int Sent, int Skipped, int Failed, int Opened, int Clicked, int BoughtAfter);
 
+/// <summary><c>POST /api/admin/offers/{id}/push</c>: how many notifications were queued for the round, and whether phones too.</summary>
+public sealed record OfferPushSentDto(string Round, int Queued, bool Phones);
+
+/// <summary>
+/// One round's notifications (the email's words as a web, or web and phone, notification): queued, sent, skipped (bought,
+/// ended, no device…), failed, and tapped (opened the app from it). <c>Phones</c>: phones were included.
+/// </summary>
+public sealed record OfferPushProgressDto(string Round, bool Phones, int Queued, int Sent, int Skipped, int Failed, int Tapped);
+
 /// <summary>
 /// <c>GET /api/admin/offers/{id}/recipients</c>: the people an email went to, those who opened it first (the newest
 /// open first), each with what came of it. <c>Total</c> counts every match, <c>Items</c> one page of them.
 /// </summary>
-public sealed record OfferRecipientsDto(string Round, string Filter, int Total, int Opened, IReadOnlyList<OfferRecipientDto> Items);
+public sealed record OfferRecipientsDto(string Round, string Filter, int Total, int Opened, IReadOnlyList<OfferRecipientDto> Items, string Channel = "email");
 
 /// <param name="Group">"Lapsed", "Free" or "ProNow".</param>
 /// <param name="Status">"Queued", "Sent", "Skipped" or "Failed"; <c>SkipReason</c> says why one was skipped.</param>

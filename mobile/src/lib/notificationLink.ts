@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { createNavigationContainerRef } from '@react-navigation/native';
-import { transcriptionsApi } from '../api/endpoints';
+import { appApi, transcriptionsApi } from '../api/endpoints';
 import { openConsole } from './adminConsole';
 import { safeReason, toApiError } from '../api/client';
 import { openStoreListing } from './appUpdate';
@@ -192,10 +192,12 @@ export function useNotificationDeepLink(ready: boolean, isAdmin = false): Notifi
       };
       const request = r?.notification?.request;
       const data = request?.content?.data as
-        | { jobId?: unknown; screen?: unknown; paymentId?: unknown; userId?: unknown }
+        | { jobId?: unknown; screen?: unknown; paymentId?: unknown; userId?: unknown; offerToken?: unknown }
         | undefined;
       const id = typeof request?.identifier === 'string' ? request.identifier : undefined;
 
+      // An offer's notification: its tap is counted (once, however many times this sees it), then it opens Upgrade.
+      if (typeof data?.offerToken === 'string') void appApi.offerTapped(data.offerToken).catch(() => undefined);
       // A job id first: it names a specific result, where `screen` only names a place.
       if (typeof data?.jobId === 'string') return { kind: 'job', value: data.jobId, id };
       if (typeof data?.screen === 'string' && (notificationTarget(data.screen) || isAdminScreen(data.screen))) {
