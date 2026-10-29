@@ -1,11 +1,1 @@
-<!-- NoteFusion glyph "parts": SATB parts, four-part harmony. Drawn on the 24 grid (e-icons board 09): 1.75 stroke, round
-     caps and joins, solid note heads (fill="currentColor"). <g id="wash">, when present, is the 20% wash drawn under
-     the selected state (the active tab); it is hidden here. mobile/scripts/build-icons.mjs reads this file. -->
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-     stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M8.4 18.4V6.3l11.2-2.2v12.1"/>
-  <ellipse fill="currentColor" stroke="none" cx="6.1" cy="18.6" rx="2.45" ry="1.8" transform="rotate(-20 6.1 18.6)"/>
-  <ellipse fill="currentColor" stroke="none" cx="6.1" cy="13.4" rx="2.45" ry="1.8" transform="rotate(-20 6.1 13.4)"/>
-  <ellipse fill="currentColor" stroke="none" cx="17.3" cy="16.4" rx="2.45" ry="1.8" transform="rotate(-20 17.3 16.4)"/>
-  <ellipse fill="currentColor" stroke="none" cx="17.3" cy="11.2" rx="2.45" ry="1.8" transform="rotate(-20 17.3 11.2)"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24"><path d="M8.4 18.4V6.3l11.2-2.2v12.1"/><ellipse cx="6.1" cy="18.6" fill="currentColor" stroke="none" rx="2.45" ry="1.8" transform="rotate(-20 6.1 18.6)"/><ellipse cx="6.1" cy="13.4" fill="currentColor" stroke="none" rx="2.45" ry="1.8" transform="rotate(-20 6.1 13.4)"/><ellipse cx="17.3" cy="16.4" fill="currentColor" stroke="none" rx="2.45" ry="1.8" transform="rotate(-20 17.3 16.4)"/><ellipse cx="17.3" cy="11.2" fill="currentColor" stroke="none" rx="2.45" ry="1.8" transform="rotate(-20 17.3 11.2)"/></svg>
