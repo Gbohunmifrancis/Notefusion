@@ -812,7 +812,15 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   (`GET /api/offers/countdown?o={key}&m={token}`: `OfferCountdown`, an animated GIF drawn at each load, a minute of frames to
   the person's own midnight, our own 5×7 digits and GIF encoder, no image library or fonts) and the usual price after; the
   worker sends last calls first. The console's Offers page: Last call (words, Send, its counts) and Who opened
-  (`GET …/recipients?round=&filter=opened|clicked|bought|all`, the people, newest open first).
+  (`GET …/recipients?round=&filter=opened|clicked|bought|all&channel=email|push`, the people, newest open first).
+  Either email can go as a notification too (`POST /api/admin/offers/{id}/push {round, phones}`, fresh unlock, once per round,
+  after its email; audit `SendOfferPush`; console "As a notification"): `OfferEmail.Channel` `WebPush`/`PhoneAndWebPush` rows
+  (unique offer+account+round+channel) for the email's groups less buyers, only accounts with a web app browser subscribed or,
+  ticked, a phone. Not mail: the quota never holds it, the worker sends them first, 09:00–19:00 local; the email's subject and
+  preview line (`OfferPushComposer`). The web's (`kind:"offer"`, tag `nf-offer-{key}-{round}`) opens `/app?offer=&m=`, its tap
+  counted as the button's (app.js opens it from an open tab too); a phone's opens the app's Upgrade screen (Google Play does not
+  let an app send its users to pay outside Play, so phones are off unless ticked) and reports its tap with `offerToken`
+  (`lib/notificationLink` → `POST /api/offers/click`). Nowhere to show it at its turn: skipped `NoDevice`.
 - Email quota (`Application/Common/EmailBudget`, `Infrastructure/Email/EmailQuota`): every email Resend accepts is an
   `email_sends` row (kind + time); optional mail (welcome, waitlist, checkout reminder, failed-job tips, outreach) goes only
   while each capped window — last 24 h `Email__DailyLimit` (100), 7 days `Email__WeeklyLimit` (none), 31 days

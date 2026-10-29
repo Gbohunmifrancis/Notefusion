@@ -52,6 +52,24 @@ public enum OfferSkipReason
 
     /// <summary>Still queued when the last call was sent: the last call goes to them instead, so nobody gets both at once.</summary>
     LastCallInstead = 5,
+
+    /// <summary>A notification with nowhere to go at their turn: no browser subscribed (nor, when phones are on, a phone).</summary>
+    NoDevice = 6,
+}
+
+/// <summary>
+/// How one of an offer's messages reaches its person (stored by name): the email, or a notification beside it to the
+/// web app's subscribed browsers, or to those and the person's phones.
+/// </summary>
+public enum OfferChannel
+{
+    Email = 0,
+
+    /// <summary>The web app's notifications (web push to the browsers that turned them on).</summary>
+    WebPush = 1,
+
+    /// <summary>The web app's and the phone app's notifications (web push and Expo push).</summary>
+    PhoneAndWebPush = 2,
 }
 
 /// <summary>Which of an offer's emails a row is (stored by name): the launch Send, or the last call before it ends.</summary>

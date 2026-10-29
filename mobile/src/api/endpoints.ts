@@ -228,6 +228,9 @@ export const devicesApi = {
 };
 
 export const appApi = {
+  /** A seasonal offer's notification was tapped (its token, as the email's button sends it): counted once. Anonymous. */
+  offerTapped: (token: string) => api.post("/api/offers/click", { token }).then(() => undefined),
+
   /**
    * What the stores carry. Anonymous, so it answers before sign-in — the hard block has to
    * work on the login screen too, which is where a user stuck on a broken build ends up.

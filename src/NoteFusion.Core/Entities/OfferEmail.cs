@@ -6,8 +6,9 @@ namespace NoteFusion.Core.Entities;
 
 /// <summary>
 /// One person's copy of an offer's email: queued when Send was pressed, then sent, skipped (with why) or failed. Its
-/// <see cref="Token"/> is the button link's <c>m=</c>, which counts the click. Unique per offer, account and
-/// <see cref="Round"/> (the launch email and its last call); goes with the account.
+/// <see cref="Token"/> is the button link's <c>m=</c>, which counts the click. Unique per offer, account,
+/// <see cref="Round"/> (the launch email and its last call) and <see cref="Channel"/> (a row is the email itself, or the
+/// same words as a notification); goes with the account.
 /// </summary>
 public sealed class OfferEmail : BaseEntity
 {
@@ -25,6 +26,9 @@ public sealed class OfferEmail : BaseEntity
 
     /// <summary>The launch email or the last call.</summary>
     public OfferEmailRound Round { get; private set; }
+
+    /// <summary>The email, or a notification of the same words (web, or web and phone).</summary>
+    public OfferChannel Channel { get; private set; }
     public OfferEmailStatus Status { get; private set; }
     public OfferSkipReason? SkipReason { get; private set; }
     public int Attempts { get; private set; }
@@ -48,7 +52,8 @@ public sealed class OfferEmail : BaseEntity
     public string? LastError { get; private set; }
 
     public static OfferEmail Queue(
-        Guid offerId, Guid userId, OfferEmailGroup group, string token, DateTime utcNow, OfferEmailRound round = OfferEmailRound.Launch)
+        Guid offerId, Guid userId, OfferEmailGroup group, string token, DateTime utcNow, OfferEmailRound round = OfferEmailRound.Launch,
+        OfferChannel channel = OfferChannel.Email)
         => new()
         {
             Id = Guid.NewGuid(),
@@ -56,6 +61,7 @@ public sealed class OfferEmail : BaseEntity
             UserId = Guard.AgainstEmpty(userId),
             Group = group,
             Round = round,
+            Channel = channel,
             Status = OfferEmailStatus.Queued,
             Token = Guard.NotNullOrWhiteSpace(token),
             QueuedAtUtc = utcNow,

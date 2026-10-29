@@ -26,9 +26,11 @@ namespace NoteFusion.Application.Offers;
 /// sent an offer they can no longer take.
 /// </para>
 /// <para>
-/// Then it goes only in their sending hours (09:00–19:00 in their own time zone, the UK's when unknown) and only while
-/// the quota allows optional mail (<see cref="IEmailQuota"/>): the run stops at the first "no", so the rest stays queued
-/// for a run with room. A refused send is tried once more on a later run, then marked failed with its error. Once the
+/// Then it goes only in their sending hours (09:00–19:00 in their own time zone, the UK's when unknown). An email goes
+/// only while the quota allows optional mail (<see cref="IEmailQuota"/>): the run stops at the first "no", so the rest
+/// stays queued for a run with room. A notification (<see cref="OfferChannel"/>, the email's words) is not mail and goes
+/// first: to the account's subscribed browsers, and its phones when the row says so; one with nowhere to show is skipped
+/// (<see cref="OfferSkipReason.NoDevice"/>), and one the push services did not answer stays queued. A refused send is tried once more on a later run, then marked failed with its error. Once the
 /// offer is over everywhere, whatever is still queued is skipped as ended.
 /// </para>
 /// </remarks>
@@ -41,6 +43,8 @@ public sealed class OfferEmailService
     private readonly IEmailUnsubscribeTokens _tokens;
     private readonly IProviderHealth _health;
     private readonly IEmailQuota _quota;
+    private readonly IPushSender? _push;
+    private readonly IWebPushSender? _webPush;
     private readonly ILogger<OfferEmailService> _logger;
 
     public OfferEmailService(
@@ -51,7 +55,9 @@ public sealed class OfferEmailService
         IEmailUnsubscribeTokens tokens,
         IProviderHealth? health = null,
         IEmailQuota? quota = null,
-        ILogger<OfferEmailService>? logger = null)
+        ILogger<OfferEmailService>? logger = null,
+        IPushSender? push = null,
+        IWebPushSender? webPush = null)
     {
         _db = db;
         _clock = clock;
@@ -60,6 +66,8 @@ public sealed class OfferEmailService
         _tokens = tokens;
         _health = health ?? ProviderHealth.AlwaysAvailable;
         _quota = quota ?? EmailBudget.Unlimited;
+        _push = push;
+        _webPush = webPush;
         _logger = logger ?? NullLogger<OfferEmailService>.Instance;
     }
 
@@ -135,7 +143,8 @@ public sealed class OfferEmailService
         var plans = await OfferEmailComposer.OfferablePlansAsync(_db, ct);
 
         var ordered = queue
-            .OrderBy(e => e.Round == OfferEmailRound.LastCall ? 0 : 1)
+            .OrderBy(e => e.Channel == OfferChannel.Email ? 1 : 0)
+            .ThenBy(e => e.Round == OfferEmailRound.LastCall ? 0 : 1)
             .ThenBy(e => e.Group)
             .ThenByDescending(e => users.TryGetValue(e.UserId, out var u) ? u.Seen ?? DateTime.MinValue : DateTime.MinValue)
             .ToList();
@@ -173,6 +182,13 @@ public sealed class OfferEmailService
             // Their own morning will come round; the quota and the provider are for everyone, so those stop the run.
             if (!OutreachRules.IsSendingHour(now, zone))
                 continue;
+            if (row.Channel != OfferChannel.Email)
+            {
+                if (await NotifyAsync(offer, row, ct))
+                    sent++;
+                await _db.SaveChangesAsync(ct);
+                continue;
+            }
             if (_health.IsUnavailable(OutboundProviders.Email))
             {
                 _logger.LogWarning("Offer emails paused for this run: the email provider is unavailable.");
@@ -205,5 +221,52 @@ public sealed class OfferEmailService
         }
 
         return (sent, false);
+    }
+
+    /// <summary>
+    /// One notification: to the account's browsers (and phones, when the row says so). Sent when any took it; skipped
+    /// with nowhere to show it; left queued when no push service answered; else a failed try.
+    /// </summary>
+    /// <returns>Whether it went.</returns>
+    private async Task<bool> NotifyAsync(Offer offer, OfferEmail row, CancellationToken ct)
+    {
+        var (title, body) = OfferPushComposer.Words(offer, row.Round);
+        var web = _webPush is null
+            ? WebPushReport.NoBrowsers
+            : await _webPush.SendAsync(row.UserId,
+                new WebPushNotification(title, body, OfferPushComposer.Tag(offer, row.Round), OfferPushComposer.WebUrl(offer, row.Token), "offer"), ct);
+
+        PushDelivery? phone = null;
+        if (row.Channel == OfferChannel.PhoneAndWebPush && _push is not null)
+        {
+            var tokens = await _db.DeviceTokens
+                .Where(d => d.UserId == row.UserId && (d.Platform == "android" || d.Platform == "ios"))
+                .Select(d => d.Token)
+                .ToListAsync(ct);
+            if (tokens.Count > 0)
+            {
+                // The app's own Upgrade screen, never the website: Google Play does not let an app send its users to pay
+                // outside Play. The token reports the tap.
+                phone = await _push.SendToDevicesAsync(tokens, new PushMessage(
+                    title, body,
+                    new Dictionary<string, string> { ["screen"] = "Upgrade", ["offerToken"] = row.Token },
+                    Sound: "default", TimeToLiveSeconds: 12 * 3600), ct);
+            }
+        }
+
+        if (web.Delivered > 0 || phone is { Accepted: > 0 })
+        {
+            row.MarkSent(_clock.UtcNow);
+            return true;
+        }
+        if (web.Browsers == 0 && phone is null)
+        {
+            row.Skip(OfferSkipReason.NoDevice);
+            return false;
+        }
+        if (web.Off || web.Unanswered > 0 || phone is { NotAttempted: true })
+            return false; // nobody answered: it waits for a later run, no try spent
+        row.MarkAttemptFailed(phone?.Error ?? $"{web.Refused} refused, {web.Gone} gone");
+        return false;
     }
 }

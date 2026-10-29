@@ -2824,7 +2824,12 @@
     NF.pushOn(window, request).then(function (state) { if (state !== "on") pushAskedFor = null; });
   }
   NF.onWorkerMessage(window, function (msg) {
-    if (msg.type === "nf-open") { openedFromNotification(msg.jobId, msg.kind); return; }
+    if (msg.type === "nf-open") {
+      // An offer's notification opens the offer (its ?offer=&m= counts the tap; offer.js shows the plans).
+      if (msg.kind === "offer" && typeof msg.url === "string" && /^\/app\?offer=/.test(msg.url)) { location.assign(msg.url); return; }
+      openedFromNotification(msg.jobId, msg.kind);
+      return;
+    }
     // A push while this page is in front: the job on the card is read now rather than when its stream says so.
     if (current && current.jobId === msg.jobId) { if (follow) readJob(follow); return; }
     if (!msg.jobId || guest || !tokens()) return;

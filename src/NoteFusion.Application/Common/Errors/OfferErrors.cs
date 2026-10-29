@@ -67,6 +67,19 @@ public static class OfferErrors
     public static readonly Error LastCallWordsLocked =
         Error.Conflict("OFFER_LAST_CALL_WORDS_LOCKED", "The last call has been sent, so its words can no longer change.");
 
+    public static readonly Error PushBeforeEmail =
+        Error.Conflict("OFFER_PUSH_BEFORE_EMAIL", "Send that email first; its notification follows it.");
+
+    public static readonly Error PushSent =
+        Error.Conflict("OFFER_PUSH_SENT", "That email has already been sent as a notification.");
+
+    public static readonly Error NoPushAudience =
+        Error.Validation("OFFER_NO_PUSH_AUDIENCE",
+            "Nobody in the email's groups has notifications on (or has bought already), so there is nobody to notify.");
+
+    public static readonly Error ChannelUnknown =
+        Error.Validation("OFFER_CHANNEL_UNKNOWN", "Choose the emails or the notifications.");
+
     public static readonly Error FilterUnknown =
         Error.Validation("OFFER_FILTER_UNKNOWN", "Show those who opened, clicked, bought, or all.");
 

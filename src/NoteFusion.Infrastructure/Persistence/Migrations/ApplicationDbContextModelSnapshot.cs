@@ -1377,6 +1377,11 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<int>("Attempts")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Channel")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
                     b.Property<DateTime?>("ClickedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
@@ -1432,7 +1437,7 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("OfferId", "Status");
 
-                    b.HasIndex("OfferId", "UserId", "Round")
+                    b.HasIndex("OfferId", "UserId", "Round", "Channel")
                         .IsUnique();
 
                     b.ToTable("offer_emails", (string)null);
