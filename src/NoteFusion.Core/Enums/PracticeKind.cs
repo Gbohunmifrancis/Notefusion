@@ -35,5 +35,8 @@ public enum PracticeKind
     /// A quick game, tapped not sung (<c>POST /api/practice/games/grade</c>): Which note?, Staff to solfa, Name that hymn.
     /// Earns less than a drill and spends none of the day's marked drills.
     /// </summary>
-    Game = 7
+    Game = 7,
+
+    /// <summary>A scale sung up and back down (the Scales mode): major and minor, pentatonic, the modes, the world's.</summary>
+    Scale = 8
 }

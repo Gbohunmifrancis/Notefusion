@@ -1,5 +1,6 @@
 /**
- * Intervals and Sing the harmony: the two modes marked note by note like the daily drill, drawn after boards
+ * Scales, Intervals and Sing the harmony. Scales: a scale sung up and back down, its solfa as chips (major and minor,
+ * pentatonic and blues, the church modes, the world's). Intervals and Sing the harmony: the two modes marked note by note like the daily drill, drawn after boards
  * c-practice/6b–6c. Intervals: hear doh, sing it, then jump to the note asked ("soh above doh"), in the order RCM and
  * Trinity teach them. Harmony: a line a third above (or the alto under) a tune; "Hear it" plays the line with the tune
  * soft under it, and the take plays the tune in the singer's ears only with headphones on — without them it would
@@ -21,9 +22,9 @@ import { intervalParts, modeTitle, noteDue, noteMarks, written } from "../../lib
 import { useModeTake } from "../../lib/useModeTake";
 import { fonts, radii, spacing, typography, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
-import { AllowanceLine, LiveDot, ModeFooter, ModeState, noneLeft, useGrade, useModeExercises } from "./shared";
+import { AllowanceLine, LiveDot, ModeFooter, ModeState, noneLeft, useGrade, useModeExercises, ModePathView, useModePath } from "./shared";
 
-export function SingNotesScreen({ mode, track }: { mode: "intervals" | "harmony"; track: PracticeTrack | null }) {
+export function SingNotesScreen({ mode, track }: { mode: "scales" | "intervals" | "harmony"; track: PracticeTrack | null }) {
   const c = useColors();
   const styles = useThemedStyles(makeStyles);
   const take = useModeTake();
@@ -68,10 +69,30 @@ export function SingNotesScreen({ mode, track }: { mode: "intervals" | "harmony"
     setIndex(i);
   }
 
+  const pathState = useModePath(data, mode, track);
+  function backToPath() {
+    if (take.phase !== "idle") take.cancel();
+    take.stopPlaying();
+    pathState.setOnPath(true);
+  }
+  if (pathState.onPath) {
+    return (
+      <ModePathView
+        title={pathState.title}
+        path={pathState.path}
+        data={data}
+        loading={loading}
+        error={loadError}
+        onRetry={reload}
+        onOpen={(i) => { open(i); pathState.setOnPath(false); }}
+      />
+    );
+  }
+
   return (
     <View style={styles.flex}>
       <Screen scroll contentStyle={styles.screen}>
-        <ModeHeader eyebrow={modeTitle(mode, track)} title={ex?.title ?? modeTitle(mode, track)} pill={ex?.dohHeader ?? null} />
+        <ModeHeader onBack={backToPath} eyebrow={modeTitle(mode, track)} title={ex?.title ?? modeTitle(mode, track)} pill={ex?.dohHeader ?? null} />
         <ModeState loading={loading && !data} error={data ? null : loadError} onRetry={reload} />
         {ex ? (
           <>
@@ -88,6 +109,17 @@ export function SingNotesScreen({ mode, track }: { mode: "intervals" | "harmony"
                 <View style={[styles.jumpNote, styles.jumpTarget, due === 1 && styles.jumpOn]}>
                   <Text style={styles.jumpSolfa}>{written(ex.notes[1]!)}</Text>
                   <Text style={styles.jumpName}>{jump.to}</Text>
+                </View>
+              </View>
+            ) : mode === "scales" ? (
+              <View style={styles.lines} accessible accessibilityLabel={`The scale: ${ex.notes.map(written).join(" ")}`}>
+                <Text style={styles.lineLabel}>Up and back down{ex.key ? ` · ${ex.key}` : ""}</Text>
+                <View style={styles.chips}>
+                  {ex.notes.map((n, i) => (
+                    <View key={i} style={[styles.chip, due === i && styles.chipOn]}>
+                      <Text style={[styles.chipText, due === i && styles.chipTextOn]}>{written(n)}</Text>
+                    </View>
+                  ))}
                 </View>
               </View>
             ) : (
@@ -152,7 +184,7 @@ export function SingNotesScreen({ mode, track }: { mode: "intervals" | "harmony"
 
             {!busy && exercises.length > 1 ? (
               <>
-                <Text style={styles.section}>{mode === "intervals" ? (playful ? "More jumps" : "More intervals") : "More lines"}</Text>
+                <Text style={styles.section}>{mode === "scales" ? "More scales" : mode === "intervals" ? (playful ? "More jumps" : "More intervals") : "More lines"}</Text>
                 <View style={styles.list}>
                   {exercises.map((e, i) => (
                     <Touchable key={e.id} onPress={() => open(i)} scaleTo={0.99} accessibilityLabel={`${e.title}${e.group ? `, ${e.group}` : ""}`}>
@@ -181,7 +213,7 @@ export function SingNotesScreen({ mode, track }: { mode: "intervals" | "harmony"
           ) : grade ? (
             <>
               <Button label="Again" variant="secondary" onPress={() => void start()} loading={take.starting} disabled={noneLeft(data)} />
-              {next ? <Button label={mode === "intervals" ? (playful ? "Next jump" : "Next interval") : "Next line"} onPress={() => open((index + 1) % exercises.length)} /> : null}
+              {next ? <Button label={mode === "scales" ? "Next scale" : mode === "intervals" ? (playful ? "Next jump" : "Next interval") : "Next line"} onPress={() => open((index + 1) % exercises.length)} /> : null}
             </>
           ) : (
             <>

@@ -4,7 +4,7 @@ namespace NoteFusion.Application.Practice.Modes;
 
 /// <summary>
 /// The server's switches for the practice modes (section <c>PracticeModes</c>): <c>PracticeModes__WarmUp</c>,
-/// <c>__PitchMatch</c>, <c>__Intervals</c>, <c>__Harmony</c>, <c>__Runs</c>, <c>__Rhythm</c>, each on unless set to
+/// <c>__PitchMatch</c>, <c>__Intervals</c>, <c>__Harmony</c>, <c>__Runs</c>, <c>__Rhythm</c>, <c>__Scales</c>, each on unless set to
 /// false. A mode switched off leaves the progress response's <c>modes</c> (so the clients stop showing it, no app update
 /// needed) and its routes answer <c>PRACTICE_MODE_OFF</c>.
 /// </summary>
@@ -16,6 +16,7 @@ public sealed class PracticeModeSettings
     public bool Harmony { get; init; } = true;
     public bool Runs { get; init; } = true;
     public bool Rhythm { get; init; } = true;
+    public bool Scales { get; init; } = true;
 
     public bool IsOn(string mode) => mode switch
     {
@@ -25,12 +26,13 @@ public sealed class PracticeModeSettings
         PracticeModes.Harmony => Harmony,
         PracticeModes.Runs => Runs,
         PracticeModes.Rhythm => Rhythm,
+        PracticeModes.Scales => Scales,
         _ => false
     };
 }
 
 /// <summary>
-/// "More ways to practise": the six modes beside the practice path, their wire ids, which track lists which, and the
+/// "More ways to practise": the seven modes beside the practice path, their wire ids, which track lists which, and the
 /// <see cref="PracticeKind"/> each records. Every marked mode is marked by the server and spends one of the day's
 /// marked drills (<see cref="PracticeRules.UsesDrillAllowance"/>); the warm-up is never marked. None moves the path.
 /// </summary>
@@ -42,15 +44,16 @@ public static class PracticeModes
     public const string Intervals = "intervals";
     public const string Harmony = "harmony";
     public const string Rhythm = "rhythm";
+    public const string Scales = "scales";
 
     /// <summary>Every mode, in the order the hub lists them (Focused, and no track chosen).</summary>
-    public static readonly IReadOnlyList<string> All = [WarmUp, PitchMatch, Runs, Intervals, Harmony, Rhythm];
+    public static readonly IReadOnlyList<string> All = [WarmUp, PitchMatch, Scales, Runs, Intervals, Harmony, Rhythm];
 
-    /// <summary>Playful's four: riffs and harmony are beyond its gentle path.</summary>
-    public static readonly IReadOnlyList<string> Playful = [WarmUp, PitchMatch, Intervals, Rhythm];
+    /// <summary>Playful's five: riffs and harmony are beyond its gentle path.</summary>
+    public static readonly IReadOnlyList<string> Playful = [WarmUp, PitchMatch, Scales, Intervals, Rhythm];
 
     /// <summary>The modes with exercises to mark (all but the warm-up).</summary>
-    public static readonly IReadOnlyList<string> Marked = [PitchMatch, Runs, Intervals, Harmony, Rhythm];
+    public static readonly IReadOnlyList<string> Marked = [PitchMatch, Scales, Runs, Intervals, Harmony, Rhythm];
 
     /// <summary>The modes a track lists, in the hub's order.</summary>
     public static IReadOnlyList<string> ForTrack(PracticeTrack? track) => track == PracticeTrack.Playful ? Playful : All;
@@ -67,6 +70,7 @@ public static class PracticeModes
         Harmony => PracticeKind.Harmony,
         Runs => PracticeKind.Run,
         Rhythm => PracticeKind.Rhythm,
+        Scales => PracticeKind.Scale,
         _ => null
     };
 }

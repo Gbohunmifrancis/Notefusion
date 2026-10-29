@@ -32,7 +32,7 @@ public static class PracticeErrors
     public static readonly Error TrackUnknown =
         Error.Validation("PRACTICE_TRACK_UNKNOWN", "Pick a practice style: Playful or Focused.");
 
-    /// <summary>A mode the server does not have ("warm-up", "pitch-match", "intervals", "harmony", "runs", "rhythm").</summary>
+    /// <summary>A mode the server does not have ("warm-up", "pitch-match", "scales", "intervals", "harmony", "runs", "rhythm").</summary>
     public static readonly Error ModeUnknown =
         Error.NotFound("PRACTICE_MODE_UNKNOWN", "That way to practise isn't here. Open Practice to see what is.");
 
@@ -55,7 +55,7 @@ public static class PracticeErrors
     public static Error DailyDrillLimit(int limit) =>
         Error.Forbidden("PRACTICE_DAILY_LIMIT", $"That's all {limit} of today's marked drills. Well sung! More from midnight.");
 
-    /// <summary>A quick game the server does not have ("which-note", "staff", "hymn").</summary>
+    /// <summary>A quick game the server does not have ("which-note", "staff", "hymn", "which-scale").</summary>
     public static readonly Error GameUnknown =
         Error.NotFound("PRACTICE_GAME_UNKNOWN", "That game isn't here. Open Practice to see the games.");
 

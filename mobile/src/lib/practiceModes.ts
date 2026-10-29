@@ -36,7 +36,7 @@ import type {
 // ── The hub's list ───────────────────────────────────────────────────────────
 
 /** Every mode this build can open, in the hub's order (C# `PracticeModes.All`). */
-export const MODE_IDS: readonly PracticeModeId[] = ["warm-up", "pitch-match", "runs", "intervals", "harmony", "rhythm"];
+export const MODE_IDS: readonly PracticeModeId[] = ["warm-up", "pitch-match", "scales", "runs", "intervals", "harmony", "rhythm"];
 
 /** The warm-up's length (C# `WarmUpRoutine`: 45 + 60 + 45 + 30 s), said on its row before it is opened. */
 export const WARM_UP_MINUTES = 3;
@@ -80,6 +80,8 @@ function modeWords(id: PracticeModeId, track: PracticeTrack | null, liveMeter: b
           ? liveMeter ? "Keep the needle in the green" : "Hear a note, then hold it steady"
           : liveMeter ? "Hold a note in tune on a live meter" : "Hear a note, hold it, see how close",
       };
+    case "scales":
+      return playful ? { title: "Scales", subtitle: "Climb up the scale and back down" } : { title: "Scales", subtitle: "Major, minor, the modes and the world's" };
     case "runs":
       return { title: "Riffs & runs", subtitle: "Slow it down, then up to speed" };
     case "intervals":
@@ -91,6 +93,137 @@ function modeWords(id: PracticeModeId, track: PracticeTrack | null, liveMeter: b
     default:
       return playful ? { title: "Clap it back", subtitle: "Copy the rhythm" } : { title: "Rhythm", subtitle: "Clap back what you hear" };
   }
+}
+
+// ── A mode's path (every marked mode; assets/practice-modes.js modePath) ─────────────────────────────────────
+
+/** A stop's stars from its best mark: one at 50, two at 80 (passed, the path's own bar), three at 95. */
+export const STAR_SCORES: readonly number[] = [50, 80, 95];
+/** Stops snake left and right down the path, as sideways offsets (the web's px). */
+const SNAKE = [0, 44, 72, 44, 0, -44, -72, -44];
+export type PathTone = "green" | "blue" | "orange" | "cyan" | "pink";
+const UNIT_TONES: readonly PathTone[] = ["green", "blue", "orange", "cyan", "pink"];
+/** The most stops a unit has when a mode's groups are not units (an interval's group is the interval itself). */
+const UNIT_SIZE = 4;
+
+export type StopState = "done" | "current" | "open" | "jump" | "locked";
+
+export interface PathStop {
+  index: number;
+  code: string;
+  title: string;
+  best: number | null;
+  stars: number;
+  offset: number;
+  state: StopState;
+}
+
+export interface PathUnit {
+  title: string;
+  eyebrow: string;
+  tone: PathTone;
+  stops: PathStop[];
+  stars: number;
+  maxStars: number;
+  complete: boolean;
+  open: boolean;
+}
+
+export interface ModePath {
+  units: PathUnit[];
+  stars: number;
+  maxStars: number;
+  /** The stop to sing now (the first open unit's first unstarred stop), or null when every open stop has a star. */
+  current: number | null;
+}
+
+type PathExercise = Pick<PracticeExercise, "code" | "title" | "group" | "bestScore"> & { speeds?: { bestScore: number | null }[] | null };
+
+export function pathStars(best: number | null | undefined): number {
+  if (best == null) return 0;
+  return STAR_SCORES.filter((t) => best >= t).length;
+}
+
+/** An exercise's best mark at any speed (a run is marked at each of its speeds). */
+export function bestMark(e: PathExercise): number | null {
+  let best = e.bestScore ?? null;
+  for (const s of e.speeds ?? []) if (s.bestScore != null && (best == null || s.bestScore > best)) best = s.bestScore;
+  return best;
+}
+
+/** The mode's exercises as units: its groups where each is a unit, else runs of about four in teaching order. */
+export function pathUnits(exercises: readonly PathExercise[]): { title: string | null; items: number[] }[] {
+  const groups: { title: string | null; items: number[] }[] = [];
+  exercises.forEach((e, i) => {
+    const last = groups[groups.length - 1];
+    if (last && last.title === e.group) last.items.push(i); else groups.push({ title: e.group, items: [i] });
+  });
+  const byGroup = exercises.length > 0 && exercises.every((e) => !!e.group) && groups.every((g) => g.items.length >= 2);
+  if (byGroup) return groups;
+  const count = Math.max(1, Math.ceil(exercises.length / UNIT_SIZE));
+  const size = Math.ceil(exercises.length / count);
+  const out: { title: string | null; items: number[] }[] = [];
+  for (let at = 0; at < exercises.length; at += size) {
+    const items: number[] = [];
+    for (let k = at; k < Math.min(exercises.length, at + size); k++) items.push(k);
+    out.push({ title: null, items });
+  }
+  return out;
+}
+
+/**
+ * The mode as a path: units in teaching order, each stop an exercise with its stars. A unit is open when the one
+ * before has a star on every stop, or once any of its own is sung; in an open unit the first stop without a star is
+ * the one to sing now. A locked unit's first stop lets the singer jump ahead; the rest wait. Read off the best marks.
+ */
+export function modePath(exercises: readonly PathExercise[], modeTitleText: string): ModePath {
+  const groups = pathUnits(exercises);
+  const units: PathUnit[] = [];
+  let before = true, stars = 0, k = 0;
+  let current: number | null = null;
+  groups.forEach((g, u) => {
+    const stops: PathStop[] = g.items.map((i) => {
+      const e = exercises[i]!, best = bestMark(e);
+      return { index: i, code: e.code, title: e.title, best, stars: pathStars(best), offset: SNAKE[k++ % SNAKE.length]!, state: "locked" };
+    });
+    const complete = stops.every((s) => s.stars >= 1);
+    const open = before || stops.some((s) => s.best != null);
+    let now = false;
+    stops.forEach((s, j) => {
+      if (!open) s.state = j === 0 ? "jump" : "locked";
+      else if (s.stars >= 1) s.state = "done";
+      else if (!now) { s.state = "current"; now = true; if (current == null) current = s.index; }
+      else s.state = "open";
+      stars += s.stars;
+    });
+    units.push({
+      title: g.title || modeTitleText || "", eyebrow: `UNIT ${u + 1} OF ${groups.length}`, tone: UNIT_TONES[u % UNIT_TONES.length]!,
+      stops, stars: stops.reduce((n, s) => n + s.stars, 0), maxStars: stops.length * 3, complete, open,
+    });
+    before = complete;
+  });
+  return { units, stars, maxStars: exercises.length * 3, current };
+}
+
+/** "★ 12 / 51" for the mode's top bar. */
+export function pathStarsLabel(path: ModePath): string {
+  return `★ ${path.stars} / ${path.maxStars}`;
+}
+
+/** The unit a take finished (every stop starred for the first time), or null: the chest's moment. */
+export function unitJustCompleted(before: ModePath | null, after: ModePath | null): PathUnit | null {
+  if (!before || !after) return null;
+  for (let i = 0; i < after.units.length; i++) {
+    const was = before.units[i];
+    if (after.units[i]!.complete && was && !was.complete) return after.units[i]!;
+  }
+  return null;
+}
+
+/** Where "Next" goes after a take of stop `index`: the path's stop to sing now, else the next stop in order. */
+export function nextStop(path: ModePath, index: number, count: number): number | null {
+  if (path.current != null && path.current !== index) return path.current;
+  return count > 1 ? (index + 1) % count : null;
 }
 
 /** A mode's name on its own screen's eyebrow and in the hub, in the track's words. */

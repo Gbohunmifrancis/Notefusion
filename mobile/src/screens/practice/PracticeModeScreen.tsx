@@ -1,6 +1,6 @@
 /**
  * One of "More ways to practise" (boards c-practice/6a–6d), pushed from the Practice tab's list: the warm-up and range
- * finder, pitch match, riffs & runs, intervals, sing the harmony, or rhythm. The hub lists only the modes the server
+ * finder, pitch match, scales, riffs & runs, intervals, sing the harmony, or rhythm. Every marked mode opens on its path. The hub lists only the modes the server
  * says are live (`PracticeProgress.modes`), so a mode is switched on or off without an app update.
  */
 
@@ -22,6 +22,7 @@ export function PracticeModeScreen({ route }: NativeStackScreenProps<RootStackPa
       return <PitchMatchScreen track={track} />;
     case "runs":
       return <RunsScreen track={track} />;
+    case "scales":
     case "intervals":
     case "harmony":
       return <SingNotesScreen mode={mode} track={track} />;

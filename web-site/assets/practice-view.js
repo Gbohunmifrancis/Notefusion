@@ -179,11 +179,12 @@
    * The modes' screens and the live pitch meter: loaded the first time a mode is opened, never with the view.
    * practice-modes.js (the words and arithmetic) comes with the view, for the hub's list.
    */
-  var MODE_ASSETS = ["/assets/practice-modes.css?v=3", "/assets/pitch-track.js?v=1", "/assets/practice-mode-view.js?v=5"];
+  var MODE_ASSETS = ["/assets/practice-modes.css?v=4", "/assets/pitch-track.js?v=1", "/assets/practice-mode-view.js?v=6"];
   /** The modes' icons, drawn inline (24 × 24, stroked): the app's sprite has none of these. */
   var MODE_ICONS = {
     "warm-up": '<circle cx="12" cy="4.6" r="1.9"/><path d="M4.5 9l7.5 1.6L19.5 9M12 10.6V15m0 0l-3.6 6M12 15l3.6 6"/>',
     "pitch-match": '<path d="M3.5 17a8.5 8.5 0 1 1 17 0"/><path d="M12 17l4.2-5.2"/><circle cx="12" cy="17" r="1.3"/>',
+    scales: '<path d="M3 20h4.5v-4h4.5v-4h4.5V8H21"/><path d="M18 4.5 21 8l-3 3.5"/>',
     runs: '<path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>',
     intervals: '<path d="M7 20V4M3.5 7.5L7 4l3.5 3.5M17 4v16M13.5 16.5L17 20l3.5-3.5"/>',
     harmony: '<path d="M12 3.5l8.5 4.6L12 12.7 3.5 8.1z"/><path d="M3.5 12.4l8.5 4.6 8.5-4.6M3.5 16.4l8.5 4.6 8.5-4.6"/>',
@@ -381,11 +382,11 @@
 
   // ── Quick games (board s-practice-fun/s3), tapped not sung ──────────────
   /** A game's screen and styles: loaded the first time a game is opened, never with the view. */
-  var GAME_ASSETS = ["/assets/practice-modes.css?v=3", "/assets/practice-games.css?v=2", "/assets/practice-game-view.js?v=2"];
-  var GAME_ICON = { "which-note": "intervals", staff: "staff", hymn: "hymn" };
+  var GAME_ASSETS = ["/assets/practice-modes.css?v=4", "/assets/practice-games.css?v=2", "/assets/practice-game-view.js?v=3"];
+  var GAME_ICON = { "which-note": "intervals", staff: "staff", hymn: "hymn", "which-scale": "scales" };
 
   /** The arcade: each quick game a coloured tile with the best level reached in this browser. They never end. */
-  var GAME_TONE = { "which-note": "blue", staff: "orange", hymn: "cyan" };
+  var GAME_TONE = { "which-note": "blue", staff: "orange", hymn: "cyan", "which-scale": "pink" };
   function arcadeSection(tr) {
     var A = window.NfPracticeArcade, sec = el("section", "pv-games"), head = el("div", "pv-games-head");
     sec.setAttribute("aria-labelledby", "pv-games-title");
@@ -455,7 +456,7 @@
       if (gen !== s.gen || s.mode !== id || !root) return;
       window.NfPracticeModeView.open(root, {
         request: ctx.request, track: ctx.track, choir: ctx.choir, mode: id, practiceTrack: currentTrack(),
-        icon: modeIcon, art: art, back: closeMode
+        icon: modeIcon, art: art, back: closeMode, moment: rewardMoment, burst: burst
       });
     }, function () {
       if (gen !== s.gen || s.mode !== id) return;
@@ -477,7 +478,7 @@
 
   // ── The season's path (boards d-christmas/03, j-halloween/03), only while its season is on for the singer ─────
   /** The path's screen (either season's): its script and styles load the first time it is opened, never with the view. */
-  var SEASON_ASSETS = ["/assets/practice-modes.css?v=3", "/assets/practice-carols.css?v=2", "/assets/practice-carols.js?v=5"];
+  var SEASON_ASSETS = ["/assets/practice-modes.css?v=4", "/assets/practice-carols.css?v=2", "/assets/practice-carols.js?v=5"];
   // Three tiny still bats in the Midnight path card's corner: [left, top, width, degrees] (the phone's CARD_BATS).
   var CARD_BATS = [[4, 10, 14, -10], [58, 0, 11, 8], [80, 30, 9, -4]];
   var BAT_PATH = "M20 8L18.4 4.8L17.4 8.6C14.5 4.4 8.5 3.2 1.5 7.2C4.6 8.2 5.8 10.8 5.6 13.8C7.6 12 9.8 12 11 14C12.6 12 14.8 12.1 15.8 15C17 13.2 18.6 13.4 20 15.6C21.4 13.4 23 13.2 24.2 15C25.2 12.1 27.4 12 29 14C30.2 12 32.4 12 34.4 13.8C34.2 10.8 35.4 8.2 38.5 7.2C31.5 3.2 25.5 4.4 22.6 8.6L21.6 4.8Z";

@@ -20,7 +20,7 @@ import { beatSeconds, centsText, clapLayout, clapMarks, clapSyllable, modeTitle,
 import { useModeTake } from "../../lib/useModeTake";
 import { fonts, radii, spacing, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
-import { AllowanceLine, LiveDot, ModeFooter, ModeState, noneLeft, useGrade, useModeExercises } from "./shared";
+import { AllowanceLine, LiveDot, ModeFooter, ModeState, noneLeft, useGrade, useModeExercises, ModePathView, useModePath } from "./shared";
 
 /** "Hear it" counts a bar in first (lib/modeAudio). */
 const HEAR_COUNT_IN_BEATS = 4;
@@ -75,10 +75,30 @@ export function RhythmScreen({ track }: { track: PracticeTrack | null }) {
     setIndex(i);
   }
 
+  const pathState = useModePath(data, "rhythm", track);
+  function backToPath() {
+    if (take.phase !== "idle") take.cancel();
+    take.stopPlaying();
+    pathState.setOnPath(true);
+  }
+  if (pathState.onPath) {
+    return (
+      <ModePathView
+        title={pathState.title}
+        path={pathState.path}
+        data={data}
+        loading={loading}
+        error={loadError}
+        onRetry={reload}
+        onOpen={(i) => { open(i); pathState.setOnPath(false); }}
+      />
+    );
+  }
+
   return (
     <View style={styles.flex}>
       <Screen scroll contentStyle={styles.screen}>
-        <ModeHeader eyebrow={modeTitle("rhythm", track)} title={ex?.title ?? modeTitle("rhythm", track)} pill={ex ? `${ex.tempoBpm} BPM` : null} />
+        <ModeHeader onBack={backToPath} eyebrow={modeTitle("rhythm", track)} title={ex?.title ?? modeTitle("rhythm", track)} pill={ex ? `${ex.tempoBpm} BPM` : null} />
         <ModeState loading={loading && !data} error={data ? null : loadError} onRetry={reload} />
         {ex && layout ? (
           <>

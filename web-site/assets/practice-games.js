@@ -11,20 +11,22 @@
 (function () {
   "use strict";
 
-  var GAME_IDS = ["which-note", "staff", "hymn"];
+  var GAME_IDS = ["which-note", "staff", "hymn", "which-scale"];
 
   function gameTitle(id, track) {
     if (id === "staff") return track === "playful" ? "Note race" : "Staff to solfa";
+    if (id === "which-scale") return "Which scale?";
     return id === "hymn" ? "Name that hymn" : "Which note?";
   }
 
   var GAME_LINES = {
     "which-note": function (playful) { return playful ? "Hear it, find it" : "Hear doh, then the note"; },
     staff: function (playful) { return playful ? "Quick! Name the note" : "Read the stave as solfa"; },
-    hymn: function () { return "Hear the opening, pick it"; }
+    hymn: function () { return "Hear the opening, pick it"; },
+    "which-scale": function (playful) { return playful ? "Happy, sad or far away?" : "Hear a scale, name it"; }
   };
 
-  /** The three games in the hub's order, named for the track (Playful's race is "Note race"). */
+  /** The games in the hub's order, named for the track (Playful's race is "Note race"). */
   function gameTiles(track) {
     var playful = track === "playful";
     return GAME_IDS.map(function (id) { return { id: id, title: gameTitle(id, track), line: GAME_LINES[id](playful) }; });
@@ -41,6 +43,11 @@
       return track === "playful"
         ? "A note lands on the stave. Tap its name, as many as you can in a minute."
         : "A note appears on the stave. Tap its solfa, as many as you can in 60 seconds. The key changes every ten notes.";
+    }
+    if (id === "which-scale") {
+      return track === "playful"
+        ? "A scale plays up and back down. Is it the happy major, the sad minor, or one from far away? Pick its name."
+        : "A scale plays up and back down. Pick its name: major and minor first, then the pentatonics, the modes and the world's.";
     }
     return "A hymn's opening plays on the piano. Pick its name from three.";
   }
@@ -80,6 +87,10 @@
   /** What a round says once it is answered: its title and one line under it. */
   function verdict(game, round, tapped) {
     var right = tapped === round.answer;
+    if (game === "which-scale") {
+      var named = function (code) { var sc = (round.scales || []).filter(function (x) { return x.code === code; })[0]; return sc ? sc.title : "That scale"; };
+      return right ? { right: right, title: "That's it!", line: named(round.answer) } : { right: right, title: "Not this time", line: "It was " + named(round.answer).replace(/^The /, "the ") + "." };
+    }
     if (game === "hymn") {
       var hit = (round.hymns || []).filter(function (h) { return h.slug === round.answer; })[0];
       var title = hit ? hit.title : "That hymn";

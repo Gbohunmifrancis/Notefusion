@@ -1,5 +1,6 @@
 using System.Globalization;
 using NoteFusion.Application.Practice.Dtos;
+using NoteFusion.Application.Practice.Modes;
 using NoteFusion.Core.Enums;
 
 namespace NoteFusion.Application.Practice.Games;
@@ -23,7 +24,8 @@ public sealed record GameMark(int Score, int Right, int Answered, IReadOnlyList<
 /// <summary>
 /// The quick games beside the sung practice, tapped not sung, about a minute each, no microphone: Which note? (doh, then
 /// a note, tapped on the Curwen modulator), Staff to solfa (a note on the stave, tapped as its syllable, as many as a
-/// minute allows) and Name that hymn (a hymn's opening, its name picked from three).
+/// minute allows), Name that hymn (a hymn's opening, its name picked from three) and Which scale? (a scale played up and
+/// back down, its name picked from the scales of the Scales mode).
 /// </summary>
 /// <remarks>
 /// <para>
@@ -37,7 +39,8 @@ public sealed record GameMark(int Score, int Right, int Answered, IReadOnlyList<
 /// (<see cref="StageRounds"/>), harder at every level and with no top. Which note? adds notes to hear (the scale, then
 /// above and below it, then fe, ta, se, de and ma) and from <see cref="WhichNoteFullLevel"/> plays them ever shorter;
 /// Staff to solfa adds keys up to six sharps and flats and ledger lines, and gives each note less time; Name that hymn
-/// offers more names to pick from and plays less of each opening. A stage passed (<see cref="LevelUpScore"/>) deals the
+/// offers more names to pick from and plays less of each opening; Which scale? adds scales (major and minor first, the
+/// world's last) and more names to pick from, then plays them ever quicker. A stage passed (<see cref="LevelUpScore"/>) deals the
 /// next level; a poor one (under <see cref="LevelDownScore"/>) the one below, never under the track's first
 /// (<see cref="StartLevel"/>). The app plays stage after stage until the singer stops.
 /// </para>
@@ -52,9 +55,12 @@ public static class PracticeGames
     public const string WhichNote = "which-note";
     public const string Staff = "staff";
     public const string Hymn = "hymn";
+    public const string WhichScale = "which-scale";
 
     /// <summary>Every game, in the order the Practice screen lists them.</summary>
-    public static readonly IReadOnlyList<string> All = [WhichNote, Staff, Hymn];
+    public static readonly IReadOnlyList<string> All = [WhichNote, Staff, Hymn, WhichScale];
+
+    public const int WhichScaleRounds = 8;
 
     public const int WhichNoteRounds = 10;
     public const int HymnRounds = 8;
@@ -120,6 +126,7 @@ public static class PracticeGames
     {
         WhichNote => 8,
         Staff => 10,
+        WhichScale => 6,
         _ => 6
     };
 
@@ -169,9 +176,11 @@ public static class PracticeGames
         {
             (WhichNote, null) => WhichNoteRoundsFor(rng, playful),
             (Staff, null) => StaffRoundsFor(rng, playful),
+            (WhichScale, null) => ScaleRounds(rng, playful ? WhichScalePlayfulLevel : WhichScaleFocusedLevel, WhichScaleRounds),
             (_, null) => HymnRoundsFor(rng),
             (WhichNote, { } at) => WhichNoteLevelRounds(rng, at),
             (Staff, { } at) => StaffLevelRounds(rng, at),
+            (WhichScale, { } at) => ScaleRounds(rng, at, StageRounds(WhichScale)),
             (_, { } at) => HymnLevelRounds(rng, at)
         };
         return new GameDeal(parts[0], dealId!, playful, rounds, level);
@@ -407,6 +416,71 @@ public static class PracticeGames
             rounds.Add(new PracticeGameRoundDto(
                 i, hymn.Slug, offered.Select(h => h.Slug).ToList(), null, hymn.Key, null, null, null, null,
                 hymn.TempoBpm, hymn.TimeSignature, notes, offered.Select(h => new GameHymnDto(h.Slug, h.Title, h.FirstLine)).ToList()));
+        }
+        return rounds;
+    }
+
+    // ── Which scale? ────────────────────────────────────────────────────────
+
+    /// <summary>The scales each level brings to Which scale?, cumulatively, by their codes in the Scales mode.</summary>
+    private static readonly string[][] ScaleLevels =
+    [
+        ["major", "natural-minor"],
+        ["harmonic-minor"],
+        ["major-pentatonic", "minor-pentatonic"],
+        ["blues"],
+        ["melodic-minor"],
+        ["dorian", "mixolydian"],
+        ["phrygian", "lydian"],
+        ["hijaz", "whole-tone"],
+        ["japanese-in", "double-harmonic"],
+        ["hungarian-minor", "locrian"]
+    ];
+
+    /// <summary>From this level Which scale? asks every scale, and plays them ever quicker instead.</summary>
+    public static int WhichScaleFullLevel => ScaleLevels.Length;
+
+    /// <summary>The one-off game's scales: Playful's as the arcade's third level, Focused's as its seventh.</summary>
+    private const int WhichScalePlayfulLevel = 3;
+    private const int WhichScaleFocusedLevel = 7;
+
+    /// <summary>
+    /// Which scale? at a level: the scales asked and the newest of them (asked more often), how many names are offered
+    /// (three, then four, then five), and the beat: 96, then 8 quicker a level past the full set, up to 200.
+    /// </summary>
+    public static (IReadOnlyList<string> Asked, IReadOnlyList<string> Newest, int Choices, int TempoBpm) ScaleLevel(int level)
+    {
+        var l = Math.Max(1, level);
+        var upTo = Math.Min(l, ScaleLevels.Length);
+        var asked = ScaleLevels.Take(upTo).SelectMany(x => x).ToList();
+        var choices = Math.Min(asked.Count, l <= 4 ? 3 : l <= WhichScaleFullLevel ? 4 : 5);
+        var tempo = Math.Min(200, 96 + 8 * Math.Max(0, l - WhichScaleFullLevel));
+        return (asked, ScaleLevels[upTo - 1], choices, tempo);
+    }
+
+    private static List<PracticeGameRoundDto> ScaleRounds(Rng rng, int level, int count)
+    {
+        var (asked, newest, choiceCount, tempo) = ScaleLevel(level);
+        var rounds = new List<PracticeGameRoundDto>();
+        string? last = null;
+        for (var i = 0; i < count; i++)
+        {
+            string code;
+            do code = rng.Below(10) < 3 ? newest[rng.Below(newest.Count)] : asked[rng.Below(asked.Count)];
+            while (code == last && asked.Count > 1);
+            last = code;
+            var scale = ModeCatalogue.Scales.First(s => s.Code == code);
+            var dohs = ModeCatalogue.Placements(scale);
+            var exercise = ModeCatalogue.BuildScale(scale, dohs[rng.Below(dohs.Count)]);
+            var at = Enumerable.Range(0, asked.Count).First(j => asked[j] == code);
+            var others = Shuffled(rng, Enumerable.Range(0, asked.Count).Where(j => j != at).ToList()).Take(choiceCount - 1);
+            var offered = Shuffled(rng, others.Append(at).ToList())
+                .Select(j => ModeCatalogue.Scales.First(s => s.Code == asked[j]))
+                .ToList();
+            rounds.Add(new PracticeGameRoundDto(
+                i, code, offered.Select(s => s.Code).ToList(), null, exercise.KeyName, null, null, null, null, tempo, ModeCatalogue.TimeSignature,
+                exercise.Notes.Select(n => new GameNoteDto(n.PitchMidi, n.StartBeat, n.DurBeats)).ToList(), null, null,
+                offered.Select(s => new GameScaleDto(s.Code, s.Title, s.Solfa)).ToList()));
         }
         return rounds;
     }

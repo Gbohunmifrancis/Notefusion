@@ -32,7 +32,7 @@ import { tuningLine } from "../../lib/practiceTrack";
 import { useModeTake } from "../../lib/useModeTake";
 import { fonts, radii, spacing, typography, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
-import { AllowanceLine, LiveDot, ModeFooter, ModeState, noneLeft, useGrade, useModeExercises } from "./shared";
+import { AllowanceLine, LiveDot, ModeFooter, ModeState, noneLeft, useGrade, useModeExercises, ModePathView, useModePath } from "./shared";
 
 export function PitchMatchScreen({ track }: { track: PracticeTrack | null }) {
   const c = useColors();
@@ -89,10 +89,30 @@ export function PitchMatchScreen({ track }: { track: PracticeTrack | null }) {
 
   const advice = grade?.marks && ex ? pitchAdvice(grade.marks, ex.notes) : null;
 
+  const pathState = useModePath(data, "pitch-match", track);
+  function backToPath() {
+    if (take.phase !== "idle") take.cancel();
+    take.stopPlaying();
+    pathState.setOnPath(true);
+  }
+  if (pathState.onPath) {
+    return (
+      <ModePathView
+        title={pathState.title}
+        path={pathState.path}
+        data={data}
+        loading={loading}
+        error={loadError}
+        onRetry={reload}
+        onOpen={(i) => { open(i); pathState.setOnPath(false); }}
+      />
+    );
+  }
+
   return (
     <View style={styles.flex}>
       <Screen scroll contentStyle={styles.screen}>
-        <ModeHeader eyebrow={modeTitle("pitch-match", track)} title={grade ? "Your set" : ex?.title ?? "Hold each note"} pill={ex?.dohHeader ?? null} />
+        <ModeHeader onBack={backToPath} eyebrow={modeTitle("pitch-match", track)} title={grade ? "Your set" : ex?.title ?? "Hold each note"} pill={ex?.dohHeader ?? null} />
         <ModeState loading={loading && !data} error={data ? null : loadError} onRetry={reload} />
         {ex ? (
           <>

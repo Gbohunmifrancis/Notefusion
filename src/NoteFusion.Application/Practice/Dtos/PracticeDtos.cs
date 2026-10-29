@@ -74,7 +74,7 @@ public sealed record PracticeMilestoneDto(
 /// account's graded practice. <c>Track</c> is how the singer likes to practise ("playful" / "focused"), null until they
 /// pick one — the clients ask then. It changes the drills offered and how takes are shown, never the numbers here.
 /// <c>Modes</c> are the practice modes live for that track, in the order the hub lists them ("warm-up", "pitch-match",
-/// "runs", "intervals", "harmony", "rhythm"; Playful's four), each switchable on the server (<c>PracticeModes__*</c>):
+/// "scales", "runs", "intervals", "harmony", "rhythm"; Playful's five), each switchable on the server (<c>PracticeModes__*</c>):
 /// a client shows only these. <c>Drills</c> counts every marked take but parts: a mode's take spends one too.
 /// <c>Season</c> is the seasonal side-path (the Christmas carols) while its season is on for the singer, else null.
 /// <c>Quests</c> are the day's three quests and its chest (<see cref="DailyQuests"/>).

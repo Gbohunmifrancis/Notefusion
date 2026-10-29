@@ -3,20 +3,24 @@
  * marked take does on the phone), the footer the actions sit in, and the small pieces every board draws the same way.
  */
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { practiceApi } from "../../api/endpoints";
 import { toApiError } from "../../api/client";
-import type { PracticeExercise, PracticeMode, PracticeModeGrade, PracticeModeId } from "../../api/types";
+import type { PracticeExercise, PracticeMode, PracticeModeGrade, PracticeModeId, PracticeTrack } from "../../api/types";
 import { Button } from "../../components/Button";
 import { ProblemNote } from "../../components/ProblemNote";
 import { MarkingBar } from "../../components/practice/MarkingBar";
+import { ModeHeader } from "../../components/practice/ModeHeader";
+import { ModePath } from "../../components/practice/ModePath";
+import { Screen } from "../../components/Screen";
+import { showToast } from "../../lib/toast";
 import { logAnalyticsEvent } from "../../lib/analytics";
 import { countInFor, takeClip } from "../../lib/modeAudio";
 import { allowanceLine } from "../../lib/practiceProgress";
 import { acknowledgeGrade } from "../../lib/practiceReward";
-import { takeSeconds } from "../../lib/practiceModes";
+import { modePath, modeTitle, pathStarsLabel, takeSeconds, unitJustCompleted, type ModePath as Path } from "../../lib/practiceModes";
 import { MicDenied, type useModeTake } from "../../lib/useModeTake";
 import { fonts, spacing, typography, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
@@ -142,6 +146,8 @@ export function noneLeft(data: PracticeMode | null): boolean {
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
+    pathScreen: { flex: 1, backgroundColor: c.bg },
+    pathContent: { paddingBottom: spacing.xl },
     footer: {
       gap: spacing.sm,
       paddingTop: spacing.md,
@@ -160,3 +166,52 @@ const makeStyles = (c: Palette) =>
     failed: { gap: spacing.md, marginTop: spacing.lg },
     allowance: { ...typography.caption, color: c.textMuted, marginTop: spacing.sm },
   });
+
+/**
+ * Every marked mode opens on its path (`ModePathView`); a stop opens its exercise and the exercise's back button returns
+ * to the path. A take that stars a unit's last stop says so once ("Unit done!"), when the marks are read again.
+ */
+export function useModePath(data: PracticeMode | null, mode: Exclude<PracticeModeId, "warm-up">, track: PracticeTrack | null) {
+  const [onPath, setOnPath] = useState(true);
+  const title = modeTitle(mode, track);
+  const path = useMemo(() => modePath(data?.exercises ?? [], title), [data, title]);
+  const before = useRef<Path | null>(null);
+  useEffect(() => {
+    if (!data) return;
+    const done = unitJustCompleted(before.current, path);
+    if (done) showToast(`Unit done! ${done.title}`);
+    before.current = path;
+  }, [data, path]);
+  return { onPath, setOnPath, path, title };
+}
+
+/** The path screen: the mode's name, its stars, the day's allowance, and its units of stops. */
+export function ModePathView({
+  title,
+  path,
+  data,
+  loading,
+  error,
+  onRetry,
+  onOpen,
+}: {
+  title: string;
+  path: Path;
+  data: PracticeMode | null;
+  loading: boolean;
+  error: string | null;
+  onRetry: () => void;
+  onOpen: (index: number) => void;
+}) {
+  const styles = useThemedStyles(makeStyles);
+  return (
+    <View style={styles.pathScreen}>
+      <Screen scroll contentStyle={styles.pathContent}>
+        <ModeHeader eyebrow="Path" title={title} pill={data ? pathStarsLabel(path) : null} />
+        <ModeState loading={loading && !data} error={data ? null : error} onRetry={onRetry} />
+        <AllowanceLine data={data} />
+        {data ? <ModePath path={path} onOpen={onOpen} /> : null}
+      </Screen>
+    </View>
+  );
+}

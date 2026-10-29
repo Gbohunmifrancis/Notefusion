@@ -5,7 +5,7 @@ namespace NoteFusion.Application.Practice.Dtos;
 // ── A deal (GET /api/practice/games/{game}) ─────────────────────────────────
 
 /// <summary>
-/// GET /api/practice/games/{game} ("which-note", "staff", "hymn"): a fresh deal of a quick game, tapped not sung. Every
+/// GET /api/practice/games/{game} ("which-note", "staff", "hymn", "which-scale"): a fresh deal of a quick game, tapped not sung. Every
 /// round carries its answer, so the app can say at once whether a tap was right; the marks that count are the server's,
 /// rebuilt from <c>DealId</c> when the answers come back (<c>POST /api/practice/games/grade</c>). <c>TimeLimitSeconds</c>
 /// is set for a race (Staff to solfa): answer as many rounds as the time allows. <c>GamesToday</c> of
@@ -29,7 +29,8 @@ public sealed record PracticeGameDto(
 /// treble stave with <c>Fifths</c> in the key signature (sharps positive, flats negative); <c>NoteMidi</c> sounds it.
 /// Name that hymn: <c>Notes</c> at <c>TempoBpm</c> in <c>TimeSignature</c>, the opening of the hymn whose slug is the
 /// answer, in <c>Key</c> (to write its solfa when it is revealed); <c>Hymns</c> names each choice. An arcade Which note?
-/// sounds the doh and the note for <c>NoteSeconds</c> each (shorter at the higher levels).
+/// sounds the doh and the note for <c>NoteSeconds</c> each (shorter at the higher levels). Which scale?: <c>Notes</c> at
+/// <c>TempoBpm</c>, a scale up and back down in <c>Key</c>, the answer its code; <c>Scales</c> names each choice.
 /// </summary>
 public sealed record PracticeGameRoundDto(
     int Index,
@@ -45,7 +46,11 @@ public sealed record PracticeGameRoundDto(
     string? TimeSignature,
     IReadOnlyList<GameNoteDto>? Notes,
     IReadOnlyList<GameHymnDto>? Hymns,
-    double? NoteSeconds = null);
+    double? NoteSeconds = null,
+    IReadOnlyList<GameScaleDto>? Scales = null);
+
+/// <summary>A scale offered as a choice: its code (the answer's form), its name and its solfa up and back down.</summary>
+public sealed record GameScaleDto(string Code, string Title, string Solfa);
 
 /// <summary>A note the app plays, in quarter-note beats.</summary>
 public sealed record GameNoteDto(int PitchMidi, double StartBeat, double DurBeats);

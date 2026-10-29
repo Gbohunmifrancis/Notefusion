@@ -25,10 +25,18 @@ public sealed record RunPattern(string Code, string Unit, string Title, string S
 public sealed record RhythmPattern(string Code, string Title, string Beats, bool Playful);
 
 /// <summary>
-/// The practice modes' content, all our own and written in tonic solfa: pitch-match sets, intervals in the order RCM
-/// and Trinity ask them (minor third, major third, fifth, fourth, octave, sixths, sevenths), harmony lines a third
-/// above or under a tune, riffs and runs in three units, and rhythms in the Kodály order (crotchets and quaver pairs,
-/// rests and minims, then dotted and syncopated). Pitched content is placed like the drills: labelled by the solfa
+/// A scale sung up and back down in one take (<see cref="Solfa"/>, written as the solfa engine labels it on the doh of its
+/// key signature: Dorian is ray to ray, a la-based scale lah to lah), in a unit of its family; <see cref="About"/> says
+/// what it is and where it is heard.
+/// </summary>
+public sealed record ScalePattern(string Code, string Unit, string Title, KeyMode Mode, string Solfa, string About, bool Playful);
+
+/// <summary>
+/// The practice modes' content, all our own and written in tonic solfa: pitch-match sets, scales in four families (major
+/// and minor, pentatonic and blues, the church modes, the world's), intervals in the order RCM and Trinity ask them
+/// (minor third, major third, fifth, fourth, octave, sixths, sevenths), harmony lines a third above or under a tune,
+/// riffs and runs in three units, and rhythms in the Kodály order (crotchets and quaver pairs, rests and minims, then
+/// dotted and syncopated). Pitched content is placed like the drills: labelled by the solfa
 /// engine (<see cref="DrillCatalogue.Place"/>) and in a key that keeps every sung note between A3 and D5, chosen per
 /// singer and per day; the id carries the key (and a run's speed), and a take is marked against the exercise rebuilt
 /// from it.
@@ -63,6 +71,59 @@ public static class ModeCatalogue
         new("round-the-scale", "Round the scale", "d m s d' l f r t,", Playful: false),
         new("below-doh", "Down below doh", "d m r d t, l, s, d", Playful: false),
         new("in-between", "The notes in between", "d de r m f fe s ta", Playful: false),
+    ];
+
+    // ── Scales ──────────────────────────────────────────────────────────────
+
+    /// <summary>A scale's beat: each note a beat, the last held for two.</summary>
+    public const int ScaleTempo = 72;
+
+    public const string ScaleUnitMajorMinor = "Major and minor";
+    public const string ScaleUnitPentatonic = "Pentatonic and blues";
+    public const string ScaleUnitModes = "The church modes";
+    public const string ScaleUnitWorld = "Sounds of the world";
+
+    /// <summary>
+    /// Every scale, in teaching order: each in semitones of the equal-tempered scale (no quarter tones, which tonic solfa
+    /// has no syllables for). The church modes are sung from their own degree of the major scale, as tonic solfa teaches
+    /// them; Hijaz is the fifth mode of the harmonic minor (me to me with se).
+    /// </summary>
+    public static readonly IReadOnlyList<ScalePattern> Scales =
+    [
+        new("major", ScaleUnitMajorMinor, "The major scale", KeyMode.Major, "d r m f s l t d' t l s f m r d",
+            "Doh to doh: the scale every hymn book starts from.", Playful: true),
+        new("natural-minor", ScaleUnitMajorMinor, "The minor scale", KeyMode.Minor, "l, t, d r m f s l s f m r d t, l,",
+            "Lah to lah: the minor scale as its key signature gives it (the Aeolian mode).", Playful: true),
+        new("harmonic-minor", ScaleUnitMajorMinor, "The harmonic minor", KeyMode.Minor, "l, t, d r m f se l se f m r d t, l,",
+            "Lah to lah with se: the raised seventh that pulls home.", Playful: true),
+        new("melodic-minor", ScaleUnitMajorMinor, "The melodic minor", KeyMode.Minor, "l, t, d r m fe se l s f m r d t, l,",
+            "Up with fe and se, back down without them.", Playful: false),
+        new("major-pentatonic", ScaleUnitPentatonic, "The major pentatonic", KeyMode.Major, "d r m s l d' l s m r d",
+            "Five notes, no fah or te: Amazing Grace is built on them.", Playful: true),
+        new("minor-pentatonic", ScaleUnitPentatonic, "The minor pentatonic", KeyMode.Minor, "l, d r m s l s m r d l,",
+            "The same five notes from lah: a favourite of blues and rock riffs.", Playful: true),
+        new("blues", ScaleUnitPentatonic, "The blues scale", KeyMode.Minor, "l, d r re m s l s m ma r d l,",
+            "The minor pentatonic with the blue note between ray and me.", Playful: true),
+        new("dorian", ScaleUnitModes, "Dorian", KeyMode.Major, "r m f s l t d' r' d' t l s f m r",
+            "Ray to ray: minor with a bright lah, as in Scarborough Fair.", Playful: false),
+        new("phrygian", ScaleUnitModes, "Phrygian", KeyMode.Major, "m f s l t d' r' m' r' d' t l s f m",
+            "Me to me: the half step at the bottom gives it a Spanish colour.", Playful: false),
+        new("lydian", ScaleUnitModes, "Lydian", KeyMode.Major, "f s l t d' r' m' f' m' r' d' t l s f",
+            "Fah to fah: major with a raised fourth, bright and dreamy.", Playful: false),
+        new("mixolydian", ScaleUnitModes, "Mixolydian", KeyMode.Major, "s, l, t, d r m f s f m r d t, l, s,",
+            "Soh to soh: major with a flat seventh, the sound of folk and rock.", Playful: false),
+        new("locrian", ScaleUnitModes, "Locrian", KeyMode.Major, "t, d r m f s l t l s f m r d t,",
+            "Te to te: the rarest mode, with no steady fifth.", Playful: false),
+        new("hijaz", ScaleUnitWorld, "Hijaz", KeyMode.Minor, "m, f, se, l, t, d r m r d t, l, se, f, m,",
+            "Me to me with se: the Hijaz sound of Arabic and Turkish music (the Phrygian dominant).", Playful: true),
+        new("japanese-in", ScaleUnitWorld, "The Japanese in scale", KeyMode.Major, "m f l t d' m' d' t l f m",
+            "Five notes from me, heard in the Japanese song Sakura.", Playful: true),
+        new("whole-tone", ScaleUnitWorld, "The whole-tone scale", KeyMode.Major, "d r m fe se ta d' ta se fe m r d",
+            "Six notes all a whole step apart: dreamy, with no home.", Playful: true),
+        new("double-harmonic", ScaleUnitWorld, "The double harmonic", KeyMode.Major, "d de m f s se t d' t la s f m ra d",
+            "Two wide steps, up from de and se: the Arabic or Byzantine scale.", Playful: false),
+        new("hungarian-minor", ScaleUnitWorld, "The Hungarian minor", KeyMode.Minor, "l, t, d re m f se l se f m ma d t, l,",
+            "The harmonic minor with a raised fourth: Romani and Hungarian music.", Playful: false),
     ];
 
     // ── Intervals ───────────────────────────────────────────────────────────
@@ -157,6 +218,8 @@ public static class ModeCatalogue
         {
             PracticeModes.PitchMatch => PitchMatchSets.Where(s => !playful || s.Playful)
                 .Select(s => BuildPitchMatch(s, Doh(s.Code, Placements(s)))).ToList(),
+            PracticeModes.Scales => Scales.Where(s => !playful || s.Playful)
+                .Select(s => BuildScale(s, Doh(s.Code, Placements(s)))).ToList(),
             PracticeModes.Intervals => Intervals.Where(p => !playful || p.Playful)
                 .Select(p => BuildInterval(p, Doh(p.Code, Placements(p)))).ToList(),
             // Focused's modes (Playful's hub does not list them): the same for anyone who asks.
@@ -184,6 +247,9 @@ public static class ModeCatalogue
             case PracticeModes.PitchMatch when speed is null && PitchMatchSets.FirstOrDefault(s => s.Code == code) is { } set
                                                && doh is { } d1 && Placements(set).Contains(d1):
                 return BuildPitchMatch(set, d1);
+            case PracticeModes.Scales when speed is null && Scales.FirstOrDefault(s => s.Code == code) is { } scale
+                                           && doh is { } d5 && Placements(scale).Contains(d5):
+                return BuildScale(scale, d5);
             case PracticeModes.Intervals when speed is null && Intervals.FirstOrDefault(p => p.Code == code) is { } interval
                                               && doh is { } d2 && Placements(interval).Contains(d2):
                 return BuildInterval(interval, d2);
@@ -246,6 +312,14 @@ public static class ModeCatalogue
             $"{PracticeModes.PitchMatch}:{set.Code}@{doh}", PracticeModes.PitchMatch, set.Code, set.Title,
             "Hear each note, then hold it in tune for four beats.", null, key, PitchMatchTempo,
             holds, tones, [], ExerciseGrader.Notes, OffsetSearchSec: PitchMatchOffsetSearchSec, DohMidi: doh);
+    }
+
+    public static PracticeExercise BuildScale(ScalePattern s, int doh)
+    {
+        var (key, notes) = DrillCatalogue.Place(Pattern(s.Code, s.Solfa, null) with { Mode = s.Mode }, doh);
+        return new PracticeExercise(
+            $"{PracticeModes.Scales}:{s.Code}@{doh}", PracticeModes.Scales, s.Code, s.Title,
+            $"{s.About} Sing it up and back down.", s.Unit, key, ScaleTempo, notes, [], [], ExerciseGrader.Notes, DohMidi: doh);
     }
 
     public static PracticeExercise BuildInterval(IntervalPattern p, int doh)
@@ -313,6 +387,7 @@ public static class ModeCatalogue
 
     public static IReadOnlyList<int> Placements(PitchMatchSet s) => Fitting(Offsets(s.Solfa), null);
     public static IReadOnlyList<int> Placements(IntervalPattern p) => Fitting(Offsets(p.Solfa), null);
+    public static IReadOnlyList<int> Placements(ScalePattern s) => Fitting(Offsets(s.Solfa), null);
     public static IReadOnlyList<int> Placements(HarmonyLine h) => Fitting(Offsets(h.Line), Offsets(h.Tune));
     public static IReadOnlyList<int> Placements(RunPattern r) => Fitting(Offsets(r.Solfa), null);
 

@@ -52,6 +52,16 @@ test("the words keep in step with the server's ladder", () => {
   assert.match(cs, /Math\.Max\(1\.5, 6\.0 - 0\.5 \* \(Math\.Max\(1, level\) - 1\)\)/);
   for (let l = 1; l <= 12; l++) assert.equal(A.staffSeconds(l), Math.max(1.5, 6 - 0.5 * (l - 1)));
   assert.match(cs, /var choices = l switch \{ <= 2 => 3, <= 4 => 4, <= 6 => 5, _ => 6 \};/);
+  const scales = /ScaleLevels =\s*\[([\s\S]*?)\];/.exec(cs)[1];
+  const scaleLevels = [...scales.matchAll(/\[([^\]]*)\]/g)].map((m) => [...m[1].matchAll(/"([^"]+)"/g)].map((x) => x[1]));
+  assert.equal(scaleLevels.length, 10);
+  assert.equal(A.levelNews("which-scale", 1), "Scales: major and minor");
+  assert.equal(A.levelNews("which-scale", 6), "New: Dorian and Mixolydian");
+  assert.deepEqual(plain(A.SCALE_LEVELS), scaleLevels);
+  assert.match(cs, /var tempo = Math\.Min\(200, 96 \+ 8 \* Math\.Max\(0, l - WhichScaleFullLevel\)\);/);
+  assert.equal(A.levelNews("which-scale", 12), "Quicker: 112 beats a minute");
+  assert.equal(A.scaleTempo(500), 200);
+  assert.equal(A.comingNext("which-scale", 9)[2].text, "Every level after: quicker scales");
 });
 
 test("a game's level is kept in the browser, its best never falls, and a new game starts at the track's first", () => {

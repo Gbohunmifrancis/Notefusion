@@ -64,7 +64,7 @@ public sealed record HeldNoteDto(int Midi, string Name, double Seconds, double C
 // ── The modes (GET /api/practice/modes/{mode}) ──────────────────────────────
 
 /// <summary>
-/// GET /api/practice/modes/{mode} ("pitch-match", "intervals", "harmony", "runs", "rhythm"): the mode's exercises on the
+/// GET /api/practice/modes/{mode} ("pitch-match", "scales", "intervals", "harmony", "runs", "rhythm"): the mode's exercises on the
 /// caller's track, each placed in today's key for them, with the day's marked-drill allowance a take spends.
 /// </summary>
 public sealed record PracticeModeDto(

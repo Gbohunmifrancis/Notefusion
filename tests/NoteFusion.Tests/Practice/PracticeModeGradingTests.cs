@@ -266,7 +266,7 @@ public class PracticeModeGradingTests
         var before = await NextDrill(h, user);
         var pathBefore = (await Progress(h, user)).Path;
 
-        // Ten perfect takes across the modes: 150 XP, a level up, and not a step along the path.
+        // Twelve perfect takes across the modes: a level up, and not a step along the path.
         foreach (var mode in PracticeModes.Marked)
             for (var i = 0; i < 2; i++)
                 Assert.True((await Grade(h, user, new FakeGraders(100)).Handle(
@@ -278,7 +278,7 @@ public class PracticeModeGradingTests
         Assert.Equal((before.Grade, before.UnitIndex, before.DrillIndex), (after.Grade, after.UnitIndex, after.DrillIndex));
         Assert.Equal(pathBefore, (await Progress(h, user)).Path);
         Assert.Single(await PracticePathReader.TakesAsync(h.Db, user.Id, default));
-        Assert.Equal(11, h.Db.PracticeSessions.Count());
+        Assert.Equal(13, h.Db.PracticeSessions.Count());
     }
 
     // ── What the clients read ───────────────────────────────────────────────
@@ -292,10 +292,10 @@ public class PracticeModeGradingTests
 
         var playful = await new SetPracticeTrackCommandHandler(h.Db, new StubCurrentUser(user.Id), h.Clock, new StubClientTimeZone(),
             new PracticeModeSettings { Rhythm = false }).Handle(new SetPracticeTrackCommand("playful"), default);
-        Assert.Equal(new[] { "warm-up", "pitch-match", "intervals" }, playful.Value.Modes);
+        Assert.Equal(new[] { "warm-up", "pitch-match", "scales", "intervals" }, playful.Value.Modes);
 
         var playfulAgain = await Progress(h, user, new PracticeModeSettings { Harmony = false }); // not Playful's anyway
-        Assert.Equal(new[] { "warm-up", "pitch-match", "intervals", "rhythm" }, playfulAgain.Modes);
+        Assert.Equal(new[] { "warm-up", "pitch-match", "scales", "intervals", "rhythm" }, playfulAgain.Modes);
     }
 
     [Fact]

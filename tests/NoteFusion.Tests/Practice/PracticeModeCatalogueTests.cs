@@ -24,6 +24,9 @@ public class PracticeModeCatalogueTests
         foreach (var s in ModeCatalogue.PitchMatchSets)
             foreach (var doh in ModeCatalogue.Placements(s))
                 yield return ModeCatalogue.BuildPitchMatch(s, doh);
+        foreach (var s in ModeCatalogue.Scales)
+            foreach (var doh in ModeCatalogue.Placements(s))
+                yield return ModeCatalogue.BuildScale(s, doh);
         foreach (var p in ModeCatalogue.Intervals)
             foreach (var doh in ModeCatalogue.Placements(p))
                 yield return ModeCatalogue.BuildInterval(p, doh);
@@ -70,6 +73,9 @@ public class PracticeModeCatalogueTests
     [InlineData("intervals:fifth-up@60~100")]
     [InlineData("rhythm:steady@60")]
     [InlineData("intervals:fifth-up@sixty")]
+    [InlineData("scales:dorian@61")] // a doh it is never placed on
+    [InlineData("scales:dorian@60~100")]
+    [InlineData("scales:made-up@60")]
     public void An_id_the_catalogue_never_handed_out_names_nothing(string? id)
         => Assert.Null(ModeCatalogue.Find(id));
 
@@ -141,6 +147,66 @@ public class PracticeModeCatalogueTests
         }
         var fifth = ModeCatalogue.BuildInterval(ModeCatalogue.Intervals.Single(p => p.Code == "fifth-up"), 60);
         Assert.Equal("Hear doh and sing it, then jump up a fifth to soh.", fifth.Prompt);
+    }
+
+    [Fact]
+    public void A_scale_goes_up_and_back_down_in_its_own_steps_in_four_families()
+    {
+        // Each scale's steps up from its first note, in semitones.
+        var steps = new Dictionary<string, int[]>
+        {
+            ["major"] = [2, 2, 1, 2, 2, 2, 1],
+            ["natural-minor"] = [2, 1, 2, 2, 1, 2, 2],
+            ["harmonic-minor"] = [2, 1, 2, 2, 1, 3, 1],
+            ["melodic-minor"] = [2, 1, 2, 2, 2, 2, 1],
+            ["major-pentatonic"] = [2, 2, 3, 2, 3],
+            ["minor-pentatonic"] = [3, 2, 2, 3, 2],
+            ["blues"] = [3, 2, 1, 1, 3, 2],
+            ["dorian"] = [2, 1, 2, 2, 2, 1, 2],
+            ["phrygian"] = [1, 2, 2, 2, 1, 2, 2],
+            ["lydian"] = [2, 2, 2, 1, 2, 2, 1],
+            ["mixolydian"] = [2, 2, 1, 2, 2, 1, 2],
+            ["locrian"] = [1, 2, 2, 1, 2, 2, 2],
+            ["hijaz"] = [1, 3, 1, 2, 1, 2, 2],
+            ["japanese-in"] = [1, 4, 2, 1, 4],
+            ["whole-tone"] = [2, 2, 2, 2, 2, 2],
+            ["double-harmonic"] = [1, 3, 1, 2, 1, 3, 1],
+            ["hungarian-minor"] = [2, 1, 3, 1, 1, 3, 1],
+        };
+        Assert.Equal(steps.Keys, ModeCatalogue.Scales.Select(s => s.Code));
+        Assert.Equal(9, ModeCatalogue.Scales.Count(s => s.Playful));
+        Assert.Equal(
+            new[] { ModeCatalogue.ScaleUnitMajorMinor, ModeCatalogue.ScaleUnitPentatonic, ModeCatalogue.ScaleUnitModes, ModeCatalogue.ScaleUnitWorld },
+            ModeCatalogue.Scales.Select(s => s.Unit).Distinct());
+
+        foreach (var e in Everything().Where(e => e.Mode == PracticeModes.Scales))
+        {
+            var scale = ModeCatalogue.Scales.Single(s => s.Code == e.Code);
+            var pitches = e.Notes.Select(n => n.PitchMidi).ToList();
+            var top = pitches.Count / 2;
+            var up = pitches.Take(top + 1).Zip(pitches.Skip(1).Take(top), (a, b) => b - a).ToArray();
+            Assert.Equal(steps[e.Code], up);
+            Assert.Equal(12, pitches[top] - pitches[0]);
+            Assert.Equal(pitches[0], pitches[^1]);
+            // Back down the same notes, but the melodic minor, which comes down as the natural minor.
+            var down = pitches.Skip(top).Reverse().ToList();
+            if (e.Code == "melodic-minor")
+                Assert.Equal(steps["natural-minor"], down.Zip(down.Skip(1), (a, b) => b - a));
+            else
+                Assert.Equal(pitches.Take(top + 1), down);
+            Assert.Equal(scale.Mode, e.Key!.Mode);
+            Assert.Equal(scale.Unit, e.Group);
+            Assert.StartsWith(scale.About, e.Prompt);
+            Assert.Equal(ModeCatalogue.ScaleTempo, e.TempoBpm);
+            Assert.True(e.ShortestNoteSeconds >= PracticeRules.ShortestNoteSeconds);
+            Assert.True(e.Notes[^1].DurBeats >= 2);
+        }
+
+        // Tonic solfa sings a mode from its own degree: Dorian is ray to ray in the major key's doh.
+        var dorian = ModeCatalogue.BuildScale(ModeCatalogue.Scales.Single(s => s.Code == "dorian"), 60);
+        Assert.Equal(("C major", "r m f s l t d' r' d' t l s f m r"), (dorian.KeyName, string.Join(' ', dorian.Notes.Select(n => n.Solfa + n.OctaveMark))));
+        var hijaz = ModeCatalogue.BuildScale(ModeCatalogue.Scales.Single(s => s.Code == "hijaz"), 60);
+        Assert.Equal("A minor", hijaz.KeyName);
     }
 
     [Fact]
@@ -227,14 +293,14 @@ public class PracticeModeCatalogueTests
     // ── The modes each track lists, and their switches ──────────────────────
 
     [Fact]
-    public void Focused_lists_all_six_modes_and_playful_its_four_in_the_hubs_order()
+    public void Focused_lists_all_seven_modes_and_playful_its_five_in_the_hubs_order()
     {
         var on = new PracticeModeSettings();
-        Assert.Equal(new[] { "warm-up", "pitch-match", "runs", "intervals", "harmony", "rhythm" }, PracticeModes.Live(PracticeTrack.Focused, on));
+        Assert.Equal(new[] { "warm-up", "pitch-match", "scales", "runs", "intervals", "harmony", "rhythm" }, PracticeModes.Live(PracticeTrack.Focused, on));
         Assert.Equal(PracticeModes.Live(PracticeTrack.Focused, on), PracticeModes.Live(null, on));
-        Assert.Equal(new[] { "warm-up", "pitch-match", "intervals", "rhythm" }, PracticeModes.Live(PracticeTrack.Playful, on));
+        Assert.Equal(new[] { "warm-up", "pitch-match", "scales", "intervals", "rhythm" }, PracticeModes.Live(PracticeTrack.Playful, on));
         Assert.Equal(new[] { "warm-up", "pitch-match", "intervals" },
-            PracticeModes.Live(PracticeTrack.Playful, new PracticeModeSettings { Rhythm = false }));
+            PracticeModes.Live(PracticeTrack.Playful, new PracticeModeSettings { Rhythm = false, Scales = false }));
     }
 
     [Fact]
@@ -246,9 +312,11 @@ public class PracticeModeCatalogueTests
             ["PracticeModes:Runs"] = "",
             ["PracticeModes:Harmony"] = "true",
             ["PracticeModes:Intervals"] = "nonsense",
+            ["PracticeModes:Scales"] = "false",
         }).Build();
         var settings = PracticeModeDependencyInjection.ResolveSettings(config);
         Assert.False(settings.Rhythm);
+        Assert.False(settings.Scales);
         Assert.True(settings.Runs && settings.Harmony && settings.Intervals && settings.WarmUp && settings.PitchMatch);
         Assert.False(settings.IsOn("made-up"));
     }

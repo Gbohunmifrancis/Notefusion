@@ -1,7 +1,8 @@
 /**
  * The quick games (board s-practice-fun/s3), pushed from the Practice tab's "Quick games" row: Which note? (hear doh,
  * then a note; tap it on the Curwen modulator), Staff to solfa (Playful's "Note race": a note on the stave, its solfa
- * tapped, as many as a minute allows) and Name that hymn (a hymn's opening; its name picked from three). Tapped, not
+ * tapped, as many as a minute allows), Name that hymn (a hymn's opening; its name picked from three) and Which scale? (a
+ * scale up and back down; its name picked from three or four). Tapped, not
  * sung: no microphone, about a minute each.
  *
  * The server deals the rounds (`GET /api/practice/games/{game}`) with their answers, so a tap is told at once — a mint
@@ -173,7 +174,7 @@ export function PracticeGameScreen({ route, navigation }: NativeStackScreenProps
   const hearRound = useCallback((r: PracticeGameRound | undefined) => {
     if (!r) return;
     if (game === "which-note") playNotes(earNotes(r), EAR_TEMPO);
-    else if (game === "hymn" && r.notes) playNotes(r.notes, r.tempoBpm ?? 96);
+    else if ((game === "hymn" || game === "which-scale") && r.notes) playNotes(r.notes, r.tempoBpm ?? 96);
   }, [game, playNotes]);
 
   async function finish(sent: readonly string[]) {
@@ -319,6 +320,8 @@ export function PracticeGameScreen({ route, navigation }: NativeStackScreenProps
               <WhichNote round={round} picked={picked} onHear={() => hearRound(round)} onTap={tap} styles={styles} c={c} playful={playful} />
             ) : game === "staff" ? (
               <StaffRound round={round} picked={picked} onTap={tap} styles={styles} width={width - spacing.lg * 2} />
+            ) : game === "which-scale" ? (
+              <ScaleRound round={round} picked={picked} onHear={() => hearRound(round)} onTap={tap} styles={styles} />
             ) : (
               <HymnRound
                 round={round}
@@ -512,6 +515,43 @@ function HymnRound({
                     {onOpen ? <Button label="Open in Hymns" variant="text" size="sm" onPress={() => onOpen(h.slug)} style={styles.openHymn} /> : null}
                   </>
                 ) : null}
+              </View>
+            </Touchable>
+          );
+        })}
+      </View>
+    </View>
+  );
+}
+
+/** Which scale?: replay the scale, the scales to pick from; the right one shows its solfa up and back down. */
+function ScaleRound({
+  round,
+  picked,
+  onHear,
+  onTap,
+  styles,
+}: {
+  round: PracticeGameRound;
+  picked: string | null;
+  onHear: () => void;
+  onTap: (choice: string) => void;
+  styles: Styles;
+}) {
+  const shown = picked != null;
+  return (
+    <View style={styles.ask}>
+      <Text style={styles.q}>Which scale is this?</Text>
+      <Text style={styles.sub}>Up and back down, on the piano</Text>
+      <Button label="Play it again" icon="hear" variant="secondary" size="sm" onPress={onHear} style={styles.again} />
+      <View style={styles.choices}>
+        {(round.scales ?? []).map((sc) => {
+          const isAnswer = sc.code === round.answer;
+          return (
+            <Touchable key={sc.code} onPress={() => onTap(sc.code)} disabled={shown} radius={radii.lg} accessibilityRole="button" accessibilityLabel={sc.title}>
+              <View style={[styles.choice, shown && isAnswer && styles.rungRight, shown && !isAnswer && styles.choiceDim]}>
+                <Text style={[styles.choiceTitle, shown && isAnswer && styles.rungRightText]}>{sc.title}{shown && isAnswer ? " ✓" : ""}</Text>
+                {shown && isAnswer ? <Text style={styles.choiceSolfa}>{sc.solfa}</Text> : null}
               </View>
             </Touchable>
           );

@@ -134,7 +134,7 @@ public sealed class PracticeController : ApiControllerBase
     }
 
     /// <summary>
-    /// A practice mode's exercises ("pitch-match", "intervals", "harmony", "runs", "rhythm") on the caller's track, each
+    /// A practice mode's exercises ("pitch-match", "scales", "intervals", "harmony", "runs", "rhythm") on the caller's track, each
     /// placed in today's key for them, with the day's marked-drill allowance (404 <c>PRACTICE_MODE_UNKNOWN</c> /
     /// <c>PRACTICE_MODE_OFF</c>).
     /// </summary>
@@ -169,7 +169,7 @@ public sealed class PracticeController : ApiControllerBase
     }
 
     /// <summary>
-    /// A fresh deal of a quick game, tapped not sung ("which-note", "staff", "hymn"; 404 <c>PRACTICE_GAME_UNKNOWN</c>):
+    /// A fresh deal of a quick game, tapped not sung ("which-note", "staff", "hymn", "which-scale"; 404 <c>PRACTICE_GAME_UNKNOWN</c>):
     /// its rounds on the caller's track, each with its answer, and the day's games that earned XP. With <c>?level=</c>, an
     /// arcade stage at that level (the web's endless games: each stage's mark says the level to deal next).
     /// </summary>
