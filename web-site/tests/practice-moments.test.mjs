@@ -1,5 +1,5 @@
 // node --test web-site/tests/*.test.mjs
-// practice-moments.js chooses the reward moments a marked take earns (design/rive/moments, played by moments.js).
+// practice-moments.js chooses the reward moments a marked take earns; moment-art.js draws them (played by moments.js).
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -67,13 +67,71 @@ test("play-along's end: stars from the share right first time, a perfect run of 
   assert.deepEqual(plain(M.alongMoments(null)), []);
 });
 
-test("each piece's size and length are its Rive source's: the artboard in moments.py, the PERIOD in its script", () => {
-  const py = readFileSync(new URL("../../design/rive/moments/moments.py", import.meta.url), "utf8");
-  for (const [name, p] of Object.entries(M.PIECES)) {
-    const size = new RegExp(`"${name}": \\{"size": \\((\\d+), (\\d+)\\)`).exec(py);
-    assert.ok(size, name);
-    assert.deepEqual([p.width, p.height], [Number(size[1]), Number(size[2])], name);
-    const luau = readFileSync(new URL(`../../design/rive/moments/${name}.luau`, import.meta.url), "utf8");
-    assert.equal(p.ms, Math.round(Number(/^local PERIOD = ([\d.]+)/m.exec(luau)[1]) * 1000), name);
+// A canvas that keeps what it is asked to do and fails on anything drawn at a number that is not one.
+function recorder() {
+  const calls = [];
+  const gradient = { addColorStop: (at, color) => { assert.ok(at >= 0 && at <= 1 && !/NaN/.test(color), `stop ${at} ${color}`); } };
+  const ctx = new Proxy({ globalAlpha: 1 }, {
+    get(target, name) {
+      if (name in target) return target[name];
+      if (name === "createLinearGradient" || name === "createRadialGradient") return (...args) => { args.forEach((a) => assert.ok(Number.isFinite(a), name)); return gradient; };
+      return (...args) => {
+        args.forEach((a) => { if (typeof a === "number") assert.ok(Number.isFinite(a), `${String(name)}(${args.join(", ")})`); });
+        if (name === "arc" || name === "ellipse") assert.ok(args[2] >= 0, `${String(name)} radius ${args[2]}`);
+        calls.push(name);
+      };
+    },
+    set(target, name, value) {
+      if (typeof value === "number") assert.ok(Number.isFinite(value), `${String(name)} = ${value}`);
+      if (typeof value === "string" && /Style$/.test(name)) assert.doesNotMatch(value, /NaN|undefined/, `${String(name)} = ${value}`);
+      target[name] = value;
+      return true;
+    },
+  });
+  return { ctx, calls };
+}
+
+test("every moment draws its whole run at any values it is handed, without a number that is not one", () => {
+  const art = {};
+  vm.runInNewContext(readFileSync(new URL("../assets/moment-art.js", import.meta.url), "utf8"), { window: art, Math, Promise });
+  const P = art.NfMomentArt.PIECES;
+  assert.deepEqual(Object.keys(P).sort(), ["combo", "doh", "goal", "musicbox", "stars", "streak"]);
+  const cases = {
+    stars: [{ stars: 1 }, { stars: 2 }, { stars: 3 }, {}],
+    streak: [{ days: 1 }, { days: 2 }, { days: 365 }, {}],
+    goal: [{ done: 5, target: 5 }, { done: 1, target: 1 }, { done: 2, target: 5 }, { done: 9, target: 3 }, {}],
+    combo: [{ run: 5, perfect: 0 }, { run: 8, perfect: 1 }, { run: 32, perfect: 1 }, { run: 1 }, {}],
+    musicbox: [{ label: "Unit done!" }, { label: "Grade done!" }, {}],
+    doh: [{}],
+  };
+  for (const [name, piece] of Object.entries(P)) {
+    assert.ok(piece.width > 0 && piece.height > 0 && piece.ms >= 2500 && piece.ms <= 4500, name);
+    for (const values of cases[name]) {
+      const { ctx, calls } = recorder();
+      for (let t = 0; t <= piece.ms / 1000; t += 1 / 30) piece.draw(ctx, t, values);
+      assert.ok(calls.filter((c) => c === "fill").length > 100, name);
+      assert.equal(calls.filter((c) => c === "save").length, calls.filter((c) => c === "restore").length, `${name} saves and restores alike`);
+    }
   }
+});
+
+test("the moments say what the page handed them: the streak's day, the run, the week's count, what was finished", () => {
+  const art = {};
+  vm.runInNewContext(readFileSync(new URL("../assets/moment-art.js", import.meta.url), "utf8"), { window: art, Math, Promise });
+  const P = art.NfMomentArt.PIECES;
+  const said = (name, values, t) => {
+    const out = [];
+    const { ctx } = recorder();
+    const real = new Proxy(ctx, { get: (target, key) => (key === "fillText" ? (text) => out.push(text) : target[key]) });
+    P[name].draw(real, t, values);
+    return out;
+  };
+  assert.deepEqual(said("streak", { days: 12 }, 2.5), ["12", "day streak"]);
+  assert.deepEqual(said("streak", { days: 1 }, 2.5), ["1", "day streak begun"]);
+  assert.ok(said("combo", { run: 7, perfect: 0 }, 3).includes("×7"));
+  assert.ok(said("combo", { run: 7, perfect: 0 }, 3).includes("On a roll!"));
+  assert.ok(said("combo", { run: 6, perfect: 1 }, 3).includes("Perfect run!"));
+  assert.deepEqual(said("goal", { done: 3, target: 5 }, 2.5), ["3", "of 5 days", "This week"]);
+  assert.ok(said("goal", { done: 5, target: 5 }, 2.5).includes("Week goal met!"));
+  assert.ok(said("musicbox", { label: "Grade done!" }, 3).includes("Grade done!"));
 });

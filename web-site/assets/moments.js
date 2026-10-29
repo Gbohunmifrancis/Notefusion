@@ -1,11 +1,11 @@
-/* The reward moments' player: a small signed .riv shown over the page for a few seconds by the Rive web player
- * (@rive-app/webgl2, pinned, about 1.1 MB), fetched once by warm() and never with the page. The Practice view plays the
- * 3D level-up and badge pieces (/assets/practice-3d/, design/rive/live.py) and the reward moments
- * (/assets/practice-moments/, design/rive/moments/moments.py) with it, and the web app's play-along its stars.
+/* The moments' player: one shown over the page for a few seconds, one at a time. The reward moments (Playful's stars,
+ * the streak, the week's goal, a run in tune, a unit or grade finished, Doh cheering) are drawn on a canvas by
+ * assets/moment-art.js; the 3D level-up and badge pieces (/assets/practice-3d/, design/rive/live.py) are small signed
+ * .riv files played by the Rive web player (@rive-app/webgl2, pinned, about 1.1 MB), fetched by warm() and never with
+ * the page. The Practice view plays both, the web app's play-along its stars.
  *
- * One at a time: a moment asked for while another plays waits its turn. One asked for before the player is ready is
- * dropped (the toast or the still art carries the reward on its own). Not with reduced motion, data saving or no
- * WebGL2. A moment's values (the streak's days, the stars) go to the file's view model as it loads.
+ * A moment asked for while another plays waits its turn. Never with reduced motion; a 3D piece also not with data
+ * saving or no WebGL2, nor before its player is ready (the toast's still art carries the reward on its own).
  * Plain script, no build step. Exposes window.NfMoments.
  */
 (function () {
@@ -14,13 +14,17 @@
   var RIVE_BASE = "https://cdn.jsdelivr.net/npm/@rive-app/webgl2@2.47.1/";
   var load = null, ready = false, queue = [], busy = false;
 
+  function motionOk() {
+    try { return !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); } catch (e) { return true; }
+  }
+  /** Whether a 3D piece can play here: motion, no data saving, WebGL2. */
   function ok() {
-    try { if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false; } catch (e) { /* no matchMedia */ }
+    if (!motionOk()) return false;
     try { if (navigator.connection && navigator.connection.saveData) return false; } catch (e) { /* no Network Information API */ }
     try { return !!document.createElement("canvas").getContext("webgl2"); } catch (e) { return false; }
   }
 
-  /** Fetches the player, once; a failed fetch is tried again at the next warm(). */
+  /** Fetches the 3D pieces' player, once; a failed fetch is tried again at the next warm(). */
   function warm() {
     if (load || !ok()) return;
     load = new Promise(function (resolve, reject) {
@@ -36,24 +40,16 @@
     load.catch(function () { load = null; });
   }
 
-  function setValues(player, values) {
-    if (!values) return;
-    try {
-      var vm = player.viewModelInstance;
-      if (!vm) return;
-      Object.keys(values).forEach(function (name) {
-        var v = values[name], prop = typeof v === "string" ? vm.string(name) : vm.number(name);
-        if (prop) prop.value = v;
-      });
-    } catch (e) { /* an older file without the value: it plays its default */ }
-  }
-
   /**
-   * Shows a moment once it is its turn. spec: { src, width, height (CSS px at full size), ms, className, values,
-   * onStart, onEnd }. False when it cannot play now (player not ready, reduced motion), so the caller knows.
+   * Shows a moment once it is its turn. A reward moment: { piece (moment-art.js's), values, onStart, onEnd }. A 3D
+   * piece: { src, width, height (CSS px at full size), ms, className, onStart, onEnd }. False when it cannot play now.
    */
   function play(spec) {
-    if (!ok() || !ready || !window.rive) return false;
+    if (spec.piece) {
+      var art = window.NfMomentArt && window.NfMomentArt.PIECES[spec.piece];
+      if (!art || !motionOk() || !document.createElement("canvas").getContext) return false;
+      if (art.prepare) art.prepare();
+    } else if (!ok() || !ready || !window.rive) return false;
     queue.push(spec);
     if (!busy) next();
     return true;
@@ -63,19 +59,32 @@
     var spec = queue.shift();
     if (!spec) { busy = false; return; }
     busy = true;
-    var R = window.rive, layer = document.createElement("div"), canvas = document.createElement("canvas");
+    var art = spec.piece && window.NfMomentArt.PIECES[spec.piece];
+    if (art && art.prepare) {
+      // Doh's poses: wait for them a moment, or skip the piece.
+      var gone = false, wait = setTimeout(function () { gone = true; next(); }, 1500);
+      art.prepare().then(function () { if (!gone) { clearTimeout(wait); show(spec, art); } }, function () { if (!gone) { clearTimeout(wait); next(); } });
+      return;
+    }
+    show(spec, art);
+  }
+
+  function show(spec, art) {
+    var layer = document.createElement("div"), canvas = document.createElement("canvas");
+    var width = art ? art.width : spec.width, height = art ? art.height : spec.height, ms = art ? art.ms : spec.ms;
     layer.className = spec.className || "nf-moment";
     layer.setAttribute("aria-hidden", "true");
-    layer.style.setProperty("--mw", spec.width + "px");
-    layer.style.aspectRatio = spec.width + " / " + spec.height;
-    var px = Math.min(2, window.devicePixelRatio || 1);
-    canvas.width = Math.round(spec.width * px); canvas.height = Math.round(spec.height * px);
+    layer.style.setProperty("--mw", width + "px");
+    layer.style.aspectRatio = width + " / " + height;
     layer.appendChild(canvas);
     document.body.appendChild(layer);
-    var player = null, over = false;
+    var px = Math.min(2, window.devicePixelRatio || 1), shown = layer.offsetWidth || width;
+    canvas.width = Math.round(shown * px); canvas.height = Math.round(shown * px * height / width);
+    var player = null, frame = 0, over = false;
     function end() {
       if (over) return;
       over = true;
+      if (frame) cancelAnimationFrame(frame);
       layer.classList.add("out");
       if (spec.onEnd) spec.onEnd();
       setTimeout(function () {
@@ -84,16 +93,30 @@
         next();
       }, 260);
     }
+    if (spec.onStart) spec.onStart();
+    if (art) {
+      var c = canvas.getContext("2d"), scale = canvas.width / width, start = 0;
+      var paint = function (now) {
+        frame = 0;
+        if (!start) start = now;
+        var t = (now - start) / 1000;
+        c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, canvas.width, canvas.height);
+        c.setTransform(scale, 0, 0, scale, 0, 0); c.globalAlpha = 1;
+        try { art.draw(c, Math.min(t, ms / 1000), spec.values || {}); } catch (e) { end(); return; }
+        if (t * 1000 >= ms) end(); else frame = requestAnimationFrame(paint);
+      };
+      frame = requestAnimationFrame(paint);
+      setTimeout(end, ms + 1000); // a hidden tab draws no frames: the moment still ends
+      return;
+    }
+    var R = window.rive;
     try {
       player = new R.Rive({
-        src: spec.src, canvas: canvas, autoplay: true, autoBind: true, enableGPUCanvas: true,
-        layout: new R.Layout({ fit: R.Fit.Contain }),
-        onLoad: function () { setValues(player, spec.values); },
-        onLoadError: end
+        src: spec.src, canvas: canvas, autoplay: true, enableGPUCanvas: true,
+        layout: new R.Layout({ fit: R.Fit.Contain }), onLoadError: end
       });
     } catch (e) { end(); return; }
-    if (spec.onStart) spec.onStart();
-    setTimeout(end, spec.ms);
+    setTimeout(end, ms);
   }
 
   window.NfMoments = { ok: ok, warm: warm, play: play };

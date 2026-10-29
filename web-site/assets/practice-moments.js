@@ -1,25 +1,16 @@
-/* Which reward moments a marked take earns, and with what values (the moments: design/rive/moments, played by
+/* Which reward moments a marked take earns, and with what values (the moments: assets/moment-art.js, played by
  * assets/moments.js). Pure: the Practice view hands in the track, the progress as it stood before the take and the
  * grade; play-along hands in its score.
  *
  * A Playful take shows its stars first. Then one moment at most, the biggest the take earned: a level or a badge (the
  * 3D pieces the view already plays, so none here), a unit or grade finished (the music box), the week's goal met on the
  * day's first take (the ring), the day's first take (the streak), a run of five or more notes in tune (the combo), and
- * for Playful's three stars with nothing else, Doh cheering. Phones wait for a store build with the Rive player.
+ * for Playful's three stars with nothing else, Doh cheering.
  * Plain script, no build step. Exposes window.NfPracticeMoments.
  */
 (function () {
   "use strict";
 
-  // Each piece's artboard (CSS px at full size) and how long it plays (ms): design/rive/moments/<piece>.luau's PERIOD.
-  var PIECES = {
-    stars: { width: 440, height: 240, ms: 3000 },
-    streak: { width: 360, height: 360, ms: 3600 },
-    goal: { width: 360, height: 380, ms: 3600 },
-    combo: { width: 460, height: 230, ms: 3800 },
-    musicbox: { width: 400, height: 440, ms: 4000 },
-    doh: { width: 380, height: 420, ms: 3600 }
-  };
   var RUN_AT_LEAST = 5;
 
   /** 1-3 stars for a mark, as practice-track.js gives them (80 and up three, 50 and up two). */
@@ -75,5 +66,5 @@
     return out;
   }
 
-  window.NfPracticeMoments = { PIECES: PIECES, RUN_AT_LEAST: RUN_AT_LEAST, momentsFor: momentsFor, alongMoments: alongMoments, longestRun: longestRun };
+  window.NfPracticeMoments = { RUN_AT_LEAST: RUN_AT_LEAST, momentsFor: momentsFor, alongMoments: alongMoments, longestRun: longestRun };
 })();

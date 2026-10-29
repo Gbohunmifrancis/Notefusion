@@ -919,13 +919,12 @@
   }
 
   // ── The reward moments (assets/moments.js) ─────────────────────────────
-  // A level reached spins its 3D emblem in and a badge earned pops in (/assets/practice-3d/, design/rive/live.py); the
-  // rest of what a take earns (Playful's stars, a unit or grade finished, the week's goal, the day's streak, a run in
-  // tune, Doh cheering) are the reward moments (/assets/practice-moments/, design/rive/moments; chosen by
-  // assets/practice-moments.js). The player is fetched once a take starts, never with the view, and a moment whose
-  // player is not ready by the mark is skipped: the toast and the still art carry the reward on their own.
+  // A level reached spins its 3D emblem in and a badge earned pops in (/assets/practice-3d/, design/rive/live.py, played
+  // by the Rive web player, fetched once a take starts and skipped if it is not ready by the mark: the toast's 3D still
+  // carries the reward on its own); the rest of what a take earns (Playful's stars, a unit or grade finished, the week's
+  // goal, the day's streak, a run in tune, Doh cheering) are drawn on a canvas (assets/moment-art.js; chosen by
+  // assets/practice-moments.js).
   var LIVE_DIR = "/assets/practice-3d/", LIVE_V = "?v=1", LIVE_MS = 2600;
-  var MOMENT_DIR = "/assets/practice-moments/", MOMENT_V = "?v=1";
   function warmRive() { if (window.NfMoments) window.NfMoments.warm(); }
   /** The live piece for a reward's picture: `level-3-me` spins in as `levelup-3`, a badge pops in as itself. */
   function livePiece(picture) {
@@ -941,11 +940,10 @@
   }
   /** A reward moment (practice-moments.js's {piece, values}): Doh's own steps aside while the moment's Doh cheers. */
   function rewardMoment(m) {
-    var size = window.NfPracticeMoments && window.NfPracticeMoments.PIECES[m.piece];
-    if (!size || !window.NfMoments) return;
+    if (!window.NfMoments) return;
     var doh = m.piece === "doh";
     var played = window.NfMoments.play({
-      src: MOMENT_DIR + m.piece + ".riv" + MOMENT_V, width: size.width, height: size.height, ms: size.ms, className: "nf-moment", values: m.values,
+      piece: m.piece, values: m.values,
       onStart: function () { if (doh) document.body.classList.add("nf-moment-doh"); },
       onEnd: function () { if (doh) document.body.classList.remove("nf-moment-doh"); }
     });
