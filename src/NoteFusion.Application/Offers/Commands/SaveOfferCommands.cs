@@ -87,7 +87,8 @@ public sealed class CreateOfferCommandHandler : IRequestHandler<CreateOfferComma
 /// <c>PUT /api/admin/offers/{id}</c>: the same fields as create (what is left out stays). Until it is underway (on and
 /// past its start) everything may change; after, only the last day, and only later (<c>OFFER_STARTED</c>). The words
 /// are refused once the email has been sent (<c>OFFER_WORDS_LOCKED</c>) unless they are unchanged. An enabled offer's
-/// new dates must not overlap another enabled one (<c>OFFER_OVERLAPS</c>). Written to the audit log when anything changed.
+/// new dates must not overlap another enabled one (<c>OFFER_OVERLAPS</c>). The last call's words may change until it is
+/// sent (<c>OFFER_LAST_CALL_WORDS_LOCKED</c>). Written to the audit log when anything changed.
 /// </summary>
 public sealed record UpdateOfferCommand(
     Guid Id,
@@ -98,7 +99,8 @@ public sealed record UpdateOfferCommand(
     bool? IncludesYearly = null,
     DateTime? StartsAtUtc = null,
     DateOnly? LastDay = null,
-    OfferWords? Words = null) : IRequest<Result<AdminOfferDto>>;
+    OfferWords? Words = null,
+    OfferWords? LastCallWords = null) : IRequest<Result<AdminOfferDto>>;
 
 public sealed class UpdateOfferCommandHandler : IRequestHandler<UpdateOfferCommand, Result<AdminOfferDto>>
 {
@@ -138,6 +140,13 @@ public sealed class UpdateOfferCommandHandler : IRequestHandler<UpdateOfferComma
         var wordsChanged = words != current;
         if (wordsChanged && offer.WordsLocked)
             return OfferErrors.WordsLocked;
+        var currentLastCall = OfferEmailComposer.LastCallWordsOf(offer);
+        var lastCall = request.LastCallWords is { } lw ? Trimmed(lw) : currentLastCall;
+        var lastCallChanged = lastCall != currentLastCall;
+        if (lastCallChanged && offer.LastCallStartedAtUtc is not null)
+            return OfferErrors.LastCallWordsLocked;
+        if (lastCallChanged && OfferAdmin.CheckWords(lastCall) is { } badLastCall)
+            return badLastCall;
 
         if (OfferAdmin.Check(template, name, percent, monthly, yearly, startsAt, lastDay, words, now) is { } refused)
             return refused;
@@ -145,7 +154,7 @@ public sealed class UpdateOfferCommandHandler : IRequestHandler<UpdateOfferComma
         var before = OfferAdmin.Terms(offer);
         var beforeName = offer.Name;
         var datesChanged = startsAt != offer.StartsAtUtc || lastDay != offer.LastDay;
-        if (!termsChanged && !wordsChanged && name == offer.Name && lastDay == offer.LastDay)
+        if (!termsChanged && !wordsChanged && !lastCallChanged && name == offer.Name && lastDay == offer.LastDay)
             return await OfferAdmin.DescribeAsync(_db, offer, _settings, now, ct);
 
         if (offer.Enabled && datesChanged && await OfferAdmin.OverlapsAnotherAsync(_db, offer.Id, startsAt, lastDay, ct))
@@ -154,6 +163,8 @@ public sealed class UpdateOfferCommandHandler : IRequestHandler<UpdateOfferComma
         offer.SetTerms(name, template, percent, monthly, yearly, startsAt, lastDay, now);
         if (wordsChanged)
             offer.SetWords(words.Subject, words.Preheader, words.Headline, words.Body, now);
+        if (lastCallChanged)
+            offer.SetLastCallWords(lastCall.Subject, lastCall.Preheader, lastCall.Headline, lastCall.Body, now);
 
         // The key names the season and the year; it follows them until an email has gone out carrying it.
         if (!offer.WordsLocked && !OfferAdmin.IsUnderway(offer, now)
@@ -166,6 +177,7 @@ public sealed class UpdateOfferCommandHandler : IRequestHandler<UpdateOfferComma
         if (offer.Name != beforeName) parts.Add($"renamed it from {beforeName}");
         if (OfferAdmin.Terms(offer) != before) parts.Add($"now {OfferAdmin.Terms(offer)} (was {before})");
         if (wordsChanged) parts.Add("changed the email's words");
+        if (lastCallChanged) parts.Add("changed the last call's words");
         _audit.Record(AdminAuditAction.UpdateOffer, null, $"Changed the {offer.Name} offer: {string.Join("; ", parts)}.");
 
         try

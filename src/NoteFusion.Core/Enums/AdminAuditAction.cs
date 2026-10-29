@@ -90,5 +90,8 @@ public enum AdminAuditAction
     SendOfferTest = 30,
 
     /// <summary>An admin paused or resumed an offer's sending.</summary>
-    SetOfferSending = 31
+    SetOfferSending = 31,
+
+    /// <summary>An admin sent an offer's last call: the follow-up before it ends was queued (the count is in the summary).</summary>
+    SendOfferLastCall = 32
 }

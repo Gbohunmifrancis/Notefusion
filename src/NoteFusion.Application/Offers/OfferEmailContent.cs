@@ -20,6 +20,8 @@ public sealed record OfferEmailPrice(string Name, BillingInterval Interval, long
 /// <param name="OfferUrl">The button: <c>{site}/app?offer={key}&amp;m={token}</c> (no <c>m</c> in a preview or test).</param>
 /// <param name="UnsubscribeUrl">The person's signed one-click unsubscribe link (the outreach notes' own).</param>
 /// <param name="OpenPixelUrl">The 1×1 image that counts the open, <c>{api}/api/offers/o/{token}</c>; null in a preview or test.</param>
+/// <param name="LastCall">The last call: the countdown, "ends soon" and the usual price after it.</param>
+/// <param name="CountdownUrl">The live countdown (an animated GIF made when the email is opened) to the person's own end.</param>
 public sealed record OfferEmailContent(
     string Key,
     string Template,
@@ -30,7 +32,9 @@ public sealed record OfferEmailContent(
     IReadOnlyList<OfferEmailPrice> Prices,
     string OfferUrl,
     string UnsubscribeUrl,
-    string? OpenPixelUrl = null);
+    string? OpenPixelUrl = null,
+    bool LastCall = false,
+    string? CountdownUrl = null);
 
 /// <summary>An offer email as it goes out: what the console's preview shows and what the sender sends.</summary>
 public sealed record RenderedOfferEmail(string Subject, string Preheader, string Html, string Text);
@@ -68,18 +72,41 @@ public static class OfferEmailComposer
             .ToList();
 
     public static OfferEmailContent Compose(
-        Offer offer, IEnumerable<Plan> plans, string set, string? token, string unsubscribeUrl, OfferSettings settings)
-        => new(
+        Offer offer, IEnumerable<Plan> plans, string set, string? token, string unsubscribeUrl, OfferSettings settings,
+        OfferEmailRound round = OfferEmailRound.Launch)
+    {
+        var lastCall = round == OfferEmailRound.LastCall;
+        return new(
             offer.Key,
             offer.Template,
             OfferTemplates.LabelOf(offer.Template),
             offer.PercentOff,
-            new OfferWords(offer.Subject, offer.Preheader, offer.Headline, offer.Body),
+            lastCall ? LastCallWordsOf(offer) : new OfferWords(offer.Subject, offer.Preheader, offer.Headline, offer.Body),
             offer.LastDay,
             PricesFor(offer, plans, set),
             OfferUrl(settings, offer.Key, token),
             unsubscribeUrl,
-            token is null ? null : OpenPixelUrl(settings, token));
+            token is null ? null : OpenPixelUrl(settings, token),
+            lastCall,
+            lastCall ? CountdownUrl(settings, offer.Key, token) : null);
+    }
+
+    /// <summary>The last call's words: the offer's own once written, else its template's.</summary>
+    public static OfferWords LastCallWordsOf(Offer offer)
+    {
+        if (offer.LastCallSubject is { } subject && offer.LastCallPreheader is { } preheader
+            && offer.LastCallHeadline is { } headline && offer.LastCallBody is { } body)
+            return new OfferWords(subject, preheader, headline, body);
+        return (OfferTemplates.Find(offer.Template) ?? OfferTemplates.HalloweenTemplate).LastCallWords;
+    }
+
+    /// <summary>
+    /// The live countdown to the person's own end (their token names them; a preview or test counts to the UK's).
+    /// A query string, not a path: some mail apps cache an image by its path alone.
+    /// </summary>
+    public static string CountdownUrl(OfferSettings settings, string key, string? token)
+        => $"{settings.ApiBaseUrl.TrimEnd('/')}/api/offers/countdown?o={Uri.EscapeDataString(key)}"
+           + (token is null ? string.Empty : $"&m={Uri.EscapeDataString(token)}");
 
     /// <summary>The image whose loading counts the email as opened (its own token, as the button's <c>m=</c>).</summary>
     public static string OpenPixelUrl(OfferSettings settings, string token)

@@ -1289,6 +1289,28 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("character varying(60)");
 
+                    b.Property<string>("LastCallBody")
+                        .HasMaxLength(1200)
+                        .HasColumnType("character varying(1200)");
+
+                    b.Property<string>("LastCallHeadline")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<string>("LastCallPreheader")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime?>("LastCallStartedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("LastCallStartedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("LastCallSubject")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
                     b.Property<DateOnly>("LastDay")
                         .HasColumnType("date");
 
@@ -1376,6 +1398,11 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("QueuedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Round")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
                     b.Property<DateTime?>("SentAtUtc")
                         .HasColumnType("timestamp with time zone");
 
@@ -1405,7 +1432,7 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("OfferId", "Status");
 
-                    b.HasIndex("OfferId", "UserId")
+                    b.HasIndex("OfferId", "UserId", "Round")
                         .IsUnique();
 
                     b.ToTable("offer_emails", (string)null);

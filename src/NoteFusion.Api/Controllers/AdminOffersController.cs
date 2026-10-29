@@ -44,7 +44,7 @@ public sealed class AdminOffersController : ApiControllerBase
     public async Task<IActionResult> Update(Guid id, OfferBody body, CancellationToken ct)
         => HandleResult(await _sender.Send(new UpdateOfferCommand(
             id, body.Template, body.Name, body.PercentOff, body.IncludesMonthly, body.IncludesYearly,
-            body.StartsAtUtc, body.LastDay, body.Words), ct));
+            body.StartsAtUtc, body.LastDay, body.Words, body.LastCallWords), ct));
 
     /// <summary>Switches an offer on (refused if it overlaps another or has ended) or off.</summary>
     [HttpPut("{id:guid}/enabled")]
@@ -52,15 +52,19 @@ public sealed class AdminOffersController : ApiControllerBase
     public async Task<IActionResult> SetEnabled(Guid id, OfferEnabledBody body, CancellationToken ct)
         => HandleResult(await _sender.Send(new SetOfferEnabledCommand(id, body.Enabled), ct));
 
-    /// <summary>The email as it goes out, for someone on <paramref name="set"/> prices called <paramref name="firstName"/>.</summary>
+    /// <summary>
+    /// The email (<c>round=lastCall</c>: its last call) as it goes out, for someone on <paramref name="set"/> prices called
+    /// <paramref name="firstName"/>.
+    /// </summary>
     [HttpGet("{id:guid}/preview")]
-    public async Task<IActionResult> Preview(Guid id, [FromQuery] string? set, [FromQuery] string? firstName, CancellationToken ct)
-        => HandleResult(await _sender.Send(new PreviewOfferEmailQuery(id, set, firstName), ct));
+    public async Task<IActionResult> Preview(
+        Guid id, [FromQuery] string? set, [FromQuery] string? firstName, [FromQuery] string? round, CancellationToken ct)
+        => HandleResult(await _sender.Send(new PreviewOfferEmailQuery(id, set, firstName, round), ct));
 
-    /// <summary>Sends the email to the signed-in admin's own address, on <c>set</c> prices.</summary>
+    /// <summary>Sends the email (or its last call) to the signed-in admin's own address, on <c>set</c> prices.</summary>
     [HttpPost("{id:guid}/test")]
     public async Task<IActionResult> Test(Guid id, OfferTestBody? body, CancellationToken ct)
-        => HandleResult(await _sender.Send(new SendOfferTestCommand(id, body?.Set), ct));
+        => HandleResult(await _sender.Send(new SendOfferTestCommand(id, body?.Set, body?.Round), ct));
 
     /// <summary>Who Send would reach with these groups, who never would and why, and the quota's pace.</summary>
     [HttpGet("{id:guid}/audience")]
@@ -74,6 +78,24 @@ public sealed class AdminOffersController : ApiControllerBase
     [FreshPhoneUnlock]
     public async Task<IActionResult> Send(Guid id, OfferSendBody body, CancellationToken ct)
         => HandleResult(await _sender.Send(new SendOfferCommand(id, body.Free, body.Lapsed, body.ProNow), ct));
+
+    /// <summary>
+    /// Queues the last call, the follow-up before the offer ends (a countdown, then the usual price), for the groups the
+    /// email went to, less those who have bought; its words lock. Once per offer, after the email's Send.
+    /// </summary>
+    [HttpPost("{id:guid}/last-call")]
+    [FreshPhoneUnlock]
+    public async Task<IActionResult> LastCall(Guid id, OfferLastCallBody? body, CancellationToken ct)
+        => HandleResult(await _sender.Send(new SendOfferLastCallCommand(id, body?.Words), ct));
+
+    /// <summary>
+    /// Who one of the offer's emails went to (<c>round</c>: "launch" or "lastCall"), those who opened it first
+    /// (<c>filter</c>: "opened", "clicked", "bought" or "all"), a hundred from <c>skip</c>.
+    /// </summary>
+    [HttpGet("{id:guid}/recipients")]
+    public async Task<IActionResult> Recipients(
+        Guid id, [FromQuery] string? round, [FromQuery] string? filter, [FromQuery] int skip = 0, CancellationToken ct = default)
+        => HandleResult(await _sender.Send(new GetOfferRecipientsQuery(id, round, filter, skip), ct));
 
     /// <summary>Pauses or resumes the email's queue.</summary>
     [HttpPut("{id:guid}/sending")]
@@ -98,12 +120,16 @@ public sealed record OfferBody(
     bool? IncludesYearly,
     DateTime? StartsAtUtc,
     DateOnly? LastDay,
-    OfferWords? Words);
+    OfferWords? Words,
+    OfferWords? LastCallWords = null);
 
 public sealed record OfferEnabledBody(bool Enabled);
 
-/// <summary><c>set</c>: "standard" (the default) or "regional".</summary>
-public sealed record OfferTestBody(string? Set);
+/// <summary><c>set</c>: "standard" (the default) or "regional"; <c>round</c>: "launch" (the default) or "lastCall".</summary>
+public sealed record OfferTestBody(string? Set, string? Round = null);
+
+/// <summary>Body of <c>POST /api/admin/offers/{id}/last-call</c>: its words, when changed from those saved.</summary>
+public sealed record OfferLastCallBody(OfferWords? Words);
 
 public sealed record OfferSendBody(bool Free, bool Lapsed, bool ProNow);
 

@@ -80,7 +80,14 @@ export interface AdminOffer {
   createdAtUtc: string;
   /** Whether its season (Feature flags) is on for everyone; while it is off the offer shows nowhere and its email waits. */
   seasonOn: boolean;
+  /** The last call's words: the offer's own once saved, else the template's. Lock once it is sent. */
+  lastCallWords?: OfferWords | null;
+  /** When the last call was sent; null until then. */
+  lastCallStartedAtUtc?: string | null;
 }
+
+/** Which of an offer's emails: the email Send queued, or the last call before it ends. */
+export type OfferRound = "launch" | "lastCall";
 
 /** A template's defaults for the year ahead, for "New offer". */
 export interface OfferTemplateDefaults {
@@ -105,6 +112,7 @@ export interface OfferChange {
   startsAtUtc: string;
   lastDay: string;
   words?: OfferWords;
+  lastCallWords?: OfferWords;
 }
 
 /** The email as the server would send it, rendered by the sender's own template. */
@@ -157,7 +165,7 @@ export interface OfferAudience {
 export interface OfferProgress {
   queued: number;
   sent: number;
-  skipped: { optedOut: number; bought: number; becamePro: number; ended: number; noLongerEligible: number };
+  skipped: { optedOut: number; bought: number; becamePro: number; ended: number; noLongerEligible: number; lastCallInstead?: number };
   failed: number;
   /** Emails whose image loaded or whose button was clicked: a floor and a ceiling at once (images off; Apple Mail loads them all). */
   opened: number;
@@ -172,6 +180,37 @@ export interface OfferProgress {
   /** yyyy-mm-dd, UK days. */
   byDay: { date: string; sent: number; clicked: number; bought: number; opened: number }[];
   byPlan: { code: string; name: string; set: OfferPriceSet; count: number; revenueMinor: number }[];
+  /** The last call's own counts; null until it is sent. The counts above are the email's. */
+  lastCall?: { queued: number; sent: number; skipped: number; failed: number; opened: number; clicked: number; boughtAfter: number } | null;
+}
+
+/** Who opened (or clicked, bought, or every one sent) of one of the offer's emails. */
+export type OfferRecipientFilter = "opened" | "clicked" | "bought" | "all";
+
+export interface OfferRecipient {
+  userId: string;
+  name: string | null;
+  email: string;
+  country: string | null;
+  group: "Lapsed" | "Free" | "ProNow";
+  status: "Queued" | "Sent" | "Skipped" | "Failed";
+  skipReason: string | null;
+  sentAtUtc: string | null;
+  /** The first open: its image loaded, or its button clicked with images blocked. */
+  openedAtUtc: string | null;
+  clickedAtUtc: string | null;
+  /** When they paid at the offer's price, whichever email it followed. */
+  boughtAtUtc: string | null;
+}
+
+export interface OfferRecipients {
+  round: OfferRound;
+  filter: OfferRecipientFilter;
+  /** Every match; `items` is a hundred of them from `skip`. */
+  total: number;
+  /** Everyone who opened this email. */
+  opened: number;
+  items: OfferRecipient[];
 }
 
 const base = "/api/admin/offers";
@@ -197,12 +236,23 @@ export const setOfferEnabled = (id: string, enabled: boolean) =>
   request<unknown>(`${one(id)}/enabled`, { method: "PUT", body: { enabled } });
 
 /** The email as Grace (free, in the UK) would get it, at one price set. */
-export const getOfferPreview = (id: string, set: OfferPriceSet, signal?: AbortSignal) =>
-  request<OfferPreview>(`${one(id)}/preview${query({ set, firstName: "Grace" })}`, opts(signal));
+export const getOfferPreview = (id: string, set: OfferPriceSet, signal?: AbortSignal, round: OfferRound = "launch") =>
+  request<OfferPreview>(`${one(id)}/preview${query({ set, firstName: "Grace", round })}`, opts(signal));
 
 /** Mails the preview to the signed-in admin only. It counts toward the day's email. */
-export const sendOfferTest = (id: string, set: OfferPriceSet) =>
-  request<unknown>(`${one(id)}/test`, { method: "POST", body: { set } });
+export const sendOfferTest = (id: string, set: OfferPriceSet, round: OfferRound = "launch") =>
+  request<unknown>(`${one(id)}/test`, { method: "POST", body: { set, round } });
+
+/**
+ * Queues the last call (a countdown, then the usual price) for the groups the email went to, less buyers; anyone still
+ * waiting for the email gets it instead. Wants a fresh confirmation. Audit `SendOfferLastCall`.
+ */
+export const sendOfferLastCall = (id: string, words?: OfferWords) =>
+  request<unknown>(`${one(id)}/last-call`, { method: "POST", body: { words: words ?? null } });
+
+/** Who one email went to: those who opened it first. */
+export const getOfferRecipients = (id: string, round: OfferRound, filter: OfferRecipientFilter, skip: number, signal?: AbortSignal) =>
+  request<OfferRecipients>(`${one(id)}/recipients${query({ round, filter, skip })}`, opts(signal));
 
 export const getOfferAudience = (id: string, choice: OfferAudienceChoice, signal?: AbortSignal) =>
   request<OfferAudience>(`${one(id)}/audience${query({ ...choice })}`, opts(signal));

@@ -5,7 +5,7 @@ import { Loader2, Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
-import { getOfferPreview, sendOfferTest, type AdminOffer, type OfferPriceSet } from "@/api/offers";
+import { getOfferPreview, sendOfferTest, type AdminOffer, type OfferPriceSet, type OfferRound } from "@/api/offers";
 import { Segmented } from "@/components/Segmented";
 import { ErrorView, LoadingView } from "@/components/StateView";
 import { Button } from "@/components/ui/button";
@@ -34,19 +34,25 @@ export function OfferPreviewPanel({
   priceSet,
   onPriceSet,
   wordsDirty,
+  round = "launch",
+  onRound,
 }: {
   offer: AdminOffer;
   priceSet: OfferPriceSet;
   onPriceSet: (set: OfferPriceSet) => void;
   /** The words have unsaved changes: the preview and the test are the saved email. */
   wordsDirty: boolean;
+  /** Which email: the offer's, or its last call (with the countdown to the UK's midnight). */
+  round?: OfferRound;
+  /** Offered once the email has gone and a last call can follow. */
+  onRound?: ((round: OfferRound) => void) | undefined;
 }) {
   const { user } = useAuth();
   const [size, setSize] = useState<PreviewSize>("desktop");
   const [testing, setTesting] = useState(false);
   const preview = useQuery({
-    queryKey: [...offerKeys.preview(offer.id), priceSet],
-    queryFn: ({ signal }) => getOfferPreview(offer.id, priceSet, signal),
+    queryKey: [...offerKeys.preview(offer.id), priceSet, round],
+    queryFn: ({ signal }) => getOfferPreview(offer.id, priceSet, signal, round),
     // The other set's email stays up while this one renders, but never another offer's.
     placeholderData: (previous, previousQuery) => (previousQuery?.queryKey[1] === offer.id ? previous : undefined),
   });
@@ -57,7 +63,7 @@ export function OfferPreviewPanel({
   async function sendTest() {
     setTesting(true);
     try {
-      await sendOfferTest(offer.id, priceSet);
+      await sendOfferTest(offer.id, priceSet, round);
       toast.success(`Test sent to ${user?.email ?? "your address"}`, {
         description: `As Grace: free, ${priceSet === "regional" ? "on regional prices" : "UK, standard prices"}.`,
       });
@@ -89,6 +95,20 @@ export function OfferPreviewPanel({
           ]}
         />
       </header>
+      {onRound && (
+        <div className="flex flex-wrap items-center justify-between gap-3 px-4 pb-3 text-xs text-muted-foreground sm:px-5">
+          <span>Email</span>
+          <Segmented
+            label="Which email"
+            value={round}
+            onChange={onRound}
+            options={[
+              { value: "launch", label: "The email" },
+              { value: "lastCall", label: "Last call" },
+            ]}
+          />
+        </div>
+      )}
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 pb-3 text-xs text-muted-foreground sm:px-5">
         <span>Prices</span>
         <Segmented

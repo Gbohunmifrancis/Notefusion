@@ -66,7 +66,9 @@ public sealed record AdminOfferDto(
     string Label,
     DateTime EndsFirstUtc,
     DateTime EndsLastUtc,
-    bool SeasonOn);
+    bool SeasonOn,
+    OfferWords? LastCallWords = null,
+    DateTime? LastCallStartedAtUtc = null);
 
 /// <param name="Interval">"Monthly" or "Yearly".</param>
 /// <param name="Set">"standard" or "regional".</param>
@@ -156,9 +158,40 @@ public sealed record OfferProgressDto(
     long RevenueMinor,
     IReadOnlyList<OfferDayDto> ByDay,
     IReadOnlyList<OfferPlanSalesDto> ByPlan,
-    int Opened);
+    int Opened,
+    OfferLastCallProgressDto? LastCall = null);
 
-public sealed record OfferSkippedDto(int OptedOut, int Bought, int BecamePro, int Ended, int NoLongerEligible);
+/// <summary>
+/// The last call's own queue and what came of it (null until it is sent); the progress's other counts are the email's.
+/// <c>BoughtAfter</c>: bought at the offer's price after their last call went.
+/// </summary>
+public sealed record OfferLastCallProgressDto(int Queued, int Sent, int Skipped, int Failed, int Opened, int Clicked, int BoughtAfter);
+
+/// <summary>
+/// <c>GET /api/admin/offers/{id}/recipients</c>: the people an email went to, those who opened it first (the newest
+/// open first), each with what came of it. <c>Total</c> counts every match, <c>Items</c> one page of them.
+/// </summary>
+public sealed record OfferRecipientsDto(string Round, string Filter, int Total, int Opened, IReadOnlyList<OfferRecipientDto> Items);
+
+/// <param name="Group">"Lapsed", "Free" or "ProNow".</param>
+/// <param name="Status">"Queued", "Sent", "Skipped" or "Failed"; <c>SkipReason</c> says why one was skipped.</param>
+/// <param name="OpenedAtUtc">The first open: its image loading, or its button clicked with images blocked.</param>
+/// <param name="BoughtAtUtc">When they paid at the offer's price, whichever email it followed.</param>
+public sealed record OfferRecipientDto(
+    Guid UserId,
+    string? Name,
+    string Email,
+    string? Country,
+    string Group,
+    string Status,
+    string? SkipReason,
+    DateTime? SentAtUtc,
+    DateTime? OpenedAtUtc,
+    DateTime? ClickedAtUtc,
+    DateTime? BoughtAtUtc);
+
+/// <param name="LastCallInstead">Still waiting when the last call was sent, which went to them instead.</param>
+public sealed record OfferSkippedDto(int OptedOut, int Bought, int BecamePro, int Ended, int NoLongerEligible, int LastCallInstead = 0);
 
 public sealed record OfferDayDto(DateOnly Date, int Sent, int Clicked, int Bought, int Opened);
 

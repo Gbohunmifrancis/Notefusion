@@ -16,8 +16,10 @@ public sealed record OfferWords(string Subject, string Preheader, string Headlin
 /// <param name="LastDayOfMonth">The default last day's day (31 October, 26 December).</param>
 /// <param name="StartsDaysBefore">The default start is the Monday on or before this many days before the last day, 09:00 UK.</param>
 /// <param name="Words">The default email words.</param>
+/// <param name="LastCallWords">The default words of the last call, the follow-up before the offer ends.</param>
 public sealed record OfferTemplate(
-    string Template, string Season, string Label, int LastMonth, int LastDayOfMonth, int StartsDaysBefore, OfferWords Words)
+    string Template, string Season, string Label, int LastMonth, int LastDayOfMonth, int StartsDaysBefore, OfferWords Words,
+    OfferWords LastCallWords)
 {
     /// <summary>The default last day in <paramref name="year"/>.</summary>
     public DateOnly LastDayIn(int year) => new(year, LastMonth, LastDayOfMonth);
@@ -64,7 +66,14 @@ public static class OfferTemplates
             "Whole songs, four parts and Sing it back, monthly or yearly, until 31 October.",
             "Pro is {pct}% off until Halloween",
             "Whatever your choir is learning this autumn, Pro writes out the whole song, adds alto, tenor and bass under the "
-            + "tune, and listens while you sing your part back.\n\nFor the rest of October, Pro is {pct}% off, monthly or yearly."));
+            + "tune, and listens while you sing your part back.\n\nFor the rest of October, Pro is {pct}% off, monthly or yearly."),
+        new OfferWords(
+            "🎃 Last call: {pct}% off Pro is almost gone",
+            "When the clock strikes midnight, Pro goes back to its usual price.",
+            "Midnight is coming for your {pct}% off",
+            "Our Halloween offer is nearly over. When the clock below runs out, Pro goes back to its usual price, and this "
+            + "is the last time we'll mention it.\n\nIf you've been meaning to write out whole songs, add alto, tenor and bass "
+            + "under the tune, and sing your part back, now is the moment: {pct}% off, monthly or yearly."));
 
     public static readonly OfferTemplate ChristmasTemplate = new(
         Christmas, "Christmas", "Christmas offer", 12, 26, 12,
@@ -73,7 +82,14 @@ public static class OfferTemplates
             "Whole songs, four parts and Sing it back, monthly or yearly, until 26 December.",
             "Pro is {pct}% off for Christmas",
             "Whatever your choir is singing this Christmas, Pro writes out the whole carol, adds alto, tenor and bass under "
-            + "the tune, and listens while you sing your part back.\n\nUntil Boxing Day, Pro is {pct}% off, monthly or yearly."));
+            + "the tune, and listens while you sing your part back.\n\nUntil Boxing Day, Pro is {pct}% off, monthly or yearly."),
+        new OfferWords(
+            "🎄 Last call: {pct}% off Pro is almost gone",
+            "When Boxing Day ends, Pro goes back to its usual price.",
+            "The clock is ticking on your {pct}% off",
+            "Our Christmas offer is nearly over. When the clock below runs out, Pro goes back to its usual price, and this "
+            + "is the last time we'll mention it.\n\nIf you've been meaning to write out whole carols, add alto, tenor and bass "
+            + "under the tune, and sing your part back, now is the moment: {pct}% off, monthly or yearly."));
 
     public static readonly IReadOnlyList<OfferTemplate> All = [HalloweenTemplate, ChristmasTemplate];
 

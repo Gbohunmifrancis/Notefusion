@@ -249,7 +249,7 @@ public class AdminPhoneLockTests
             .Select(a => $"{a.Type.Name}.{a.Method.Name}").OrderBy(n => n).ToList();
         Assert.Equal(
             ["AdminController.EndSubscription", "AdminController.RevokePro", "AdminController.Role",
-             "AdminController.Suspend", "AdminFeaturesController.Set", "AdminOffersController.Send",
+             "AdminController.Suspend", "AdminFeaturesController.Set", "AdminOffersController.LastCall", "AdminOffersController.Send",
              "AdminOffersController.SetEnabled"],
             fresh);
 
