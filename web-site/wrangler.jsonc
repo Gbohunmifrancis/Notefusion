@@ -1,0 +1,16 @@
+// The website and web app (web-site/) on Cloudflare: the folder, served as Workers static assets at notefusion.studio.
+// No Worker code runs, so no request counts against the Workers plan. Deployed by .github/workflows/deploy-web.yml
+// (`wrangler deploy` from the staged copy the blog is built into); the zone notefusion.studio must be on this Cloudflare
+// account. _headers is the site's headers; .assetsignore keeps the repo's own files off the site.
+{
+  "name": "notefusion-web",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": ".",
+    // /blog serves blog/index.html and /privacy privacy.html; /blog/ and /privacy.html redirect to them (Vercel's
+    // cleanUrls with no trailing slash).
+    "html_handling": "drop-trailing-slash"
+  },
+  "routes": [{ "pattern": "notefusion.studio", "custom_domain": true }],
+  "workers_dev": true
+}

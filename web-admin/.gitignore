@@ -6,3 +6,7 @@
 .next/
 next-env.d.ts
 *.tsbuildinfo
+
+# Cloudflare: the static export and wrangler's local state.
+/out/
+.wrangler/

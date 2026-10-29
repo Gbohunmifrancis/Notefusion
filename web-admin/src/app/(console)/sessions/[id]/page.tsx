@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
+"use client";
+
+import { usePathId } from "@/hooks/usePathId";
 
 import { SessionPlayerView } from "./SessionPlayerView";
 
-export const metadata: Metadata = { title: "Recording · NoteFusion Admin" };
-
-/** The recording's Sentry id is in the path, so this shell awaits it and hands the view a plain string. */
-export default async function SessionPlayerPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  return <SessionPlayerView id={id} />;
+/** The recording's Sentry id is in the path: read from the address and handed to the view as a plain string. */
+export default function SessionPlayerPage() {
+  const id = usePathId("/sessions/");
+  return id ? <SessionPlayerView id={id} /> : null;
 }

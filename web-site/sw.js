@@ -7,7 +7,7 @@
  * Safari, which revokes a subscription whose pushes do not all show a notification. A click focuses the web app
  * and asks it to open the job, or opens /app?job=<id> when no tab is left.
  *
- * Served from the site root with Cache-Control: no-cache (vercel.json), so a change reaches browsers on their
+ * Served from the site root with Cache-Control: no-cache (_headers), so a change reaches browsers on their
  * next visit. The decisions are plain functions on self.NfSw with node tests (web-site/tests/sw.test.mjs).
  */
 "use strict";

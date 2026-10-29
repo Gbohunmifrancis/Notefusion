@@ -1,5 +1,9 @@
 # Deploying the web front-ends (Vercel)
 
+> **Out of date since 29 Oct 2026:** the website and the admin console moved to Cloudflare when Vercel's Hobby
+> plan paused the account. See [DEPLOYMENT.md §7](DEPLOYMENT.md#7-the-website-and-the-admin-console-cloudflare);
+> this page is kept for the legal pages (`docs/`), still on Vercel.
+
 Three front-ends ship from this repo, all on Vercel — two hand-written static folders and one
 built app:
 

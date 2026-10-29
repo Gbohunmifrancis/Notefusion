@@ -677,7 +677,7 @@ ping is a warning in the deploy log, never a failed deploy.
 - **Analytics.** Every generated page loads `assets/track.js`, so blog and hymn traffic appears in
   the admin dashboard's *Website traffic*; the call-to-action buttons are named for click tracking
   ("CTA: blog", "CTA: hymn"), and playing a hymn records the action "Hymn played".
-- **Updating the shared assets.** `vercel.json` makes browsers revalidate `/assets/*.css` and
+- **Updating the shared assets.** Cloudflare (`web-site/_headers`) makes browsers revalidate `/assets/*.css` and
   `*.js` on every load, but follow the site's convention anyway: bump the `?v=` numbers in
   `ASSET_VERSION` (`tools/blog/lib/site.mjs`) and rebuild when you change `blog.css`, `blog.js`,
   `site-pages.css`, `site-theme.js`, `theme-boot.js` or `hymn.js` (the hand-written pages carry the

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next typegen && tsc --noEmit"
+    "lint": "next typegen && tsc --noEmit",
+    "build:cloudflare": "next build && node scripts/cloudflare-redirects.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.101.4",
