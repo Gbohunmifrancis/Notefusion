@@ -29,7 +29,7 @@ const nunito = Nunito({
 export const metadata: Metadata = {
   title: "NoteFusion Admin",
   description: "Operations console for NoteFusion.",
-  // Internal tool: keep it out of search results entirely. vercel.json sends the matching
+  // Internal tool: keep it out of search results entirely. public/_headers sends the matching
   // X-Robots-Tag header, because a meta tag only helps for crawlers that render the page.
   robots: { index: false, follow: false },
   // The app's launcher icon (web-site/assets/icon-192.png) — the white mark on the brand-blue

@@ -1,0 +1,16 @@
+// The admin console on Cloudflare: Next's static export (`npm run build:cloudflare` → out/) served as Workers static
+// assets at admin.notefusion.studio. No Worker code runs, so no request counts against the Workers plan. Deployed by
+// .github/workflows/deploy-admin.yml (`wrangler deploy`); the zone notefusion.studio must be on this Cloudflare account.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "notefusion-admin",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./out",
+    // /users serves users.html; /users/ and /users.html redirect to /users, as on Vercel.
+    "html_handling": "drop-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  "routes": [{ "pattern": "admin.notefusion.studio", "custom_domain": true }],
+  "workers_dev": true
+}

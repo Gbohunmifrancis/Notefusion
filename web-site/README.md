@@ -19,7 +19,7 @@ assets/notify.js      a job that finishes while the tab is hidden: notification,
                       with notifications on, also subscribes the browser to web push (the API's VAPID key)
 sw.js                 the push-only service worker (scope /app/, no caching): shows a pushed "sheet is ready" with the
                       tab closed, under the tab's own tag; a click opens /app?job=<id>. iPhone/iPad: Home Screen only
-tests/                node --test web-site/tests/*.test.mjs (not deployed: .vercelignore)
+tests/                node --test web-site/tests/*.test.mjs (not deployed: .assetsignore)
 privacy/index.html    privacy policy (unchanged from when it was hosted alone)
 terms/index.html      terms of service
 delete-account/       account/data deletion and email confirmation flow
@@ -112,18 +112,15 @@ surface with React Native's `tintColor`; the web equivalent is `mask` +
 
 ## Deploying
 
-**Vercel** — point a project at this directory.
+**Cloudflare** (Workers static assets) — `.github/workflows/deploy-web.yml` builds the blog into a copy of this
+directory and runs `wrangler deploy` there (`wrangler.jsonc`; docs/DEPLOYMENT.md §7).
 
-```bash
-npx vercel deploy web-site --prod
-```
-
-`vercel.json` turns on clean URLs (so `/privacy` serves `privacy/index.html`),
-sets `nosniff`, `DENY` framing, and a strict referrer policy, and caches
-`/assets/*` for a week: fonts for a year (their names carry the upstream version), CSS and JS
-for a day when requested with `?v=` (so **a changed CSS or JS file must get a new `?v=`** in every
-page that loads it, and in `tools/blog/lib/site.mjs` for generated pages), and an unversioned CSS/JS/SVG
-request is revalidated every time. There is no `/` redirect any more — the root is the
+`wrangler.jsonc` serves clean URLs without a trailing slash (so `/privacy` serves `privacy/index.html` and
+`/privacy/` redirects to it); `_headers` sets `nosniff`, `DENY` framing, a strict referrer policy and the
+content security policies, caches fonts for a year (their names carry the upstream version) and revalidates every
+other file each time (so **a changed CSS or JS file must get a new `?v=`** in every page that loads it, and in
+`tools/blog/lib/site.mjs` for generated pages). `.assetsignore` keeps this README, the tests and the config files off
+the domain. There is no `/` redirect any more — the root is the
 landing page.
 
 Everything in this directory is served publicly. Nothing that is not meant to be
@@ -159,7 +156,7 @@ CHROME_PATH=/path/to/chrome npx lighthouse@12.8.2 https://notefusion.studio/ --f
 ```
 
 Run it for `/`, `/app`, `/hymns/amazing-grace`, `/hymns/identify` and a blog post, before and after a change
-that adds weight; for a local build, serve `web-site/` with the headers in `vercel.json` and gzip/brotli.
+that adds weight; for a local build, serve `web-site/` with `npx wrangler dev` (the headers in `_headers`, compressed as Cloudflare serves it).
 Check layouts at 360, 390 and 414 px (and 768) for horizontal scroll, small targets and dialogs that do not fit.
 
 ## After deploying

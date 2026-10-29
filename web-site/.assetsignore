@@ -1,0 +1,11 @@
+# Everything in this directory is served at the domain root, so anything left in here is public (as .vercelignore).
+README.md
+tests
+.gitignore
+.assetsignore
+.env*
+.vercel
+.audit-*
+vercel.json
+wrangler.jsonc
+node_modules

@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
+"use client";
+
+import { usePathId } from "@/hooks/usePathId";
 
 import { PaymentDetailView } from "./PaymentDetailView";
 
-export const metadata: Metadata = { title: "Payment · NoteFusion Admin" };
-
 /**
- * The payment's id is in the path, so this shell awaits it and hands the view a plain string. The webhook inbox's
+ * The payment's id is in the path: read from the address and handed to the view as a plain string. The webhook inbox's
  * rows and the Payments table link here.
  */
-export default async function PaymentDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  return <PaymentDetailView id={id} />;
+export default function PaymentDetailPage() {
+  const id = usePathId("/payments/");
+  return id ? <PaymentDetailView id={id} /> : null;
 }

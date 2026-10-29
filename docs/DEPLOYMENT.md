@@ -409,7 +409,7 @@ without either, that half is off and the console says so:
 - **Gemini** drafts posts (on "Generate with Gemini", and twice a week on its own). Never publishes.
 - **GitHub** runs the website's deploy workflow (`deploy-web.yml`, `workflow_dispatch` on `main`) when a
   post is published, unpublished, archived, edited while live, or goes live on its schedule. The
-  workflow builds the blog from `GET /api/blog/published` and deploys it to Vercel.
+  workflow builds the blog from `GET /api/blog/published` and deploys it to Cloudflare (§7).
 
 | GitHub secret/var | Container var | Default | Notes |
 |-------------------|---------------|---------|-------|
@@ -545,6 +545,34 @@ lane (`NF_PRO_LANE_WORKERS`). Those are the knobs to reach for.
 
 The worker used to run on Heroku, with Railway as a standby; both setups (Procfile, Aptfile,
 `railway.toml`, the Heroku scripts) were retired with the move to EC2 and are in the git history.
+
+## 7. The website and the admin console (Cloudflare)
+
+Both are static files served by Cloudflare as Workers static assets (no Worker code runs, so no request counts
+against the Workers plan): the website from `web-site/` (`web-site/wrangler.jsonc`, worker `notefusion-web`, headers in
+`web-site/_headers`, `.assetsignore` keeps README, tests and config off the domain) at notefusion.studio, and the console
+as Next's static export (`web-admin/wrangler.jsonc`, worker `notefusion-admin`, `npm run build:cloudflare`) at
+admin.notefusion.studio. They moved from Vercel on 29 Oct 2026, when the Hobby plan paused the account.
+`deploy-web.yml` and `deploy-admin.yml` deploy them with `wrangler deploy` (pinned).
+
+One-time setup:
+
+1. **Put notefusion.studio on Cloudflare** (the account that holds the R2 bucket): Add a domain → notefusion.studio →
+   Free. Cloudflare copies the DNS records it finds; before switching, check every one is there and keep these
+   **DNS only (grey cloud)**: `api` A `3.136.214.229` (the EC2 API), the MX records (Zoho's three and
+   `inbound-smtp.eu-west-1.amazonaws.com`, Resend's inbound), `send` MX and TXT (Resend's sending), the TXT records
+   (`v=spf1 include:zohomail.com ~all`, `google-site-verification=…`, `zoho-verification=…`, `resend._domainkey`, any
+   `_dmarc`). Delete the records pointing at Vercel (the root's `216.198.79.1`/`64.29.17.1`, `www` and `admin` CNAMEs to
+   `vercel-dns`): the deploys create their own.
+2. **Switch the nameservers** at name.com (Domains → notefusion.studio → Nameservers) to the two Cloudflare names
+   given, and wait for Cloudflare to say the domain is active.
+3. **An API token**: My Profile → API Tokens → Create → the "Edit Cloudflare Workers" template; Zone Resources:
+   notefusion.studio; add Zone → DNS → Edit. Save it as the GitHub secret `CLOUDFLARE_API_TOKEN`, and the account id
+   (Workers & Pages overview) as `CLOUDFLARE_ACCOUNT_ID`.
+4. **Deploy**: run "Deploy website to Cloudflare" and "Deploy admin console to Cloudflare" (Actions → Run workflow).
+   Each attaches its domain (a Workers custom domain) and smoke-checks it.
+5. **www**: Rules → Redirect Rules → the "Redirect from WWW to root" template (301 to `https://notefusion.studio`),
+   with a proxied `www` record (`AAAA www 100::`), as Vercel redirected it.
 
 ## Verify
 
@@ -842,7 +870,7 @@ To set it up: in Sentry create the projects (ASP.NET Core, FastAPI, Browser Java
 project already exists), copy each project's DSN (Project settings → Client Keys) into the repository's Actions
 secrets or variables as above, and deploy (re-run `deploy.yml` and `deploy-web.yml`, or merge anything). A DSN is
 not a password (every app that reports carries one) but keep the server ones as secrets anyway. The web app's
-`Content-Security-Policy` (`web-site/vercel.json`, `/app`) allows only this organisation's ingest host,
+`Content-Security-Policy` (`web-site/_headers`, `/app`) allows only this organisation's ingest host,
 `o4508111757770752.ingest.us.sentry.io`; a project in another organisation needs that line changed.
 
 **Sessions in the console** (board k-sessions). The console's Sessions page (`/sessions`) lists the phone's

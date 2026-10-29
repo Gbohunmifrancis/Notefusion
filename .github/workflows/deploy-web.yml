@@ -1,8 +1,8 @@
-name: Deploy website to Vercel
+name: Deploy website to Cloudflare
 
-# The marketing site and web app (web-site/) are static files on Vercel. They used to ship by
-# hand with `cd web-site && vercel --prod` from a working tree, which is how the live site fell
-# behind main. This deploys the committed folder on every merge that touches it.
+# The marketing site and web app (web-site/) are static files on Cloudflare (Workers static assets,
+# web-site/wrangler.jsonc; headers in web-site/_headers). They moved from Vercel on 29 Oct 2026, when
+# the Hobby plan paused the account. This deploys the committed folder on every merge that touches it.
 #
 # The blog's posts are not committed: they live in the API's database and are published from the
 # admin console. Before deploying, `tools/blog/build.mjs --api` reads every live post from
@@ -15,10 +15,10 @@ name: Deploy website to Vercel
 # edited while live, or goes live on its schedule; GitHub keeps one run going and one waiting, so a
 # burst of publishes is one or two deploys.
 #
-# Needs three repository secrets, all from the Vercel dashboard / `vercel link` in web-site/:
-#   VERCEL_TOKEN       an account token (Settings → Tokens)
-#   VERCEL_ORG_ID      .vercel/project.json → orgId      (team_0ghJL5LGBgeSs8b2UEYo3ynj)
-#   VERCEL_PROJECT_ID  .vercel/project.json → projectId  (prj_LkfxRv0q0HiDtj8KlE2v5zTBsd4W, the "notefusion" project)
+# Needs two repository secrets (docs/DEPLOYMENT.md, "Cloudflare"), shared with deploy-admin.yml:
+#   CLOUDFLARE_API_TOKEN   a token from the "Edit Cloudflare Workers" template, with Zone → DNS → Edit on notefusion.studio
+#   CLOUDFLARE_ACCOUNT_ID  the account's id (the dashboard's Workers & Pages overview)
+# The zone notefusion.studio must be on that account: the deploy attaches the domain to the site.
 # Optional repository variable BLOG_API_URL (default https://api.notefusion.studio).
 
 on:
@@ -40,8 +40,8 @@ jobs:
   secret-scan:
     uses: ./.github/workflows/secret-scan.yml
 
-  vercel:
-    name: Vercel production deploy
+  cloudflare:
+    name: Cloudflare production deploy
     needs: secret-scan
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -49,16 +49,14 @@ jobs:
       run:
         working-directory: web-site
     env:
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
       BLOG_API_URL: ${{ vars.BLOG_API_URL || 'https://api.notefusion.studio' }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Check secrets
         run: |
-          if [ -z "${{ secrets.VERCEL_TOKEN }}" ] || [ -z "$VERCEL_ORG_ID" ] || [ -z "$VERCEL_PROJECT_ID" ]; then
-            echo "::error::Set VERCEL_TOKEN, VERCEL_ORG_ID and VERCEL_PROJECT_ID in the repository secrets (see .github/workflows/deploy-web.yml)."
+          if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ] || [ -z "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" ]; then
+            echo "::error::Set CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID in the repository secrets (see .github/workflows/deploy-web.yml)."
             exit 1
           fi
 
@@ -87,13 +85,9 @@ jobs:
         working-directory: .
         run: node tools/blog/check.mjs --deployed
 
-      # Deployed from a copy of the folder outside the checkout. Vercel reads the git
-      # metadata it finds next to the files and attributes the deployment to that
-      # commit's author; when the author is not a member of the Vercel team (a bot, a
-      # contributor) the deployment is created and then BLOCKED ("the commit author
-      # doesn't have permission to create deployments for this project"). Outside the
-      # checkout there is no git metadata, so the deployment is attributed to the token.
-      # /app's error reports (assets/errors.js): the web Sentry project's DSN and this commit go into the staged copy
+      # Deployed from a copy of the folder outside the checkout, so the deploy is exactly the built site
+      # (wrangler.jsonc, _headers and .assetsignore come with it; .assetsignore keeps README, tests and the
+      # rest off the domain). /app's error reports (assets/errors.js): the web Sentry project's DSN and this commit go into the staged copy
       # only (docs/DEPLOYMENT.md, "Error reports"). Without SENTRY_DSN_WEB the slots stay empty and nothing is sent.
       - name: Stage the site outside the git checkout
         env:
@@ -112,15 +106,15 @@ jobs:
             grep -q '<meta name="nf-sentry-dsn" content="https://' "$page" || { echo "::error::The Sentry DSN did not reach app/index.html."; exit 1; }
           fi
 
-      # The CLI is pinned (it runs with the account-wide VERCEL_TOKEN): a new release reaches the deploy only when
-      # this version is bumped on purpose, never because it was published. deploy-admin.yml pins the same one.
-      - name: Pull the project's Vercel settings
-        working-directory: ${{ runner.temp }}/site
-        run: npx --yes vercel@64.5.0 pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
-
+      # The CLI is pinned (it runs with the account's CLOUDFLARE_API_TOKEN): a new release reaches the deploy only
+      # when this version is bumped on purpose, never because it was published. deploy-admin.yml pins the same one.
       - name: Deploy
         working-directory: ${{ runner.temp }}/site
-        run: npx --yes vercel@64.5.0 deploy --prod --yes --token="${{ secrets.VERCEL_TOKEN }}"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          WRANGLER_SEND_METRICS: "false"
+        run: npx --yes wrangler@4.151.3 deploy
 
       - name: Smoke-check the live site
         working-directory: .

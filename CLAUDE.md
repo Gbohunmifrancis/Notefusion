@@ -382,6 +382,12 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `payment-problems`, `NotifyAdminsOfPaymentIssuesCommand`); the chime is `assets/sounds/payment.wav` (expo-notifications
   `sounds`: a store build).
 
+- **`web-site/` and `web-admin/` on Cloudflare** (docs/DEPLOYMENT.md §7): static files served as Workers static assets
+  (`wrangler.jsonc` each; no Worker code, so no request is metered), deployed by `deploy-web.yml`/`deploy-admin.yml` with
+  `wrangler deploy`. The site's headers are `web-site/_headers`; the console is Next's static export (`output: "export"`),
+  its `/users|blog|sessions|payments/[id]` pages built once for the id `_` and served for every id by the generated
+  `out/_redirects`, reading the id from the address (`hooks/usePathId`). Moved from Vercel on 29 Oct 2026.
+
 - **`ops/backup/` — backups** (`docs/BACKUP_AND_MIGRATION.md`): the compose `backup` service (pinned image on the db's
   own postgres:16-alpine) puts encrypted copies in a bucket of their own: restic (`pg_dump` every 6 h with a row-count
   manifest, read back and SHA-checked; photos, JWT key, Caddyfile daily) and WAL-G (daily base + WAL from the db's

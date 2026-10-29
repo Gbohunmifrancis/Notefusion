@@ -9,10 +9,13 @@ import { PHASE_PRODUCTION_BUILD } from "next/constants";
  * `Avatar` renders a plain `<img>` with its own error fallback instead, which is also what
  * shadcn's `AvatarImage` does.
  *
- * No `output: "export"`: /users/[id] takes an id that cannot be enumerated at build time, so
- * the app deploys as a normal Vercel app rather than a static bundle.
+ * `output: "export"`: the console is static files on Cloudflare (Workers static assets; wrangler.jsonc). It is all
+ * client components talking to the API with the operator's token, so nothing needs a server. The pages with an id
+ * in the path (/users/[id], /blog/[id], /sessions/[id], /payments/[id]) are built once for a placeholder id and
+ * served for every id by `public/_redirects`; they read the id from the address (`usePathId`).
  */
 const nextConfig: NextConfig = {
+  output: "export",
   // The console is admin-only and noindex; nothing here should be crawled or previewed.
   poweredByHeader: false,
 };
@@ -20,7 +23,7 @@ const nextConfig: NextConfig = {
 /**
  * `NEXT_PUBLIC_API_URL` is inlined into the client bundle at build time, so a deploy that
  * forgot it cannot be fixed by setting the variable afterwards — the shipped JavaScript
- * already has an empty string baked in, every request goes to a relative path on Vercel,
+ * already has an empty string baked in, every request goes to a relative path on the console's own host,
  * and the console renders a fully styled shell that can load nothing. Failing the build is
  * the only place that mistake is still cheap.
  *
@@ -32,8 +35,8 @@ export default function config(phase: string): NextConfig {
   if (phase === PHASE_PRODUCTION_BUILD && !process.env.NEXT_PUBLIC_API_URL) {
     throw new Error(
       "NEXT_PUBLIC_API_URL is not set. The dashboard talks to the NoteFusion API over " +
-        "HTTP and has no same-origin fallback — set it in the Vercel project's environment " +
-        "variables (or .env.production) to the API's origin, e.g. https://api.notefusion.studio",
+        "HTTP and has no same-origin fallback — set it in .env.production " +
+        "(committed) to the API's origin, e.g. https://api.notefusion.studio",
     );
   }
 
