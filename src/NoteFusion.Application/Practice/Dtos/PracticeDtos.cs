@@ -77,6 +77,7 @@ public sealed record PracticeMilestoneDto(
 /// "runs", "intervals", "harmony", "rhythm"; Playful's four), each switchable on the server (<c>PracticeModes__*</c>):
 /// a client shows only these. <c>Drills</c> counts every marked take but parts: a mode's take spends one too.
 /// <c>Season</c> is the seasonal side-path (the Christmas carols) while its season is on for the singer, else null.
+/// <c>Quests</c> are the day's three quests and its chest (<see cref="DailyQuests"/>).
 /// </summary>
 public sealed record PracticeProgressDto(
     DateOnly Today,
@@ -92,7 +93,18 @@ public sealed record PracticeProgressDto(
     PracticeTrack? Track,
     PracticePathDto? Path = null,
     IReadOnlyList<string>? Modes = null,
-    PracticeSeasonDto? Season = null);
+    PracticeSeasonDto? Season = null,
+    DailyQuestsDto? Quests = null);
+
+/// <summary>
+/// The day's three quests (the same for everyone that day), how far today's marked takes have got with each, and the
+/// chest: <c>ChestOpened</c> once all three are done, worth <c>ChestXp</c> on top of the day's cap. Mirrored by
+/// <c>DailyQuests</c> in <c>mobile/src/api/types.ts</c>.
+/// </summary>
+public sealed record DailyQuestsDto(IReadOnlyList<DailyQuestDto> Quests, bool ChestOpened, int ChestXp);
+
+/// <summary>One quest: its code ("drills-2"), what it asks, how far today's takes got, its target and whether it is done.</summary>
+public sealed record DailyQuestDto(string Code, string Title, int Progress, int Target, bool Done);
 
 /// <summary>
 /// The seasonal practice side-path, on the progress while its season is on (the Practice screen's pine card): which

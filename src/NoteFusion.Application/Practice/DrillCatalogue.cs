@@ -292,7 +292,9 @@ public static class DrillCatalogue
     /// <see cref="PracticeRules.PlayfulTopTier"/>, and chromatic only from <see cref="PracticeRules.PlayfulChromaticTier"/>.
     /// </summary>
     public static bool IsPlayful(DrillPattern pattern)
-        => pattern.Tier <= PracticeRules.PlayfulTopTier
+        => MasteryCatalogue.IsMastery(pattern.Tier)
+            ? pattern.Code.StartsWith("mp", StringComparison.Ordinal)
+            : pattern.Tier <= PracticeRules.PlayfulTopTier
            && pattern.Step <= PracticeRules.PlayfulTopStep
            && pattern.Mode == KeyMode.Major
            && pattern.Tokens.Count <= PracticeRules.PlayfulMaxNotes
@@ -303,7 +305,7 @@ public static class DrillCatalogue
     public static bool OnTrack(DrillPattern pattern, PracticeTrack? track) => track switch
     {
         PracticeTrack.Playful => IsPlayful(pattern),
-        PracticeTrack.Focused => true,
+        PracticeTrack.Focused => !MasteryCatalogue.IsMastery(pattern.Tier) || pattern.Code.StartsWith("mf", StringComparison.Ordinal),
         _ => pattern.Tier <= LadderTopTier
     };
 
@@ -323,13 +325,20 @@ public static class DrillCatalogue
         };
     }
 
-    /// <summary>The patterns a track offers in one unit (<paramref name="tier"/>, <paramref name="step"/>), in catalogue order.</summary>
+    /// <summary>
+    /// The patterns a track offers in one unit (<paramref name="tier"/>, <paramref name="step"/>), in catalogue order;
+    /// past the catalogue's top, the track's Mastery unit (<see cref="MasteryCatalogue"/>).
+    /// </summary>
     public static IReadOnlyList<DrillPattern> UnitPatterns(PracticeTrack? track, int tier, int step)
-        => Patterns.Where(p => p.Tier == tier && p.Step == step && OnTrack(p, track)).ToList();
+        => MasteryCatalogue.IsMastery(tier)
+            ? MasteryCatalogue.UnitPatterns(track, tier, step)
+            : Patterns.Where(p => p.Tier == tier && p.Step == step && OnTrack(p, track)).ToList();
 
-    /// <summary>The grade's tempo for its first unit; each unit after it is <see cref="PracticeRules.TempoPerStep"/> quicker.</summary>
+    /// <summary>The grade's tempo for its first unit; each unit after it is <see cref="PracticeRules.TempoPerStep"/> quicker (Mastery: <see cref="MasteryCatalogue.TempoOf"/>).</summary>
     public static int TempoFor(int tier, int step = 1)
-        => DrillSyllabus.For(tier).TempoBpm + (Math.Clamp(step, 1, DrillSyllabus.UnitsPerGrade) - 1) * PracticeRules.TempoPerStep;
+        => MasteryCatalogue.IsMastery(tier)
+            ? MasteryCatalogue.TempoOf(tier, step)
+            : DrillSyllabus.For(tier).TempoBpm + (Math.Clamp(step, 1, DrillSyllabus.UnitsPerGrade) - 1) * PracticeRules.TempoPerStep;
 
     /// <summary>Semitones from the unmarked doh for each syllable of <paramref name="pattern"/>.</summary>
     public static IReadOnlyList<int> Offsets(DrillPattern pattern) => pattern.Tokens.Select(Offset).ToList();
@@ -421,6 +430,8 @@ public static class DrillCatalogue
     {
         var (key, notes) = Place(pattern, dohMidi);
         var tempo = TempoFor(pattern.Tier, pattern.Step);
+        if (MasteryCatalogue.IsMastery(pattern.Tier))
+            tempo = Math.Min(tempo, MasteryCatalogue.TempoCap(pattern) + (gentle ? PracticeRules.PlayfulTempoDrop : 0));
         return gentle
             ? new Drill($"{pattern.Code}@{dohMidi}{GentleSuffix}", pattern, key, dohMidi, tempo - PracticeRules.PlayfulTempoDrop, notes)
             : new Drill($"{pattern.Code}@{dohMidi}", pattern, key, dohMidi, tempo, notes);
@@ -433,6 +444,23 @@ public static class DrillCatalogue
     /// (<see cref="Modes.ModeCatalogue"/>) is placed by this too.
     /// </summary>
     public static (MusicalKey Key, List<NoteEventDto> Notes) Place(DrillPattern pattern, int dohMidi)
+    {
+        var (key, notes) = Engrave(pattern, dohMidi);
+        var labels = string.Join(' ', notes.Select(n => n.Solfa + n.OctaveMark));
+        if (labels != string.Join(' ', pattern.Tokens))
+            throw new InvalidOperationException(
+                $"Drill '{pattern.Code}' on {dohMidi} is labelled \"{labels}\" by the solfa engine, not \"{pattern.Solfa}\".");
+        return (key, notes);
+    }
+
+    /// <summary>
+    /// What the solfa engine writes for a pattern's pitches with its unmarked doh on <paramref name="dohMidi"/>, whether or
+    /// not that is how the pattern is written: how a Mastery line joined from two is labelled afresh.
+    /// </summary>
+    public static string EngineLabels(DrillPattern pattern, int dohMidi)
+        => string.Join(' ', Engrave(pattern, dohMidi).Notes.Select(n => n.Solfa + n.OctaveMark));
+
+    private static (MusicalKey Key, List<NoteEventDto> Notes) Engrave(DrillPattern pattern, int dohMidi)
     {
         var dohPc = dohMidi % 12;
         var key = pattern.Mode == KeyMode.Major
@@ -454,11 +482,6 @@ public static class DrillCatalogue
             notes.Add(new NoteEventDto(
                 pitches[i], timing[i].Start, timing[i].Beats, SolfaMapper.Degree(pitches[i], key), syllable.Text, syllable.OctaveMark, 1.0));
         }
-
-        var labels = string.Join(' ', notes.Select(n => n.Solfa + n.OctaveMark));
-        if (labels != string.Join(' ', pattern.Tokens))
-            throw new InvalidOperationException(
-                $"Drill '{pattern.Code}' on {dohMidi} is labelled \"{labels}\" by the solfa engine, not \"{pattern.Solfa}\".");
         return (key, notes);
     }
 
@@ -479,7 +502,7 @@ public static class DrillCatalogue
         var parts = (gentle ? id![..^GentleSuffix.Length] : id)?.Split('@');
         if (parts is not { Length: 2 } || !int.TryParse(parts[1], NumberStyles.None, CultureInfo.InvariantCulture, out var doh))
             return null;
-        var pattern = Patterns.FirstOrDefault(p => p.Code == parts[0]);
+        var pattern = Patterns.FirstOrDefault(p => p.Code == parts[0]) ?? MasteryCatalogue.Find(parts[0]);
         if (pattern is null || !AnyPlacements(pattern).Contains(doh) || (gentle && !IsPlayful(pattern)))
             return null;
         return Build(pattern, doh, gentle);

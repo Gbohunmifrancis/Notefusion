@@ -158,9 +158,16 @@
   /** After a marked take: the fresh numbers (streak, XP, badges, today's allowance) in the cards and the home chip. */
   function refreshProgress() {
     var gen = s.gen;
+    var before = s.progress && s.progress.quests;
     return ctx.request("/api/practice/progress").then(function (p) {
       if (gen !== s.gen || !p) return;
       s.progress = p;
+      // The take that did the day's last quest opens its chest: said once, with a burst.
+      if (window.NfPracticeArcade && window.NfPracticeArcade.chestJustOpened(before, p.quests)) {
+        toast("Chest opened! +" + p.quests.chestXp + " XP", null);
+        burst();
+        track("practice_quest_chest", "");
+      }
       if (s.drill) s.drill.allowance = p.drills;
       if (ctx.onProgress) ctx.onProgress(p);
       if (s.phase === "idle") render();
@@ -196,32 +203,144 @@
   }
 
   /**
-   * The streak and the level at the top as two small cards, each led by its 3D art (the flame, the level's emblem): the
-   * days with the week's goal under them, and the level with its XP and a bar to the next. The full cards are under
-   * "Your progress".
+   * The top bar: the level (its emblem and name), the streak's flame and days, the XP, and the day's quests as a chip
+   * that takes the singer to them; under it the style chosen, a tap to change it (never while a take is on its way).
    */
-  function progressLine(p) {
-    var strip = window.NfPracticeModes.progressStrip(p), week = p.weeklyGoal, days = p.streak.current;
-    var line = el("div", "pv-progline");
-    line.setAttribute("role", "group");
-    line.setAttribute("aria-label", strip.label + (week ? " " + week.daysDone + " of " + week.target + " days this week." : ""));
-    var streak = el("div", "pv-progcard"), st = el("div", "pv-progcard-text");
-    streak.setAttribute("aria-hidden", "true");
-    streak.appendChild(art(PT().flameArt(p.streak), 36));
-    st.appendChild(el("strong", null, days + (days === 1 ? " day" : " days")));
-    if (week) st.appendChild(el("span", null, "Week " + week.daysDone + "/" + week.target));
-    streak.appendChild(st);
-    line.appendChild(streak);
-    var level = el("div", "pv-progcard is-level"), lt = el("div", "pv-progcard-text");
-    level.setAttribute("aria-hidden", "true");
-    level.appendChild(art(PT().levelArt(p.level.index), 36));
-    lt.appendChild(el("strong", null, strip.level + " · " + strip.xp));
-    var bar0 = el("span", "pv-minibar"), fill = el("i"); fill.style.width = Math.round(strip.fraction * 100) + "%";
-    bar0.appendChild(fill); lt.appendChild(bar0);
-    if (strip.toNext) lt.appendChild(el("span", null, strip.toNext));
-    level.appendChild(lt);
-    line.appendChild(level);
-    return line;
+  function topBar(p, tr, T) {
+    var A = window.NfPracticeArcade, strip = window.NfPracticeModes.progressStrip(p), bar = el("div", "pv-gbar");
+    bar.setAttribute("role", "group");
+    bar.setAttribute("aria-label", strip.label);
+    var level = el("span", "pv-gbar-item is-level");
+    level.appendChild(art(T.levelArt(p.level.index), 30));
+    level.appendChild(el("b", null, p.level.name));
+    bar.appendChild(level);
+    var streak = el("span", "pv-gbar-item is-streak" + (p.streak.current > 0 ? " is-on" : ""));
+    streak.appendChild(art(T.flameArt(p.streak), 28));
+    streak.appendChild(el("b", null, String(p.streak.current)));
+    bar.appendChild(streak);
+    var xp = el("span", "pv-gbar-item is-xp");
+    xp.appendChild(gem());
+    xp.appendChild(el("b", null, strip.xp));
+    bar.appendChild(xp);
+    var chip = A && A.questsChip(p.quests);
+    if (chip) {
+      var q = el("button", "pv-gbar-item is-quests" + (chip.open ? " is-open" : "")); q.type = "button";
+      q.setAttribute("aria-label", chip.label + (chip.open ? ". Chest opened" : "") + ". Show the quests");
+      q.appendChild(chestIcon(chip.open));
+      q.appendChild(el("b", null, chip.done + "/" + chip.total));
+      q.addEventListener("click", function () {
+        var card = root && root.querySelector("#pv-quests");
+        if (card) { card.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block: "center" }); card.focus({ preventScroll: true }); }
+      });
+      bar.appendChild(q);
+    }
+    var wrap = el("div", "pv-gtop");
+    wrap.appendChild(bar);
+    if (tr && !showPicker() && s.phase === "idle") {
+      var playful = tr === "playful", pill = el("button", "pv-track-pill" + (playful ? " is-playful" : ""));
+      pill.type = "button"; pill.id = "pv-track-pill";
+      pill.setAttribute("aria-label", "Practice style: " + T.trackTitle(tr) + ". Change it");
+      pill.appendChild(playful ? modeIcon("smile", "pv-pill-ic") : modeIcon("intervals", "pv-pill-ic"));
+      pill.appendChild(el("span", null, T.trackTitle(tr)));
+      pill.appendChild(icon("/assets/icons.svg#i-swap", "pv-swap"));
+      pill.addEventListener("click", function () { s.trackError = null; s.picking = true; stopHear(); render(); });
+      wrap.appendChild(pill);
+    }
+    return wrap;
+  }
+
+  /** The XP's gem, drawn here (two facets, cyan): decoration beside the number. */
+  function gem() {
+    var span = el("span", "pv-gem");
+    span.setAttribute("aria-hidden", "true");
+    span.innerHTML = '<svg viewBox="0 0 20 20" width="20" height="20" focusable="false"><path d="M10 2 18 8 10 18 2 8Z" fill="currentColor"/><path d="M10 2 14 8 10 18 6 8Z" fill="#fff" opacity=".45"/></svg>';
+    return span;
+  }
+
+  /** The quests' chest, shut or open: drawn here in the theme's colours. */
+  function chestIcon(open) {
+    var span = el("span", "pv-chest" + (open ? " is-open" : ""));
+    span.setAttribute("aria-hidden", "true");
+    span.innerHTML = open
+      ? '<svg viewBox="0 0 28 24" width="28" height="24" focusable="false"><path d="M3 11h22v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="currentColor"/><path d="M4 9 7 2h14l3 7z" fill="currentColor" opacity=".65"/><path d="M8 7l2-3M14 6V2M20 7l-2-3" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><rect x="12" y="13" width="4" height="5" rx="1" fill="#fff" opacity=".8"/></svg>'
+      : '<svg viewBox="0 0 28 24" width="28" height="24" focusable="false"><path d="M3 11h22v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="currentColor"/><path d="M3 11a4 4 0 0 1 4-6h14a4 4 0 0 1 4 6z" fill="currentColor" opacity=".65"/><rect x="12" y="9" width="4" height="7" rx="1" fill="#fff" opacity=".8"/></svg>';
+    return span;
+  }
+
+  /**
+   * The unit as a winding path (the game-coloured Practice): its banner, then a stop for each drill — done ones ticked,
+   * the one to sing now pulsing with START (a tap goes to its card's Sing), those ahead locked — and the unit's chest.
+   * Playful's Doh stands beside the stop to sing.
+   */
+  function pathView(d, stops, doh) {
+    var A = window.NfPracticeArcade, banner = A.unitBanner(d), sec = el("section", "pv-path-map");
+    sec.setAttribute("aria-label", (banner ? banner.eyebrow + ": " + banner.title + ". " : "") + "Drill " + d.drillIndex + " of " + d.drillCount + ".");
+    if (banner) {
+      var b = el("div", "pv-unit-banner gg-" + banner.tone);
+      var t = el("div", "pv-unit-banner-text");
+      t.appendChild(el("span", "pv-unit-eyebrow", banner.eyebrow));
+      t.appendChild(el("strong", null, banner.title));
+      b.appendChild(t);
+      if (banner.mastery) b.appendChild(el("span", "pv-unit-badge", "∞"));
+      sec.appendChild(b);
+    }
+    var road = el("ol", "pv-road");
+    road.setAttribute("aria-hidden", "true");
+    stops.forEach(function (stop) {
+      var li = el("li", "pv-stop is-" + stop.kind + (banner ? " tone-" + banner.tone : ""));
+      li.style.setProperty("--x", stop.offset + "px");
+      if (stop.kind === "current") {
+        li.appendChild(el("span", "pv-start", "START"));
+        var go = el("button", "pv-stop-btn"); go.type = "button"; go.tabIndex = -1;
+        go.appendChild(icon("/assets/icons.svg#i-mic"));
+        go.addEventListener("click", function () {
+          var sing = root && root.querySelector("#pv-sing");
+          if (sing) { sing.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block: "center" }); sing.focus({ preventScroll: true }); }
+        });
+        li.appendChild(go);
+        if (doh) { var bird = el("span", "pv-stop-doh"); bird.appendChild(doh); li.appendChild(bird); }
+      } else if (stop.kind === "chest") {
+        li.appendChild(chestIcon(false));
+      } else {
+        var dot = el("span", "pv-stop-btn");
+        dot.appendChild(icon(stop.kind === "done" ? "/assets/icons.svg#i-check" : "/assets/icons.svg#i-lock"));
+        li.appendChild(dot);
+      }
+      road.appendChild(li);
+    });
+    sec.appendChild(road);
+    return sec;
+  }
+
+  /** The day's three quests, each with its bar, and the chest they open (its XP on top of the day's cap). */
+  function questsCard(quests) {
+    var A = window.NfPracticeArcade, chip = A.questsChip(quests), card = el("section", "card pv-quests");
+    card.id = "pv-quests"; card.tabIndex = -1;
+    card.setAttribute("aria-labelledby", "pv-quests-title");
+    var head = el("div", "pv-quests-head");
+    var h = el("h2", "pv-section", "Daily quests"); h.id = "pv-quests-title";
+    head.appendChild(h);
+    var chest = el("span", "pv-quests-chest" + (chip.open ? " is-open" : ""));
+    chest.appendChild(chestIcon(chip.open));
+    chest.appendChild(el("span", null, chip.open ? "Opened · +" + quests.chestXp + " XP" : "+" + quests.chestXp + " XP"));
+    head.appendChild(chest);
+    card.appendChild(head);
+    var list = el("ul", "pv-quest-list");
+    quests.quests.forEach(function (q) {
+      var pr = A.questProgress(q), li = el("li", "pv-quest" + (q.done ? " is-done" : ""));
+      li.setAttribute("aria-label", q.title + ": " + pr.text + (q.done ? ", done" : ""));
+      var row = el("div", "pv-quest-row");
+      row.appendChild(el("span", "pv-quest-title", q.title));
+      row.appendChild(el("span", "pv-quest-count", q.done ? "Done" : pr.text));
+      li.appendChild(row);
+      var track0 = el("span", "pv-quest-bar"), fill = el("i");
+      fill.style.width = Math.round(pr.fraction * 100) + "%";
+      track0.appendChild(fill); li.appendChild(track0);
+      list.appendChild(li);
+    });
+    card.appendChild(list);
+    card.appendChild(el("p", "pv-note", chip.open ? "All three done. New quests tomorrow." : "Do all three today to open the chest."));
+    return card;
   }
 
   /**
@@ -262,24 +381,26 @@
 
   // ── Quick games (board s-practice-fun/s3), tapped not sung ──────────────
   /** A game's screen and styles: loaded the first time a game is opened, never with the view. */
-  var GAME_ASSETS = ["/assets/practice-modes.css?v=3", "/assets/practice-games.css?v=1", "/assets/practice-game-view.js?v=1"];
+  var GAME_ASSETS = ["/assets/practice-modes.css?v=3", "/assets/practice-games.css?v=2", "/assets/practice-game-view.js?v=2"];
   var GAME_ICON = { "which-note": "intervals", staff: "staff", hymn: "hymn" };
 
-  /** "Quick games": three tiles, each its icon, its name on the track and one line. */
-  function gamesSection(tr) {
-    var sec = el("section", "pv-games"), head = el("div", "pv-games-head");
+  /** The arcade: each quick game a coloured tile with the best level reached in this browser. They never end. */
+  var GAME_TONE = { "which-note": "blue", staff: "orange", hymn: "cyan" };
+  function arcadeSection(tr) {
+    var A = window.NfPracticeArcade, sec = el("section", "pv-games"), head = el("div", "pv-games-head");
     sec.setAttribute("aria-labelledby", "pv-games-title");
-    var h = el("h2", "pv-section", "Quick games"); h.id = "pv-games-title";
+    var h = el("h2", "pv-section", "Arcade"); h.id = "pv-games-title";
     head.appendChild(h);
-    head.appendChild(el("span", "pv-games-note", "No mic · about a minute"));
+    head.appendChild(el("span", "pv-games-note", "Never ends · harder as you go"));
     sec.appendChild(head);
     var row = el("div", "pv-game-row");
     window.NfPracticeGames.gameTiles(tr).forEach(function (t) {
-      var b = el("button", "pv-game"); b.type = "button"; b.setAttribute("data-game", t.id);
-      b.setAttribute("aria-label", t.title + ". " + t.line);
-      b.appendChild(modeIcon(GAME_ICON[t.id], "pv-mode-tile"));
+      var kept = A ? A.recall(t.id, tr) : null;
+      var b = el("button", "pv-game gg-" + (GAME_TONE[t.id] || "blue")); b.type = "button"; b.setAttribute("data-game", t.id);
+      b.setAttribute("aria-label", t.title + ". " + t.line + (kept ? ". Level " + kept.level + ", best " + kept.best : ""));
+      b.appendChild(modeIcon(GAME_ICON[t.id], "pv-game-ic"));
       b.appendChild(el("strong", null, t.title));
-      b.appendChild(el("span", null, t.line));
+      b.appendChild(el("span", null, kept ? "Level " + kept.level + (kept.best > kept.level ? " · best " + kept.best : "") : t.line));
       b.addEventListener("click", function () { openGame(t.id); });
       row.appendChild(b);
     });
@@ -455,21 +576,8 @@
     }
     var p = s.progress, P = PP(), T = PT(), tr = currentTrack(), playful = tr === "playful", focused = tr === "focused";
     var box = el("div", "pv" + (playful ? " is-playful" : focused ? " is-focused" : ""));
-    // The track pill: the style chosen, a tap to change it — never while a take is on its way.
-    if (tr && !showPicker() && s.phase === "idle") {
-      var bar0 = el("div", "pv-top");
-      var pill = el("button", "pv-track-pill" + (playful ? " is-playful" : ""));
-      pill.type = "button"; pill.id = "pv-track-pill";
-      pill.setAttribute("aria-label", "Practice style: " + T.trackTitle(tr) + ". Change it");
-      // One Doh on screen: Playful's is the buddy below, so the pill takes an icon.
-      pill.appendChild(playful ? modeIcon("smile", "pv-pill-ic") : art(T.levelArt(p.level.index), 24));
-      pill.appendChild(el("span", null, T.trackTitle(tr)));
-      pill.appendChild(icon("/assets/icons.svg#i-swap", "pv-swap"));
-      pill.addEventListener("click", function () { s.trackError = null; s.picking = true; stopHear(); render(); });
-      bar0.appendChild(pill);
-      box.appendChild(bar0);
-    }
-    box.appendChild(progressLine(p));
+    // The top bar: the level, the streak, the XP and the day's quests, and the style chosen (a tap changes it).
+    box.appendChild(topBar(p, tr, T));
     // The season's path, while its season is on for the singer: one card under today's drill. Doh wears the season's
     // costume and there is still one Doh on screen. Christmas: on Focused the card's, on Playful the buddy's. Halloween:
     // on Playful the card's, with Boo beside him, so the buddy steps aside; Focused's card has neither.
@@ -479,10 +587,14 @@
     var withBuddy = playful && !showPicker() && !!s.drill && !(cardDoh && pathSeason === "halloween");
     if (playful && !showPicker() && s.drill) warmConfetti();
     if (showPicker()) box.appendChild(trackPicker(tr, T));
-    if (s.drill && !showPicker()) box.appendChild(drillCard(s.drill, P, withBuddy ? buddy(p, T) : null));
+    // The unit as a winding path of stops above its drill: Playful's Doh stands beside the stop to sing now.
+    var stops = s.drill && !showPicker() && window.NfPracticeArcade ? window.NfPracticeArcade.pathStops(s.drill) : [];
+    if (stops.length) box.appendChild(pathView(s.drill, stops, withBuddy ? buddy(p, T) : null));
+    if (s.drill && !showPicker()) box.appendChild(drillCard(s.drill, P, withBuddy && !stops.length ? buddy(p, T) : null));
     if (!s.drill && !showPicker()) box.appendChild(emptyState("empty-no-drill", "No drill yet", "Today's drill isn't here yet. Try again in a moment.", function () { load(); }));
     if (p.season && !showPicker()) box.appendChild(seasonPathCard(p.season, cardDoh));
-    if (!showPicker() && window.NfPracticeGames) box.appendChild(gamesSection(tr));
+    if (p.quests && !showPicker()) box.appendChild(questsCard(p.quests));
+    if (!showPicker() && window.NfPracticeGames) box.appendChild(arcadeSection(tr));
     var modes = showPicker() ? null : modesSection(p, tr, cardDoh);
     if (modes) box.appendChild(modes);
     // Your progress: the two stat cards, the week and the badges, under the ways to practise (board 6a).

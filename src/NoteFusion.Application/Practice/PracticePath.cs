@@ -20,16 +20,16 @@ public enum MilestoneKind
 /// <summary>
 /// One unit on a track's path: a grade's <paramref name="Step"/>th unit, numbered among the units of that grade the
 /// track sings (<paramref name="UnitNumber"/> of <paramref name="UnitsInGrade"/>), with <paramref name="DrillCount"/>
-/// drills to pass.
+/// drills to pass. <paramref name="Track"/> names a Mastery unit's own (Playful's are its own three).
 /// </summary>
-public sealed record PathUnit(int Position, int Tier, int Step, int UnitNumber, int UnitsInGrade, int DrillCount, bool LastInGrade)
+public sealed record PathUnit(int Position, int Tier, int Step, int UnitNumber, int UnitsInGrade, int DrillCount, bool LastInGrade, PracticeTrack? Track = null)
 {
     /// <summary>The unit's identity, shared by every track that sings it: milestones fire once per code.</summary>
     public string Code => $"g{Tier}u{Step}";
 
     public DrillSyllabus Grade => DrillSyllabus.For(Tier);
 
-    public DrillUnit Unit => Grade.Units[Step - 1];
+    public DrillUnit Unit => MasteryCatalogue.IsMastery(Tier) ? MasteryCatalogue.UnitOf(Track, Step) : Grade.Units[Step - 1];
 }
 
 /// <summary>A marked drill, as the path reads it: which drill, its mark, and when.</summary>
@@ -161,10 +161,10 @@ public static class PracticePath
 
     private static IReadOnlyList<PathUnit> BuildUnits(PracticeTrack? track)
     {
+        // A track's path goes on past the catalogue into Mastery 1, 2, 3… (none chosen: the ladder alone).
         var topTier = track switch
         {
-            PracticeTrack.Playful => PracticeRules.PlayfulTopTier,
-            PracticeTrack.Focused => DrillCatalogue.TopTier,
+            PracticeTrack.Playful or PracticeTrack.Focused => MasteryCatalogue.FirstTier + MasteryCatalogue.Tiers - 1,
             _ => DrillCatalogue.LadderTopTier
         };
         var topStep = track == PracticeTrack.Playful ? PracticeRules.PlayfulTopStep : DrillSyllabus.UnitsPerGrade;
@@ -175,7 +175,7 @@ public static class PracticePath
         {
             var steps = Enumerable.Range(1, topStep).Where(step => DrillCatalogue.UnitPatterns(track, tier, step).Count > 0).ToList();
             for (var i = 0; i < steps.Count; i++)
-                units.Add(new PathUnit(units.Count, tier, steps[i], i + 1, steps.Count, drills, i == steps.Count - 1));
+                units.Add(new PathUnit(units.Count, tier, steps[i], i + 1, steps.Count, drills, i == steps.Count - 1, track));
         }
         return units;
     }

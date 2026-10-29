@@ -10,8 +10,11 @@ using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Application.Practice.Queries;
 
-/// <summary>GET /api/practice/games/{game}: a fresh deal of a quick game on the caller's track.</summary>
-public sealed record GetPracticeGameQuery(string? Game) : IRequest<Result<PracticeGameDto>>;
+/// <summary>
+/// GET /api/practice/games/{game}: a fresh deal of a quick game on the caller's track; with <paramref name="Level"/>, an
+/// arcade stage at that level (held to 1–<see cref="PracticeGames.MaxLevel"/>).
+/// </summary>
+public sealed record GetPracticeGameQuery(string? Game, int? Level = null) : IRequest<Result<PracticeGameDto>>;
 
 public sealed class GetPracticeGameQueryHandler : IRequestHandler<GetPracticeGameQuery, Result<PracticeGameDto>>
 {
@@ -38,7 +41,8 @@ public sealed class GetPracticeGameQueryHandler : IRequestHandler<GetPracticeGam
 
         var today = PracticeTime.LocalDate(_clock.UtcNow, PracticeTime.Resolve(_timeZone.Current));
         var track = await GetNextDrillQueryHandler.PracticeTrackOf(_db, userId, cancellationToken);
-        var deal = PracticeGames.Deal(PracticeGames.NewDealId(game, track, BitConverter.ToUInt32(RandomNumberGenerator.GetBytes(4))))!;
+        int? level = request.Level is { } asked ? Math.Clamp(asked, 1, PracticeGames.MaxLevel) : null;
+        var deal = PracticeGames.Deal(PracticeGames.NewDealId(game, track, BitConverter.ToUInt32(RandomNumberGenerator.GetBytes(4)), level))!;
         return new PracticeGameDto(
             game,
             deal.DealId,
@@ -46,7 +50,9 @@ public sealed class GetPracticeGameQueryHandler : IRequestHandler<GetPracticeGam
             deal.IsRace ? PracticeGames.StaffSeconds : null,
             await GamesTodayAsync(_db, userId, today, cancellationToken),
             PracticeRules.GamesPerDay,
-            deal.Rounds);
+            deal.Rounds,
+            deal.Level,
+            deal.SecondsPerRound);
     }
 
     /// <summary>Games that earned XP on the singer's <paramref name="today"/>.</summary>

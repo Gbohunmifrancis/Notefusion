@@ -56,9 +56,12 @@ export function gameIntro(id: PracticeGameId, track: PracticeTrack | null): stri
 
 const SYLLABLE_NAMES: Record<string, string> = { d: "doh", r: "ray", m: "me", f: "fah", s: "soh", l: "lah", t: "te", "d'": "doh" };
 
-/** "soh" for "s"; the top doh is "doh" too. */
+/** "soh" for "s"; the top doh is "doh" too; a note an octave off says so ("high ray", "low lah"); chromatics as they are. */
 export function syllableName(syllable: string): string {
-  return SYLLABLE_NAMES[syllable] ?? syllable;
+  if (SYLLABLE_NAMES[syllable]) return SYLLABLE_NAMES[syllable];
+  const base = (syllable ?? "").replace(/[',]+$/, "");
+  const name = SYLLABLE_NAMES[base] ?? base;
+  return /'$/.test(syllable) ? `high ${name}` : /,$/.test(syllable) ? `low ${name}` : name;
 }
 
 const STEP_LINES: Record<string, string> = {
@@ -69,6 +72,16 @@ const STEP_LINES: Record<string, string> = {
   l: "The sixth note of the scale.",
   t: "The seventh, just under doh.",
   "d'": "Doh again, an octave up.",
+  "r'": "Ray, an octave up.",
+  "m'": "Me, an octave up.",
+  "t,": "Te below doh, leaning up to it.",
+  "l,": "Lah below doh.",
+  "s,": "Soh below doh.",
+  de: "Doh raised a semitone.",
+  ma: "Me lowered a semitone.",
+  fe: "Fah raised a semitone, leaning to soh.",
+  se: "Soh raised a semitone, leaning to lah.",
+  ta: "Te lowered a semitone, leaning to lah.",
 };
 
 /** What a round says once it is answered: its title and one line under it. */
@@ -105,6 +118,14 @@ export const EAR_TEMPO = 80;
 
 export function earNotes(round: PracticeGameRound): GameNoteLike[] {
   if (round.dohMidi == null || round.noteMidi == null) return [];
+  if (round.noteSeconds != null && round.noteSeconds > 0) {
+    // An arcade round (the web's endless games) sounds each note `noteSeconds` long at EAR_TEMPO.
+    const beats = (round.noteSeconds * EAR_TEMPO) / 60;
+    return [
+      { pitchMidi: round.dohMidi, startBeat: 0, durBeats: beats },
+      { pitchMidi: round.noteMidi, startBeat: beats * 1.25, durBeats: beats },
+    ];
+  }
   return [
     { pitchMidi: round.dohMidi, startBeat: 0, durBeats: 1 },
     { pitchMidi: round.noteMidi, startBeat: 1.25, durBeats: 1.5 },

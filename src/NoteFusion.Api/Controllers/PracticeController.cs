@@ -170,11 +170,12 @@ public sealed class PracticeController : ApiControllerBase
 
     /// <summary>
     /// A fresh deal of a quick game, tapped not sung ("which-note", "staff", "hymn"; 404 <c>PRACTICE_GAME_UNKNOWN</c>):
-    /// its rounds on the caller's track, each with its answer, and the day's games that earned XP.
+    /// its rounds on the caller's track, each with its answer, and the day's games that earned XP. With <c>?level=</c>, an
+    /// arcade stage at that level (the web's endless games: each stage's mark says the level to deal next).
     /// </summary>
     [HttpGet("games/{game}")]
-    public async Task<IActionResult> Game(string game, CancellationToken ct)
-        => HandleResult(await _sender.Send(new GetPracticeGameQuery(game), ct));
+    public async Task<IActionResult> Game(string game, [FromQuery] int? level, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetPracticeGameQuery(game, level), ct));
 
     /// <summary>
     /// Marks a quick game's answers against the deal rebuilt from its id and, when it counts, records it as practice

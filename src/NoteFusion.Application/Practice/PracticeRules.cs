@@ -45,6 +45,9 @@ public static class PracticeRules
     /// <summary>The most XP one local day can earn, so singing the same three notes all night levels nobody up.</summary>
     public const int DailyXpCap = 150;
 
+    /// <summary>The day's chest: all three of the day's quests done (<see cref="DailyQuests"/>), on top of the cap.</summary>
+    public const int QuestChestXp = 20;
+
     /// <summary>Practice days a week the goal ring asks for (Monday to Sunday).</summary>
     public const int WeeklyGoalDays = 5;
 

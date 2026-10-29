@@ -123,3 +123,17 @@ test("the end card says how many were right and what it earned, or why it earned
     "100% of the 3 you answered. Answer at least five notes for a race to count.",
   );
 });
+
+test("the arcade's notes: one an octave off says so, chromatics by their own names, and a level's shorter notes", () => {
+  assert.equal(G.syllableName("r'"), "high ray");
+  assert.equal(G.syllableName("l,"), "low lah");
+  assert.equal(G.syllableName("fe"), "fe");
+  assert.equal(G.syllableName("d'"), "doh");
+  const round = { dohMidi: 60, noteMidi: 66, noteSeconds: 0.6 };
+  const notes = JSON.parse(JSON.stringify(G.earNotes(round)));
+  assert.deepEqual(notes.map((n) => n.pitchMidi), [60, 66]);
+  assert.equal(notes[0].durBeats * 60 / G.EAR_TEMPO, 0.6);
+  assert.equal(notes[1].durBeats, notes[0].durBeats);
+  assert.ok(notes[1].startBeat > notes[0].durBeats);
+  assert.deepEqual(JSON.parse(JSON.stringify(G.earNotes({ dohMidi: 60, noteMidi: 67 }))).map((n) => n.durBeats), [1, 1.5]);
+});

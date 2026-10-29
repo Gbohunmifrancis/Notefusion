@@ -286,8 +286,11 @@ public class DrillGradingTests
         }
 
         var progress = await Progress(h, user);
-        Assert.Equal(400, progress.Xp);
-        Assert.Equal("Me", progress.Level.Name); // 250 <= 400 < 500
+        // 100 XP a day, and the day's chest on the days five perfect drills did all three of its quests.
+        var chests = h.Db.PracticeSessions.AsEnumerable().GroupBy(r => r.LocalDate).Count(day =>
+            DailyQuests.ChestOpened(day.Key, day.Select(r => new PracticeFact(r.Kind, r.Score, false, r.LocalDate, r.CreatedAtUtc)).ToList()));
+        Assert.Equal(400 + chests * PracticeRules.QuestChestXp, progress.Xp);
+        Assert.Equal("Me", progress.Level.Name); // 250 <= 400 + chests < 500
         Assert.Equal(2, levelUps); // Ray on day 1, Me on day 3
 
         // Twenty perfect takes (pairs of 90+ skipping ahead) have finished Grade 1 and moved into Grade 2: where the
