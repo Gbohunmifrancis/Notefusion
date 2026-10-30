@@ -52,7 +52,8 @@ public sealed class MeasureVoiceRangeCommandHandler : IRequestHandler<MeasureVoi
         await _db.SaveChangesAsync(cancellationToken);
         return VoiceRanges.Describe(
             user.VoiceRangeLowMidi, user.VoiceRangeHighMidi,
-            new HeldNoteDto(held.Midi, VoiceRanges.Name(held.Midi), held.Seconds, held.Cents));
+            new HeldNoteDto(held.Midi, VoiceRanges.Name(held.Midi), held.Seconds, held.Cents),
+            user.PracticeInRange, user.LearnPartFromRange);
     }
 
     /// <summary>"low" → true, "high" → false (any case); anything else is no end named.</summary>

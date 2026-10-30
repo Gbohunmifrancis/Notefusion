@@ -216,7 +216,7 @@ public static class PracticePath
                 var key = (t, place with { HotRun = 0, ColdRun = 0, Move = DrillAdjustment.Steady, LastDate = null });
                 if (!offered.TryGetValue(key, out var id))
                     offered[key] = id = OfferedId(userId, track, place);
-                if (!string.Equals(take.DrillId, id, StringComparison.Ordinal))
+                if (!SameDrill(take.DrillId, id))
                     continue;
 
                 var units = UnitsFor(track);
@@ -238,10 +238,15 @@ public static class PracticePath
     }
 
     /// <summary>The drill a track's path offers next (its entry, at <paramref name="levelNow"/>, before any take on it).</summary>
-    public static PathStop Next(Guid userId, PracticeTrack? track, PathReading reading, int levelNow)
+    /// <remarks>
+    /// With a <paramref name="fit"/> (the singer's range, their switch on), the drill is placed in a key that sits in it
+    /// (<see cref="VoiceFit"/>). The key never moves the path: a take counts for the drill offered in whatever key it was
+    /// sung (<see cref="SameDrill"/>).
+    /// </remarks>
+    public static PathStop Next(Guid userId, PracticeTrack? track, PathReading reading, int levelNow, VoiceFit? fit = null)
     {
         var place = reading.PlaceOn(track) ?? Entry(track, levelNow);
-        var (pattern, doh) = Offer(userId, track, place);
+        var (pattern, doh) = Offer(userId, track, place, fit);
         var unit = UnitsFor(track)[place.Position];
         return new PathStop(track, unit, place, DrillCatalogue.Build(pattern, doh, gentle: track == PracticeTrack.Playful));
     }
@@ -309,6 +314,24 @@ public static class PracticePath
             : place with { Slot = 0, Lap = place.Lap + 1 };
     }
 
+    /// <summary>
+    /// Whether a take was of the drill a place offers: the same pattern at the same pace (the <c>~gentle</c> suffix),
+    /// whatever key it was placed in, so a singer whose keys follow their range (or who sang a key offered before the
+    /// switch) moves along the path all the same.
+    /// </summary>
+    public static bool SameDrill(string? taken, string offered)
+        => taken is not null && string.Equals(WithoutKey(taken), WithoutKey(offered), StringComparison.Ordinal);
+
+    /// <summary>"code@60~gentle" → "code~gentle": the drill without its key.</summary>
+    private static string WithoutKey(string id)
+    {
+        var at = id.IndexOf('@');
+        if (at < 0)
+            return id;
+        var tilde = id.IndexOf('~', at);
+        return id[..at] + (tilde >= 0 ? id[tilde..] : string.Empty);
+    }
+
     /// <summary>The id of the drill a place offers, without building it.</summary>
     public static string OfferedId(Guid userId, PracticeTrack? track, PathPlace place)
     {
@@ -320,25 +343,25 @@ public static class PracticePath
     /// The pattern and doh a place offers: the unit's drill at its position, or, after
     /// <see cref="PracticeRules.RetriesBeforeEasier"/> misses there, an easier variant (another for each further miss).
     /// </summary>
-    public static (DrillPattern Pattern, int Doh) Offer(Guid userId, PracticeTrack? track, PathPlace place)
+    public static (DrillPattern Pattern, int Doh) Offer(Guid userId, PracticeTrack? track, PathPlace place, VoiceFit? fit = null)
     {
         var unit = UnitsFor(track)[place.Position];
         var stem = $"{unit.Code}:{place.Lap}:{place.Slot}";
         if (place.Misses <= PracticeRules.RetriesBeforeEasier)
-            return Standard(userId, track, unit, place.Lap, place.Slot);
+            return Standard(userId, track, unit, place.Lap, place.Slot, fit);
 
         var variant = place.Misses - PracticeRules.RetriesBeforeEasier;
         var pool = Ordered(userId, EasierPool(track, unit), $"{stem}:easier");
         var pattern = pool[(variant - 1) % pool.Count];
-        return (pattern, KeyFor(userId, pattern, $"{stem}:easier:{variant}"));
+        return (pattern, KeyFor(userId, pattern, $"{stem}:easier:{variant}", fit));
     }
 
     /// <summary>The unit's own drill at a position: its patterns in the user's order, and no drill twice in a row.</summary>
-    private static (DrillPattern Pattern, int Doh) Standard(Guid userId, PracticeTrack? track, PathUnit unit, int lap, int slot)
+    private static (DrillPattern Pattern, int Doh) Standard(Guid userId, PracticeTrack? track, PathUnit unit, int lap, int slot, VoiceFit? fit)
     {
         var pool = Ordered(userId, DrillCatalogue.UnitPatterns(track, unit.Tier, unit.Step), $"{unit.Code}:{lap}");
         var pattern = pool[slot % pool.Count];
-        var placements = DrillCatalogue.Placements(pattern);
+        var placements = Placements(pattern, fit);
         var pick = (int)(DrillCatalogue.Hash(userId, $"{unit.Code}:{lap}:{slot}:key") % (ulong)placements.Count);
         if (slot > 0 && placements.Count > 1 && pool[(slot - 1) % pool.Count] == pattern)
         {
@@ -373,9 +396,16 @@ public static class PracticePath
     private static List<DrillPattern> Ordered(Guid userId, IReadOnlyList<DrillPattern> pool, string words)
         => pool.OrderBy(p => DrillCatalogue.Hash(userId, $"{words}:{p.Code}")).ThenBy(p => p.Code, StringComparer.Ordinal).ToList();
 
-    private static int KeyFor(Guid userId, DrillPattern pattern, string words)
+    private static int KeyFor(Guid userId, DrillPattern pattern, string words, VoiceFit? fit)
+    {
+        var placements = Placements(pattern, fit);
+        return placements[(int)(DrillCatalogue.Hash(userId, $"{words}:key") % (ulong)placements.Count)];
+    }
+
+    /// <summary>A pattern's keys for its grade, those in the singer's range when there is a fit.</summary>
+    private static IReadOnlyList<int> Placements(DrillPattern pattern, VoiceFit? fit)
     {
         var placements = DrillCatalogue.Placements(pattern);
-        return placements[(int)(DrillCatalogue.Hash(userId, $"{words}:key") % (ulong)placements.Count)];
+        return fit is null ? placements : fit.Choose(placements, DrillCatalogue.Offsets(pattern));
     }
 }

@@ -2363,6 +2363,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("LastSeenAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<bool>("LearnPartFromRange")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime?>("LockoutEndAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -2379,6 +2382,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
+
+                    b.Property<bool>("PracticeInRange")
+                        .HasColumnType("boolean");
 
                     b.Property<int?>("PracticeReminderHour")
                         .HasColumnType("integer");

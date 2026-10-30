@@ -207,24 +207,30 @@ public static class ModeCatalogue
     public const int BackingLowestMidi = 48;
     public const int BackingHighestMidi = 79;
 
-    /// <summary>A mode's exercises on a track, in teaching order, each in today's key for this singer.</summary>
-    public static IReadOnlyList<PracticeExercise> ForTrack(string mode, PracticeTrack? track, Guid userId, DateOnly date)
+    /// <summary>
+    /// A mode's exercises on a track, in teaching order, each in today's key for this singer: with a
+    /// <paramref name="fit"/> (their range, their switch on), a key whose sung notes sit in it (<see cref="VoiceFit"/>).
+    /// </summary>
+    public static IReadOnlyList<PracticeExercise> ForTrack(string mode, PracticeTrack? track, Guid userId, DateOnly date, VoiceFit? fit = null)
     {
         var playful = track == PracticeTrack.Playful;
-        int Doh(string code, IReadOnlyList<int> dohs)
-            => dohs[(int)(DrillCatalogue.Hash(userId, $"{mode}:{code}:{date:yyyy-MM-dd}") % (ulong)dohs.Count)];
+        int Doh(string code, IReadOnlyList<int> placements, string sung)
+        {
+            var dohs = fit is null ? placements : fit.Choose(placements, Offsets(sung));
+            return dohs[(int)(DrillCatalogue.Hash(userId, $"{mode}:{code}:{date:yyyy-MM-dd}") % (ulong)dohs.Count)];
+        }
 
         return mode switch
         {
             PracticeModes.PitchMatch => PitchMatchSets.Where(s => !playful || s.Playful)
-                .Select(s => BuildPitchMatch(s, Doh(s.Code, Placements(s)))).ToList(),
+                .Select(s => BuildPitchMatch(s, Doh(s.Code, Placements(s), s.Solfa))).ToList(),
             PracticeModes.Scales => Scales.Where(s => !playful || s.Playful)
-                .Select(s => BuildScale(s, Doh(s.Code, Placements(s)))).ToList(),
+                .Select(s => BuildScale(s, Doh(s.Code, Placements(s), s.Solfa))).ToList(),
             PracticeModes.Intervals => Intervals.Where(p => !playful || p.Playful)
-                .Select(p => BuildInterval(p, Doh(p.Code, Placements(p)))).ToList(),
+                .Select(p => BuildInterval(p, Doh(p.Code, Placements(p), p.Solfa))).ToList(),
             // Focused's modes (Playful's hub does not list them): the same for anyone who asks.
-            PracticeModes.Harmony => HarmonyLines.Select(h => BuildHarmony(h, Doh(h.Code, Placements(h)))).ToList(),
-            PracticeModes.Runs => Runs.Select(r => BuildRun(r, Doh(r.Code, Placements(r)), RunSpeeds[0])).ToList(),
+            PracticeModes.Harmony => HarmonyLines.Select(h => BuildHarmony(h, Doh(h.Code, Placements(h), h.Line))).ToList(),
+            PracticeModes.Runs => Runs.Select(r => BuildRun(r, Doh(r.Code, Placements(r), r.Solfa), RunSpeeds[0])).ToList(),
             PracticeModes.Rhythm => Rhythms.Where(r => !playful || r.Playful).Select(BuildRhythm).ToList(),
             _ => []
         };

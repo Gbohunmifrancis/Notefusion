@@ -241,6 +241,25 @@ public class User : BaseEntity
         }
     }
 
+    /// <summary>
+    /// Practice placed in the singer's range (<c>Application/Practice/VoiceFit</c>): once both ends are measured, the
+    /// path's drills and the modes' exercises come in keys whose notes the range holds. On unless the singer turns it off.
+    /// </summary>
+    public bool PracticeInRange { get; private set; } = true;
+
+    /// <summary>
+    /// "Learn my part" starts on the part the range suggests (<see cref="VoiceRangeLowMidi"/>…): the clients read it and
+    /// choose that part where none is remembered. Off unless the singer turns it on.
+    /// </summary>
+    public bool LearnPartFromRange { get; private set; }
+
+    /// <summary>The range card's two switches; a null leaves that one as it is.</summary>
+    public void SetRangeSettings(bool? practiceInRange, bool? learnPartFromRange)
+    {
+        PracticeInRange = practiceInRange ?? PracticeInRange;
+        LearnPartFromRange = learnPartFromRange ?? LearnPartFromRange;
+    }
+
     // ── Practice reminders (Application/Practice/Reminders) ─────────────────
 
     /// <summary>

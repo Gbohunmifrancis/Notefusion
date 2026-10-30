@@ -541,6 +541,10 @@ export const practiceApi = {
   /** The singer's range as last measured (each end null until measured). */
   range: () => api.get<VoiceRange>("/api/practice/range").then((r) => r.data),
 
+  /** The range card's two switches; one left out stays as it is. Answers with the range, which carries both. */
+  rangeSettings: (change: { practiceInRange?: boolean; learnPartFromRange?: boolean }) =>
+    api.put<VoiceRange>("/api/practice/range/settings", change).then((r) => r.data),
+
   /** The range finder: a take holding the lowest ("low") or highest ("high") comfortable note. Measured, not scored. */
   measureRange: (fileUri: string, end: "low" | "high") => {
     const form = new FormData();

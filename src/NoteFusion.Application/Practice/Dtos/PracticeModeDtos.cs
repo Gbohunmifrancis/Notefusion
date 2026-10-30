@@ -56,7 +56,9 @@ public sealed record VoiceRangeDto(
     string? LowSolfa,
     string? HighSolfa,
     string? VoicePart,
-    HeldNoteDto? Heard = null);
+    HeldNoteDto? Heard = null,
+    bool PracticeInRange = true,
+    bool LearnPartFromRange = false);
 
 /// <summary>A note held in a take: the note (MIDI, "A3"), how long it was held and how far off it the voice sat.</summary>
 public sealed record HeldNoteDto(int Midi, string Name, double Seconds, double Cents);

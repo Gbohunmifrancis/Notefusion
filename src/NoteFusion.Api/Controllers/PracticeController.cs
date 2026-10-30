@@ -48,6 +48,9 @@ public sealed class MeasureVoiceRangeRequest
 /// </summary>
 public sealed record GradePracticeGameRequest(string? DealId, IReadOnlyList<string?>? Answers, double? Seconds);
 
+/// <summary>JSON body of <c>PUT range/settings</c>: the range card's switches; one left out stays as it is.</summary>
+public sealed record SetVoiceRangeSettingsRequest(bool? PracticeInRange, bool? LearnPartFromRange);
+
 /// <summary>JSON body of <c>PUT track</c>: "playful" or "focused".</summary>
 public sealed record SetPracticeTrackRequest(string? Track);
 
@@ -115,6 +118,14 @@ public sealed class PracticeController : ApiControllerBase
     [HttpGet("range")]
     public async Task<IActionResult> VoiceRange(CancellationToken ct)
         => HandleResult(await _sender.Send(new GetVoiceRangeQuery(), ct));
+
+    /// <summary>
+    /// The range card's switches: practice placed in the range (<c>practiceInRange</c>, on by default) and "Learn my part"
+    /// starting on the range's part (<c>learnPartFromRange</c>, off). Answers with the range, which carries both.
+    /// </summary>
+    [HttpPut("range/settings")]
+    public async Task<IActionResult> RangeSettings([FromBody] SetVoiceRangeSettingsRequest request, CancellationToken ct)
+        => HandleResult(await _sender.Send(new SetVoiceRangeSettingsCommand(request.PracticeInRange, request.LearnPartFromRange), ct));
 
     /// <summary>
     /// The range finder: a take holding the lowest (<c>end=low</c>) or highest (<c>end=high</c>) comfortable note. The

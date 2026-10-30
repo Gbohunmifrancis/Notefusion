@@ -576,6 +576,10 @@ export interface VoiceRange {
   highSolfa: string | null;
   voicePart: "soprano" | "alto" | "tenor" | "bass" | null;
   heard: HeldNote | null;
+  /** Drills and exercises placed in keys the range holds (once both ends are measured); on by default. */
+  practiceInRange: boolean;
+  /** Learn my part starts on `voicePart` (the phone writes it as the remembered part); off by default. */
+  learnPartFromRange: boolean;
 }
 
 /** A note held in a range take: the note, how long it was held, and how far off it the voice sat. */

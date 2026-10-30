@@ -824,12 +824,55 @@
       card.appendChild(t);
       out.push(card);
     }
+    if (r.lowMidi != null && r.highMidi != null) {
+      out.push(rangeSwitch("music", "Practise in my range", "Drills and exercises come in keys your voice holds.",
+        r.practiceInRange !== false, function (on) { saveRangeSettings({ practiceInRange: on }); }));
+      if (r.voicePart) out.push(rangeSwitch("people", "Start Learn my part on " + r.voicePart,
+        "Your sheets' parts open on the one your range suits.", !!r.learnPartFromRange,
+        function (on) { saveRangeSettings({ learnPartFromRange: on }); }));
+    }
+    if (m.error) out.push(errorLine(m.error));
     out.push(el("p", "pm-info", "Voices warm up and change. Measure again any day."));
     out.push(actions([
       button("btn-ghost", null, "Measure again", function () { m.view = "low"; m.heardLive = null; render(); }),
       button("btn-primary", null, "Done", function () { m.view = "routine"; m.step = m.warm ? m.warm.steps.length - 1 : 0; render(); })
     ]));
     return out;
+  }
+
+  /** One of the range card's two switches, a headphones-style row. */
+  function rangeSwitch(icon, title, line, on, change) {
+    var row = el("label", "pm-phones");
+    row.appendChild(ctx.icon(icon, "pm-phones-ic"));
+    var tx = el("span", "pm-phones-text");
+    tx.appendChild(el("strong", null, title));
+    tx.appendChild(el("span", null, line));
+    row.appendChild(tx);
+    var sw = el("input", "pm-switch"); sw.type = "checkbox"; sw.checked = on; sw.disabled = !!m.savingRange;
+    sw.setAttribute("role", "switch");
+    sw.addEventListener("change", function () { change(sw.checked); });
+    row.appendChild(sw);
+    return row;
+  }
+
+  /**
+   * Keeps a switch on the account (PUT /api/practice/range/settings). Learn my part reads the part it starts on from
+   * this browser's remembered part, so the switch turned on writes the range's part there (and Measure again, while on).
+   */
+  function saveRangeSettings(change) {
+    m.savingRange = true; m.error = null; render();
+    ctx.request("/api/practice/range/settings", { method: "PUT", body: change }).then(function (r) {
+      m.range = Object.assign({}, m.range, { practiceInRange: r.practiceInRange, learnPartFromRange: r.learnPartFromRange });
+      if (change.learnPartFromRange) rememberRangePart(r);
+      var name = Object.keys(change)[0];
+      track("Range setting", name + "=" + change[name]);
+    }, function (e) { m.error = e; }).then(function () { m.savingRange = false; render(); });
+  }
+
+  function rememberRangePart(r) {
+    if (r && r.learnPartFromRange && r.voicePart) {
+      try { localStorage.setItem("nf.web.practice.part", r.voicePart); } catch (e) { /* private mode: nothing kept */ }
+    }
   }
 
   function keyboardSvg(lo, hi) {
@@ -1258,7 +1301,7 @@
         form.append("end", end);
         ctx.request("/api/practice/range", { method: "POST", form: form }).then(function (r) {
           if (g !== gen) return;
-          m.range = r; m.lastEnd = end; m.phase = "idle"; m.error = null;
+          m.range = r; m.lastEnd = end; m.phase = "idle"; m.error = null; rememberRangePart(r);
           track("range_measured", "end=" + end);
           render();
         }, function (err) {

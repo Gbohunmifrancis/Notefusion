@@ -67,8 +67,12 @@ public static class VoiceRanges
         return rest.Length == 0 ? head : $"{head} and {rest}";
     }
 
-    /// <summary>The range as the clients show it; each end null until measured, the rest once both are.</summary>
-    public static VoiceRangeDto Describe(int? low, int? high, HeldNoteDto? heard = null)
+    /// <summary>
+    /// The range as the clients show it; each end null until measured, the rest once both are, and the range card's two
+    /// switches (<see cref="Core.Entities.User.PracticeInRange"/>, <see cref="Core.Entities.User.LearnPartFromRange"/>).
+    /// </summary>
+    public static VoiceRangeDto Describe(
+        int? low, int? high, HeldNoteDto? heard = null, bool practiceInRange = true, bool learnPartFromRange = false)
     {
         string? lowSolfa = null, highSolfa = null, part = null, span = null;
         int? semitones = null;
@@ -84,7 +88,7 @@ public static class VoiceRanges
         }
         return new VoiceRangeDto(
             low, high, low is { } l ? Name(l) : null, high is { } h ? Name(h) : null, semitones, span, SolfaKey.DohHeader(),
-            lowSolfa, highSolfa, part, heard);
+            lowSolfa, highSolfa, part, heard, practiceInRange, learnPartFromRange);
     }
 
     private static string Label(int midi, int reference, bool ascending)
