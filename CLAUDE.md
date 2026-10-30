@@ -638,7 +638,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   folder share never gives a sheet a token of its own. "Transpose for my
   choir" is the one edit that moves every note: `Transcription.Transpose` shifts melody, parts
   and key and respells both scores with `Core/Notation/MusicXmlTransposer`, and counts `TransposedBy` (0 = as heard).
-  "Fix a note" (web `/app` result tool; phones not yet) takes a correction in words, fixed phrasings only ("make the second m
+  "Fix a note" (web `/app` result tool; the phone's Result › More › "Fix a note in words", pure `lib/sheetEdit.ts`, a copy of `sheet-edit.js` with the same tests, kept like a tap correction) takes a correction in words, fixed phrasings only ("make the second m
   an f", "change note 5 to s", "move the last d up an octave", "change every t to ta", "delete note 6"; bars numbered as the
   staff numbers them, the pickup bar 0): pure `assets/sheet-edit.js` reads and makes it on the labelled notes, `assets/musicxml.js`
   (a port of mobile `lib/musicxml.ts`) writes the staff afresh from them, the words under the old staff kept note for note
