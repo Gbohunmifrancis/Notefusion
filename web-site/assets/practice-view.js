@@ -140,9 +140,11 @@
     var gen = s.gen;
     s.loading = true;
     if (!s.progress) render();
-    return Promise.all([ctx.request("/api/practice/progress"), ctx.request("/api/practice/drills/next")]).then(function (pair) {
+    // The choir's league beside them: none (404 or a lapsed plan) is simply no card.
+    var league = ctx.request("/api/choirs/mine/league").catch(function () { return null; });
+    return Promise.all([ctx.request("/api/practice/progress"), ctx.request("/api/practice/drills/next"), league]).then(function (pair) {
       if (gen !== s.gen) return;
-      s.progress = pair[0]; s.drill = pair[1]; s.next = null; s.loadError = null; s.offline = false;
+      s.progress = pair[0]; s.drill = pair[1]; s.league = pair[2]; s.next = null; s.loadError = null; s.offline = false;
       if (ctx.onProgress) ctx.onProgress(s.progress);
     }, function (err) {
       if (gen !== s.gen) return;
@@ -556,6 +558,32 @@
   }
 
   // ── Drawing ─────────────────────────────────────────────────────────────
+  /** The choir's league this week: the top five and the singer's own place, XP from marked takes since Monday. */
+  function leagueCard(league, P) {
+    var card = el("section", "card pv-league");
+    card.setAttribute("aria-labelledby", "pv-league-title");
+    var head = el("div", "pv-quests-head");
+    var h = el("h2", "pv-section", "Choir league"); h.id = "pv-league-title";
+    head.appendChild(h);
+    head.appendChild(el("span", "pv-league-choir", league.choirName));
+    card.appendChild(head);
+    card.appendChild(el("p", "pv-league-headline", P.leagueHeadline(league.entries)));
+    var list = el("ol", "pv-league-list");
+    P.leagueRows(league.entries, 5).forEach(function (r) {
+      var e = r.entry, li = el("li", "pv-league-row" + (e.isYou ? " is-you" : "") + (r.gapBefore ? " has-gap" : ""));
+      li.setAttribute("aria-label", "Place " + e.rank + ": " + (e.isYou ? "you" : e.name) + ", " + e.xp + " XP");
+      li.appendChild(el("span", "pv-league-rank", String(e.rank)));
+      li.appendChild(el("span", "pv-league-name", (e.isYou ? "You" : e.name) + (e.isDirector ? " · director" : "")));
+      li.appendChild(el("span", "pv-league-xp", e.xp + " XP"));
+      list.appendChild(li);
+    });
+    card.appendChild(list);
+    var resets = new Date(league.resetsAtUtc);
+    card.appendChild(el("p", "pv-note", "Marked takes since Monday, by the same rules as your XP. A new week starts " +
+      resets.toLocaleDateString(undefined, { weekday: "long" }) + " at " + resets.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }) + "."));
+    return card;
+  }
+
   function render() {
     if (!root || s.mode) return; // a mode's screen has the view
     root.innerHTML = "";
@@ -595,6 +623,7 @@
     if (!s.drill && !showPicker()) box.appendChild(emptyState("empty-no-drill", "No drill yet", "Today's drill isn't here yet. Try again in a moment.", function () { load(); }));
     if (p.season && !showPicker()) box.appendChild(seasonPathCard(p.season, cardDoh));
     if (p.quests && !showPicker()) box.appendChild(questsCard(p.quests));
+    if (s.league && s.league.entries && s.league.entries.length > 1 && !showPicker()) box.appendChild(leagueCard(s.league, P));
     if (!showPicker() && window.NfPracticeGames) box.appendChild(arcadeSection(tr));
     var modes = showPicker() ? null : modesSection(p, tr, cardDoh);
     if (modes) box.appendChild(modes);

@@ -472,7 +472,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   account's own Pro allowance first, then the choir's pool of `SongCredits.ChoirMonthlyPool` (60) a month, held
   like the own count (`TranscriptionJob.ChoirId` names the pool); still 3 running per person. A sheet shared
   with the choir (`Transcription.ChoirId`) is read by its members at `GET /api/choirs/mine/sheets[/{id}]`; it
-  leaves the library when its owner leaves or is removed. Choir plans are listed only at
+  leaves the library when its owner leaves or is removed. The choir's practice league (`GET /api/choirs/mine/league`, `GetChoirLeagueQuery`): everyone in it, the
+  director too, by practice XP since the caller's Monday (`PracticeMath.TotalXp` on the week's rows, ties share a place,
+  first names), a card on the web's Practice view and the phone's Practice tab (`ChoirLeagueCard`; pure `leagueRows`/
+  `leagueHeadline` in `practice-progress.js` ↔ `lib/practiceProgress.ts`, same tests) for two or more. Choir plans are listed only at
   `GET /api/billing/plans/choir` (shipped apps render every plan in the main list as Pro); the admin overview
   counts a choir as one paid member at its plan price and its singers apart.
 - Practice is gamified, transcription is not (`Application/Practice`, numbers in `PracticeRules`): every graded take

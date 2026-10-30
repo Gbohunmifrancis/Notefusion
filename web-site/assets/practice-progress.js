@@ -406,7 +406,34 @@
     return (hymns || []).filter(function (h) { return fold(h.title).indexOf("mountain king") >= 0; })[0] || null;
   }
 
+  // ── The choir's league (GET /api/choirs/mine/league; mobile lib/practiceProgress.ts, same tests) ──
+  /**
+   * The table's rows to show: the first `top` places, and the singer's own line after a gap when it is lower down.
+   * Each row is {entry, gapBefore}.
+   */
+  function leagueRows(entries, top) {
+    var list = entries || [], n = top || 5, rows = [];
+    list.slice(0, n).forEach(function (e) { rows.push({ entry: e, gapBefore: false }); });
+    var me = null;
+    for (var i = n; i < list.length; i++) if (list[i].isYou) { me = list[i]; break; }
+    if (me) rows.push({ entry: me, gapBefore: true });
+    return rows;
+  }
+  function ordinal(n) {
+    var tens = n % 100, ones = n % 10;
+    return n + (tens >= 11 && tens <= 13 ? "th" : ones === 1 ? "st" : ones === 2 ? "nd" : ones === 3 ? "rd" : "th");
+  }
+  /** "You're top of the choir this week", "You're 3rd of 12 this week", or how to get on the table at all. */
+  function leagueHeadline(entries) {
+    var list = entries || [], me = list.filter(function (e) { return e.isYou; })[0];
+    if (!me || !me.xp) return "Sing a marked take to get on the table this week.";
+    var shared = list.filter(function (e) { return e.rank === me.rank; }).length > 1;
+    if (me.rank === 1) return shared ? "You're joint top of the choir this week" : "You're top of the choir this week";
+    return "You're " + (shared ? "joint " : "") + ordinal(me.rank) + " of " + list.length + " this week";
+  }
+
   window.NfPracticeProgress = {
+    leagueRows: leagueRows, leagueHeadline: leagueHeadline,
     untilLabel: untilLabel, seasonOf: seasonOf, seasonWords: seasonWords, seasonPathUrl: seasonPathUrl,
     seasonCard: seasonCard, seasonView: seasonView, seasonBuddyLine: seasonBuddyLine, earnedSeasonBadge: earnedSeasonBadge,
     // The carols' own names, as the Christmas season first had them.

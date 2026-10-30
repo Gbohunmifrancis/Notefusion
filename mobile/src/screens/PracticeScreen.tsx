@@ -54,11 +54,11 @@ import { Confetti } from "../components/practice/Confetti";
 import { Moments, type MomentBatch } from "../components/practice/Moments";
 import { Art } from "../components/practice/Art";
 import type { ArtName } from "../components/practice/art/svgs";
-import { practiceApi } from "../api/endpoints";
+import { choirApi, practiceApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import type { AxiosError } from "axios";
 import { classifySendFailure } from "../lib/sendQueue";
-import type { Drill, GradeResult, PracticeProgress, PracticeSeason, PracticeTrack } from "../api/types";
+import type { ChoirLeague, Drill, GradeResult, PracticeProgress, PracticeSeason, PracticeTrack } from "../api/types";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { leadInFor, noteDueAt, partSeconds } from "../lib/take";
@@ -93,6 +93,7 @@ import { CostumedArt } from "../components/season/Costume";
 import { useSeason } from "../lib/seasonStore";
 import { activeSeason, costumeOf, seasonCard, seasonOf, seasonTint, seasonWords, type Costume } from "../lib/season";
 import { ModeList } from "../components/practice/ModeList";
+import { ChoirLeagueCard } from "../components/practice/ChoirLeagueCard";
 import { GameTiles } from "../components/practice/GameTiles";
 import { MarkingBar } from "../components/practice/MarkingBar";
 import { MARK_STEP_MS } from "../components/practice/useMarkReveal";
@@ -170,13 +171,16 @@ export function PracticeScreen() {
 
   // The drill on screen, read by `load`: a visit that brings a different drill clears the last one's marks.
   const drillRef = useRef<Drill | null>(null);
+  const [league, setLeague] = useState<ChoirLeague | null>(null);
   drillRef.current = drill;
 
   const load = useCallback(async () => {
     try {
-      const [p, d] = await Promise.all([practiceApi.progress(), practiceApi.nextDrill()]);
+      // The choir's league beside them: none (outside a choir, a lapsed plan, a failed read) is simply no card.
+      const [p, d, l] = await Promise.all([practiceApi.progress(), practiceApi.nextDrill(), choirApi.league().catch(() => null)]);
       if (!live.current) return;
       setProgress(p);
+      setLeague(l);
       if (drillRef.current?.id !== d.id) {
         setGrade(null);
         setNext(null);
@@ -730,6 +734,9 @@ export function PracticeScreen() {
                 }}
               />
             ) : null}
+
+            {/* ── The choir's league this week, for a choir's director and singers ── */}
+            {league && league.entries.length > 1 && !showPicker ? <ChoirLeagueCard league={league} /> : null}
 
             {/* ── Quick games: tapped, not sung, about a minute each (board s-practice-fun/s3) ── */}
             {!showPicker ? (

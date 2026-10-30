@@ -45,3 +45,9 @@ public sealed record ChoirSheetDto(
     bool CanUnshare,
     DateTime CreatedAtUtc,
     IReadOnlyList<NoteEventDto> Preview);
+
+/// <summary>The choir's practice league this week: its name, the week (Monday), when it starts afresh, and the table.</summary>
+public sealed record ChoirLeagueDto(string ChoirName, DateOnly WeekStart, DateTime ResetsAtUtc, IReadOnlyList<ChoirLeagueEntryDto> Entries);
+
+/// <summary>One singer's line in the league: their place (ties share one), first name, XP this week and days practised.</summary>
+public sealed record ChoirLeagueEntryDto(int Rank, string Name, int Xp, int Days, bool IsYou, bool IsDirector);
