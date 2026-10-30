@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>One more stop</title>
+<!--
+  The film, drawn as a pure function of time: render(t) sets every element for the moment t (seconds), so any frame
+  can be drawn on its own (render.cjs captures them). Cue times come from timeline.json, which score.py reads too.
+  All art is the app's own (web-site/assets): Doh, the 3D stills, the confetti, the mark, the Geist font.
+-->
+<style>
+  @font-face { font-family: "Geist"; src: url("/web-site/assets/fonts/geist-v5-latin.woff2") format("woff2"); font-weight: 100 900; }
+  :root {
+    --bg: #07090E; --text: #F3F6FB; --muted: #8B95AA;
+    --green: #3DDC97; --green-lip: #22A06E; --green-ink: #04261A;
+    --blue: #4C8DFF; --blue-lip: #2B5FD0;
+    --locked: #262C38; --locked-lip: #171B23; --locked-ink: #5A6478;
+    --orange: #FF9F43;
+  }
+  html, body { margin: 0; background: var(--bg); }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--bg);
+    font-family: "Geist", system-ui, sans-serif; color: var(--text); }
+  .abs { position: absolute; left: 0; top: 0; will-change: transform, opacity; }
+  .glow { width: 1100px; height: 1100px; border-radius: 50%; filter: blur(40px); }
+  .head { width: 1080px; text-align: center; font-weight: 800; font-size: 104px; letter-spacing: -0.03em; line-height: 1.02; }
+  .head em { font-style: normal; color: var(--green); }
+  .label { font-weight: 700; font-size: 36px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .stop { width: 168px; height: 154px; border-radius: 50%; display: grid; place-items: center; }
+  .stop svg { width: 70px; height: 70px; }
+  .stop.locked { background: var(--locked); box-shadow: 0 14px 0 var(--locked-lip); color: var(--locked-ink); }
+  .stop.done { background: var(--green); box-shadow: 0 14px 0 var(--green-lip); color: var(--green-ink); }
+  .stop.current { background: var(--blue); box-shadow: 0 14px 0 var(--blue-lip); color: #fff; outline: 8px solid var(--blue); outline-offset: 12px; }
+  .stop.chest { background: transparent; box-shadow: none; }
+  .stop.chest svg { width: 150px; height: 128px; }
+  .startTag { padding: 14px 28px; border-radius: 26px; background: #121722; border: 4px solid rgba(255,255,255,.12);
+    color: var(--blue); font-weight: 900; font-size: 34px; letter-spacing: .08em; }
+  .mode { padding: 14px 26px; border-radius: 999px; background: rgba(61,220,151,.14); border: 3px solid rgba(61,220,151,.5);
+    color: var(--green); font-weight: 800; font-size: 48px; white-space: nowrap; }
+  .card { width: 920px; height: 820px; border-radius: 56px; background: #10141C; border: 3px solid rgba(255,255,255,.08);
+    box-shadow: 0 40px 120px rgba(0,0,0,.5); }
+  .chip { width: 132px; height: 132px; border-radius: 30px; display: grid; place-items: center; font-weight: 800; font-size: 66px;
+    background: var(--locked); color: var(--muted); box-shadow: 0 12px 0 var(--locked-lip); }
+  .chip.on { background: var(--green); color: var(--green-ink); box-shadow: 0 12px 0 var(--green-lip); }
+  .bar { height: 36px; border-radius: 18px; background: #1A1F2A; overflow: hidden; }
+  .bar i { display: block; height: 100%; border-radius: 18px; background: linear-gradient(90deg, #22A06E, #3DDC97); }
+  .finger { width: 92px; height: 92px; border-radius: 50%; background: rgba(255,255,255,.92); box-shadow: 0 10px 30px rgba(0,0,0,.45), 0 0 0 10px rgba(255,255,255,.18); }
+  .pill { padding: 22px 44px; border-radius: 999px; background: var(--green); color: var(--green-ink); font-weight: 800; font-size: 46px; }
+  img { display: block; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="glowA" class="abs glow" style="background: radial-gradient(circle, rgba(61,220,151,.18), transparent 65%)"></div>
+  <div id="glowB" class="abs glow" style="background: radial-gradient(circle, rgba(47,123,255,.16), transparent 65%)"></div>
+  <div id="pathWrap" class="abs" style="width:1080px;height:1920px;-webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 470px,#000 760px);mask-image:linear-gradient(to bottom,transparent 0,transparent 470px,#000 760px)">
+    <svg id="trail" class="abs" width="1080" height="1920"></svg>
+    <div id="world" class="abs"></div>
+  </div>
+  <div id="startTag" class="abs startTag">START</div>
+  <div id="doh" class="abs" style="width:260px;height:260px"></div>
+  <div id="headline" class="abs head">Sing your way <em>up.</em></div>
+  <div id="title" class="abs head" style="font-size:84px">One more <em>stop.</em></div>
+  <div id="top" class="abs" style="width:1080px;height:160px">
+    <img id="flame" class="abs" src="/web-site/assets/practice-art-3d/flame-active.webp" width="130" height="130" alt="">
+    <div id="streak" class="abs" style="font-weight:800;font-size:76px;font-variant-numeric:tabular-nums">1</div>
+  </div>
+  <div id="xp" class="abs bar" style="width:600px"><i id="xpFill"></i></div>
+  <div id="xpLabel" class="abs label">XP</div>
+  <div id="levelUp" class="abs head" style="font-size:96px">Level <em>up…</em></div>
+  <div id="card" class="abs card">
+    <div class="label" style="position:absolute;left:70px;top:70px">Grade 1 · Unit 1</div>
+    <div style="position:absolute;left:70px;top:130px;font-weight:800;font-size:72px;letter-spacing:-.02em">Sing doh to soh</div>
+    <div id="chips" style="position:absolute;left:70px;top:290px;display:flex;gap:24px"></div>
+    <div id="scoreBox" style="position:absolute;left:70px;top:520px;display:flex;align-items:center;gap:40px">
+      <div id="score" style="font-weight:800;font-size:150px;letter-spacing:-.03em;font-variant-numeric:tabular-nums">0</div>
+      <img id="stars" src="/web-site/assets/practice-art-3d/stars-3.webp" width="300" height="300" alt="" style="margin-top:-20px">
+    </div>
+  </div>
+  <div id="flash" class="abs" style="width:1080px;height:1920px;background:radial-gradient(circle at 50% 45%, rgba(61,220,151,.55), transparent 60%)"></div>
+  <div id="confetti" class="abs"></div>
+  <img id="emblem" class="abs" src="/web-site/assets/practice-art-3d/level-2-ray.webp" width="560" height="560" alt="">
+  <div id="levelText" class="abs head" style="font-size:92px">Level 2 · <em>Ray</em></div>
+  <img id="badge" class="abs" src="/web-site/assets/practice-art-3d/badge-seven-in-a-row.webp" width="380" height="380" alt="">
+  <div id="streakText" class="abs head" style="font-size:88px"><em>7-day</em> streak</div>
+  <img id="cheer" class="abs" src="/web-site/assets/practice-art/doh-cheer-notes.svg" width="420" height="420" alt="">
+  <img id="mark" class="abs" src="/web-site/assets/mark.png" width="318" height="420" alt="">
+  <div id="sheen" class="abs" style="width:200px;height:520px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);mix-blend-mode:overlay"></div>
+  <div id="word" class="abs head" style="font-size:120px">NoteFusion</div>
+  <div id="cta" class="abs head" style="font-size:80px;font-weight:700;color:var(--muted)">Practise <em>free.</em></div>
+  <div id="url" class="abs pill">notefusion.studio</div>
+  <div id="finger" class="abs finger"></div>
+</div>
+<script>
+"use strict";
+var T = null;
+var $ = function (id) { return document.getElementById(id); };
+var ICON = {
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+  play: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>',
+  chest: '<svg viewBox="0 0 28 24"><path d="M3 11h22v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="#FF9F43"/><path d="M3 11a4 4 0 0 1 4-6h14a4 4 0 0 1 4 6z" fill="#FFB86B"/><rect x="12" y="9" width="4" height="7" rx="1" fill="#fff" opacity=".85"/></svg>',
+  chestOpen: '<svg viewBox="0 0 28 24"><path d="M3 11h22v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="#FF9F43"/><path d="M4 9 7 2h14l3 7z" fill="#FFB86B"/><path d="M8 7l2-3M14 6V2M20 7l-2-3" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><rect x="12" y="13" width="4" height="5" rx="1" fill="#fff" opacity=".85"/></svg>'
+};
+
+// ── Timing helpers ─────────────────────────────────────────────────────────
+function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+function lerp(a, b, p) { return a + (b - a) * p; }
+function prog(t, t0, dur) { return clamp((t - t0) / dur, 0, 1); }
+function bez(x1, y1, x2, y2) {
+  return function (x) {
+    if (x <= 0 || x >= 1) return x;
+    var lo = 0, hi = 1, s = x;
+    for (var i = 0; i < 24; i++) {
+      s = (lo + hi) / 2;
+      var bx = 3 * (1 - s) * (1 - s) * s * x1 + 3 * (1 - s) * s * s * x2 + s * s * s;
+      if (bx < x) lo = s; else hi = s;
+    }
+    return 3 * (1 - s) * (1 - s) * s * y1 + 3 * (1 - s) * s * s * y2 + s * s * s;
+  };
+}
+var easeIn = bez(.2, .8, .2, 1), easeOut = bez(.6, 0, .8, .2), easeIO = bez(.65, 0, .35, 1);
+function outExpo(p) { return p >= 1 ? 1 : 1 - Math.pow(2, -10 * p); }
+/** A pop: grows past full size and settles (1.18 → 1). */
+function popScale(t, t0) {
+  var p = prog(t, t0, 0.28);
+  if (p <= 0) return 0;
+  return p < 0.6 ? lerp(0, 1.18, easeIn(p / 0.6)) : lerp(1.18, 1, easeIO((p - 0.6) / 0.4));
+}
+/** Visibility of something shown from t0 to t1: in over 0.4 s, out over 0.3 s. */
+function shown(t, t0, t1, inDur, outDur) {
+  inDur = inDur || 0.4; outDur = outDur || 0.3;
+  return Math.min(easeIn(prog(t, t0, inDur)), 1 - easeOut(prog(t, t1, outDur)));
+}
+function place(el, x, y, opts) {
+  opts = opts || {};
+  var w = el.offsetWidth, h = el.offsetHeight;
+  var s = opts.scale == null ? 1 : opts.scale;
+  var tr = "translate(" + (x - w / 2) + "px," + (y - h / 2) + "px)";
+  if (opts.rotY) tr += " perspective(1400px) rotateY(" + opts.rotY + "deg)";
+  if (opts.rot) tr += " rotate(" + opts.rot + "deg)";
+  tr += " scale(" + (opts.sx != null ? opts.sx : s) + "," + (opts.sy != null ? opts.sy : s) + ")";
+  el.style.transform = tr;
+  el.style.opacity = opts.alpha == null ? 1 : opts.alpha;
+  el.style.filter = opts.blur ? "blur(" + opts.blur.toFixed(2) + "px)" : "";
+}
+
+// ── The path ───────────────────────────────────────────────────────────────
+var STOP_X = [0, 170, 40, -160, -60, 150, 30, -150, 0, 130, -40];
+var STOPS = STOP_X.length, GAP = 300, BASE_Y = 1380;
+function stopPos(i) { return { x: 540 + STOP_X[i], y: BASE_Y - i * GAP }; }
+var stopEls = [], modeEls = {};
+function buildPath() {
+  var world = $("world");
+  for (var i = 0; i < STOPS; i++) {
+    var d = document.createElement("div");
+    d.className = "abs stop locked";
+    world.appendChild(d);
+    stopEls.push(d);
+  }
+  Object.keys(T.stopModes).forEach(function (k) {
+    var m = document.createElement("div");
+    m.className = "abs mode";
+    m.textContent = T.stopModes[k];
+    world.appendChild(m);
+    modeEls[k] = m;
+  });
+  var trail = $("trail"), pts = [];
+  for (var j = 0; j < STOPS; j++) pts.push(stopPos(j));
+  var dpath = "M" + pts[0].x + " " + pts[0].y;
+  for (var k = 1; k < pts.length; k++) {
+    var a = pts[k - 1], b = pts[k];
+    dpath += " C" + a.x + " " + (a.y - GAP / 2) + " " + b.x + " " + (b.y + GAP / 2) + " " + b.x + " " + b.y;
+  }
+  trail.innerHTML = '<path id="trailPath" d="' + dpath + '" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="16" stroke-linecap="round" stroke-dasharray="2 34"/>';
+}
+/** The camera: how far the world has scrolled down, a stop a beat from 6.5 s, eased into each. */
+function scrollAt(t) {
+  var cur = 0;
+  for (var k = 0; k < T.stops.length; k++) {
+    var start = T.stops[k] - 0.4, target = (k + 1) * GAP - 280;
+    if (t < start) break;
+    cur = lerp(cur, target, easeIO(prog(t, start, 0.4)));
+  }
+  return cur;
+}
+/** The stop index (1..) a time has reached on the climb: 0 before it. */
+function passed(t) { var n = 0; for (var k = 0; k < T.stops.length; k++) if (t >= T.stops[k]) n = k + 1; return n; }
+
+// ── Confetti: the app's own pieces, thrown from the emblem on the drop ─────
+var PIECES = ["confetti-beamed", "confetti-dot", "confetti-flat", "confetti-quaver", "confetti-ribbon", "confetti-sharp", "confetti-sparkle", "confetti-tri"];
+var bits = [];
+function buildConfetti() {
+  var seed = 11;
+  function rnd() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
+  var box = $("confetti");
+  for (var i = 0; i < 52; i++) {
+    var img = document.createElement("img");
+    img.className = "abs";
+    img.src = "/web-site/assets/practice-art/" + PIECES[i % PIECES.length] + ".svg";
+    img.width = img.height = 44 + Math.round(rnd() * 40);
+    box.appendChild(img);
+    var ang = rnd() * Math.PI * 2, sp = 900 + rnd() * 1300;
+    bits.push({ el: img, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp - 700, spin: (rnd() - 0.5) * 900, delay: rnd() * 0.08 });
+  }
+}
+
+// ── The frame ──────────────────────────────────────────────────────────────
+function render(t) {
+  // The canvas never stops: two glows drift on a 20 s loop; the drop flashes.
+  place($("glowA"), 540 + Math.sin(t * 0.31) * 260, 520 + Math.cos(t * 0.23) * 220);
+  place($("glowB"), 560 + Math.cos(t * 0.27) * 280, 1420 + Math.sin(t * 0.19) * 200);
+  $("flash").style.opacity = t >= T.drop ? Math.max(0, 1 - (t - T.drop) / 0.45) : 0;
+
+  // The path and the camera.
+  var scroll = scrollAt(t), n = passed(t), climb = t >= T.cardBack;
+  var pathAlpha = (1 - 0.75 * easeIO(prog(t, T.build, 0.6))) * (1 - easeOut(prog(t, T.collapse - 0.1, 0.25)));
+  var breathe = Math.sin(t * 2.4) * 4;
+  $("world").style.transform = "translateY(" + (scroll + breathe) + "px)";
+  $("trail").style.transform = "translateY(" + (scroll + breathe) + "px)";
+  $("world").style.opacity = $("trail").style.opacity = pathAlpha;
+  for (var i = 0; i < STOPS; i++) {
+    var el = stopEls[i], p = stopPos(i), done, cls, icon, s = 1;
+    var doneAt = i === 0 ? T.cardBack : T.stops[i - 1];
+    done = doneAt != null && t >= doneAt;
+    var isChest = i === T.chestStop + 1;
+    var current = !done && (i === 0 ? t < T.tap : (climb && i === n + 1));
+    if (isChest) { cls = "chest"; icon = done ? ICON.chestOpen : ICON.chest; }
+    else if (done) { cls = "done"; icon = ICON.check; }
+    else if (current) { cls = "current"; icon = ICON.play; }
+    else { cls = "locked"; icon = ICON.lock; }
+    if (el.dataset.k !== cls + icon.length) { el.className = "abs stop " + cls; el.innerHTML = icon; el.dataset.k = cls + icon.length; }
+    if (done && doneAt != null) s = popScale(t, doneAt) || 1;
+    if (current) s *= 1 + 0.06 * (0.5 - 0.5 * Math.cos(t * Math.PI * 2));
+    // START grows into the card (2.00) and the card shrinks back into it (6.00).
+    var a = 1;
+    if (i === 0) a = 1 - prog(t, T.tap, 0.12) + easeIn(prog(t, T.cardBack + 0.2, 0.2));
+    place(el, p.x, p.y, { scale: s, alpha: clamp(a, 0, 1) });
+  }
+  Object.keys(modeEls).forEach(function (k) {
+    var idx = +k, sp = stopPos(idx + 1), at = T.stops[idx];
+    // Under its stop: Doh hops along the stops' sides, so a label beside one would sit under him.
+    place(modeEls[k], sp.x, sp.y + 150, { alpha: shown(t, at, at + 0.9, 0.2, 0.3), scale: 0.9 + 0.1 * easeIn(prog(t, at, 0.3)) });
+  });
+  var sp0 = stopPos(0);
+  place($("startTag"), sp0.x, sp0.y - 150 + Math.sin(t * 3.9) * 5, { alpha: 1 - prog(t, T.tap - 0.1, 0.15) });
+
+  // Frame 0 reads: the headline, then the film's title on the climb.
+  place($("headline"), 540, 330 - 30 * easeOut(prog(t, 1.85, 0.3)), { alpha: 1 - easeOut(prog(t, 1.85, 0.3)) });
+  place($("title"), 540, 380 + 40 * (1 - easeIn(prog(t, 6.3, 0.4))), { alpha: shown(t, 6.3, 9.6) });
+
+  // Doh: waves beside START, sings beside the card, hops up the path beside each stop, bows out for the build.
+  var doh = $("doh"), pose, dx, dy, ds = 1, dAlpha = 1;
+  if (t < T.tap) { pose = "doh-wave"; dx = sp0.x - 270; dy = sp0.y - 10; }
+  else if (t < T.cardBack) { pose = "doh-sing"; dx = 200; dy = 1440; ds = 1.15; }
+  else {
+    pose = Math.floor(t * 2) % 2 ? "doh-sing" : "doh-encourage";
+    var k0 = Math.max(0, n), from = stopPos(k0), to = stopPos(Math.min(STOPS - 1, n + 1));
+    var nextAt = T.stops[n] != null ? T.stops[n] : T.build, hp = easeIO(prog(t, nextAt - 0.4, 0.4));
+    var fx = from.x + (STOP_X[k0] > 0 ? -230 : 230), tx = to.x + (STOP_X[Math.min(STOPS - 1, n + 1)] > 0 ? -230 : 230);
+    dx = lerp(fx, tx, hp); dy = lerp(from.y, to.y, hp) + scroll + breathe - Math.sin(hp * Math.PI) * 90;
+    dAlpha = pathAlpha;
+  }
+  if (t >= T.tap && t < T.tap + 0.4) { dAlpha = easeIn(prog(t, T.tap + 0.1, 0.3)); }
+  if (t >= T.cardBack && t < T.cardBack + 0.3) { dAlpha = Math.min(dAlpha, easeIn(prog(t, T.cardBack, 0.3))); }
+  var blink = (t % 2.6) > 2.45;
+  var show = blink && pose === "doh-wave" ? "doh-wave-blink" : pose;
+  Array.prototype.forEach.call(doh.children, function (im) { im.style.opacity = im.dataset.pose === show ? 1 : 0; });
+  place(doh, dx, dy, { scale: ds, alpha: t >= T.build ? dAlpha * (1 - prog(t, T.build, 0.4)) : dAlpha });
+
+  // The drill card: grows out of START, the chips go green on their beats, the score and the stars.
+  var cardIn = easeIn(prog(t, T.tap, 0.45)), cardOut = easeOut(prog(t, T.cardBack, 0.35));
+  var cp = cardIn * (1 - cardOut);
+  place($("card"), lerp(sp0.x, 540, cp), lerp(sp0.y, 880, cp), { scale: lerp(0.18, 1, cp), alpha: t < T.tap || t > T.cardBack + 0.35 ? 0 : clamp(cp * 1.6, 0, 1) });
+  var chips = $("chips").children;
+  for (var c = 0; c < chips.length; c++) {
+    var on = t >= T.chips[c];
+    chips[c].className = "chip" + (on ? " on" : "");
+    var cs = on ? popScale(t, T.chips[c]) || 1 : 1;
+    chips[c].style.transform = "scale(" + cs + ")";
+  }
+  var sc = Math.round(92 * easeIn(prog(t, T.score, 0.5)));
+  $("score").textContent = sc;
+  $("scoreBox").style.opacity = t >= T.score ? 1 : 0;
+  var st = popScale(t, T.stars);
+  $("stars").style.transform = "scale(" + st + ")";
+
+  // The top bar: the streak flame counts up as the stops pass; XP fills.
+  var topIn = shown(t, T.cardBack, T.build, 0.4, 0.3);
+  place($("top"), 540, 170 - 60 * (1 - easeIn(prog(t, T.cardBack, 0.4))), { alpha: topIn });
+  $("flame").style.transform = "translate(70px,15px) scale(" + (1 + 0.12 * (n > 0 ? Math.max(0, 1 - (t - T.stops[n - 1]) / 0.25) : 0)) + ")";
+  $("streak").style.transform = "translate(212px,32px)";
+  $("streak").textContent = Math.min(7, 1 + n);
+  var xpFrac = lerp(0, 0.9, easeIO(prog(t, T.cardBack + 0.3, T.build - T.cardBack - 0.3)));
+  xpFrac = lerp(xpFrac, 1, easeIO(prog(t, T.build + 0.6, 0.9)));
+  $("xpFill").style.width = (xpFrac * 100).toFixed(2) + "%";
+  // The XP bar comes to the middle for the build and collapses into a point just before the drop.
+  var mid = easeIO(prog(t, T.build, 0.6)), col = easeIn(prog(t, T.collapse, 0.15));
+  var bw = lerp(600, 800, mid);
+  $("xp").style.width = bw + "px";
+  $("xp").style.height = lerp(36, 64, mid) + "px";
+  place($("xp"), lerp(680, 540, mid), lerp(205, 980, mid), { sx: 1 - col, sy: 1 - col * 0.6, alpha: t < T.cardBack ? 0 : shown(t, T.cardBack, 99) * (t > T.collapse + 0.15 ? 0 : 1) });
+  place($("xpLabel"), lerp(680, 540, mid) - bw / 2 + 30, lerp(140, 900, mid), { alpha: topIn > 0 && t < T.build ? topIn : Math.max(0, 1 - prog(t, T.build, 0.3)) * (t >= T.cardBack ? 1 : 0) });
+  place($("levelUp"), 540, 800, { alpha: shown(t, T.build + 0.4, T.collapse - 0.2) });
+
+  // The finger: in to START, the tap; back for the bar's collapse.
+  var f = $("finger"), fx2 = 1240, fy2 = 1760, fs = 1, fa = 0;
+  if (t < T.tap + 0.9) {
+    var fin = easeIn(prog(t, 1.15, 0.75));
+    fx2 = lerp(1240, sp0.x + 30, fin); fy2 = lerp(1760, sp0.y + 40, fin);
+    fs = t >= T.tap - 0.05 && t < T.tap + 0.15 ? 0.82 : 1;
+    var fo = easeOut(prog(t, T.tap + 0.3, 0.5));
+    fx2 = lerp(fx2, 1240, fo); fy2 = lerp(fy2, 1500, fo);
+    fa = t > 1.1 ? 1 - fo : 0;
+  } else if (t > T.collapse - 0.6 && t < T.collapse + 0.6) {
+    var fin2 = easeIn(prog(t, T.collapse - 0.6, 0.5)), fo2 = easeOut(prog(t, T.collapse + 0.1, 0.4));
+    fx2 = lerp(lerp(1240, 600, fin2), 1240, fo2); fy2 = lerp(lerp(1500, 1010, fin2), 1300, fo2);
+    fs = t >= T.collapse - 0.05 && t < T.collapse + 0.12 ? 0.82 : 1;
+    fa = 1 - fo2;
+  }
+  place(f, fx2, fy2, { scale: fs, alpha: fa });
+
+  // The drop: the 3D Ray emblem spins in as a coin; confetti; the level holds.
+  var e = $("emblem"), ep = prog(t, T.drop, 1.1), spin = 1080 * (1 - outExpo(ep));
+  var speed = 1080 * 10 * Math.log(2) * Math.pow(2, -10 * ep) / 1.1; // degrees per second
+  var es = ep < 0.25 ? lerp(0.15, 1.12, easeIn(ep / 0.25)) : lerp(1.12, 1, easeIO(prog(ep, 0.25, 0.75)));
+  var ex = 540, ey = 860, eScale = es;
+  var move = easeIO(prog(t, T.streak, 0.5));
+  ex = lerp(ex, 360, move); ey = lerp(ey, 700, move); eScale *= lerp(1, 0.68, move);
+  var gather = easeIO(prog(t, T.markFlip - 0.15, 0.3));
+  ex = lerp(ex, 540, gather); ey = lerp(ey, 780, gather);
+  var flipOut = easeOut(prog(t, T.markFlip + 0.15, 0.2));
+  place(e, ex, ey, { scale: eScale * lerp(1, 1.1, gather), rotY: spin + 90 * flipOut,
+    alpha: t < T.drop ? 0 : (flipOut >= 1 ? 0 : 1), blur: t < T.drop ? 0 : Math.min(7, speed / 1100) });
+  place($("levelText"), 540, 1290, { alpha: shown(t, T.drop + 0.45, T.streak - 0.15) });
+  for (var b = 0; b < bits.length; b++) {
+    var bit = bits[b], bt = t - T.drop - bit.delay;
+    if (bt < 0 || bt > 2.4) { bit.el.style.opacity = 0; continue; }
+    place(bit.el, 540 + bit.vx * bt * 0.55, 860 + bit.vy * bt * 0.55 + 1300 * bt * bt * 0.5, { rot: bit.spin * bt, alpha: 1 - prog(bt, 1.6, 0.8) });
+  }
+
+  // The streak: the seven-in-a-row badge beside the emblem, Doh cheering.
+  var leave = 1 - easeOut(prog(t, T.markFlip - 0.15, 0.25));
+  place($("badge"), 720, 700, { scale: popScale(t, T.streak + 0.5), alpha: t < T.streak + 0.5 ? 0 : leave });
+  place($("streakText"), 540, 1040, { alpha: shown(t, T.streak + 0.6, T.markFlip - 0.2) });
+  place($("cheer"), 540, 1460 + 30 * Math.sin(t * 6), { scale: popScale(t, T.streak + 0.3), alpha: t < T.streak + 0.3 ? 0 : leave });
+
+  // The mark: the emblem flips over into it; the name, the line, the address.
+  var mIn = easeIn(prog(t, T.markFlip + 0.35, 0.25));
+  place($("mark"), 540, 780, { rotY: -90 * (1 - mIn), alpha: t < T.markFlip + 0.35 ? 0 : 1 });
+  var sh = prog(t, T.markFlip + 0.7, 0.6);
+  place($("sheen"), lerp(320, 760, sh), 780, { rot: 12, alpha: sh > 0 && sh < 1 ? 1 : 0 });
+  place($("word"), 540, 1150 + 30 * (1 - easeIn(prog(t, T.markFlip + 0.6, 0.4))), { alpha: easeIn(prog(t, T.markFlip + 0.6, 0.4)) });
+  place($("cta"), 540, 1290 + 30 * (1 - easeIn(prog(t, T.markFlip + 0.9, 0.4))), { alpha: easeIn(prog(t, T.markFlip + 0.9, 0.4)) });
+  place($("url"), 540, 1470, { scale: popScale(t, T.markFlip + 1.3), alpha: t < T.markFlip + 1.3 ? 0 : 1 });
+}
+
+async function boot() {
+  T = await (await fetch("timeline.json")).json();
+  buildPath();
+  buildConfetti();
+  var chips = $("chips");
+  T.chipNames.forEach(function (n) { var c = document.createElement("div"); c.className = "chip"; c.textContent = n; chips.appendChild(c); });
+  // Every image decoded and the font loaded before the first frame is drawn.
+  // Every pose Doh takes, stacked; render(t) shows one.
+  ["doh-wave", "doh-wave-blink", "doh-sing", "doh-encourage"].forEach(function (pose) {
+    var im = document.createElement("img");
+    im.src = "/web-site/assets/practice-art/" + pose + ".svg";
+    im.dataset.pose = pose; im.width = im.height = 260;
+    im.style.cssText = "position:absolute;left:0;top:0;opacity:0";
+    $("doh").appendChild(im);
+  });
+  await Promise.all(Array.prototype.map.call(document.images, function (im) { return im.decode().catch(function () {}); }));
+  await document.fonts.load('800 100px "Geist"');
+  await document.fonts.ready;
+  render(0);
+  window.READY = true;
+}
+window.render = render;
+boot();
+</script>
+</body>
+</html>

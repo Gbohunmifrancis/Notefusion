@@ -1,0 +1,64 @@
+{
+  "fps": 30,
+  "duration": 20,
+  "bpm": 120,
+  "drop": 12.0,
+  "tap": 2.0,
+  "chips": [
+    2.5,
+    3.0,
+    3.5,
+    4.0,
+    4.5
+  ],
+  "chipNotes": [
+    60,
+    62,
+    64,
+    65,
+    67
+  ],
+  "chipNames": [
+    "d",
+    "r",
+    "m",
+    "f",
+    "s"
+  ],
+  "score": 5.0,
+  "stars": 5.5,
+  "cardBack": 6.0,
+  "stops": [
+    6.5,
+    7.0,
+    7.5,
+    8.0,
+    8.5,
+    9.0,
+    9.5,
+    10.0
+  ],
+  "stopNotes": [
+    72,
+    74,
+    76,
+    79,
+    81,
+    84,
+    86,
+    88
+  ],
+  "stopModes": {
+    "0": "Scales",
+    "2": "Intervals",
+    "4": "Rhythm",
+    "6": "Which note?"
+  },
+  "chest": 9.0,
+  "build": 10.0,
+  "collapse": 11.85,
+  "streak": 14.0,
+  "markFlip": 16.0,
+  "end": 18.0,
+  "chestStop": 5
+}
