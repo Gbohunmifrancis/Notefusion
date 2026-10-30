@@ -59,7 +59,7 @@ public sealed class GetNextDrillQueryHandler : IRequestHandler<GetNextDrillQuery
         var track = await PracticeTrackOf(db, userId, ct);
         var reading = await PracticePathReader.ReadAsync(db, userId, facts, ct);
         var level = PracticeMath.LevelFor(PracticeMath.TotalXp(facts));
-        var stop = PracticePath.Next(userId, track, reading, level.Index);
+        var stop = PracticePath.Next(userId, track, reading, level.Index, await GetPracticeModeQueryHandler.FitOfAsync(db, userId, ct));
         var drill = stop.Drill;
         var allowance = new DrillAllowanceDto(
             facts.Count(f => PracticeRules.UsesDrillAllowance(f.Kind) && f.LocalDate == today),
@@ -168,7 +168,9 @@ public sealed class GetPracticeProgressQueryHandler : IRequestHandler<GetPractic
             PracticeTime.NextMidnightUtc(today, zone));
         var track = await GetNextDrillQueryHandler.PracticeTrackOf(db, userId, ct);
         var reading = await PracticePathReader.ReadAsync(db, userId, facts, ct);
-        var stop = PracticePath.Next(userId, track, reading, PracticeMath.LevelFor(PracticeMath.TotalXp(facts)).Index);
+        var stop = PracticePath.Next(
+            userId, track, reading, PracticeMath.LevelFor(PracticeMath.TotalXp(facts)).Index,
+            await GetPracticeModeQueryHandler.FitOfAsync(db, userId, ct));
         var season = await FeatureFlags.SeasonForCallerAsync(db, clock.UtcNow, caller, ct);
         var seasonPath = SeasonPaths.For(season?.Key);
 

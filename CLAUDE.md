@@ -503,7 +503,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   + `practice-modes.css` + `pitch-track.js`, loaded on a mode's first open; pure `lib/practiceModes.ts` ↔
   `assets/practice-modes.js` (same tests). Pitch match: a live needle on the web only (`pitch-track.js`, YIN on the mic,
   the grader's 35/80 cents, reports nothing); phones hold and mark until a store build adds a pitch stream. Harmony plays
-  the tune under a take only with headphones on. Wrong notes are grey. The range card's two switches are not built yet.
+  the tune under a take only with headphones on. Wrong notes are grey. The range card's two switches (`PUT /api/practice/range/settings`, `users.PracticeInRange` on, `LearnPartFromRange` off): practice in my range, the path's drills and the modes' exercises placed, among the keys each may be placed in, in those whose notes (moved by whole octaves, as the grader allows) sit in the measured range (`VoiceFit`; a take counts for its drill in any key, `PracticePath.SameDrill`), and Learn my part starting on the range's part (the client writes it as the remembered part, `nf.web.practice.part` / `nf.practice.part`).
   Every marked mode opens on its path (Duolingo-like, web and phone): pure `modePath` (`assets/practice-modes.js` ↔
   `lib/practiceModes.ts`, same tests) makes units of the mode's groups (or runs of four when a group is not a unit), each
   stop an exercise with stars from its best mark (50/80/95), a unit open once the one before is starred or one of its own

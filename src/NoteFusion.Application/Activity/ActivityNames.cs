@@ -128,6 +128,7 @@ public static class ActivityNames
         ["practice.gradedrill"] = "Sang a practice drill",
         ["practice.grademode"] = "Sang a practice exercise",
         ["practice.measurerange"] = "Measured their voice range",
+        ["practice.rangesettings"] = "Changed where practice is placed",
         ["practice.settrack"] = "Chose a practice track",
         ["practice.setreminders"] = "Changed practice reminders",
 

@@ -6,11 +6,14 @@
  * Nothing here is marked or earns XP: breath, trills and sirens have no right notes, and the range is measured, not
  * scored (`POST /api/practice/range`, kept on the account). On a phone the range finder listens for a few seconds
  * and the server reads the steadiest held note; there is no live trace until a store build adds a pitch stream.
- * The board's two switches (place drills in my range, start Learn my part on that part) wait for the server.
+ * The result's two switches (`PUT /api/practice/range/settings`): practice placed in the range (the server places the
+ * path's drills and the modes' exercises), and Learn my part starting on the range's part, which the phone keeps as the
+ * remembered part (`nf.practice.part`, read by the Result screen) when turned on and after each measurement while on.
  */
 
 import React, { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Switch, Text, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Icon } from "../../components/Icon";
 import { useNavigation } from "@react-navigation/native";
 import Svg, { Circle, Polyline, Rect, Text as SvgText } from "react-native-svg";
@@ -49,6 +52,12 @@ import { LiveDot, ModeFooter } from "./shared";
 
 type View_ = { at: "routine" } | { at: "range"; end: "low" | "high" } | { at: "result" };
 
+/** The part Learn my part opens on (ResultScreen's key): the range's, when the singer asked for that. */
+const PRACTICE_PART_KEY = "nf.practice.part";
+function rememberRangePart(r: VoiceRange) {
+  if (r.learnPartFromRange && r.voicePart) AsyncStorage.setItem(PRACTICE_PART_KEY, r.voicePart).catch(() => undefined);
+}
+
 export function WarmUpScreen({ track }: { track: PracticeTrack | null }) {
   const nav = useNavigation();
   const c = useColors();
@@ -67,6 +76,7 @@ export function WarmUpScreen({ track }: { track: PracticeTrack | null }) {
   /** The breathing guide's start (wall clock), while it runs. */
   const [breathFrom, setBreathFrom] = useState<number | null>(null);
   const [now, setNow] = useState(0);
+  const [savingRange, setSavingRange] = useState(false);
   const live = useRef(true);
   useEffect(() => () => { live.current = false; }, []);
 
@@ -129,6 +139,7 @@ export function WarmUpScreen({ track }: { track: PracticeTrack | null }) {
       if (!got || !live.current) return;
       setRange(got.value);
       setHeardEnd(end);
+      rememberRangePart(got.value);
     } catch (e) {
       if (live.current) setError(e instanceof MicDenied ? e.message : toApiError(e).message);
     }
@@ -203,6 +214,23 @@ export function WarmUpScreen({ track }: { track: PracticeTrack | null }) {
     );
   }
 
+  async function saveRangeSettings(change: { practiceInRange?: boolean; learnPartFromRange?: boolean }) {
+    setSavingRange(true);
+    setError(null);
+    try {
+      const got = await practiceApi.rangeSettings(change);
+      if (!live.current) return;
+      setRange((r) => (r ? { ...r, practiceInRange: got.practiceInRange, learnPartFromRange: got.learnPartFromRange } : got));
+      if (change.learnPartFromRange) rememberRangePart(got);
+      const [name, value] = Object.entries(change)[0] ?? ["", ""];
+      void logAnalyticsEvent("range_setting", { [name]: String(value) });
+    } catch (e) {
+      if (live.current) setError(toApiError(e).message);
+    } finally {
+      if (live.current) setSavingRange(false);
+    }
+  }
+
   if (view.at === "result" && range) {
     const headline = rangeHeadline(range);
     const part = voicePartLine(range.voicePart);
@@ -228,6 +256,29 @@ export function WarmUpScreen({ track }: { track: PracticeTrack | null }) {
               </View>
             </View>
           ) : null}
+          {range.lowMidi != null && range.highMidi != null ? (
+            <>
+              <RangeSwitch
+                icon="music"
+                title="Practise in my range"
+                hint="Drills and exercises come in keys your voice holds."
+                value={range.practiceInRange !== false}
+                disabled={savingRange}
+                onChange={(on) => void saveRangeSettings({ practiceInRange: on })}
+              />
+              {range.voicePart ? (
+                <RangeSwitch
+                  icon="choir"
+                  title={`Start Learn my part on ${range.voicePart}`}
+                  hint="Your sheets' parts open on the one your range suits."
+                  value={!!range.learnPartFromRange}
+                  disabled={savingRange}
+                  onChange={(on) => void saveRangeSettings({ learnPartFromRange: on })}
+                />
+              ) : null}
+            </>
+          ) : null}
+          {error ? <ProblemNote>{error}</ProblemNote> : null}
           <Text style={[styles.note, styles.rangeNote]}>Voices warm up and change. Measure again any day.</Text>
         </Screen>
         <ModeFooter>
@@ -435,4 +486,38 @@ const makeStyles = (c: Palette) =>
     flexText: { flex: 1, minWidth: 0 },
     partTitle: { fontFamily: fonts.semibold, fontSize: 16, color: c.text },
     partSub: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted, marginTop: 2 },
+    switchRow: { flexDirection: "row", alignItems: "center", gap: spacing.md, marginTop: spacing.md, padding: spacing.md, borderRadius: radii.md, backgroundColor: c.surface, borderWidth: 1, borderColor: c.border },
+    switchTitle: { fontFamily: fonts.medium, fontSize: 15, color: c.text },
+    switchHint: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 18, color: c.textMuted, marginTop: 2 },
   });
+
+/** One of the range card's two switches, the headphones row's shape. */
+function RangeSwitch({ icon, title, hint, value, disabled, onChange }: {
+  icon: "music" | "choir";
+  title: string;
+  hint: string;
+  value: boolean;
+  disabled: boolean;
+  onChange: (on: boolean) => void;
+}) {
+  const c = useColors();
+  const styles = useThemedStyles(makeStyles);
+  return (
+    <View style={styles.switchRow}>
+      <Icon name={icon} size={20} color={c.icon} />
+      <View style={styles.flexText}>
+        <Text style={styles.switchTitle}>{title}</Text>
+        <Text style={styles.switchHint}>{hint}</Text>
+      </View>
+      <Switch
+        value={value}
+        onValueChange={onChange}
+        disabled={disabled}
+        trackColor={{ false: c.grabber, true: c.primary }}
+        thumbColor="#FFFFFF"
+        ios_backgroundColor={c.grabber}
+        accessibilityLabel={title}
+      />
+    </View>
+  );
+}

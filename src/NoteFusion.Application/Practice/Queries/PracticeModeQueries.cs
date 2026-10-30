@@ -60,9 +60,20 @@ public sealed class GetPracticeModeQueryHandler : IRequestHandler<GetPracticeMod
         var zone = PracticeTime.Resolve(_timeZone.Current);
         var today = PracticeTime.LocalDate(_clock.UtcNow, zone);
         var track = await GetNextDrillQueryHandler.PracticeTrackOf(_db, userId, cancellationToken);
+        var fit = await FitOfAsync(_db, userId, cancellationToken);
         var best = await BestScoresAsync(_db, userId, kind, cancellationToken);
-        var exercises = ModeCatalogue.ForTrack(mode, track, userId, today).Select(e => ToDto(e, best)).ToList();
+        var exercises = ModeCatalogue.ForTrack(mode, track, userId, today, fit).Select(e => ToDto(e, best)).ToList();
         return new PracticeModeDto(mode, today, track, await AllowanceAsync(_db, _clock, userId, today, zone, cancellationToken), exercises);
+    }
+
+    /// <summary>The singer's range to place practice in, when both ends are measured and their switch is on; else null.</summary>
+    internal static async Task<VoiceFit?> FitOfAsync(IApplicationDbContext db, Guid userId, CancellationToken ct)
+    {
+        var range = await db.Users.AsNoTracking()
+            .Where(u => u.Id == userId)
+            .Select(u => new { u.VoiceRangeLowMidi, u.VoiceRangeHighMidi, u.PracticeInRange })
+            .FirstOrDefaultAsync(ct);
+        return range is null ? null : VoiceFit.For(range.VoiceRangeLowMidi, range.VoiceRangeHighMidi, range.PracticeInRange);
     }
 
     /// <summary>
@@ -125,8 +136,10 @@ public sealed class GetVoiceRangeQueryHandler : IRequestHandler<GetVoiceRangeQue
             return UserErrors.NotFound;
         var range = await _db.Users.AsNoTracking()
             .Where(u => u.Id == userId)
-            .Select(u => new { u.VoiceRangeLowMidi, u.VoiceRangeHighMidi })
+            .Select(u => new { u.VoiceRangeLowMidi, u.VoiceRangeHighMidi, u.PracticeInRange, u.LearnPartFromRange })
             .FirstOrDefaultAsync(cancellationToken);
-        return range is null ? UserErrors.NotFound : VoiceRanges.Describe(range.VoiceRangeLowMidi, range.VoiceRangeHighMidi);
+        return range is null
+            ? UserErrors.NotFound
+            : VoiceRanges.Describe(range.VoiceRangeLowMidi, range.VoiceRangeHighMidi, null, range.PracticeInRange, range.LearnPartFromRange);
     }
 }
