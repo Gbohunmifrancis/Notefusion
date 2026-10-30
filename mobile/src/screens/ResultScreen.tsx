@@ -65,6 +65,7 @@ import {
   syllable,
 } from "../lib/solfa";
 import { buildMusicXml, resolveKeySignature } from "../lib/musicxml";
+import { editSheet } from "../lib/sheetEdit";
 import { midiBase64 } from "../lib/midi";
 import type { SynthVoice } from "../lib/synth";
 import { voicesSource, type VoicesSource } from "../lib/melodySource";
@@ -231,7 +232,7 @@ const DOCK_HEIGHT_GUESS = 70;
 const SAVE_PILL_GAP = 12;
 const SAVE_PILL_ROOM = 48 + SAVE_PILL_GAP;
 
-type Panel = "transpose" | "lyrics" | "parts" | "sing" | "export";
+type Panel = "transpose" | "lyrics" | "parts" | "sing" | "export" | "fix";
 
 /** The part a singer practised last on this device; Learn my part opens on it when the sheet has it. */
 const PRACTICE_PART_KEY = "nf.practice.part";
@@ -432,6 +433,10 @@ export function ResultScreen({ route, navigation }: Props) {
 
   // ── Lyrics & sharing ─────────────────────────────────────────────────────
   const [lyrics, setLyrics] = useState(result.lyrics ?? "");
+  /** "Fix a note" (lib/sheetEdit): the words typed, what the last one did (or why not), and each change to undo. */
+  const [fixText, setFixText] = useState("");
+  const [fixSaid, setFixSaid] = useState<string | null>(null);
+  const [fixUndo, setFixUndo] = useState<{ draft: Draft; said: string }[]>([]);
   const committedLyrics = useRef(result.lyrics ?? "");
   const [shareToken, setShareToken] = useState<string | null>(result.shareToken ?? null);
   const [sharing, setSharing] = useState(false);
@@ -1282,6 +1287,50 @@ export function ResultScreen({ route, navigation }: Props) {
     void commitNotes(draft);
   }
 
+  /**
+   * "Fix a note", said in words ("make the second m an f"): made on the notes as the sheet shows them, kept like any
+   * correction (a saved sheet's notes at once, `commitNotes`; a fresh one's with Save), and undone newest first. A
+   * sheet corrected by hand is not asked which doh or which hymn it is: either answer would undo the correction.
+   */
+  function fixNote() {
+    if (blockedByLocalTranspose()) return;
+    const parsed = parseKey(key);
+    const out = editSheet(view.notes, {
+      dohPc: parsed ? dohPitchClass(parsed) : null,
+      timeSignature,
+      label: (notes) => deriveSolfa(notes, key, timeSignature, result.chromaticSpelling ?? "direction").notes,
+    }, fixText);
+    if (out.error !== undefined) {
+      setFixSaid(out.error);
+      logAppEvent("fix_note_not_followed");
+      return;
+    }
+    settleHeld();
+    const before = draft;
+    const next: Draft = { notes: out.notes, origins: out.from.map((k) => before.origins[k]!) };
+    setFixUndo((u) => [...u, { draft: before, said: out.said }]);
+    setDraft(next);
+    setPreview(renderMelody(next.notes, tempo));
+    setDoubt([]);
+    setHymnAnswered(true);
+    setFixText("");
+    setFixSaid(out.said);
+    haptics.play("success");
+    logAppEvent("fix_note", { saved: Boolean(savedId) });
+    void commitNotes(next);
+  }
+
+  function undoFix() {
+    const last = fixUndo[fixUndo.length - 1];
+    if (!last || blockedByLocalTranspose()) return;
+    setFixUndo((u) => u.slice(0, -1));
+    setDraft(last.draft);
+    setPreview(renderMelody(last.draft.notes, tempo));
+    setFixSaid("Undone: " + last.said.charAt(0).toLowerCase() + last.said.slice(1));
+    logAppEvent("fix_note_undone");
+    void commitNotes(last.draft);
+  }
+
   /** "Finish review" on the last flagged note: the walk is over, and a toast says so rather than a greyed-out Next. */
   function finishReview() {
     const count = reviewQueue?.length ?? 0;
@@ -1292,6 +1341,8 @@ export function ResultScreen({ route, navigation }: Props) {
   function discardCorrections() {
     settleHeld();
     const original = pristine(baseline.notes);
+    setFixUndo([]);
+    setFixSaid(null);
     setDraft(original);
     setPreview(renderMelody(baseline.notes, tempo));
     void commitNotes(original);
@@ -1939,6 +1990,7 @@ export function ResultScreen({ route, navigation }: Props) {
         icon: "rename",
         onPress: () => (lowCount > 0 ? startReview() : openNote(0)),
       },
+      { label: "Fix a note in words", icon: "lyrics", onPress: () => setPanel("fix") },
     ];
     if (edited) {
       actions.push({
@@ -2559,6 +2611,31 @@ export function ResultScreen({ route, navigation }: Props) {
           ) : null}
 
           {/* ── Export & Share ─────────────────────────────────────────────────── */}
+          {/* ── Fix a note, said in words (lib/sheetEdit; the web's sheet-edit.js) ── */}
+          {panel === "fix" ? (
+            <View style={styles.panel}>
+              <TextField
+                label="The change to make"
+                value={fixText}
+                onChangeText={setFixText}
+                onSubmitEditing={fixNote}
+                placeholder="make the second m an f"
+                autoCapitalize="none"
+                autoCorrect={false}
+                returnKeyType="done"
+                maxLength={120}
+              />
+              <Text style={styles.panelHint}>
+                Or “change note 5 to s”, “move the last d up an octave”, “change every t to ta”, “delete note 6”. Bars are counted as the staff numbers them.
+              </Text>
+              {fixSaid ? <Text style={[styles.panelHint, styles.panelHintStrong]} accessibilityLiveRegion="polite">{fixSaid}</Text> : null}
+              <View style={styles.fixActions}>
+                <Button label="Change it" size="sm" onPress={fixNote} disabled={!fixText.trim()} />
+                {fixUndo.length > 0 ? <Button label="Undo" icon="restart" size="sm" variant="secondary" onPress={undoFix} /> : null}
+              </View>
+            </View>
+          ) : null}
+
           {panel === "export" ? (
             <View style={styles.panel}>
               <Text style={styles.panelHint}>
@@ -3294,6 +3371,7 @@ const makeStyles = (c: Palette) =>
     panelHint: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted },
     /** A word a hint leans on (Pro's price in Export's sentence). */
     panelHintStrong: { fontFamily: fonts.semibold, color: c.text },
+    fixActions: { flexDirection: "row", gap: spacing.sm, flexWrap: "wrap" },
     panelButton: { marginTop: spacing.xs },
     /** Under Transpose's button, over a hairline: the song's backing will sit out (board o-backing O3/3). */
     backingWarning: {
