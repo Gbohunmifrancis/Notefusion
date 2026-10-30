@@ -4,6 +4,8 @@ import {
   STREAK_EVENING_HOUR,
   addDays,
   allowanceLine,
+  leagueHeadline,
+  leagueRows,
   levelFraction,
   nextAction,
   pathLine,
@@ -230,4 +232,16 @@ test("a lapsed streak says the best kept, never 'No streak yet'", () => {
   assert.equal(streakLine({ ...lapsed, best: 0 }), "Sing a drill to start one");
   assert.equal(streakLine({ current: 3, best: 30, todayDone: false, atRisk: true }), "Sing today to keep it");
   assert.equal(streakLine({ current: 3, best: 30, todayDone: true, atRisk: false }), "Done for today");
+});
+
+test("the choir's league: the top five, the singer's own line after a gap, and a plain headline", () => {
+  const row = (rank: number, xp: number, isYou = false) => ({ rank, name: "S" + rank, xp, days: 1, isYou, isDirector: false });
+  const table = [row(1, 90), row(2, 80), row(3, 70), row(3, 70), row(5, 60), row(6, 50), row(7, 40, true)];
+  assert.deepEqual(leagueRows(table).map((r) => [r.entry.rank, r.gapBefore]), [[1, false], [2, false], [3, false], [3, false], [5, false], [7, true]]);
+  assert.equal(leagueRows(table.slice(0, 3)).length, 3);
+  assert.equal(leagueHeadline(table), "You're 7th of 7 this week");
+  assert.equal(leagueHeadline([row(1, 20, true), row(2, 10)]), "You're top of the choir this week");
+  assert.equal(leagueHeadline([row(1, 20, true), row(1, 20)]), "You're joint top of the choir this week");
+  assert.equal(leagueHeadline([row(1, 20), row(2, 10, true), row(2, 10), row(12, 1)]), "You're joint 2nd of 4 this week");
+  assert.equal(leagueHeadline([row(1, 20), row(2, 0, true)]), "Sing a marked take to get on the table this week.");
 });

@@ -248,3 +248,33 @@ export function weekdayLetter(day: string): string {
 function clamp01(v: number): number {
   return Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : 0;
 }
+
+// ── The choir's league (GET /api/choirs/mine/league; web assets/practice-progress.js, same tests) ──
+
+export interface LeagueEntryLike {
+  rank: number;
+  xp: number;
+  isYou: boolean;
+}
+
+/** The table's rows to show: the first `top` places, and the singer's own line after a gap when it is lower down. */
+export function leagueRows<T extends LeagueEntryLike>(entries: readonly T[], top = 5): { entry: T; gapBefore: boolean }[] {
+  const rows = entries.slice(0, top).map((entry) => ({ entry, gapBefore: false }));
+  const me = entries.slice(top).find((e) => e.isYou);
+  if (me) rows.push({ entry: me, gapBefore: true });
+  return rows;
+}
+
+function ordinal(n: number): string {
+  const tens = n % 100, ones = n % 10;
+  return n + (tens >= 11 && tens <= 13 ? "th" : ones === 1 ? "st" : ones === 2 ? "nd" : ones === 3 ? "rd" : "th");
+}
+
+/** "You're top of the choir this week", "You're 3rd of 12 this week", or how to get on the table at all. */
+export function leagueHeadline(entries: readonly LeagueEntryLike[]): string {
+  const me = entries.find((e) => e.isYou);
+  if (!me || !me.xp) return "Sing a marked take to get on the table this week.";
+  const shared = entries.filter((e) => e.rank === me.rank).length > 1;
+  if (me.rank === 1) return shared ? "You're joint top of the choir this week" : "You're top of the choir this week";
+  return `You're ${shared ? "joint " : ""}${ordinal(me.rank)} of ${entries.length} this week`;
+}

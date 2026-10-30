@@ -30,6 +30,7 @@ import type {
   CheckoutExitRequest,
   CheckoutSession,
   Choir,
+  ChoirLeague,
   Drill,
   EmailPreferences,
   ChoirMember,
@@ -770,6 +771,16 @@ export const choirApi = {
   rename: (name: string) => api.put<Choir>("/api/choirs/mine", { name }).then((r) => r.data),
 
   members: () => api.get<ChoirMember[]>("/api/choirs/mine/members").then((r) => r.data),
+
+  /** The choir's practice league this week; null outside a choir or once its plan has run out. */
+  league: () =>
+    api
+      .get<ChoirLeague>("/api/choirs/mine/league")
+      .then((r) => r.data as ChoirLeague | null)
+      .catch((e: { response?: { status?: number } }) => {
+        if (e?.response?.status === 404 || e?.response?.status === 403) return null;
+        throw e;
+      }),
 
   removeMember: (userId: string) => api.delete(`/api/choirs/mine/members/${userId}`).then(() => undefined),
 

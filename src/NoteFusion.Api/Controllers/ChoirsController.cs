@@ -32,6 +32,14 @@ public sealed class ChoirsController : ApiControllerBase
     public async Task<IActionResult> Rename(RenameChoirBody body, CancellationToken ct)
         => HandleResult(await _sender.Send(new RenameChoirCommand(body.Name), ct));
 
+    /// <summary>
+    /// The choir's practice league this week: everyone in it, the director too, ranked by practice XP earned since
+    /// Monday (the caller's week). Director and singers, while the plan runs.
+    /// </summary>
+    [HttpGet("mine/league")]
+    public async Task<IActionResult> League(CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetChoirLeagueQuery(), ct));
+
     /// <summary>The singers in the choir. Director only.</summary>
     [HttpGet("mine/members")]
     public async Task<IActionResult> Members(CancellationToken ct)

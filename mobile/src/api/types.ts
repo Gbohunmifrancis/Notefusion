@@ -1005,6 +1005,26 @@ export interface ChoirMember {
   joinedAtUtc: string;
 }
 
+/** GET /api/choirs/mine/league (C# `ChoirLeagueDto`): the choir's practice league this week. */
+export interface ChoirLeague {
+  choirName: string;
+  /** The Monday the week began, "yyyy-mm-dd". */
+  weekStart: string;
+  resetsAtUtc: string;
+  /** Everyone in the choir, the director too, by XP this week; ties share a place. */
+  entries: ChoirLeagueEntry[];
+}
+
+/** One line of the league: place, first name, XP this week, days practised. */
+export interface ChoirLeagueEntry {
+  rank: number;
+  name: string;
+  xp: number;
+  days: number;
+  isYou: boolean;
+  isDirector: boolean;
+}
+
 /** One row of the choir's shared library. */
 export interface ChoirSheet {
   id: string;
