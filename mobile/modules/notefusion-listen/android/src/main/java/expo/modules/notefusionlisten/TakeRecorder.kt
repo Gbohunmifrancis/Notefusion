@@ -1,25 +1,18 @@
 package expo.modules.notefusionlisten
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.media.AudioAttributes
 import android.media.AudioFormat
-import android.media.AudioManager
-import android.media.AudioPlaybackCaptureConfiguration
 import android.media.AudioRecord
 import android.media.MediaCodec
 import android.media.MediaCodecInfo
 import android.media.MediaFormat
 import android.media.MediaMuxer
 import android.media.MediaRecorder
-import android.media.projection.MediaProjection
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import java.io.File
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import kotlin.math.abs
 import kotlin.math.log10
 import kotlin.math.sqrt
 
@@ -28,20 +21,13 @@ import kotlin.math.sqrt
  * worker resamples every upload to), 128 kbps or data saver's 32 (lib/recordingPreset.ts), so the
  * server cannot tell a take from the bubble from one made in the app.
  *
- * The audio is the microphone ("The room") or, on Android 10+, what the phone itself is playing
- * (`AudioPlaybackCaptureConfiguration` under a MediaProjection the user just consented to): clean,
- * with headphones in too. An app may opt out of being captured; it then comes through as silence while
- * `AudioManager.isMusicActive()` says music is playing, and that is reported so the service can fall
- * back to the room.
+ * The audio is the microphone ("The room"), as Shazam listens.
  *
  * `AudioRecord` → `MediaCodec` (AAC-LC) → `MediaMuxer`, on one capture thread; the level (for the
  * pill's ring) and the elapsed seconds reach the listener on the main thread. `stop()` blocks until
  * the file is closed, so the caller can hand it on at once.
  */
 internal class TakeRecorder(
-  private val context: Context,
-  private val source: String,
-  private val projection: MediaProjection?,
   private val outFile: File,
   private val bitRate: Int,
   private val capSeconds: Int,
@@ -53,8 +39,6 @@ internal class TakeRecorder(
     fun onElapsed(seconds: Int)
     /** The take reached the account's cap: the service stops it and sends. */
     fun onCapReached()
-    /** Phone sound: nothing came through for the first seconds while music plays (the app blocks capture). */
-    fun onCaptureSilent()
     /**
      * A forgotten take, by its sound: `nothingHeard` when the first minute held nothing above the quiet line, otherwise the
      * music stopped (at least ten seconds were heard and then 45 went quiet). Reported once; the service ends the take.
@@ -83,29 +67,10 @@ internal class TakeRecorder(
     val minBytes = AudioRecord.getMinBufferSize(SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
     val bufferBytes = maxOf(minBytes, CHUNK_FRAMES * 2 * 8)
     val recorder = try {
-      if (source == ListenPrefs.SOURCE_PHONE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && projection != null) {
-        val capture = AudioPlaybackCaptureConfiguration.Builder(projection)
-          .addMatchingUsage(AudioAttributes.USAGE_MEDIA)
-          .addMatchingUsage(AudioAttributes.USAGE_GAME)
-          .addMatchingUsage(AudioAttributes.USAGE_UNKNOWN)
-          .build()
-        AudioRecord.Builder()
-          .setAudioFormat(
-            AudioFormat.Builder()
-              .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-              .setSampleRate(SAMPLE_RATE)
-              .setChannelMask(AudioFormat.CHANNEL_IN_MONO)
-              .build()
-          )
-          .setBufferSizeInBytes(bufferBytes)
-          .setAudioPlaybackCaptureConfig(capture)
-          .build()
-      } else {
-        // VOICE_RECOGNITION, not MIC: Android requires its noise suppression and automatic gain off, and a phone's
-        // MIC path keeps them for calls, where a held note is "noise" to be pushed down (a song heard through the
-        // speaker came back in pieces). Calibrated near -22 dBFS at 90 dB SPL, so HEARD_DB is still ~60 dB SPL.
-        AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION, SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferBytes)
-      }
+      // VOICE_RECOGNITION, not MIC: Android requires its noise suppression and automatic gain off, and a phone's
+      // MIC path keeps them for calls, where a held note is "noise" to be pushed down (a song heard through the
+      // speaker came back in pieces). Calibrated near -22 dBFS at 90 dB SPL, so HEARD_DB is still ~60 dB SPL.
+      AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION, SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferBytes)
     } catch (e: Exception) {
       fail("E_MIC_UNAVAILABLE", e.message)
       return false
@@ -176,10 +141,7 @@ internal class TakeRecorder(
     var muxing = false
     var frames = 0L
     var lastSecond = -1
-    var loudest = 0
-    var captureChecked = false
     var capReported = false
-    val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
     fun drain(endOfStream: Boolean) {
       var waits = 0
@@ -220,13 +182,11 @@ internal class TakeRecorder(
         }
         if (n == 0) continue
 
-        // The level for the ring, and the first seconds' loudest sample for the capture check.
+        // The level for the ring.
         var sum = 0.0
-        var peak = 0
         for (i in 0 until n) {
           val v = pcm[i].toInt()
           sum += v.toDouble() * v
-          if (abs(v) > peak) peak = abs(v)
         }
         val rms = sqrt(sum / n)
         val db = if (rms < 1.0) -120.0 else 20.0 * log10(rms / 32768.0)
@@ -247,17 +207,6 @@ internal class TakeRecorder(
           if (nothing || stopped) {
             quietReported = true
             main.post { listener.onQuiet(nothing) }
-          }
-        }
-
-        // Phone sound: a sound coming through settles it; none after the first seconds while music plays
-        // means the app opted out of capture, said once.
-        if (source == ListenPrefs.SOURCE_PHONE && !captureChecked) {
-          if (peak > loudest) loudest = peak
-          if (loudest > SILENCE_PEAK) captureChecked = true
-          else if (frames >= (CAPTURE_CHECK_SEC * SAMPLE_RATE).toLong() && audioManager.isMusicActive) {
-            captureChecked = true
-            main.post { listener.onCaptureSilent() }
           }
         }
 
@@ -316,9 +265,6 @@ internal class TakeRecorder(
     private const val MAX_INPUT_BYTES = 16_384
     /** The ring's floor: −50 dBFS is 0, full scale is 1. */
     private const val LEVEL_FLOOR_DB = 50.0
-    /** Phone sound: silence this long while music plays means the app does not allow capture. */
-    private const val CAPTURE_CHECK_SEC = 2.5
-    private const val SILENCE_PEAK = 8
     /** The quiet line: a chunk at or above it counts as heard. A phone's own noise is near −60 dBFS or below. */
     const val HEARD_DB = -52.0
     /** Under this much heard, a take is silence: never sent. */

@@ -317,7 +317,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   views in `TYPE_APPLICATION_OVERLAY` windows, docked half off an edge, dragged, hidden on the ×; tapped it is the pill
   with the REC dot, the clock, the account's line and a ring on the level), the quiet notification's Listen, and the
   Listen tile (`ListenTakeTileService`, tapped again = stop and send). `ListenOverlayService` is the foreground service
-  (`specialUse` while it waits, `microphone` / `mediaProjection` for the take: Play needs the specialUse declaration);
+  (`specialUse` while it waits, `microphone` for the take: Play needs the specialUse declaration; no `mediaProjection` or
+  `mediaPlayback`, both in `app.json`'s `blockedPermissions`);
   `TakeRecorder` writes AAC at 22,050 Hz mono, 128 or data saver's 32 kbps, from the microphone only, as Shazam listens,
   on Android's `VOICE_RECOGNITION` source (noise suppression and auto gain required off; MIC's push held notes down, as do
   Find the key and the Record screen's `audioSource`)

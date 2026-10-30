@@ -30,17 +30,17 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS",
         "android.permission.FOREGROUND_SERVICE",
-        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
         "android.permission.FOREGROUND_SERVICE_MICROPHONE",
         "android.permission.POST_NOTIFICATIONS",
         "android.permission.SYSTEM_ALERT_WINDOW",
         "android.permission.FOREGROUND_SERVICE_SPECIAL_USE",
-        "android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION",
         "android.permission.VIBRATE",
         "com.android.vending.BILLING"
       ],
       "blockedPermissions": [
-        "android.permission.READ_MEDIA_IMAGES"
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION"
       ]
     },
     "plugins": [
@@ -64,7 +64,8 @@
       [
         "expo-audio",
         {
-          "microphonePermission": "NoteFusion records short clips to transcribe them into solfa and staff notation, and listens for the key of a song while other apps play it."
+          "microphonePermission": "NoteFusion records short clips to transcribe them into solfa and staff notation, and listens for the key of a song while other apps play it.",
+          "enableBackgroundPlayback": false
         }
       ],
       "expo-asset",

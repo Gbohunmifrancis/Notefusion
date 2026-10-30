@@ -3,10 +3,9 @@
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
   <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-  <!-- Listen from anywhere: the floating button over other apps, the waiting service's type, the phone's sound. -->
+  <!-- Listen from anywhere: the floating button over other apps and the waiting service's type. -->
   <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
   <uses-permission android:name="android.permission.VIBRATE" />
 
   <application>
@@ -41,12 +40,12 @@
     </receiver>
 
     <!-- Listen from anywhere: the floating button and the quiet notification, and the take they start. specialUse
-         while it only waits (a button over other apps, started and stopped by the user), the microphone or the
-         phone's sound (mediaProjection) for the take itself. -->
+         while it only waits (a button over other apps, started and stopped by the user), the microphone for the
+         take itself. -->
     <service
       android:name="expo.modules.notefusionlisten.ListenOverlayService"
       android:exported="false"
-      android:foregroundServiceType="specialUse|microphone|mediaProjection">
+      android:foregroundServiceType="specialUse|microphone">
       <property
         android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
         android:value="A floating button the user switched on, drawn over other apps, that starts and stops a recording at the user's tap" />

@@ -21,9 +21,7 @@ class ListenTakeTileService : TileService() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
       tile.subtitle = when {
         listening -> "${getString(R.string.nf_bubble_listening)} · ${OverlayUi.formatClock(ListenPrefs.takeElapsed(this))}"
-        else -> "${ListenPrefs.kindLabel(this, ListenPrefs.kind(this))} · ${
-          getString(if (ListenPrefs.source(this) == ListenPrefs.SOURCE_PHONE) R.string.nf_source_phone else R.string.nf_source_room)
-        }"
+        else -> "${ListenPrefs.kindLabel(this, ListenPrefs.kind(this))} · ${getString(R.string.nf_source_room)}"
       }
     }
     tile.updateTile()

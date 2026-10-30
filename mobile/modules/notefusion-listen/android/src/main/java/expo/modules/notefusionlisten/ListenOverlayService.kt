@@ -8,8 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
-import android.media.projection.MediaProjection
-import android.media.projection.MediaProjectionManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
@@ -35,7 +33,7 @@ import java.io.File
  * It runs only while there is something to do: the floating button on screen (Pro), a take, or a take on its way to
  * JS. The Listen notification on its own runs nothing (`ListenNotice`); a tap on its Listen starts this service for the
  * take, and it stops again when the take is handed over. Its foreground type is `specialUse` while it only holds the
- * button, with `microphone` or `mediaProjection` added for a take. Nothing ticks while it waits: no timers, no wake
+ * button, with `microphone` added for a take. Nothing ticks while it waits: no timers, no wake
  * locks, no polling. During a take the clock in the notification is the system's own chronometer, and the tile and the
  * stored clock are touched every five seconds rather than every second.
  *
@@ -46,9 +44,8 @@ import java.io.File
  * Starting the microphone with the app not in front is what Android 14+ restricts. Three ways in, each one the system
  * allows: the notification's Listen action (a notification's own PendingIntent), the floating button (the app holds
  * "Display over other apps" and the button is on screen), and the tile, which passes through `ListenTakeActivity`, a
- * translucent activity in front for the moment the recording starts — and where "This phone's sound" asks Android's
- * consent, which only an activity can. If the direct start is refused all the same, the button's tap goes through that
- * activity too.
+ * translucent activity in front for the moment the recording starts. If the direct start is refused all the same, the
+ * button's tap goes through that activity too.
  */
 class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
   /** Why a take ended, as the console counts it. */
@@ -56,7 +53,6 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
     STOP("stop", true),
     CAP("cap", true),
     MUSIC_STOPPED("music_stopped", true),
-    PROJECTION_ENDED("projection_ended", true),
     NOTHING_HEARD("nothing_heard", false),
     CANCEL("cancel", false),
     FAILED("failed", false),
@@ -66,8 +62,6 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
   private val main = Handler(Looper.getMainLooper())
   private var overlay: OverlayUi? = null
   private var recorder: TakeRecorder? = null
-  private var projection: MediaProjection? = null
-  private var projectionCallback: MediaProjection.Callback? = null
   @Volatile private var listening = false
   @Volatile private var foreground = false
   private var elapsed = 0
@@ -132,17 +126,11 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
     }
   }
 
-  /** The service's types right now: `specialUse` to wait, `microphone` / `mediaProjection` for the take. */
+  /** The service's types right now: `specialUse` to wait, `microphone` for the take. */
   private fun foregroundTypes(): Int {
     var types = 0
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) types = types or ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
-    if (listening) {
-      if (source == ListenPrefs.SOURCE_PHONE) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) types = types or ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION
-      } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        types = types or ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
-      }
-    }
+    if (listening && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) types = types or ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
     return types
   }
 
@@ -192,9 +180,6 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
     source = ListenPrefs.source(this)
     from = intent.getStringExtra(EXTRA_FROM) ?: "bubble"
     viaActivity = intent.getBooleanExtra(EXTRA_VIA_ACTIVITY, false)
-    val projectionCode = intent.getIntExtra(EXTRA_PROJECTION_CODE, 0)
-    @Suppress("DEPRECATION")
-    val projectionData: Intent? = intent.getParcelableExtra(EXTRA_PROJECTION_DATA)
     syncOverlay()
 
     if (!ListenPrefs.signedIn(this)) {
@@ -218,12 +203,6 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
       refuse("no_mic", getString(R.string.nf_take_no_mic))
       return
     }
-    if (source == ListenPrefs.SOURCE_PHONE && projectionData == null) {
-      // Android's consent for the phone's sound needs an activity: the trampoline asks and comes back here.
-      settleStart(true, null)
-      launchActivity()
-      return
-    }
     if (KeyListenerService.isRunning()) KeyListenerService.stop()
 
     listening = true
@@ -233,7 +212,7 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
     if (!enterForeground()) {
       listening = false
       enterForeground()
-      if (!viaActivity && source == ListenPrefs.SOURCE_ROOM) {
+      if (!viaActivity) {
         // The microphone refused from here (the app is not in front): once through the activity, which is.
         settleStart(true, null)
         launchActivity()
@@ -241,33 +220,6 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
       }
       refuse("not_allowed", getString(R.string.nf_take_not_allowed))
       return
-    }
-
-    if (source == ListenPrefs.SOURCE_PHONE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      val mpm = getSystemService(MediaProjectionManager::class.java)
-      val p = runCatching { mpm.getMediaProjection(projectionCode, projectionData!!) }.getOrNull()
-      if (p == null) {
-        // The consent came back unusable: the room instead, said so.
-        source = ListenPrefs.SOURCE_ROOM
-        if (!enterForeground()) {
-          listening = false
-          enterForeground()
-          refuse("not_allowed", getString(R.string.nf_take_not_allowed))
-          return
-        }
-        ListenPrefs.logEvent(this, "listen_capture_blocked", mapOf("from" to from))
-        say(getString(R.string.nf_take_capture_blocked), OverlayUi.Card.PROBLEM, 6_000)
-      } else {
-        val cb = object : MediaProjection.Callback() {
-          override fun onStop() {
-            // The system (or the user, from the status bar) ended the projection: the take ends with it.
-            main.post { if (listening && projection != null) finishTake(End.PROJECTION_ENDED, "system") }
-          }
-        }
-        runCatching { p.registerCallback(cb, main) }
-        projection = p
-        projectionCallback = cb
-      }
     }
 
     if (!startRecorder(allowance)) {
@@ -296,10 +248,9 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
   private fun startRecorder(allowance: ListenPrefs.Allowance): Boolean {
     val file = File(File(cacheDir, TAKE_DIR), "take-${System.currentTimeMillis()}.m4a")
     val bitRate = if (ListenPrefs.dataSaver(this)) 32_000 else 128_000
-    val r = TakeRecorder(this, source, projection, file, bitRate, allowance.capSeconds, this)
+    val r = TakeRecorder(file, bitRate, allowance.capSeconds, this)
     if (!r.start()) {
       listening = false
-      releaseProjection()
       applyState()
       return false
     }
@@ -332,7 +283,6 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
     val r = recorder ?: return
     recorder = null
     val result = r.stop()
-    releaseProjection()
     listening = false
     ListenNotice.clearReminder(this)
     ListenPrefs.setTakeListening(this, false)
@@ -419,14 +369,6 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
       .putExtra("from", from)
       .putExtra("kind", kind)
     return runCatching { startService(i) }.isSuccess
-  }
-
-  private fun releaseProjection() {
-    val p = projection ?: return
-    projection = null
-    projectionCallback?.let { runCatching { p.unregisterCallback(it) } }
-    projectionCallback = null
-    runCatching { p.stop() }
   }
 
   private fun tick() {
@@ -518,14 +460,7 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
 
   override fun onTap() {
     if (listening) return
-    val src = ListenPrefs.source(this)
-    if (src == ListenPrefs.SOURCE_PHONE) {
-      source = src
-      from = "bubble"
-      launchActivity()
-      return
-    }
-    beginTake(Intent().putExtra(EXTRA_SOURCE, src).putExtra(EXTRA_FROM, "bubble"))
+    beginTake(Intent().putExtra(EXTRA_SOURCE, ListenPrefs.source(this)).putExtra(EXTRA_FROM, "bubble"))
   }
 
   override fun onStop() {
@@ -581,30 +516,6 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
     finishTake(if (nothingHeard) End.NOTHING_HEARD else End.MUSIC_STOPPED, "quiet")
   }
 
-  override fun onCaptureSilent() {
-    // The app opted out of capture: the same take again, from the room.
-    val r = recorder ?: return
-    recorder = null
-    r.stop()
-    takeFile?.delete()
-    takeFile = null
-    releaseProjection()
-    source = ListenPrefs.SOURCE_ROOM
-    ListenPrefs.logEvent(this, "listen_capture_blocked", mapOf("from" to from))
-    if (!enterForeground()) {
-      listening = false
-      ListenPrefs.setTakeListening(this, false)
-      requestTileState()
-      overlay?.setListening(false, "")
-      enterForeground()
-      say(getString(R.string.nf_take_not_allowed), OverlayUi.Card.PROBLEM, 6_000)
-      return
-    }
-    if (startRecorder(ListenPrefs.allowance(this))) {
-      say(getString(R.string.nf_take_capture_blocked), OverlayUi.Card.PROBLEM, 6_000)
-    }
-  }
-
   override fun onFailed(code: String, message: String?) {
     if (listening) finishTake(End.FAILED, code)
     say(getString(R.string.nf_take_failed), OverlayUi.Card.PROBLEM, 6_000)
@@ -639,7 +550,7 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
       .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
     if (listening) {
       val cap = OverlayUi.formatClock(ListenPrefs.allowance(this).capSeconds)
-      val from = getString(if (source == ListenPrefs.SOURCE_PHONE) R.string.nf_take_from_phone else R.string.nf_take_from_room)
+      val from = getString(R.string.nf_take_from_room)
       b.setContentTitle(getString(R.string.nf_bubble_listening))
         .setContentText(getString(R.string.nf_take_notification_body, from, cap))
         .setWhen(takeStartedAt)
@@ -673,8 +584,6 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
     const val EXTRA_FROM = "from"
     const val EXTRA_VIA = "via"
     const val EXTRA_VIA_ACTIVITY = "viaActivity"
-    const val EXTRA_PROJECTION_CODE = "projectionCode"
-    const val EXTRA_PROJECTION_DATA = "projectionData"
     /** Where a take is written before JS moves it into the send queue's own storage. */
     const val TAKE_DIR = "listen-takes"
     /** Under this a take is not sent: the pill was tapped by mistake. */
@@ -709,14 +618,12 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
       ListenNotice.sync(context)
     }
 
-    fun startTake(context: Context, source: String, from: String, viaActivity: Boolean, projectionCode: Int = 0, projectionData: Intent? = null) {
+    fun startTake(context: Context, source: String, from: String, viaActivity: Boolean) {
       val i = Intent(context, ListenOverlayService::class.java)
         .setAction(ACTION_TAKE_START)
         .putExtra(EXTRA_SOURCE, source)
         .putExtra(EXTRA_FROM, from)
         .putExtra(EXTRA_VIA_ACTIVITY, viaActivity)
-        .putExtra(EXTRA_PROJECTION_CODE, projectionCode)
-      if (projectionData != null) i.putExtra(EXTRA_PROJECTION_DATA, projectionData)
       ContextCompat.startForegroundService(context, i)
     }
 
