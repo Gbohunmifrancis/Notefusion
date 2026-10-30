@@ -40,6 +40,12 @@ class TargetNote:
     pitch_midi: int
     start_beat: float
     dur_beats: float
+    #: How far the note is meant to sit off ``pitch_midi``: a maqam's quarter tone is -50. Marked against that pitch.
+    cents: float = 0.0
+
+    @property
+    def pitch(self) -> float:
+        return self.pitch_midi + self.cents / 100.0
 
 
 @dataclass(frozen=True)
@@ -71,7 +77,7 @@ def _target_track(times: np.ndarray, targets: list[TargetNote], beat_sec: float,
     for t in targets:
         s = lead_in + t.start_beat * beat_sec
         e = s + max(t.dur_beats, 0.0) * beat_sec
-        out[(times >= s) & (times < e)] = float(t.pitch_midi)
+        out[(times >= s) & (times < e)] = t.pitch
     return out
 
 
@@ -136,7 +142,7 @@ def grade(y: np.ndarray, sr: int, targets: list[TargetNote], tempo_bpm: float, l
             notes.append(NoteGrade(i, t.pitch_midi, None, None, "missed"))
             continue
         median = float(np.median(sung[voiced]))
-        cents = (median - t.pitch_midi) * 100.0
+        cents = (median - t.pitch) * 100.0
         status = "hit" if abs(cents) <= HIT_CENTS else "near" if abs(cents) <= NEAR_CENTS else "wrong"
         if status != "wrong":
             residuals.append(cents)

@@ -88,7 +88,8 @@ public enum TranscribePriority
 }
 
 /// <summary>A note of the part a take is judged against, in beats.</summary>
-public sealed record GradeTargetNoteDto(int PitchMidi, double StartBeat, double DurBeats);
+/// <remarks><c>Cents</c>: how far the note is meant to sit off <c>PitchMidi</c> (a maqam's quarter tone, -50); 0 for every other note.</remarks>
+public sealed record GradeTargetNoteDto(int PitchMidi, double StartBeat, double DurBeats, double Cents = 0);
 
 /// <summary>The part a sung take is judged against, and the count-in that preceded it in the recording.</summary>
 public sealed record GradeTargetDto(IReadOnlyList<GradeTargetNoteDto> Notes, double TempoBpm, double LeadInSec = 0);

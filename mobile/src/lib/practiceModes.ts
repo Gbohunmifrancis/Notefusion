@@ -323,8 +323,8 @@ export function takeSeconds(ex: Pick<PracticeExercise, "notes" | "backing" | "cl
 }
 
 /** The first note the singer sings: the count-in holds it (the pitch pipe); null for a rhythm. */
-export function firstSungPitch(ex: Pick<PracticeExercise, "notes">): number | null {
-  const first = [...ex.notes].sort((a, b) => a.startBeat - b.startBeat)[0];
+export function firstSungPitch(ex: Pick<PracticeExercise, "notes" | "cents">): number | null {
+  const first = sungNotes(ex).sort((a, b) => a.startBeat - b.startBeat)[0];
   return first ? first.pitchMidi : null;
 }
 
@@ -371,9 +371,9 @@ export function takeSound(ex: Pick<PracticeExercise, "mode" | "notes" | "backing
  * "Hear it": what the singer is about to sing. A harmony line with the tune soft under it; a pitch-match set's notes
  * one to a beat (the set itself takes most of a minute); anything else as written.
  */
-export function hearVoices(ex: Pick<PracticeExercise, "mode" | "notes" | "backing">): TakeVoice[] {
+export function hearVoices(ex: Pick<PracticeExercise, "mode" | "notes" | "backing" | "cents">): TakeVoice[] {
   if (ex.mode === "pitch-match") return [{ notes: ex.notes.map((n, i) => ({ ...n, startBeat: i, durBeats: 1 })), gain: 1 }];
-  const voices: TakeVoice[] = [{ notes: [...ex.notes], gain: 1 }];
+  const voices: TakeVoice[] = [{ notes: sungNotes(ex), gain: 1 }];
   if (ex.mode === "harmony" && ex.backing.length > 0) voices.push({ notes: [...ex.backing], gain: TUNE_LEVEL });
   return voices;
 }
@@ -414,8 +414,27 @@ export function syllableName(solfa: string, octaveMark: string): string {
 }
 
 /** "d'", "t,": a note as the sheet writes it. */
-export function written(n: Pick<NoteEvent, "solfa" | "octaveMark">): string {
-  return `${n.solfa}${n.octaveMark}`;
+export function written(n: Pick<NoteEvent, "solfa" | "octaveMark"> & { quarterFlat?: boolean }): string {
+  return `${n.solfa}${n.octaveMark}${n.quarterFlat ? QUARTER_FLAT : ""}`;
+}
+
+/** The quarter-tone mark a maqam's syllable carries: sung a quarter tone under the note it names. */
+export const QUARTER_FLAT = "↓";
+
+/** A note as it is sung: at its quarter tone (a fractional `pitchMidi`) and marked, for a maqam's. */
+export type SungNote = NoteEvent & { quarterFlat?: boolean };
+
+/**
+ * An exercise's notes as they are sung: a maqam's (`ex.cents`, each note's cents off its written pitch) at their
+ * quarter tones, with `quarterFlat` for the mark; any other exercise's as they are.
+ */
+export function sungNotes(ex: Pick<PracticeExercise, "notes" | "cents">): SungNote[] {
+  const cents = ex.cents;
+  if (!cents) return [...ex.notes];
+  return ex.notes.map((n, i) => {
+    const c = cents[i] ?? 0;
+    return c ? { ...n, pitchMidi: n.pitchMidi + c / 100, quarterFlat: c < 0 } : n;
+  });
 }
 
 /** A mark's cents as the marks print them: "+6", "−48", "0". */
@@ -440,7 +459,7 @@ export interface NoteMark {
 }
 
 /** A notes-graded take's marks, one per note sung, labelled as the screen draws them. */
-export function noteMarks(grade: Pick<GradeResult, "notes"> | null | undefined, notes: readonly NoteEvent[]): NoteMark[] {
+export function noteMarks(grade: Pick<GradeResult, "notes"> | null | undefined, notes: readonly SungNote[]): NoteMark[] {
   const out: NoteMark[] = [];
   for (const g of grade?.notes ?? []) {
     const n = notes[g.index];

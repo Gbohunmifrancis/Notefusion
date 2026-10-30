@@ -28,7 +28,7 @@ def _take(targets, offsets_cents=None, lead_in=0.0, late=0.0, octave=0, skip=(),
         s = int(sr * (lead_in + late + t.start_beat * BEAT))
         e = int(sr * (lead_in + late + (t.start_beat + t.dur_beats) * BEAT)) - int(sr * 0.04)
         cents = (offsets_cents or {}).get(i, 0.0)
-        contour[s:e] = t.pitch_midi + octave + cents / 100.0
+        contour[s:e] = t.pitch + octave + cents / 100.0
     voiced = ~np.isnan(contour)
     f0 = np.where(voiced, _hz(np.nan_to_num(contour, nan=60.0)), 0.0)
     phase = 2.0 * np.pi * np.cumsum(f0) / sr
@@ -45,6 +45,21 @@ def test_a_clean_take_scores_full_marks():
     assert [n.status for n in g.notes] == ["hit"] * len(TUNE)
     assert g.score == 100
     assert abs(g.tuning_cents) < 15
+
+
+# Maqam Rast from C: me and te a quarter tone flat (a target's cents).
+RAST = [TargetNote(60, 0, 1), TargetNote(62, 1, 1), TargetNote(64, 2, 1, -50.0), TargetNote(65, 3, 1),
+        TargetNote(67, 4, 1), TargetNote(69, 5, 1), TargetNote(71, 6, 1, -50.0), TargetNote(72, 7, 2)]
+
+
+def test_a_quarter_tone_is_marked_against_its_own_pitch():
+    g = grade(_take(RAST), SR, RAST, TEMPO)
+    assert [n.status for n in g.notes] == ["hit"] * len(RAST)
+    # Sung as the plain semitone, the quarter-tone notes are half a semitone sharp: near, not hit.
+    plain = [TargetNote(t.pitch_midi, t.start_beat, t.dur_beats) for t in RAST]
+    g = grade(_take(plain), SR, RAST, TEMPO)
+    assert [n.status for n in g.notes][2] == "near" and [n.status for n in g.notes][6] == "near"
+    assert 40 <= g.notes[2].cents <= 60
 
 
 def test_a_late_entry_is_aligned_not_punished():

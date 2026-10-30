@@ -215,7 +215,7 @@
 
   /** The first note the singer sings: the count-in holds it (the pitch pipe); null for a rhythm. */
   function firstSungPitch(ex) {
-    var first = (ex.notes || []).slice().sort(function (a, b) { return a.startBeat - b.startBeat; })[0];
+    var first = (ex.notes ? sungNotes(ex) : []).slice().sort(function (a, b) { return a.startBeat - b.startBeat; })[0];
     return first ? first.pitchMidi : null;
   }
 
@@ -242,7 +242,7 @@
    */
   function hearVoices(ex) {
     if (ex.mode === "pitch-match") return [{ notes: ex.notes.map(function (n, i) { return Object.assign({}, n, { startBeat: i, durBeats: 1 }); }), gain: 1 }];
-    var voices = [{ notes: ex.notes.slice(), gain: 1 }];
+    var voices = [{ notes: sungNotes(ex), gain: 1 }];
     if (ex.mode === "harmony" && ex.backing.length) voices.push({ notes: ex.backing.slice(), gain: TUNE_LEVEL });
     return voices;
   }
@@ -284,7 +284,21 @@
   }
 
   /** "d'", "t,": a note as the sheet writes it. */
-  function written(n) { return (n.solfa || "") + (n.octaveMark || ""); }
+  function written(n) { return (n.solfa || "") + (n.octaveMark || "") + (n.quarterFlat ? QUARTER_FLAT : ""); }
+
+  /** The quarter-tone mark a maqam's syllable carries: sung a quarter tone under the note it names. */
+  var QUARTER_FLAT = "↓";
+  /**
+   * An exercise's notes as they are sung: a maqam's (`ex.cents`, each note's cents off its written pitch) at their
+   * quarter tones, with `quarterFlat` for the mark; any other exercise's as they are.
+   */
+  function sungNotes(ex) {
+    if (!ex.cents) return ex.notes.slice();
+    return ex.notes.map(function (n, i) {
+      var c = ex.cents[i] || 0;
+      return c ? Object.assign({}, n, { pitchMidi: n.pitchMidi + c / 100, quarterFlat: c < 0 }) : n;
+    });
+  }
 
   /** A mark's cents as the marks print them: "+6", "−48", "0". */
   function centsText(cents) {
@@ -776,7 +790,7 @@
     pathStarsLabel: pathStarsLabel, unitJustCompleted: unitJustCompleted, nextStop: nextStop,
     hubModes: hubModes, modeTitle: modeTitle, modesHeading: modesHeading, modesDohLine: modesDohLine, progressStrip: progressStrip,
     beatSeconds: beatSeconds, passageSeconds: passageSeconds, takeSeconds: takeSeconds, firstSungPitch: firstSungPitch, noteDue: noteDue,
-    takeSound: takeSound, hearVoices: hearVoices,
+    takeSound: takeSound, hearVoices: hearVoices, sungNotes: sungNotes, QUARTER_FLAT: QUARTER_FLAT,
     midiName: midiName, flatKey: flatKey, syllableName: syllableName, written: written, centsText: centsText, markTone: markTone,
     noteMarks: noteMarks, minutesLabel: minutesLabel, clockLabel: clockLabel, warmUpSteps: warmUpSteps, breathPhases: breathPhases,
     breathSeconds: breathSeconds, breathAt: breathAt, guideNotes: guideNotes, guideSeconds: guideSeconds, guideRoundAt: guideRoundAt,

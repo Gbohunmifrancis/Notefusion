@@ -69,6 +69,8 @@ import {
   unitRuns,
   voicePartLine,
   warmUpSteps,
+  sungNotes,
+  written,
 } from "./practiceModes.ts";
 import type { GradeNote, NoteEvent, PracticeExercise, RunSpeed, WarmUp } from "../api/types";
 
@@ -529,4 +531,19 @@ test("a take that stars a unit's last stop finishes the unit, and Next goes to t
   const done = modePath([stop("a", "One", 85), stop("b", "One", 95)], "Scales");
   assert.equal(nextStop(done, 1, 2), 0);
   assert.equal(nextStop(modePath([stop("a", null, 95)], "X"), 0, 1), null);
+});
+
+test("a maqam is sung at its quarter tones and written with the mark; every other exercise as it was", () => {
+  const n = (pitchMidi: number, solfa: string, startBeat: number): NoteEvent => ({ pitchMidi, startBeat, durBeats: 1, degree: 1, solfa, octaveMark: "", conf: 1 });
+  const rast = { mode: "scales" as const, notes: [n(60, "d", 0), n(62, "r", 1), n(64, "m", 2)], backing: [], cents: [0, 0, -50] };
+  const sung = sungNotes(rast);
+  assert.deepEqual(sung.map((x) => x.pitchMidi), [60, 62, 63.5]);
+  assert.equal(sung.map(written).join(" "), "d r m↓");
+  assert.deepEqual(hearVoices(rast)[0]!.notes.map((x) => x.pitchMidi), [60, 62, 63.5]);
+  assert.deepEqual(noteMarks({ notes: [{ index: 2, status: "hit", cents: 4 } as GradeNote] }, sung).map((k) => k.text), ["m↓"]);
+  const sikah = { mode: "scales" as const, notes: [n(64, "m", 0), n(65, "f", 1)], backing: [], cents: [-50, 0] };
+  assert.equal(takeSound(sikah, { beats: 4, holdBeats: 2, beatsPerBar: 4 }, false).voices[0]!.notes[0]!.pitchMidi, 63.5);
+  const major = { mode: "scales" as const, notes: rast.notes, backing: [] };
+  assert.deepEqual(sungNotes(major), major.notes);
+  assert.equal(sungNotes(major).map(written).join(" "), "d r m");
 });

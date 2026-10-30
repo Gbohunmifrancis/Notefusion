@@ -172,11 +172,22 @@ public class PracticeModeCatalogueTests
             ["whole-tone"] = [2, 2, 2, 2, 2, 2],
             ["double-harmonic"] = [1, 3, 1, 2, 1, 3, 1],
             ["hungarian-minor"] = [2, 1, 3, 1, 1, 3, 1],
+            // The maqamat as written (their nearest semitones); what is sung is checked in cents below.
+            ["rast"] = [2, 2, 1, 2, 2, 2, 1],
+            ["bayati"] = [2, 1, 2, 2, 1, 2, 2],
+            ["sikah"] = [1, 2, 2, 2, 1, 2, 2],
+        };
+        // Each maqam's steps as sung, in cents: its quarter tones three-quarter-tone steps beside them.
+        var sung = new Dictionary<string, int[]>
+        {
+            ["rast"] = [200, 150, 150, 200, 200, 150, 150],
+            ["bayati"] = [150, 150, 200, 200, 100, 200, 200],
+            ["sikah"] = [150, 200, 200, 150, 150, 200, 150],
         };
         Assert.Equal(steps.Keys, ModeCatalogue.Scales.Select(s => s.Code));
         Assert.Equal(9, ModeCatalogue.Scales.Count(s => s.Playful));
         Assert.Equal(
-            new[] { ModeCatalogue.ScaleUnitMajorMinor, ModeCatalogue.ScaleUnitPentatonic, ModeCatalogue.ScaleUnitModes, ModeCatalogue.ScaleUnitWorld },
+            new[] { ModeCatalogue.ScaleUnitMajorMinor, ModeCatalogue.ScaleUnitPentatonic, ModeCatalogue.ScaleUnitModes, ModeCatalogue.ScaleUnitWorld, ModeCatalogue.ScaleUnitMaqam },
             ModeCatalogue.Scales.Select(s => s.Unit).Distinct());
 
         foreach (var e in Everything().Where(e => e.Mode == PracticeModes.Scales))
@@ -200,7 +211,25 @@ public class PracticeModeCatalogueTests
             Assert.Equal(ModeCatalogue.ScaleTempo, e.TempoBpm);
             Assert.True(e.ShortestNoteSeconds >= PracticeRules.ShortestNoteSeconds);
             Assert.True(e.Notes[^1].DurBeats >= 2);
+            if (sung.TryGetValue(e.Code, out var cents))
+            {
+                var sounding = e.Notes.Select((n, i) => n.PitchMidi * 100 + e.Cents![i]).ToList();
+                Assert.Equal(cents, sounding.Take(top + 1).Zip(sounding.Skip(1).Take(top), (a, b) => b - a));
+                Assert.Equal(e.Notes.Count, e.Cents!.Count);
+                // Marked where it is sung: the grader's targets carry the quarter tones.
+                Assert.Equal(e.Cents.Select(c => (double)c), e.Target(0).Notes.Select(n => n.Cents));
+            }
+            else
+                Assert.Null(e.Cents);
         }
+
+        // A maqam is written as the solfa engine labels its nearest semitones, with the quarter-tone mark.
+        var rast = ModeCatalogue.BuildScale(ModeCatalogue.Scales.Single(s => s.Code == "rast"), 60);
+        Assert.Equal("d r m↓ f s l t↓ d' t↓ l s f m↓ r d",
+            string.Join(' ', rast.Notes.Select((n, i) => n.Solfa + n.OctaveMark + (rast.Cents![i] < 0 ? ModeCatalogue.QuarterFlat : ""))));
+        var bayati = ModeCatalogue.BuildScale(ModeCatalogue.Scales.Single(s => s.Code == "bayati"), 65);
+        Assert.Equal("D minor", bayati.KeyName);
+        Assert.Equal(62, bayati.Notes[0].PitchMidi);
 
         // Tonic solfa sings a mode from its own degree: Dorian is ray to ray in the major key's doh.
         var dorian = ModeCatalogue.BuildScale(ModeCatalogue.Scales.Single(s => s.Code == "dorian"), 60);

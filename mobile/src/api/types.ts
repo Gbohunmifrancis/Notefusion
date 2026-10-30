@@ -629,6 +629,11 @@ export interface PracticeExercise {
   bestScore: number | null;
   speedPercent: number | null;
   speeds: RunSpeed[] | null;
+  /**
+   * A maqam's quarter tones: each sung note's cents off its written pitch (-50 a quarter tone flat), played and marked
+   * there and written with the mark (lib/practiceModes `sungNotes`); absent or null for every other exercise.
+   */
+  cents?: number[] | null;
 }
 
 /** A clap of a rhythm, in beats. */

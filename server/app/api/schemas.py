@@ -7,7 +7,7 @@ note list by _synthesize_audio_preview().  The mobile client writes it to a temp
 file and plays it with expo-av so users can hear their transcription immediately.
 """
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
 
@@ -204,6 +204,8 @@ class GradeTargetNoteDto(ApiModel):
     pitch_midi: int
     start_beat: float
     dur_beats: float
+    #: Cents off ``pitch_midi`` the note is meant to be sung (a maqam's quarter tone: -50); 0 for every other note.
+    cents: float = Field(default=0.0, ge=-100.0, le=100.0)
 
 
 class GradeTargetDto(ApiModel):
