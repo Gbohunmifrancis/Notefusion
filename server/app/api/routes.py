@@ -571,7 +571,7 @@ def _grade_file(path: Path, spec: GradeTargetDto):
         y, sr = librosa.load(str(wav_path), sr=grading.vocal.SAMPLE_RATE, mono=True, duration=bound)
         return grading.grade(
             y, sr,
-            [grading.TargetNote(n.pitch_midi, n.start_beat, n.dur_beats) for n in spec.notes],
+            [grading.TargetNote(n.pitch_midi, n.start_beat, n.dur_beats, n.cents) for n in spec.notes],
             spec.tempo_bpm, spec.lead_in_sec,
             grading.OFFSET_SEARCH_SEC if spec.offset_search_sec is None else spec.offset_search_sec,
         )

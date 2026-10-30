@@ -593,9 +593,10 @@
     } else if (scales) {
       var scale = el("div", "pm-lines");
       scale.appendChild(el("p", "pm-line-label", "Up and back down" + (ex.key ? " · " + ex.key : "")));
-      var row = chipRow(ex.notes, "pm-chips mine pm-scale-chips");
-      row.setAttribute("aria-label", "The scale: " + ex.notes.map(M().written).join(" "));
+      var sungScale = M().sungNotes(ex), row = chipRow(sungScale, "pm-chips mine pm-scale-chips");
+      row.setAttribute("aria-label", "The scale: " + sungScale.map(M().written).join(" "));
       scale.appendChild(row);
+      if (ex.cents) scale.appendChild(el("p", "pm-info", M().QUARTER_FLAT + " a quarter tone flat: between the note named and the one under it."));
       out.push(scale);
     } else {
       var lines = el("div", "pm-lines");
@@ -623,7 +624,7 @@
     if (m.grade && m.grade.marks) {
       out.push(resultCard({
         score: m.grade.score, summary: m.grade.summary, reward: m.grade.reward, art: ctx.art,
-        marks: M().noteMarks(m.grade.marks, ex.notes).map(function (k) { return { text: k.text, sub: k.cents, tone: k.tone }; }),
+        marks: M().noteMarks(m.grade.marks, M().sungNotes(ex)).map(function (k) { return { text: k.text, sub: k.cents, tone: k.tone }; }),
         legend: playful() ? null : "✓ in tune · ~ close · struck through: off. Numbers are cents off."
       }));
     }

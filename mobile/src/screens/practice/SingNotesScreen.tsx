@@ -18,7 +18,7 @@ import { Touchable } from "../../components/Touchable";
 import { ModeHeader } from "../../components/practice/ModeHeader";
 import { ModeResult } from "../../components/practice/ModeResult";
 import { countInFor, hearClip } from "../../lib/modeAudio";
-import { intervalParts, modeTitle, noteDue, noteMarks, written } from "../../lib/practiceModes";
+import { QUARTER_FLAT, intervalParts, modeTitle, noteDue, noteMarks, sungNotes, written } from "../../lib/practiceModes";
 import { useModeTake } from "../../lib/useModeTake";
 import { fonts, radii, spacing, typography, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
@@ -112,15 +112,16 @@ export function SingNotesScreen({ mode, track }: { mode: "scales" | "intervals" 
                 </View>
               </View>
             ) : mode === "scales" ? (
-              <View style={styles.lines} accessible accessibilityLabel={`The scale: ${ex.notes.map(written).join(" ")}`}>
+              <View style={styles.lines} accessible accessibilityLabel={`The scale: ${sungNotes(ex).map(written).join(" ")}`}>
                 <Text style={styles.lineLabel}>Up and back down{ex.key ? ` · ${ex.key}` : ""}</Text>
                 <View style={styles.chips}>
-                  {ex.notes.map((n, i) => (
+                  {sungNotes(ex).map((n, i) => (
                     <View key={i} style={[styles.chip, due === i && styles.chipOn]}>
                       <Text style={[styles.chipText, due === i && styles.chipTextOn]}>{written(n)}</Text>
                     </View>
                   ))}
                 </View>
+                {ex.cents ? <Text style={styles.lineLabel}>{QUARTER_FLAT} a quarter tone flat: between the note named and the one under it.</Text> : null}
               </View>
             ) : (
               <View style={styles.lines}>
@@ -172,7 +173,7 @@ export function SingNotesScreen({ mode, track }: { mode: "scales" | "intervals" 
                 <ModeResult
                   score={grade.score}
                   summary={grade.summary}
-                  marks={noteMarks(grade.marks, ex.notes).map((m) => ({ key: m.index, text: m.text, sub: m.cents, tone: m.tone }))}
+                  marks={noteMarks(grade.marks, sungNotes(ex)).map((m) => ({ key: m.index, text: m.text, sub: m.cents, tone: m.tone }))}
                   legend={playful ? null : "✓ in tune · ~ close · struck through: off. Numbers are cents off."}
                   reward={grade.reward}
                   playful={playful}

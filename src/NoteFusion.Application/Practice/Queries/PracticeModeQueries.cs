@@ -115,7 +115,7 @@ public sealed class GetPracticeModeQueryHandler : IRequestHandler<GetPracticeMod
             : null;
         return new PracticeExerciseDto(
             e.Id, e.Mode, e.Code, e.Title, e.Prompt, e.Group, e.KeyName, e.Key?.DohHeader(), e.TempoBpm, ModeCatalogue.TimeSignature,
-            e.Notes, e.Backing, e.Claps, e.MaxTakeSeconds, e.GraderName, Best(e), e.SpeedPercent, speeds);
+            e.Notes, e.Backing, e.Claps, e.MaxTakeSeconds, e.GraderName, Best(e), e.SpeedPercent, speeds, e.Cents);
     }
 }
 

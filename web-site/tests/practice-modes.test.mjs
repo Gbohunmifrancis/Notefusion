@@ -536,3 +536,18 @@ test("a take that stars a unit's last stop finishes the unit, and Next goes to t
   assert.equal(M.nextStop(done, 1, 2), 0);
   assert.equal(M.nextStop(M.modePath([stop("a", null, 95)], "X"), 0, 1), null);
 });
+
+test("a maqam is sung at its quarter tones and written with the mark; every other exercise as it was", () => {
+  const n = (pitchMidi, solfa, startBeat) => ({ pitchMidi, startBeat, durBeats: 1, degree: 1, solfa, octaveMark: "", conf: 1 });
+  const rast = { mode: "scales", notes: [n(60, "d", 0), n(62, "r", 1), n(64, "m", 2)], backing: [], cents: [0, 0, -50] };
+  const sung = M.sungNotes(rast);
+  same(sung.map((x) => x.pitchMidi), [60, 62, 63.5]);
+  assert.equal(sung.map(M.written).join(" "), "d r m↓");
+  same(M.hearVoices(rast)[0].notes.map((x) => x.pitchMidi), [60, 62, 63.5]);
+  same(M.noteMarks({ notes: [{ index: 2, status: "hit", cents: 4 }] }, sung).map((k) => k.text), ["m↓"]);
+  const sikah = { mode: "scales", notes: [n(64, "m", 0), n(65, "f", 1)], backing: [], cents: [-50, 0] };
+  assert.equal(M.takeSound(sikah, { beats: 4, holdBeats: 2, beatsPerBar: 4 }, false).voices[0].notes[0].pitchMidi, 63.5);
+  const major = { mode: "scales", notes: rast.notes, backing: [] };
+  same(M.sungNotes(major), major.notes);
+  assert.equal(M.sungNotes(major).map(M.written).join(" "), "d r m");
+});

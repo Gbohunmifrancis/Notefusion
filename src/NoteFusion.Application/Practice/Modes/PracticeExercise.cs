@@ -19,7 +19,8 @@ public enum ExerciseGrader
 /// marked; <see cref="Backing"/> is played by the app and never marked; <see cref="Claps"/> are a rhythm's. Times are in
 /// beats at <see cref="TempoBpm"/>. <see cref="OffsetSearchSec"/>, when set, narrows how far the worker looks to line
 /// the take up (pitch match, whose reference tones sit between the notes it marks). <see cref="DohMidi"/> is the
-/// unmarked doh it is placed on (null for a rhythm).
+/// unmarked doh it is placed on (null for a rhythm). <see cref="Cents"/>, when set, is each sung note's distance in cents
+/// from its written pitch (a maqam's quarter tone, -50): played and marked there, written as the syllable it is under.
 /// </summary>
 public sealed record PracticeExercise(
     string Id,
@@ -36,7 +37,8 @@ public sealed record PracticeExercise(
     ExerciseGrader Grader,
     double? OffsetSearchSec = null,
     int? SpeedPercent = null,
-    int? DohMidi = null)
+    int? DohMidi = null,
+    IReadOnlyList<int>? Cents = null)
 {
     /// <summary>The practice row a take of it is recorded as.</summary>
     public PracticeKind Kind => PracticeModes.KindOf(Mode) ?? throw new InvalidOperationException($"'{Mode}' is not a marked mode.");
@@ -63,7 +65,7 @@ public sealed record PracticeExercise(
 
     /// <summary>The notes to mark, beat one <paramref name="leadInSec"/> into the take.</summary>
     public GradeTargetDto Target(double leadInSec)
-        => new(Notes.Select(n => new GradeTargetNoteDto(n.PitchMidi, n.StartBeat, n.DurBeats)).ToList(), TempoBpm, leadInSec);
+        => new(Notes.Select((n, i) => new GradeTargetNoteDto(n.PitchMidi, n.StartBeat, n.DurBeats, Cents?[i] ?? 0)).ToList(), TempoBpm, leadInSec);
 
     /// <summary>"Eb major": the key as its signature spells it; null for a rhythm.</summary>
     public string? KeyName => Key is null ? null

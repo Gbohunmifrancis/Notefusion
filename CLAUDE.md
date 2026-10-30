@@ -490,11 +490,14 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   intervals and rhythm): warm-up (`GET …/warm-up`, synth guides, never marked) ending in the range finder (`POST …/range`, a
   low or high take → worker `/v1/range`, holds ≥1 s; kept as `users.VoiceRange{Low,High}Midi`, said as notes, solfa on doh C
   and a part by harmony.py's ranges; `GET …/range`), pitch match (8 held notes after their tones, one take, `/v1/grade` with
-  `offsetSearchSec` 0.35 so the tones cannot stand in), scales (`ModeCatalogue.Scales`, `PracticeKind.Scale`: 17 scales up
-  and back down in four units: major and minor (natural, harmonic, melodic), pentatonic and blues, the church modes sung from
+  `offsetSearchSec` 0.35 so the tones cannot stand in), scales (`ModeCatalogue.Scales`, `PracticeKind.Scale`: 20 scales up
+  and back down in five units: major and minor (natural, harmonic, melodic), pentatonic and blues, the church modes sung from
   their own degree (Dorian ray to ray, Hijaz the harmonic minor's me to me), the world's (Hijaz, Japanese in, whole-tone,
-  double harmonic, Hungarian minor; semitones only: tonic solfa has no quarter-tone syllables), each written as the solfa
-  engine labels it in every key it fits; Playful 9), intervals (doh then the note, RCM order), harmony (a third above or
+  double harmonic, Hungarian minor), each written as the solfa engine labels it in every key it fits, and the maqamat (Rast,
+  Bayati on its key signature's lah, Sikah from Rast's third; Focused only, never in Which scale?): tonic solfa has no
+  quarter-tone syllables, so a quarter tone is written as the engine's nearest semitone with `↓` (`m↓`, `ModeCatalogue.QuarterFlat`),
+  and the exercise carries `cents` per note (-50), played there (web `practice-modes.js` ↔ phone `lib/practiceModes.ts`
+  `sungNotes`, same tests) and marked there (`GradeTargetNoteDto.Cents` → the worker's `TargetNote.cents`); Playful 9), intervals (doh then the note, RCM order), harmony (a third above or
   under a played tune), runs (60–100 %: note by note while every note lasts 0.3 s, else `/v1/grade/run`, DTW shape + landing
   note) and rhythm (`/v1/grade/rhythm`: clap onsets, offset + tempo fit, ±70/±140 ms). `GET …/modes/{mode}` lists a mode's
   `ModeCatalogue` exercises (keyed per singer per day; id `mode:code@doh[~speed]`); `POST …/modes/grade` marks a take: a

@@ -104,7 +104,8 @@ public sealed record PracticeExerciseDto(
     string Grader,
     int? BestScore,
     int? SpeedPercent,
-    IReadOnlyList<RunSpeedDto>? Speeds);
+    IReadOnlyList<RunSpeedDto>? Speeds,
+    IReadOnlyList<int>? Cents = null);
 
 /// <summary>A clap of a rhythm, in beats.</summary>
 public sealed record RhythmClapDto(double StartBeat, double DurBeats);

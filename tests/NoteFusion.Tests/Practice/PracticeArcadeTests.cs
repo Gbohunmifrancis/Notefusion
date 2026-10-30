@@ -188,7 +188,10 @@ public class PracticeArcadeTests
             }
         }
         // Every scale of the Scales mode is asked by the full set, and the first level is major against minor.
-        Assert.Equal(ModeCatalogue.Scales.Select(s => s.Code).Order(), PracticeGames.ScaleLevel(PracticeGames.WhichScaleFullLevel).Asked.Order());
+        // Every scale but the maqamat: the game's rounds are played on the piano, in semitones only.
+        Assert.Equal(
+            ModeCatalogue.Scales.Where(s => s.Unit != ModeCatalogue.ScaleUnitMaqam).Select(s => s.Code).Order(),
+            PracticeGames.ScaleLevel(PracticeGames.WhichScaleFullLevel).Asked.Order());
         Assert.Equal(new[] { "major", "natural-minor" }, PracticeGames.ScaleLevel(1).Asked);
         Assert.Equal((5, 200), (PracticeGames.ScaleLevel(500).Choices, PracticeGames.ScaleLevel(500).TempoBpm));
 

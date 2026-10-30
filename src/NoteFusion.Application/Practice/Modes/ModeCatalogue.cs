@@ -82,11 +82,21 @@ public static class ModeCatalogue
     public const string ScaleUnitPentatonic = "Pentatonic and blues";
     public const string ScaleUnitModes = "The church modes";
     public const string ScaleUnitWorld = "Sounds of the world";
+    public const string ScaleUnitMaqam = "Maqam: quarter tones";
 
     /// <summary>
-    /// Every scale, in teaching order: each in semitones of the equal-tempered scale (no quarter tones, which tonic solfa
-    /// has no syllables for). The church modes are sung from their own degree of the major scale, as tonic solfa teaches
-    /// them; Hijaz is the fifth mode of the harmonic minor (me to me with se).
+    /// The quarter-tone mark: a syllable written with it (<c>m↓</c>) is sung a quarter tone, <see cref="QuarterFlatCents"/>,
+    /// under the note it names. Tonic solfa has no syllables for quarter tones, so a maqam is written as the solfa engine
+    /// labels its nearest semitones, with the mark; the exercise carries the cents (<see cref="PracticeExercise.Cents"/>).
+    /// </summary>
+    public const string QuarterFlat = "↓";
+    public const int QuarterFlatCents = -50;
+
+    /// <summary>
+    /// Every scale, in teaching order: each in semitones of the equal-tempered scale but the maqamat, whose quarter tones
+    /// are written with <see cref="QuarterFlat"/>. The church modes are sung from their own degree of the major scale, as
+    /// tonic solfa teaches them; Hijaz is the fifth mode of the harmonic minor (me to me with se); Bayati is written on
+    /// its key signature's lah (D in F, one flat) and Sikah from Rast's third, as the Arabic system has them.
     /// </summary>
     public static readonly IReadOnlyList<ScalePattern> Scales =
     [
@@ -124,6 +134,12 @@ public static class ModeCatalogue
             "Two wide steps, up from de and se: the Arabic or Byzantine scale.", Playful: false),
         new("hungarian-minor", ScaleUnitWorld, "The Hungarian minor", KeyMode.Minor, "l, t, d re m f se l se f m ma d t, l,",
             "The harmonic minor with a raised fourth: Romani and Hungarian music.", Playful: false),
+        new("rast", ScaleUnitMaqam, "Maqam Rast", KeyMode.Major, "d r m↓ f s l t↓ d' t↓ l s f m↓ r d",
+            "Doh to doh with me and te a quarter tone flat: the mother of the Arabic maqamat.", Playful: false),
+        new("bayati", ScaleUnitMaqam, "Maqam Bayati", KeyMode.Minor, "l, t,↓ d r m f s l s f m r d t,↓ l,",
+            "Lah to lah with te a quarter tone flat, a soft step up from home: the sound of much Arabic song.", Playful: false),
+        new("sikah", ScaleUnitMaqam, "Maqam Sikah", KeyMode.Major, "m↓ f s l t↓ d' r' m'↓ r' d' t↓ l s f m↓",
+            "Rast's notes from its quarter-flat me: a home note between two semitones.", Playful: false),
     ];
 
     // ── Intervals ───────────────────────────────────────────────────────────
@@ -325,7 +341,8 @@ public static class ModeCatalogue
         var (key, notes) = DrillCatalogue.Place(Pattern(s.Code, s.Solfa, null) with { Mode = s.Mode }, doh);
         return new PracticeExercise(
             $"{PracticeModes.Scales}:{s.Code}@{doh}", PracticeModes.Scales, s.Code, s.Title,
-            $"{s.About} Sing it up and back down.", s.Unit, key, ScaleTempo, notes, [], [], ExerciseGrader.Notes, DohMidi: doh);
+            $"{s.About} Sing it up and back down.", s.Unit, key, ScaleTempo, notes, [], [], ExerciseGrader.Notes, DohMidi: doh,
+            Cents: CentsOf(s.Solfa));
     }
 
     public static PracticeExercise BuildInterval(IntervalPattern p, int doh)
@@ -409,7 +426,13 @@ public static class ModeCatalogue
     private static IReadOnlyList<int> Offsets(string solfa) => DrillCatalogue.Offsets(Pattern("", solfa, null));
 
     private static DrillPattern Pattern(string code, string solfa, string? rhythm)
-        => new(code, 0, 1, code, KeyMode.Major, solfa, rhythm);
+        => new(code, 0, 1, code, KeyMode.Major, solfa.Replace(QuarterFlat, string.Empty, StringComparison.Ordinal), rhythm);
+
+    /// <summary>Each note's cents off its written pitch (<see cref="QuarterFlatCents"/> where marked); null for a line with no mark.</summary>
+    public static IReadOnlyList<int>? CentsOf(string solfa)
+        => solfa.Contains(QuarterFlat, StringComparison.Ordinal)
+            ? Tokens(solfa).Select(t => t.Contains(QuarterFlat, StringComparison.Ordinal) ? QuarterFlatCents : 0).ToList()
+            : null;
 
     private static string[] Tokens(string text) => text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
