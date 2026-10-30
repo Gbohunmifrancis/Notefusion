@@ -1,0 +1,67 @@
+name: Android submit
+
+# Sends the Play Store bundle (.aab) an "Android build" run made to Google Play with `eas submit`, as eas.json's
+# submit.production says: the internal track, the release completed. Run it from the Actions tab with that build's run
+# id (the number in its address, actions/runs/<id>). Needs EXPO_TOKEN and a Play publishing key: the repository secret
+# GOOGLE_PLAY_SUBMIT_KEY (the JSON of mobile/google-play-service-account.json, a service account with Release manager,
+# or release to testing tracks, in Play Console), else the API's GOOGLEPLAY__SERVICEACCOUNTJSON if that account may
+# release.
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Run id of the Android build (profile production) whose .aab to send to the internal track"
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: android-submit
+  cancel-in-progress: false
+
+jobs:
+  submit:
+    name: eas submit (internal track)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      # eas-cli reads the app's config, which needs the project's packages.
+      - name: Install
+        run: npm ci
+
+      - name: The bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ inputs.run_id }}
+        run: |
+          case "$RUN_ID" in ''|*[!0-9]*) echo "::error::run_id is the number in the build run's address."; exit 1;; esac
+          gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --dir "$RUNNER_TEMP/build"
+          aab=$(find "$RUNNER_TEMP/build" -name '*.aab' | head -n 1)
+          if [ -z "$aab" ]; then echo "::error::Run $RUN_ID has no .aab artifact: build with the profile production."; exit 1; fi
+          echo "AAB=$aab" >> "$GITHUB_ENV"
+          echo "Sending $(basename "$aab")"
+
+      - name: Submit to the internal track
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          PLAY_KEY: ${{ secrets.GOOGLE_PLAY_SUBMIT_KEY || secrets.GOOGLEPLAY__SERVICEACCOUNTJSON }}
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then echo "::error::Add the repository secret EXPO_TOKEN."; exit 1; fi
+          if [ -z "$PLAY_KEY" ]; then echo "::error::Add the repository secret GOOGLE_PLAY_SUBMIT_KEY (the Play publishing key's JSON)."; exit 1; fi
+          # The key exists only for this step, readable by this user alone, and goes with the runner.
+          trap 'rm -f google-play-service-account.json' EXIT
+          (umask 077; printf '%s' "$PLAY_KEY" > google-play-service-account.json)
+          npx --yes eas-cli@25.3.0 submit --platform android --profile production --path "$AAB" --non-interactive

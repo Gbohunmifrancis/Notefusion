@@ -75,6 +75,13 @@ users. Keep it out of Downloads and shared folders too, not just out of git. If 
 delete the key in the Cloud Console (IAM → Service accounts → Keys) and generate a new one;
 the account itself and its Play permission survive, so only the path above needs updating.
 
+### Submitting from GitHub
+
+`.github/workflows/android-submit.yml` (Actions › Android submit › Run workflow, with the run id of an "Android build"
+run made with the profile `production`) downloads that run's `.aab` and sends it with `eas submit` exactly as above: the
+internal track, the release completed. It writes the key from the repository secret `GOOGLE_PLAY_SUBMIT_KEY` (this
+file's JSON; else the API's `GOOGLEPLAY__SERVICEACCOUNTJSON`, if that account may release) for that one step only.
+
 ### Verifying the pipeline without a build
 
 The whole chain — key valid, API enabled, Play permission granted — can be checked in seconds
