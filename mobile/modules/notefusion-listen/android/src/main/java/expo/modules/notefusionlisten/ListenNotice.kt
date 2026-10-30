@@ -75,10 +75,9 @@ internal object ListenNotice {
       context, requestCode, Intent(context, ListenNoticeReceiver::class.java).setAction(action), flags()
     )
 
-  /** Listen: the microphone straight from the notification (its own exemption); the phone's sound through the activity's consent. */
+  /** Listen: the microphone straight from the notification (its own exemption). */
   fun listenAction(context: Context): PendingIntent {
     val src = ListenPrefs.source(context)
-    if (src == ListenPrefs.SOURCE_PHONE) return ListenTakeActivity.pendingIntent(context, src, "notification", 21)
     val i = Intent(context, ListenOverlayService::class.java)
       .setAction(ListenOverlayService.ACTION_TAKE_START)
       .putExtra(ListenOverlayService.EXTRA_SOURCE, src)

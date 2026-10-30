@@ -4,8 +4,6 @@ import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.media.projection.MediaProjectionManager
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,14 +11,12 @@ import android.os.Looper
 /**
  * A translucent activity that is in front for the moment a take starts, then finishes: what the Listen
  * tile opens (an app has to be in front to start the microphone on Android 14+, and a tile tap is not in
- * front), the floating button's fallback when Android refuses the direct start, and the only way to ask
- * Android's consent for "This phone's sound" (`createScreenCaptureIntent` is an activity result).
+ * front), and the floating button's fallback when Android refuses the direct start.
  *
  * Its own task, out of Recents, no animation: the app behind it stays where it was.
  */
 class ListenTakeActivity : Activity() {
   private val main = Handler(Looper.getMainLooper())
-  private var source = ListenPrefs.SOURCE_ROOM
   private var from = "tile"
   private var finished = false
 
@@ -28,8 +24,6 @@ class ListenTakeActivity : Activity() {
     super.onCreate(savedInstanceState)
     @Suppress("DEPRECATION")
     overridePendingTransition(0, 0)
-    // Not the intent's: one built by an older version may still say "phone" (ListenPrefs.source).
-    source = ListenPrefs.source(this)
     from = intent.getStringExtra(ListenOverlayService.EXTRA_FROM) ?: "tile"
     if (ListenOverlayService.isListening()) {
       // The tile tapped again: stop and send.
@@ -37,29 +31,13 @@ class ListenTakeActivity : Activity() {
       done()
       return
     }
-    if (source == ListenPrefs.SOURCE_PHONE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      val mpm = getSystemService(MediaProjectionManager::class.java)
-      @Suppress("DEPRECATION")
-      runCatching { startActivityForResult(mpm.createScreenCaptureIntent(), REQUEST_CAPTURE) }
-        .onFailure { start(ListenPrefs.SOURCE_ROOM, 0, null) }
-    } else {
-      start(ListenPrefs.SOURCE_ROOM, 0, null)
-    }
+    start()
   }
 
-  @Deprecated("Deprecated in Java")
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    @Suppress("DEPRECATION")
-    super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode != REQUEST_CAPTURE) return
-    // Cancel: nothing starts (board R2/5).
-    if (resultCode == RESULT_OK && data != null) start(ListenPrefs.SOURCE_PHONE, resultCode, data) else done()
-  }
-
-  private fun start(src: String, projectionCode: Int, projectionData: Intent?) {
+  private fun start() {
     ListenOverlayService.takeStartListener = { _, _ -> main.post { done() } }
     main.postDelayed({ done() }, START_WAIT_MS)
-    runCatching { ListenOverlayService.startTake(this, src, from, viaActivity = true, projectionCode, projectionData) }
+    runCatching { ListenOverlayService.startTake(this, ListenPrefs.SOURCE_ROOM, from, viaActivity = true) }
       .onFailure { done() }
   }
 
@@ -73,7 +51,6 @@ class ListenTakeActivity : Activity() {
   }
 
   companion object {
-    private const val REQUEST_CAPTURE = 71
     /** The service says it started within a few hundred ms; this is the ceiling before the activity leaves anyway. */
     private const val START_WAIT_MS = 4_000L
 

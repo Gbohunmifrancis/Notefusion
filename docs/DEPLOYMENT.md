@@ -805,7 +805,7 @@ artifacts are too: the build prints no secret, and the APK is the same app the P
 ## Listen from anywhere: what Google Play asks for
 
 The Android app's "Listen from anywhere" (the floating button over other apps, the Listen notification and tile;
-`mobile/modules/notefusion-listen`) adds three things the Play Console wants declared before the build is reviewed
+`mobile/modules/notefusion-listen`) adds two things the Play Console wants declared before the build is reviewed
 (App content › Foreground service permissions, and Permissions declaration):
 
 - **Foreground service, `specialUse`** — the service that keeps the floating button on screen while it waits (Pro
@@ -813,12 +813,13 @@ The Android app's "Listen from anywhere" (the floating button over other apps, t
   floating button the user switched on in Settings, drawn over other apps, that starts and stops a recording at the
   user's tap; it is the app's own Shazam-style shortcut." The video is the button being switched on, tapped over another
   app, and stopped.
-- **Foreground service, `mediaProjection`** — "This phone's sound": the take records what the phone plays, with
-  Android's own consent dialog every time. Declare it as audio capture for transcription; the screen is never recorded.
 - **`SYSTEM_ALERT_WINDOW`** (Display over other apps) — the floating button. The user grants it on Android's own
   Settings page, which the app opens from its setup sheet.
 
-`microphone` (foreground service) was declared for "Find the key" already. None of this is an OTA: the first build
+`microphone` (foreground service, "Background audio input") covers the take and "Find the key". The app declares no
+`mediaPlayback` (expo-audio's `enableBackgroundPlayback` is off: nothing plays once the app is left) and no
+`mediaProjection` ("This phone's sound" is gone; every take is the microphone); both are in `app.json`'s
+`blockedPermissions`, so a library cannot bring them back unnoticed. None of this is an OTA: the first build
 with it is a store build (EAS `production`, or the GitHub workflow above with the `production` profile).
 
 ## Secret scanning (no deploy with a key in the code)
