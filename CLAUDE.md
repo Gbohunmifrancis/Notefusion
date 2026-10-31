@@ -531,7 +531,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   solfa adds keys to six sharps/flats and ledger lines and gives each note less time (`secondsPerRound`, a note let run out
   sent as ""), Name that hymn more names and less of each opening; the grade says `nextLevel` (up at 80, down under 50,
   never under the track's first: Playful 1, Focused 3), stage after stage until the singer stops; the level and best are kept
-  in the browser (`assets/practice-arcade.js`, `nf.arcade.<game>`). One-off deals (the phone's) are unchanged.
+  in the browser (`assets/practice-arcade.js`, `nf.arcade.<game>`). The phone plays the same arcade (`lib/practiceArcade.ts`,
+  a port with the same tests; `lib/arcadeStore` keeps `nf.arcade.<game>` in AsyncStorage; `PracticeGameScreen` takes
+  `nextLevel` stage after stage, a level-up screen when it rises) and falls back to one-off deals against a server that sends no level.
   The hub is game-coloured (Duolingo-like, web): a top bar of level, streak, XP and quests; the unit's banner and its drills as
   a winding path of stops (done, START, locked, the unit's chest; Playful's Doh beside START); chunky fills on a darker lip in
   green, blue, orange, cyan and pink (`--gg-*` in practice-view.css, never Pro gold, the choir's violet or red).
@@ -543,9 +545,12 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `TempoStep` quicker up to `MaxTempo` and never a note under `ShortestNoteSeconds`, every key, and lines of two joined and
   labelled afresh by the solfa engine (`DrillCatalogue.EngineLabels`; one it would label differently in any key is left out);
   Playful's own three units of its gentle tunes, plain beats and held notes only. Codes `mf3u5-a+b`/`mp2u1-a+b`.
-  The tab (board s1): the strip card (flame + days · level emblem + XP · week ring, opens `PracticeProgress`:
-  `components/practice/ProgressCards`, stat cards, week, badges), the drill card (Playful's Doh inside it, no bubble row),
-  the season card as one compact row, Quick games, and the modes as a two-column grid (`ModeList grid`; "Sing more",
+  The tab (board s1, game-coloured as the web's hub: `design/gameColors`): the top bar (`PracticeTopBar`: level emblem,
+  streak, XP, quests chip; opens `PracticeProgress`: `components/practice/ProgressCards`, stat cards, week, badges), the
+  unit's path (`PathMap`: banner, done/START/locked stops, the unit's chest, Playful's Doh beside START; START scrolls to
+  the drill card and starts its take), the drill card (its Doh steps aside while the path is drawn), the season card as one
+  compact row, the day's quests (`QuestsCard`, its chest from `progress.quests`), the Arcade (`GameTiles`, each game's kept
+  level), and the modes as a two-column grid (`ModeList grid`; "Sing more",
   Playful "More ways to play"). The marking moment (board s2):
   "Listening back…" while the take uploads, "Checking each note…", "Still marking — slow connection" after 8 s; then
   `useMarkReveal` lands the marks 120 ms apart (in tune pops with a light buzz and plays as a run, sound on), counts the

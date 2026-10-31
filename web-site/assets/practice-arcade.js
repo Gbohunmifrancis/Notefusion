@@ -2,7 +2,8 @@
  * day's quests, and the arcade (the quick games played stage after stage, a level at a time, with no top). Pure, apart
  * from `remember`/`recall`, which keep each game's level in the browser (the server deals any level asked; the level is
  * this browser's to keep, never a reward). The server's ladder is PracticeGames.cs; the words here say what each level
- * brings, in step with it (tests: web-site/tests/practice-arcade.test.mjs). Web only: the phone plays one-off games.
+ * brings, in step with it (tests: web-site/tests/practice-arcade.test.mjs). The phone's
+ * lib/practiceArcade.ts is a port of it, with the same tests.
  * Loaded with the Practice view. Exposes window.NfPracticeArcade.
  */
 (function () {

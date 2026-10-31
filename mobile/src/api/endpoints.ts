@@ -570,8 +570,14 @@ export const practiceApi = {
     return api.post<PracticeModeGrade>("/api/practice/modes/grade", form, { timeout: 90_000 }).then((r) => r.data);
   },
 
-  /** A fresh deal of a quick game on the singer's track: its rounds, each with its answer. */
-  game: (game: PracticeGameId) => api.get<PracticeGame>(`/api/practice/games/${game}`).then((r) => r.data),
+  /**
+   * A fresh deal of a quick game on the singer's track: its rounds, each with its answer. With `level`, an arcade stage
+   * at that level (an older server ignores it and deals a one-off game, `level` null on the deal).
+   */
+  game: (game: PracticeGameId, level?: number) =>
+    api
+      .get<PracticeGame>(`/api/practice/games/${game}`, level != null ? { params: { level } } : undefined)
+      .then((r) => r.data),
 
   /**
    * Sends a game's answers (one per round from the first, null for one left unanswered) to be marked by the server; a

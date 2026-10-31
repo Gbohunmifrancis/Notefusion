@@ -12,24 +12,27 @@
  * Focused — the exact score and cents, the take's overall tuning, "Replay my take", and less fuss. The server picks
  * each track's drills; XP, levels, streaks and badges are the same on both.
  *
- * Board s-practice-fun/s1 (after c-practice/6a): the path card stays the hero, with the streak, level and week one line
- * above it that opens "Your progress" (`PracticeProgress`: the stat cards, the week and the badges, which used to make
- * this tab a long scroll); then "Quick games" (`PracticeGame`: tapped, not sung) and "More ways to practise" (Playful:
+ * Game-coloured, as the web's hub (web-site/assets/practice-view.js; board s-practice-fun/s1 after c-practice/6a): a top
+ * bar of level, streak, XP and the day's quests (`PracticeTopBar`; the first three open "Your progress",
+ * `PracticeProgress`: the stat cards, the week and the badges); the unit's banner and its drills as a winding path of
+ * stops (`PathMap`: START opens the drill card's own main action, the card under it); the season's card; the day's
+ * quests and their chest (`QuestsCard`, read off `progress.quests`); the arcade (`PracticeGame`: the quick games, tapped
+ * not sung, stage after stage at the level kept on this phone, `lib/arcadeStore`); and "More ways to practise" (Playful:
  * "More ways to play") — the modes the server says are live (`progress.modes`), each pushing `PracticeMode`. One Doh on
- * screen: Playful's buddy at the top (the track pill takes an icon), Focused's one small Doh beside the modes.
+ * screen: Playful's beside START (in the drill card when there is no path; the track pill takes an icon), Focused's one
+ * small Doh beside the modes.
  *
  * A tab (board a-core/04), reached from the tab bar, Home's streak chip and every practice reminder. A tab stays
  * mounted, so leaving it mid-take stops the take, as leaving the old pushed screen did.
  */
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { AccessibilityInfo, Animated, Linking, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { AccessibilityInfo, Animated, Linking, Platform, RefreshControl, StyleSheet, Text, View, type ScrollView } from "react-native";
 import { Icon } from "../components/Icon";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useReducedMotion } from "react-native-reanimated";
-import Svg, { Circle } from "react-native-svg";
 import { File, Paths } from "expo-file-system";
 import {
   createAudioPlayer,
@@ -76,9 +79,7 @@ import {
 } from "../lib/practiceProgress";
 import {
   celebrationFor,
-  flameArt,
   gradeAnnouncement,
-  levelArt,
   mascotArt,
   mascotLine,
   mascotMood,
@@ -95,9 +96,15 @@ import { activeSeason, costumeOf, seasonCard, seasonOf, seasonTint, seasonWords,
 import { ModeList } from "../components/practice/ModeList";
 import { ChoirLeagueCard } from "../components/practice/ChoirLeagueCard";
 import { GameTiles } from "../components/practice/GameTiles";
+import { PracticeTopBar } from "../components/practice/PracticeTopBar";
+import { QuestsCard } from "../components/practice/QuestsCard";
+import { PathMap } from "../components/practice/PathMap";
+import { chestJustOpened, pathStops, type ArcadeKept } from "../lib/practiceArcade";
+import { recallAllArcade } from "../lib/arcadeStore";
+import type { PracticeGameId } from "../api/types";
 import { MarkingBar } from "../components/practice/MarkingBar";
 import { MARK_STEP_MS } from "../components/practice/useMarkReveal";
-import { hubModes, modesHeading, progressStrip } from "../lib/practiceModes";
+import { hubModes, modesHeading } from "../lib/practiceModes";
 import { momentsFor, type MomentPiece } from "../lib/practiceMoments";
 import type { RootStackParams } from "../navigation/types";
 
@@ -173,12 +180,23 @@ export function PracticeScreen() {
   const drillRef = useRef<Drill | null>(null);
   const [league, setLeague] = useState<ChoirLeague | null>(null);
   drillRef.current = drill;
+  // The progress on screen, read by `load`: a visit after a game or a mode that did the day's last quest says the chest.
+  const progressRef = useRef<PracticeProgress | null>(null);
+  progressRef.current = progress;
+  /** Each quick game's level kept on this phone (the arcade's tiles). */
+  const [arcade, setArcade] = useState<Partial<Record<PracticeGameId, ArcadeKept>> | null>(null);
+  const scrollRef = useRef<ScrollView | null>(null);
+  /** Where the drill card and the quests card sit in the scroll, for START and the top bar's quests chip. */
+  const drillY = useRef<number | null>(null);
+  const questsY = useRef<number | null>(null);
 
   const load = useCallback(async () => {
     try {
       // The choir's league beside them: none (outside a choir, a lapsed plan, a failed read) is simply no card.
       const [p, d, l] = await Promise.all([practiceApi.progress(), practiceApi.nextDrill(), choirApi.league().catch(() => null)]);
       if (!live.current) return;
+      void recallAllArcade(p.track).then((kept) => { if (live.current) setArcade(kept); });
+      sayChestRef.current(progressRef.current, p);
       setProgress(p);
       setLeague(l);
       if (drillRef.current?.id !== d.id) {
@@ -233,6 +251,24 @@ export function PracticeScreen() {
     player.current = null;
     try { if (audioFile.current?.exists) audioFile.current.delete(); } catch { /* already gone */ }
     audioFile.current = null;
+  }
+
+  /** The take (or game) that did the day's last quest opens its chest: said once, with a burst. */
+  function sayChest(before: PracticeProgress | null, after: PracticeProgress) {
+    if (!before || !after.quests || !chestJustOpened(before.quests, after.quests)) return;
+    showToast(`Chest opened! +${after.quests.chestXp} XP`);
+    setBurst((b) => b + 1);
+    void logAnalyticsEvent("practice_quest_chest", {});
+  }
+
+  // `load` keeps its first render's closures: it says the chest through this, the latest.
+  const sayChestRef = useRef(sayChest);
+  sayChestRef.current = sayChest;
+
+  /** Scrolls the hub to a card (its place from its layout), a little above it. */
+  function scrollToY(y: number | null) {
+    if (y == null) return;
+    scrollRef.current?.scrollTo({ y: Math.max(0, y - spacing.md), animated: !reduceMotion });
   }
 
   function showToast(line: string, art: ArtName | null = null) {
@@ -438,6 +474,8 @@ export function PracticeScreen() {
       ]);
       if (!live.current) return;
       if (fresh) {
+        // After the take's own reward has had its moment: the chest is its own line.
+        setTimeout(() => { if (live.current) sayChest(before, fresh); }, landed + TOAST_MS);
         setProgress(fresh);
         setDrill((d) => (d ? { ...d, allowance: fresh.drills } : d));
       }
@@ -522,11 +560,30 @@ export function PracticeScreen() {
   const cardDoh = !!seasonPath && !showPicker && (pathSeason === "halloween" ? playful : !playful);
   // A reward moment's Doh is the one Doh on screen while it cheers.
   const buddyShown = playful && !showPicker && !!drill && !(cardDoh && pathSeason === "halloween") && momentPiece !== "doh";
+  // The unit as a winding path of stops above its drill card (the game-coloured Practice): Playful's Doh stands beside
+  // START then, and the card's steps aside (one Doh on screen). A drill with no place on a path draws none.
+  const stops = drill && !showPicker && !savingTrack ? pathStops(drill) : [];
+  const mainLabel = doneForToday ? "Done for today" : onward ? onward.label : playful ? "Sing it!" : "Sing it";
+
+  /** The drill card's main button, and START on the path: send the kept take again, on to the next drill, or sing. */
+  function mainAction() {
+    if (resendable) sendAgain();
+    else if (onward && !onward.same) void goNext();
+    else void sing();
+  }
+
+  /** START: the drill card comes into view (its notes are what is sung) and its main action starts. */
+  function startFromPath() {
+    if (busy) return;
+    scrollToY(drillY.current);
+    if (!doneForToday) mainAction();
+  }
 
   return (
     <View style={styles.flex}>
       <Screen
         scroll
+        scrollRef={scrollRef}
         contentStyle={styles.screen}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.accent} colors={[colors.accent]} />}
       >
@@ -539,8 +596,8 @@ export function PracticeScreen() {
               radius={radii.pill}
             >
               <View style={[styles.trackPill, playful && styles.trackPillPlayful]}>
-                {/* One Doh on screen: Playful's is the buddy below, so the pill takes an icon. */}
-                {playful ? <Icon name="playful" size={18} color={colors.play} /> : <Art name={levelArt(progress?.level.index ?? 0)} width={24} />}
+                {/* One Doh on screen: Playful's is the buddy below, so the pill takes an icon (the level's emblem is the top bar's). */}
+                <Icon name={playful ? "playful" : "intervals"} size={18} color={playful ? colors.play : colors.icon} />
                 <Text style={styles.trackPillText}>{trackTitle(track)}</Text>
                 <Icon name="switch" size={14} color={colors.textMuted} />
               </View>
@@ -567,14 +624,13 @@ export function PracticeScreen() {
           )
         ) : progress ? (
           <>
-            <ProgressLine
+            <PracticeTopBar
               progress={progress}
-              styles={styles}
-              colors={colors}
-              onOpen={() => {
+              onOpenProgress={() => {
                 if (busy) return;
                 nav.navigate("PracticeProgress");
               }}
+              onOpenQuests={() => scrollToY(questsY.current)}
             />
 
             {showPicker ? (
@@ -592,122 +648,141 @@ export function PracticeScreen() {
             {savingTrack && !showPicker ? (
               <DrillSkeleton styles={styles} />
             ) : drill && !showPicker ? (
-              <View>
-                <Card style={playful ? { ...styles.card, ...styles.cardPlayful } : styles.card}>
-                  {/* Ink, not blue: the eyebrow is a label, not a control (board n-ux-low Q2a c). Playful's is its orange. */}
-                  {/* Playful's Doh sits in the card as its one bird (board s-practice-fun/s1), not in a bubble above it. */}
-                  <View style={styles.drillHead}>
-                    <View style={styles.drillHeadText}>
-                      <Text style={[styles.eyebrow, playful && styles.eyebrowPlayful]}>
-                        {playful ? "Your singing game" : `Practice path · ${drill.levelName}`}
-                      </Text>
-                      {/* Above the section titles round it (18): the thing to sing reads first, a second line wraps. */}
-                      <Text style={styles.drillTitle} accessibilityRole="header">
-                        {drill.title}
-                      </Text>
-                      <Text style={styles.meta}>
-                        {playful
-                          ? `${drill.dohHeader} · ${drill.notes.length} notes`
-                          : `${drill.dohHeader} · ${drill.key} · ${drill.tempoBpm} BPM${focused ? ` · ${drill.notes.length} notes` : ""}`}
-                      </Text>
-                    </View>
-                    {buddyShown ? (
-                      <View accessible accessibilityLabel={`Doh, your practice buddy, says: ${buddy.line}`}>
-                        <CostumedArt name={mascotArt(buddy.mood)} width={60} costume={costume} />
+              // A fragment, not a view: the card's layout is then its place in the scroll, where START scrolls to.
+              <>
+                {stops.length > 0 ? (
+                  <PathMap
+                    drill={drill}
+                    stops={stops}
+                    startLabel={resendable ? "Send it again" : mainLabel}
+                    onStart={startFromPath}
+                    doh={
+                      buddyShown ? (
+                        <View accessible accessibilityLabel={`Doh, your practice buddy, says: ${buddy.line}`}>
+                          <CostumedArt name={mascotArt(buddy.mood)} width={72} costume={costume} />
+                        </View>
+                      ) : null
+                    }
+                  />
+                ) : null}
+                <View onLayout={(e) => { drillY.current = e.nativeEvent.layout.y; }}>
+                  <Card style={playful ? { ...styles.card, ...styles.cardPlayful } : styles.card}>
+                    {/* Ink, not blue: the eyebrow is a label, not a control (board n-ux-low Q2a c). Playful's is its orange. */}
+                    {/* Playful's Doh sits in the card as its one bird (board s-practice-fun/s1), not in a bubble above it;
+                        beside START instead while the path is drawn. */}
+                    <View style={styles.drillHead}>
+                      <View style={styles.drillHeadText}>
+                        <Text style={[styles.eyebrow, playful && styles.eyebrowPlayful]}>
+                          {playful ? "Your singing game" : `Practice path · ${drill.levelName}`}
+                        </Text>
+                        {/* Above the section titles round it (18): the thing to sing reads first, a second line wraps. */}
+                        <Text style={styles.drillTitle} accessibilityRole="header">
+                          {drill.title}
+                        </Text>
+                        <Text style={styles.meta}>
+                          {playful
+                            ? `${drill.dohHeader} · ${drill.notes.length} notes`
+                            : `${drill.dohHeader} · ${drill.key} · ${drill.tempoBpm} BPM${focused ? ` · ${drill.notes.length} notes` : ""}`}
+                        </Text>
                       </View>
-                    ) : null}
-                  </View>
-
-                  <View style={styles.solfaRow} accessible accessibilityLabel={`Sing: ${drill.notes.map((n) => n.solfa + n.octaveMark).join(" ")}`}>
-                    {drill.notes.map((n, i) => (
-                      <View key={i} style={[styles.solfaChip, playful && styles.solfaChipPlayful, due === i && styles.solfaChipOn]}>
-                        <Text style={[styles.solfa, playful && styles.solfaPlayful, due === i && styles.solfaOn]}>{n.solfa}{n.octaveMark}</Text>
-                      </View>
-                    ))}
-                  </View>
-
-                  {/* The unit bar by the buttons (board n-ux-low Q2a a): a tenth in at a unit's first drill, 6 px, in ink on
-                      a stronger track, with the unit and drill beside it; the grade stays in the eyebrow (Playful's eyebrow
-                      has none, so its line keeps it). */}
-                  {where ? (
-                    <View style={styles.unitRow} accessible accessibilityLabel={where}>
-                      <View style={styles.unitBar}>
-                        <View style={[styles.unitBarFill, { width: `${Math.round(unitBarFraction(drill) * 100)}%` }]} />
-                      </View>
-                      <Text style={styles.unitLabel}>{playful ? where : unitLine(drill) ?? where}</Text>
-                    </View>
-                  ) : null}
-
-                  {phase === "leadin" || phase === "singing" ? (
-                    <View style={styles.live}>
-                      <Text style={styles.liveLabel}>{phase === "leadin" ? `Starting note… sing in ${countdown}` : "Sing!"}</Text>
-                      <Button label="Stop" variant="secondary" icon="stop" onPress={stop} />
-                    </View>
-                  ) : phase === "grading" ? (
-                    <>
-                      <Button label={MARKING_LINE[marking]} icon="waiting" loading />
-                      <MarkingBar />
-                    </>
-                  ) : (
-                    // The main action takes two parts of the row and Hear it one (board n-ux-low Q2a b).
-                    <View style={styles.actions}>
-                      <Button label={playful ? "Listen" : "Hear it"} icon="hear" variant="secondary" onPress={hear} style={styles.action} snug />
-                      {resendable ? (
-                        <Button label="Send it again" icon="retry" onPress={sendAgain} style={styles.actionMain} />
-                      ) : (
-                        <Button
-                          // The day's marked drills all sung: the button says the day is done, not a greyed "Sing it".
-                          label={doneForToday ? "Done for today" : onward ? onward.label : playful ? "Sing it!" : "Sing it"}
-                          icon={doneForToday ? "check" : onward && !onward.same ? "next" : "mic"}
-                          onPress={() => void (onward && !onward.same ? goNext() : sing())}
-                          loading={starting === "main"}
-                          disabled={doneForToday || starting === "again"}
-                          style={styles.actionMain}
-                        />
-                      )}
-                    </View>
-                  )}
-                  {phase === "idle" && ((onward && !onward.same) || resendable) ? (
-                    <Button label={playful ? "Sing again!" : "Sing it again"} icon="mic" variant="secondary" onPress={() => void sing("again")} loading={starting === "again"} disabled={left === 0 || starting === "main"} />
-                  ) : null}
-
-                  {/* Marking takes up to a minute and the button shows only its spinner, so the line under it says so. */}
-                  {phase === "grading" ? (
-                    <Text style={styles.allowance} accessibilityLiveRegion="polite">
-                      {marking === "slow" ? "Your take is safe. On a slow connection it can take up to a minute." : "Marking your take, note by note."}
-                    </Text>
-                  ) : allowance ? (
-                    // The count is a label (13); once they are all sung it is good news in a sentence (16).
-                    <Text style={left === 0 ? styles.body : styles.allowance}>{allowanceLine(allowance)}</Text>
-                  ) : null}
-                  {error ? <ProblemNote sentence>{error}</ProblemNote> : null}
-                  {error === MIC_REFUSED && micBlocked ? (
-                    <Button
-                      label="Open settings"
-                      variant="text"
-                      size="sm"
-                      onPress={() => void Linking.openSettings().catch(() => undefined)}
-                      style={styles.settingsLink}
-                    />
-                  ) : null}
-                  {grade?.milestone ? (
-                    <View style={styles.milestone} accessibilityLiveRegion="polite">
-                      <Text style={styles.milestoneTitle}>{grade.milestone.title}</Text>
-                      <Text style={styles.meta}>{grade.milestone.description}</Text>
-                    </View>
-                  ) : null}
-                  {grade && playful ? <StarGrade grade={grade} notes={drill.notes} showEarned={!rewardToasted} fresh /> : null}
-                  {grade && !playful ? <GradeMarks grade={grade} notes={drill.notes} showEarned={!rewardToasted} fresh /> : null}
-                  {grade && focused ? (
-                    <View style={styles.focusRow}>
-                      <Text style={styles.focusTuning}>{tuningLine(grade.tuningCents)}</Text>
-                      {takeUri ? (
-                        <Button label="Replay my take" icon="play" variant="secondary" onPress={replay} disabled={busy} />
+                      {buddyShown && stops.length === 0 ? (
+                        <View accessible accessibilityLabel={`Doh, your practice buddy, says: ${buddy.line}`}>
+                          <CostumedArt name={mascotArt(buddy.mood)} width={60} costume={costume} />
+                        </View>
                       ) : null}
                     </View>
-                  ) : null}
-                </Card>
-              </View>
+
+                    <View style={styles.solfaRow} accessible accessibilityLabel={`Sing: ${drill.notes.map((n) => n.solfa + n.octaveMark).join(" ")}`}>
+                      {drill.notes.map((n, i) => (
+                        <View key={i} style={[styles.solfaChip, playful && styles.solfaChipPlayful, due === i && styles.solfaChipOn]}>
+                          <Text style={[styles.solfa, playful && styles.solfaPlayful, due === i && styles.solfaOn]}>{n.solfa}{n.octaveMark}</Text>
+                        </View>
+                      ))}
+                    </View>
+
+                    {/* The unit bar by the buttons (board n-ux-low Q2a a): a tenth in at a unit's first drill, 6 px, in ink on
+                        a stronger track, with the unit and drill beside it; the grade stays in the eyebrow (Playful's eyebrow
+                        has none, so its line keeps it). */}
+                    {where ? (
+                      <View style={styles.unitRow} accessible accessibilityLabel={where}>
+                        <View style={styles.unitBar}>
+                          <View style={[styles.unitBarFill, { width: `${Math.round(unitBarFraction(drill) * 100)}%` }]} />
+                        </View>
+                        <Text style={styles.unitLabel}>{playful ? where : unitLine(drill) ?? where}</Text>
+                      </View>
+                    ) : null}
+
+                    {phase === "leadin" || phase === "singing" ? (
+                      <View style={styles.live}>
+                        <Text style={styles.liveLabel}>{phase === "leadin" ? `Starting note… sing in ${countdown}` : "Sing!"}</Text>
+                        <Button label="Stop" variant="secondary" icon="stop" onPress={stop} />
+                      </View>
+                    ) : phase === "grading" ? (
+                      <>
+                        <Button label={MARKING_LINE[marking]} icon="waiting" loading />
+                        <MarkingBar />
+                      </>
+                    ) : (
+                      // The main action takes two parts of the row and Hear it one (board n-ux-low Q2a b).
+                      <View style={styles.actions}>
+                        <Button label={playful ? "Listen" : "Hear it"} icon="hear" variant="secondary" onPress={hear} style={styles.action} snug />
+                        {resendable ? (
+                          <Button label="Send it again" icon="retry" onPress={sendAgain} style={styles.actionMain} />
+                        ) : (
+                          <Button
+                            // The day's marked drills all sung: the button says the day is done, not a greyed "Sing it".
+                            label={mainLabel}
+                            icon={doneForToday ? "check" : onward && !onward.same ? "next" : "mic"}
+                            onPress={mainAction}
+                            loading={starting === "main"}
+                            disabled={doneForToday || starting === "again"}
+                            style={styles.actionMain}
+                          />
+                        )}
+                      </View>
+                    )}
+                    {phase === "idle" && ((onward && !onward.same) || resendable) ? (
+                      <Button label={playful ? "Sing again!" : "Sing it again"} icon="mic" variant="secondary" onPress={() => void sing("again")} loading={starting === "again"} disabled={left === 0 || starting === "main"} />
+                    ) : null}
+
+                    {/* Marking takes up to a minute and the button shows only its spinner, so the line under it says so. */}
+                    {phase === "grading" ? (
+                      <Text style={styles.allowance} accessibilityLiveRegion="polite">
+                        {marking === "slow" ? "Your take is safe. On a slow connection it can take up to a minute." : "Marking your take, note by note."}
+                      </Text>
+                    ) : allowance ? (
+                      // The count is a label (13); once they are all sung it is good news in a sentence (16).
+                      <Text style={left === 0 ? styles.body : styles.allowance}>{allowanceLine(allowance)}</Text>
+                    ) : null}
+                    {error ? <ProblemNote sentence>{error}</ProblemNote> : null}
+                    {error === MIC_REFUSED && micBlocked ? (
+                      <Button
+                        label="Open settings"
+                        variant="text"
+                        size="sm"
+                        onPress={() => void Linking.openSettings().catch(() => undefined)}
+                        style={styles.settingsLink}
+                      />
+                    ) : null}
+                    {grade?.milestone ? (
+                      <View style={styles.milestone} accessibilityLiveRegion="polite">
+                        <Text style={styles.milestoneTitle}>{grade.milestone.title}</Text>
+                        <Text style={styles.meta}>{grade.milestone.description}</Text>
+                      </View>
+                    ) : null}
+                    {grade && playful ? <StarGrade grade={grade} notes={drill.notes} showEarned={!rewardToasted} fresh /> : null}
+                    {grade && !playful ? <GradeMarks grade={grade} notes={drill.notes} showEarned={!rewardToasted} fresh /> : null}
+                    {grade && focused ? (
+                      <View style={styles.focusRow}>
+                        <Text style={styles.focusTuning}>{tuningLine(grade.tuningCents)}</Text>
+                        {takeUri ? (
+                          <Button label="Replay my take" icon="play" variant="secondary" onPress={replay} disabled={busy} />
+                        ) : null}
+                      </View>
+                    ) : null}
+                  </Card>
+                </View>
+              </>
             ) : null}
             {!drill && !showPicker && !savingTrack ? (
               <EmptyState
@@ -735,18 +810,26 @@ export function PracticeScreen() {
               />
             ) : null}
 
+            {/* ── The day's three quests and the chest they open ── */}
+            {progress.quests && progress.quests.quests.length > 0 && !showPicker ? (
+              <View onLayout={(e) => { questsY.current = e.nativeEvent.layout.y; }}>
+                <QuestsCard quests={progress.quests} />
+              </View>
+            ) : null}
+
             {/* ── The choir's league this week, for a choir's director and singers ── */}
             {league && league.entries.length > 1 && !showPicker ? <ChoirLeagueCard league={league} /> : null}
 
-            {/* ── Quick games: tapped, not sung, about a minute each (board s-practice-fun/s3) ── */}
+            {/* ── The arcade: the quick games, tapped not sung, stage after stage with no end (board s-practice-fun/s3) ── */}
             {!showPicker ? (
               <View style={styles.games}>
                 <View style={styles.gamesHead}>
-                  <Text style={styles.modesTitle} accessibilityRole="header">Quick games</Text>
-                  <Text style={styles.gamesNote}>No mic · about a minute</Text>
+                  <Text style={styles.modesTitle} accessibilityRole="header">Arcade</Text>
+                  <Text style={styles.gamesNote}>Never ends · harder as you go</Text>
                 </View>
                 <GameTiles
                   track={track}
+                  kept={arcade}
                   onOpen={(game) => {
                     if (busy) return;
                     void logAnalyticsEvent("practice_game_opened", { game });
@@ -857,7 +940,7 @@ function SeasonPathCard({
 }
 
 /**
- * The first read's stand-in, drawn where the streak line and the path card will sit, as the Library's rows are: a bare
+ * The first read's stand-in, drawn where the top bar and the path card will sit, as the Library's rows are: a bare
  * spinner let the hub pop in all at once.
  */
 function PracticeSkeleton({ styles }: { styles: Styles }) {
@@ -890,68 +973,6 @@ function DrillSkeleton({ styles }: { styles: Styles }) {
         </View>
       </View>
     </Card>
-  );
-}
-
-/**
- * The streak, the level and the week as one card at the top (board s-practice-fun/s1): the flame and the days, the
- * level's emblem with its name and XP, the week's ring with its days, and a chevron — it opens "Your progress".
- */
-function ProgressLine({ progress, styles, colors, onOpen }: { progress: PracticeProgress; styles: Styles; colors: Palette; onOpen: () => void }) {
-  const strip = progressStrip(progress);
-  const week = progress.weeklyGoal;
-  const days = progress.streak.current;
-  return (
-    <Touchable
-      onPress={onOpen}
-      radius={16}
-      style={styles.stripWrap}
-      accessibilityRole="button"
-      accessibilityLabel={`${strip.label}. ${week.daysDone} of ${week.target} days this week. Your progress`}
-    >
-      <View style={styles.strip}>
-        <View style={styles.stripChunk}>
-          <Art name={flameArt(progress.streak)} width={20} />
-          <Text style={styles.stripStrong}>{days}</Text>
-          <Text style={styles.stripMuted}>{days === 1 ? "day" : "days"}</Text>
-        </View>
-        <View style={styles.stripChunk}>
-          <Art name={levelArt(progress.level.index)} width={20} />
-          <Text style={styles.stripStrong} numberOfLines={1}>{progress.level.name}</Text>
-          <Text style={styles.stripMuted} numberOfLines={1}>{progress.xp} XP</Text>
-        </View>
-        <View style={styles.stripChunk}>
-          <WeekRing done={week.daysDone} target={week.target} colors={colors} />
-          <Text style={styles.stripStrong}>{week.daysDone}/{week.target}</Text>
-          <Text style={styles.stripMuted}>wk</Text>
-        </View>
-        <Icon name="chevron" size={16} color={colors.textFaint} />
-      </View>
-    </Touchable>
-  );
-}
-
-/** The week's goal as a small ring: the days practised of the goal, in the tick's mint. */
-function WeekRing({ done, target, colors }: { done: number; target: number; colors: Palette }) {
-  const size = 20, stroke = 3, r = (size - stroke) / 2, length = 2 * Math.PI * r;
-  const share = target > 0 ? Math.min(1, done / target) : 0;
-  return (
-    <Svg width={size} height={size}>
-      <Circle cx={size / 2} cy={size / 2} r={r} stroke={colors.surfaceAlt} strokeWidth={stroke} fill="none" />
-      {share > 0 ? (
-        <Circle
-          cx={size / 2}
-          cy={size / 2}
-          r={r}
-          stroke={colors.success}
-          strokeWidth={stroke}
-          fill="none"
-          strokeLinecap="round"
-          strokeDasharray={`${length * share} ${length}`}
-          transform={`rotate(-90 ${size / 2} ${size / 2})`}
-        />
-      ) : null}
-    </Svg>
   );
 }
 
@@ -1046,24 +1067,8 @@ const makeStyles = (c: Palette) =>
 
 
 
-    /** The first read's stand-in for the strip. */
+    /** The first read's stand-in for the top bar. */
     progLine: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: spacing.md },
-    stripWrap: { marginBottom: spacing.md },
-    strip: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      gap: 8,
-      minHeight: 52,
-      paddingHorizontal: 14,
-      borderRadius: 16,
-      borderWidth: 1,
-      borderColor: c.border,
-      backgroundColor: c.surface,
-    },
-    stripChunk: { flexDirection: "row", alignItems: "center", gap: 5, flexShrink: 1, minWidth: 0 },
-    stripStrong: { fontFamily: fonts.semibold, fontSize: 15, color: c.text },
-    stripMuted: { fontFamily: fonts.medium, fontSize: 13, color: c.textMuted, flexShrink: 1 },
 
     carols: {
       marginBottom: spacing.md,
