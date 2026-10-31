@@ -1,0 +1,14 @@
+{
+  "title": "Le Bon Roi Dagobert",
+  "composer": "Traditional",
+  "origin": "France",
+  "category": "children",
+  "url": "https://en.wikipedia.org/wiki/Le_Bon_Roi_Dagobert_(song)",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "G major",
+  "time": "6/8",
+  "pickup": 0.5,
+  "tempo": 100,
+  "notes": "B4:0.5 B4:1 A4:0.5 A4:1 G4:0.5 G4:1.5 A4:1.5 B4:0.5 C5:0.5 B4:0.5 A4:0.5 G4:0.5 A4:0.5 G4:1.5 r:0.5 G4:0.5 A4:0.5 B4:1 B4:0.5 B4:0.5 C5:0.5 D5:0.5 A4:1 A4:0.5 A4:0.5 G4:0.5 A4:0.5 B4:1 B4:0.5 B4:0.5 C5:0.5 D5:0.5 A4:1 A4:0.5 A4:1 B4:0.5 B4:1 A4:0.5 A4:1 G4:0.5 G4:1.5 A4:1.5 B4:0.5 C5:0.5 B4:0.5 A4:0.5 G4:0.5 A4:0.5 G4:2.5"
+}

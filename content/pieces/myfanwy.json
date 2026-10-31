@@ -1,0 +1,14 @@
+{
+  "title": "Myfanwy",
+  "composer": "Joseph Parry (1841–1903)",
+  "origin": "Wales",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/Myfanwy",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "Db major",
+  "time": "4/4",
+  "pickup": 1.0,
+  "tempo": 100,
+  "notes": "Ab4:1 Db5:1.5 Db5:0.5 Db5:0.5 Db5:0.5 Eb5:0.75 Db5:0.25 Db5:1 C5:2 Db5:1 Eb5:1.5 Eb5:0.5 Eb5:0.5 Eb5:0.5 F5:0.75 Eb5:0.25 Eb5:1 Db5:2 Ab4:1 F5:1.5 F5:0.5 F5:0.5 F5:0.5 Gb5:0.75 F5:0.25 F5:1 Eb5:2 C5:0.5 Db5:0.5 Eb5:1.5 Eb5:0.5 Eb5:0.5 Gb5:0.5 F5:0.5 E5:0.5 F5:2 r:1 Ab4:1 Bb4:1.5 Bb4:0.5 Bb4:0.5 Bb4:0.5 Db5:0.75 Bb4:0.25 Bb4:1 Ab4:2 Db5:1 C5:1.5 C5:0.5 Db5:0.5 C5:0.5 Db5:0.5 Eb5:0.5 F5:2 r:1 Ab5:1 Ab5:1.5 Gb5:0.5 Bb4:1 Gb5:1 Gb5:1.5 F5:0.5 Ab4:0.5 Ab4:0.5 Db5:1 Db5:1.5 Db5:0.5 Db5:0.5 C5:0.5 F5:0.5 Eb5:0.5 Db5:3"
+}

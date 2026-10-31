@@ -1,0 +1,14 @@
+{
+  "title": "Lasst uns froh und munter sein",
+  "composer": "Traditional",
+  "origin": "Germany",
+  "category": "children",
+  "url": "https://en.wikipedia.org/wiki/Lasst_uns_froh_und_munter_sein",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "D major",
+  "time": "4/4",
+  "pickup": 0.0,
+  "tempo": 128,
+  "notes": "A4:1 A4:1 A4:0.5 B4:0.5 A4:0.5 G4:0.5 F#4:1 F#4:1 F#4:1 r:1 G4:1 G4:1 G4:0.5 A4:0.5 G4:0.5 F#4:0.5 E4:1 E4:1 E4:1 r:1 D4:1 E4:1 F#4:1 G4:1 A4:0.5 B4:0.5 A4:0.5 B4:0.5 A4:2 D5:1 A4:1 A4:0.5 B4:0.5 A4:0.5 G4:0.5 F#4:1 E4:1 A4:2 D5:1 A4:1 A4:0.5 B4:0.5 A4:0.5 G4:0.5 F#4:1 E4:1 D4:2"
+}

@@ -1,0 +1,14 @@
+{
+  "title": "William Taylor",
+  "composer": "Traditional",
+  "origin": "England",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/William_Taylor_(folk_song)",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "D major",
+  "time": "2/2",
+  "pickup": 0.0,
+  "tempo": 100,
+  "notes": "G4:1 F#4:1 G4:0.5 G4:0.5 A4:0.5 B4:0.5 C5:0.5 C5:0.5 A4:1 F#4:1 D4:1 G4:1 F#4:1 G4:1 A4:0.5 A4:0.5 B4:1 D5:1 A4:2"
+}

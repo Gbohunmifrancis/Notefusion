@@ -1,0 +1,14 @@
+{
+  "title": "My Bonnie Lies over the Ocean",
+  "composer": "Traditional",
+  "origin": "Scotland",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/My_Bonnie_Lies_over_the_Ocean",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "G major",
+  "time": "3/4",
+  "pickup": 1.0,
+  "tempo": 100,
+  "notes": "D4:1 B4:1 A4:1 G4:1 A4:1 G4:1 E4:1 D4:1 B3:4 D4:1 B4:1 A4:1 G4:1 G4:1 F#4:1 G4:1 A4:5 D4:1 B4:1 A4:1 G4:1 A4:1 G4:1 E4:1 D4:1 B3:4 D4:1 E4:1 A4:1 G4:1 F#4:1 E4:1 F#4:1 G4:5 r:1 D4:3 G4:3 E4:3 A4:3 F#4:1 F#4:1 F#4:1 F#4:1 E4:1 F#4:1 G4:2 A4:1 B4:3 D4:3 G4:3 E4:3 A4:3 F#4:1 F#4:1 F#4:1 F#4:1 E4:1 F#4:1 G4:6 D4:1 B4:1 A4:1 G4:1 A4:1 G4:1 E4:1 D4:1 B3:4 D4:1 B4:1 A4:1 G4:1 G4:1 F#4:1 G4:1 A4:5 D4:1 B4:1 A4:1 G4:1 A4:1 G4:1 E4:1 D4:1 B3:4 D4:1 E4:1 A4:1 G4:1 F#4:1 E4:1 F#4:1 G4:5 r:1 D4:3 G4:3 E4:3 A4:3 F#4:1 F#4:1 F#4:1 F#4:1 E4:1 F#4:1 G4:2 A4:1 B4:3 D4:3 G4:3 E4:3 A4:3 F#4:1 F#4:1 F#4:1 F#4:1 E4:1 F#4:1 G4:6"
+}

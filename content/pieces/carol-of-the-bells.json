@@ -3,12 +3,12 @@
   "composer": "Mykola Leontovych (1877–1921)",
   "origin": "Ukraine",
   "category": "carol",
-  "url": "https://en.wikipedia.org/wiki/Carol_of_the_Bells",
-  "source": "NoteFusion (transcribed twice, independently, and kept where the two agree)",
+  "url": "https://en.wikipedia.org/wiki/Shchedryk_(song)",
+  "source": "Wikipedia (the score in its article on the piece)",
   "licence": "Public domain: the composer died more than seventy years ago.",
   "key": "G minor",
   "time": "3/4",
   "pickup": 0.0,
-  "tempo": 160,
-  "notes": "Bb4:1 A4:0.5 Bb4:0.5 G4:1 Bb4:1 A4:0.5 Bb4:0.5 G4:1 Bb4:1 A4:0.5 Bb4:0.5 G4:1 Bb4:1 A4:0.5 Bb4:0.5 G4:1"
+  "tempo": 108,
+  "notes": "Bb4:1 A4:0.5 Bb4:0.5 G4:1 Bb4:1 A4:0.5 Bb4:0.5 G4:1 Bb4:1 A4:0.5 Bb4:0.5 G4:1 Bb4:1 A4:0.5 Bb4:0.5 G4:1 Bb4:1 A4:0.5 Bb4:0.5 G4:1 D5:1 C5:0.5 D5:0.5 Bb4:1 D5:1 C5:0.5 D5:0.5 Bb4:1 D5:1 C5:0.5 D5:0.5 Bb4:1 D5:1 C5:0.5 D5:0.5 Bb4:1 G5:1 G5:0.5 G5:0.5 F5:0.5 Eb5:0.5 D5:1 D5:0.5 D5:0.5 C5:0.5 Bb4:0.5 C5:1 C5:0.5 C5:0.5 D5:0.5 C5:0.5 G4:1 G4:0.5 G4:0.5 G4:1 D4:0.5 E4:0.5 Gb4:0.5 G4:0.5 A4:0.5 Bb4:0.5 C5:0.5 D5:0.5 C5:1 Bb4:1 D4:0.5 E4:0.5 Gb4:0.5 G4:0.5 A4:0.5 Bb4:0.5 C5:0.5 D5:0.5 C5:1 Bb4:1 Bb4:1 A4:0.5 Bb4:0.5 G4:1 Bb4:1 A4:0.5 Bb4:0.5 G4:1 Bb4:1 A4:0.5 Bb4:0.5 G4:1 Bb4:1 A4:0.5 Bb4:0.5 G4:1 Bb4:1 A4:0.5 Bb4:0.5 G4:1 Bb4:1 A4:0.5 Bb4:0.5 G4:1 Bb4:1 A4:0.5 Bb4:0.5 G4:1 Bb4:1 A4:0.5 Bb4:0.5 G4:1 Bb4:1 A4:0.5 Bb4:0.5 G4:1 D5:1 C5:0.5 D5:0.5 Bb4:1 D5:1 C5:0.5 D5:0.5 Bb4:1 D5:1 C5:0.5 D5:0.5 Bb4:1 D5:1 C5:0.5 D5:0.5 Bb4:1 G5:1 G5:0.5 G5:0.5 F5:0.5 Eb5:0.5 D5:1 D5:0.5 D5:0.5 C5:0.5 Bb4:0.5 C5:1 C5:0.5 C5:0.5 D5:0.5 C5:0.5 G4:1 G4:0.5 G4:0.5 G4:1 D4:0.5 E4:0.5 Gb4:0.5 G4:0.5 A4:0.5 Bb4:0.5 C5:0.5 D5:0.5 C5:1 Bb4:1 D4:0.5 E4:0.5 Gb4:0.5 G4:0.5"
 }

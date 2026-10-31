@@ -25,6 +25,8 @@ resampy==0.4.2
 pretty_midi==0.2.11
 music21==10.5.0
 defusedxml==0.7.1
+# The sheet reader evens out a photo's lighting (app/pipeline/sheet_reader._even_light); music21 brings it already.
+pillow==13.0.0
 soundfile==0.14.0
 audioread==3.0.1
 scikit-learn==1.9.0

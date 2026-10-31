@@ -1,0 +1,14 @@
+{
+  "title": "Here We Go Looby Loo",
+  "composer": "Traditional",
+  "origin": "England",
+  "category": "children",
+  "url": "https://en.wikipedia.org/wiki/Here_we_go_Loop_de_Loop",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "F major",
+  "time": "6/8",
+  "pickup": 0.0,
+  "tempo": 100,
+  "notes": "F4:0.5 F4:0.5 F4:0.5 A4:1 F4:0.5 C5:3 F4:0.5 F4:0.5 F4:0.5 A4:1 F4:0.5 G4:3 F4:0.5 F4:0.5 F4:0.5 A4:1 F4:0.5 C5:3 C5:0.5 D5:0.5 C5:0.5 Bb4:0.5 A4:0.5 G4:0.5 F4:3"
+}

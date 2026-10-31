@@ -1,0 +1,14 @@
+{
+  "title": "Hevenu Shalom Aleichem",
+  "composer": "Traditional",
+  "origin": "Israel",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/Hevenu_shalom_aleichem",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "E minor",
+  "time": "4/4",
+  "pickup": 1.5,
+  "tempo": 100,
+  "notes": "B3:0.5 E4:0.5 G4:0.5 B4:2 G4:1.5 F#4:0.5 E4:1.5 r:0.5 E4:0.5 G4:0.5 B4:0.5 E5:2 C5:1.5 B4:0.5 A4:1.5 r:0.5 A4:0.5 B4:0.5 C5:0.5 B4:1.5 F#4:0.5 B4:1.5 A4:0.5 G4:1.5 r:0.5 G4:0.5 F#4:0.5 E4:0.5 B4:1 B4:0.75 A4:0.25 G4:0.5 F#4:0.5 E4:0.5"
+}

@@ -1,0 +1,14 @@
+{
+  "title": "The Braes o' Killiecrankie",
+  "composer": "Traditional",
+  "origin": "Scotland",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/The_Braes_o'_Killiecrankie",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "G major",
+  "time": "2/4",
+  "pickup": 0.5,
+  "tempo": 90,
+  "notes": "G4:0.25 A4:0.25 B4:0.5 B4:0.5 B4:0.5 A4:0.25 G4:0.25 C5:1 C5:0.5 B4:0.25 A4:0.25 B4:0.5 B4:0.5 C5:0.25 B4:0.25 A4:0.25 G4:0.25 B4:0.5 D5:0.5 D5:0.5 G4:0.25 A4:0.25 B4:0.5 B4:0.5 C5:0.25 B4:0.25 A4:0.25 G4:0.25 C5:1 C5:0.5 B4:0.25 A4:0.25 B4:0.25 C5:0.25 D5:0.25 B4:0.25 A4:0.5 G4:0.5 D4:0.5 G4:0.5 G4:0.5 B4:0.25 C5:0.25 D5:0.5 D4:0.5 D4:0.5 E4:0.25 F4:0.25 E4:0.5 D4:0.25 E4:0.25 C4:0.5 B4:0.25 C5:0.25 D5:0.5 D4:0.5 D5:0.5 D4:0.5 B4:0.5 D5:0.5 D5:0.5 B4:0.25 C5:0.25 D5:0.5 D4:0.5 D4:0.5 E4:0.25 F4:0.25 G4:0.25 F4:0.25 E4:0.25 D4:0.25 C4:0.5 B4:0.25 C5:0.25 B4:0.25 C5:0.25 D5:0.25 B4:0.25 A4:0.5 G4:0.5 E4:0.5 G4:0.5 G4:0.5"
+}

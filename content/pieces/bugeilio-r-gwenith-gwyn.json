@@ -1,0 +1,14 @@
+{
+  "title": "Bugeilio'r Gwenith Gwyn",
+  "composer": "Traditional",
+  "origin": "Wales",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/Bugeilio'r_Gwenith_Gwyn",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "F major",
+  "time": "3/8",
+  "pickup": 0.25,
+  "tempo": 45,
+  "notes": "F4:0.25 F4:0.25 A4:0.25 C5:0.75 A4:0.25 Bb4:0.25 Bb4:0.25 A4:0.75 Bb4:0.25 C5:0.25 A4:0.25 F4:0.75 A4:0.25 C5:0.25 C5:0.25 r:0.75 A4:0.25 Bb4:0.25 Bb4:0.25 D5:0.75 Bb4:0.25 A4:0.25 A4:0.25 C5:0.75 Bb4:0.25 A4:0.25 G4:0.25 G4:0.75 E4:0.25 F4:0.25 F4:0.25 r:0.75 F4:0.25 F4:0.25 F5:0.25 F5:0.75 D5:0.25 Bb4:0.25 Bb4:0.25 Bb4:0.75 A4:0.25 G4:0.25 G5:0.25 G5:0.75 E5:0.25 C5:0.25 C5:0.5 r:0.5 A4:0.25 Bb4:0.25 Bb4:0.25 D5:0.75 Bb4:0.25 A4:0.25 A4:0.25 C5:0.75 Bb4:0.25 A4:0.25 G4:0.25 G4:0.75 E4:0.25 F4:0.25 F4:0.75"
+}

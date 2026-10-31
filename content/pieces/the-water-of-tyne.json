@@ -1,0 +1,14 @@
+{
+  "title": "The Water of Tyne",
+  "composer": "Traditional",
+  "origin": "England",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/The_Water_of_Tyne",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "D major",
+  "time": "6/8",
+  "pickup": 0.5,
+  "tempo": 60,
+  "notes": "A4:0.5 A4:0.5 F#4:0.5 F#4:0.5 A4:0.5 F#4:0.5 E4:0.5 D4:0.5 D4:0.75 D4:0.25 D4:1 E4:0.25 F#4:0.25 G4:0.5 G4:0.5 F#4:0.5 E4:0.5 F#4:0.5 A4:0.5 B4:0.5 B4:0.75 B4:0.25 A4:1 F#4:0.25 E4:0.25 D4:0.5 D5:0.5 D5:0.5 D5:0.75 E5:0.25 F#5:0.5 D5:0.5 A4:0.75 B4:0.25 B4:1 C#5:0.25 D5:0.25 A4:0.5 F#4:0.5 A4:0.5 A4:0.5 F#4:0.75 E4:0.25 D4:0.5 D4:0.75 D4:0.25 D4:1"
+}

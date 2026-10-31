@@ -1,0 +1,14 @@
+{
+  "title": "My Robin Is to the Greenwood Gone",
+  "composer": "Traditional",
+  "origin": "England",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/My_Robin_is_to_the_greenwood_gone",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "D minor",
+  "time": "3/4",
+  "pickup": 1.0,
+  "tempo": 100,
+  "notes": "D4:1 F4:1.5 G4:0.5 F4:1 E4:2 D4:1 C5:2 D5:1 A4:2 A3:1 F4:1.5 G4:0.5 F4:1 E4:2 D4:1 C5:2 D5:1 A4:3 A4:1 D5:1 C5:1 B4:1.5 A4:0.5 G4:1 C5:1.5 B4:0.5 A4:0.5 G4:0.5 F4:1.5 E4:0.5 D4:1 C5:1.5 B4:0.5 A4:0.5 G4:0.5 F4:1.5 G4:0.5 A4:1 G4:1.5 F4:0.5 E4:1 D4:3"
+}
