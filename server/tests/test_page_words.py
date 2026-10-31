@@ -57,3 +57,14 @@ def test_tesseract_reads_a_title_off_a_page(tmp_path):
     ImageDraw.Draw(img).text((40, 100), "O for a Closer Walk with God", fill=0, font=ImageFont.load_default(size=56))
     img.save(tmp_path / "page.png")
     assert "closer" in words_of(read_words([tmp_path / "page.png"]))
+
+
+def test_the_first_pages_and_their_easier_copies_are_read(tmp_path, monkeypatch):
+    # A stand-in Tesseract that prints the name of the picture it was given.
+    fake = tmp_path / "tesseract"
+    fake.write_text("#!/bin/sh\necho \"read $(basename \"$1\")\"\n")
+    fake.chmod(0o755)
+    monkeypatch.setenv("NF_OCR_BIN", str(fake))
+    pages = [tmp_path / f"p{n}.png" for n in range(4)]
+    text = read_words(pages, also=[tmp_path / "p0-even.png"])
+    assert text.split("\n") == ["read p0.png", "", "read p1.png", "", "read p0-even.png", ""]

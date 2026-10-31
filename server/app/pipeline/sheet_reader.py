@@ -55,8 +55,10 @@ PDF_DPI = 200
 PAGE_TIMEOUT_SECONDS = 120
 #: A page read as fewer notes than this is read again with its lighting evened out.
 FEW_NOTES = 16
-#: ... and a page photographed smaller than this (its longest side, pixels) is read a third time, enlarged twice.
+#: ... and a page photographed smaller than this (its longest side, pixels) is read a third time, enlarged twice,
 ENLARGE_BELOW = 2400
+#: ... looking again until it reads this many notes (a small photo's first reading often keeps a few staves only).
+SMALL_PAGE_NOTES = 32
 #: The file beside the score that holds the words printed on the page.
 PAGE_WORDS = "page-words.txt"
 #: A sheet read off a page is not the exact score a notation file is: the clients' "Some notes may need a check"
@@ -208,12 +210,12 @@ def _page_tune(page: Path, number: int, work: Path) -> tuple[list[tuple[int | No
     def notes(r) -> int:
         return 0 if r is None else sum(1 for midi, _ in r[0] if midi is not None)
 
+    small = _longest_side(page) < ENLARGE_BELOW
+    enough = SMALL_PAGE_NOTES if small else FEW_NOTES
     best = reading(page)
-    if notes(best) >= FEW_NOTES:
+    if notes(best) >= enough:
         return best
-    looks = [1]
-    if _longest_side(page) < ENLARGE_BELOW:
-        looks.append(2)  # a page photographed small: its staves too thin for homr until enlarged
+    looks = [1, 2] if small else [1]  # a page photographed small: its staves too thin for homr until enlarged
     for enlarge in looks:
         try:
             again = reading(_even_light(page, work, enlarge))
@@ -222,7 +224,7 @@ def _page_tune(page: Path, number: int, work: Path) -> tuple[list[tuple[int | No
             return best
         if notes(again) > notes(best):
             best = again
-        if notes(best) >= FEW_NOTES:
+        if notes(best) >= enough:
             break
     return best
 
@@ -258,10 +260,12 @@ def read_sheet(path: Path, work: Path) -> Path:
         line.pop(0)
     if sum(1 for midi, _ in line if midi is not None) < 4:
         raise LowConfidenceError(NO_MUSIC)
-    from app.pipeline.page_words import read_words
+    from app.pipeline.page_words import WORD_PAGES, read_words
 
+    # The evened copy of a page read poorly is read too: a title in shadow or blur comes back on it.
+    evened = [work / f"{page.stem}-even.png" for page in pages[:WORD_PAGES]]
     try:
-        words = read_words(pages)
+        words = read_words(pages, also=[p for p in evened if p.exists()])
     except Exception as exc:  # noqa: BLE001 - the words name a hymn; the tune is the sheet, and it stands without them
         logger.warning("the page's words could not be read: %s: %s", type(exc).__name__, exc)
         words = ""

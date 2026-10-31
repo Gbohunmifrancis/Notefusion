@@ -44,10 +44,11 @@ def _ocr() -> str:
     return os.getenv("NF_OCR_BIN", "tesseract")
 
 
-def read_words(pages: list[Path]) -> str:
-    """The text on the first ``WORD_PAGES`` pages ("" when Tesseract is not there or reads nothing)."""
+def read_words(pages: list[Path], also: list[Path] = ()) -> str:
+    """The text on the first ``WORD_PAGES`` pages and on ``also`` (copies of them made easier to read), joined
+    ("" when Tesseract is not there or reads nothing)."""
     out = []
-    for page in pages[:WORD_PAGES]:
+    for page in [*pages[:WORD_PAGES], *also]:
         try:
             done = subprocess.run([_ocr(), str(page), "-", "--psm", PAGE_SEGMENTATION, "-l", "eng"], capture_output=True,
                                   text=True, encoding="utf-8", errors="replace", timeout=OCR_TIMEOUT_SECONDS)
