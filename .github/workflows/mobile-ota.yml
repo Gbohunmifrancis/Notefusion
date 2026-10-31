@@ -111,23 +111,23 @@ jobs:
         env:
           CODES: ${{ steps.play.outputs.codes }}
         run: |
-          current=$(eas fingerprint:generate --platform android --environment production --json --non-interactive | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);console.log(j.hash||j.fingerprint?.hash||"")})')
+          current=$(eas fingerprint:generate --platform android --environment production --json --non-interactive | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s.slice(Math.max(0,s.search(/^[\[{]/m))));console.log(j.hash||j.fingerprint?.hash||"")})')
           echo "This commit's runtime: $current"
           echo "current=$current" >> "$GITHUB_OUTPUT"
           echo "Latest finished Android builds on EAS:"
           eas build:list --platform android --status finished --limit 8 --json --non-interactive \
-            | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{for(const b of JSON.parse(s))console.log(`  versionCode ${b.appBuildVersion}  ${b.appVersion}  ${b.buildProfile}  runtime ${b.runtimeVersion}  ${b.completedAt}  ${(b.gitCommitHash||"").slice(0,8)}`)})'
+            | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{for(const b of JSON.parse(s.slice(Math.max(0,s.search(/^[\[{]/m)))))console.log(`  versionCode ${b.appBuildVersion}  ${b.appVersion}  ${b.buildProfile}  runtime ${b.runtimeVersion}  ${b.completedAt}  ${(b.gitCommitHash||"").slice(0,8)}`)})'
           served=""
           for code in $CODES; do
             rt=$(eas build:list --platform android --status finished --app-build-version="$code" --limit 1 --json --non-interactive \
-              | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);console.log(j[0]?j[0].runtimeVersion:"")})')
+              | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s.slice(Math.max(0,s.search(/^[\[{]/m))));console.log(j[0]?j[0].runtimeVersion:"")})')
             echo "Play's version code $code: runtime ${rt:-unknown (no EAS cloud build with that code: a local build?)}"
             served="$served $rt"
           done
           echo "served=$(echo $served | xargs)" >> "$GITHUB_OUTPUT"
           echo "Updates already on the production branch:"
           eas update:list --branch production --limit 6 --json --non-interactive \
-            | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);for(const u of (j.currentPage||j))console.log(`  runtime ${u.runtimeVersion}  ${u.createdAt}  ${u.message||""}`)})' || true
+            | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s.slice(Math.max(0,s.search(/^[\[{]/m))));for(const u of (j.currentPage||j))console.log(`  runtime ${u.runtimeVersion}  ${u.createdAt}  ${u.message||""}`)})' || true
 
       - name: Publish
         if: ${{ inputs.publish }}
