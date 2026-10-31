@@ -257,6 +257,19 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   with `category:"piece"` (slug `piece-…`, `hymn-index.mjs` `loadPieces`): recognised from a photo, a PDF or a hum like a hymn,
   and offered as "the published version" (web `hymnbook.js` `isPiece`/`noun`, mobile `lib/hymnbook` `isPiece`; a saved
   sheet's credit knows one by its slug), so a page homr misread is put right; `/v1/identify` names them `kind:"piece"`.
+  The index's `settings` (`hymn-index.mjs` `tuneSettings`, keyed by `tune_key` of the tune's name) list every published hymn
+  sung to each tune — the 371 with a melody of their own and the 2,216 words pages set by metre, which are never entries — as
+  slug, title, url, credit and first verse; an offer for a tune sung to others carries up to `SETTINGS_OFFERED` (60, own
+  melodies first) and `settings_total`, so a page whose words homr does not read is asked "Which hymn is it?" (web
+  `app.js` `hymnPicker`, type to find; phone `components/result/HymnSettingSheet`, searchable): the notes stay the match's,
+  the words and credit become the one picked, and a save naming its slug keeps that credit (`SaveTranscriptionCommand`
+  reads it from the job's own `Settings`). A photo or PDF picks the hymn itself when its words are printed: Tesseract
+  (`tesseract-ocr`, Apache-2.0, `NF_OCR_BIN`; psm 11, sparse text, as a page's words sit in short runs between staves)
+  reads the first 2 pages beside homr (`sheet_reader` leaves them as `PAGE_WORDS`), and `page_words.pick_hymn` takes the
+  tune's hymn with half its title's and first verse's words on the page (syllables joined, short and common words out) and
+  0.2 ahead of the next (`PICK_SHARE`, `PICK_LEAD`); the offer says `chosen`, the clients open with it ("This page is …,
+  sung to …") and the picker stays for a change. No words, or words we do not hold, and nothing is chosen. Measured on 40
+  photographed words pages: 40 right, none wrong, and none picked with the right hymn taken out (closest other 0.33).
   Words set by metre (`"setByMetre": true`; `tools/blog/import/watts.mjs`, Watts' *Hymns and Spiritual Songs* and `--book psalms` his *Psalms of David
   Imitated*, and `words-books.mjs`,
   Longfellow & Johnson's *Book of Hymns* (1848), Adams & Chapin's *Hymns for Christian Devotion* (1846) the *Olney Hymns* (1779) John Brownlie's five books of translations (metre read off the lines) and the 1927 *Evangelical Lutheran Hymn-Book*

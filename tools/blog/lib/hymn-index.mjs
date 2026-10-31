@@ -14,6 +14,10 @@
 // anthems, all public domain) is a "score" entry with `category: "piece"`: matched and offered like a hymn, so
 // a photo of its sheet music or a hummed take is named and its published notes put right what was misread;
 // the clients call it the published version rather than the hymnbook's.
+// "settings" (beside the entries) lists, for each tune, every published hymn sung to it — the hymns with a melody of
+// their own and the words pages set by metre, which are never entries themselves: a page matched to a tune can then be
+// asked "which hymn is it?" and take the words and credit of the one picked. Keyed by the tune's name as hymn_match
+// reads it (lower case, words only), each [slug, title, url, credit, first verse one syllable a note].
 // Every entry carries where it came from (`source`), its licence and the credit line its page shows.
 import fs from "node:fs";
 import path from "node:path";
@@ -124,6 +128,29 @@ export function loadPieces(dir = PIECES_DIR) {
   });
 }
 
+/** A tune's name as hymn_match's `same_tune` reads it: lower case, words only ("OLD HUNDREDTH" → "old hundredth"). */
+export function tuneKey(name) {
+  return String(name || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+/** Every published hymn by the tune it is sung to: those with a melody of their own first, then by title. */
+export function tuneSettings(hymns) {
+  const by = new Map();
+  for (const h of hymns.filter((h) => !h.draft && h.tuneData && h.underlay)) {
+    const key = tuneKey(h.tuneData.name);
+    if (!key) continue;
+    if (!by.has(key)) by.set(key, []);
+    by.get(key).push(h);
+  }
+  const out = {};
+  for (const key of [...by.keys()].sort()) {
+    out[key] = by.get(key)
+      .sort((a, b) => (!!a.setByMetre - !!b.setByMetre) || a.title.localeCompare(b.title) || a.slug.localeCompare(b.slug))
+      .map((h) => [h.slug, h.title, `${ORIGIN}/hymns/${h.slug}`, creditLine(h).text, h.underlay]);
+  }
+  return out;
+}
+
 /** The index as committed: one entry a line, sorted by slug, so a change to one hymn is a one-line diff. */
 export function hymnIndexJson(hymns, incipits = loadIncipits(), tunes = [], pieces = loadPieces()) {
   const entries = [...hymns.filter((h) => !h.draft && !h.setByMetre).map(scoreEntry), ...tunes.map(tuneMatcherEntry), ...incipits, ...pieces].sort((a, b) => a.slug.localeCompare(b.slug));
@@ -132,5 +159,6 @@ export function hymnIndexJson(hymns, incipits = loadIncipits(), tunes = [], piec
     if (slugs.has(e.slug)) throw new Error(`hymn index: two entries are called "${e.slug}"`);
     slugs.add(e.slug);
   }
-  return `{"version": 1, "generatedBy": "tools/blog/build.mjs from content/hymns (published hymns and tune pages only) and content/pieces; do not edit by hand",\n"entries": [\n${entries.map((e) => JSON.stringify(e)).join(",\n")}\n]}\n`;
+  const settings = Object.entries(tuneSettings(hymns)).map(([key, list]) => `${JSON.stringify(key)}: ${JSON.stringify(list)}`);
+  return `{"version": 1, "generatedBy": "tools/blog/build.mjs from content/hymns (published hymns and tune pages only) and content/pieces; do not edit by hand",\n"entries": [\n${entries.map((e) => JSON.stringify(e)).join(",\n")}\n],\n"settings": {\n${settings.join(",\n")}\n}}\n`;
 }

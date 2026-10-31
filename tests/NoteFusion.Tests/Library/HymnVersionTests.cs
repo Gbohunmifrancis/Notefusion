@@ -1,4 +1,5 @@
 using NoteFusion.Application.Analytics.Queries;
+using NoteFusion.Application.Library;
 using NoteFusion.Application.Library.Commands;
 using NoteFusion.Application.Library.Dtos;
 using NoteFusion.Application.Transcriptions;
@@ -39,6 +40,46 @@ public class HymnVersionTests
         var stored = h.Db.Transcriptions.Single();
         var shared = SavedTranscriptionMapper.ToShared(stored, "Francis");
         Assert.Equal(Credit, shared.Hymn!.Credit);
+    }
+
+    [Fact]
+    public async Task A_hymn_picked_from_those_sung_to_the_matched_tune_keeps_its_own_credit()
+    {
+        using var h = new TestHarness();
+        var userId = await SeedUser(h);
+        const string pickedCredit = "Tune NEW BRITAIN; words by Isaac Watts (1674–1748).";
+        var tune = Offer("tune-new-britain", "score") with
+        {
+            Settings = [new HymnSettingDto("alas-and-did-my-saviour-bleed", "Alas! and Did My Saviour Bleed",
+                "https://notefusion.studio/hymns/alas-and-did-my-saviour-bleed", pickedCredit, "A-las! and did")],
+            SettingsTotal = 1,
+        };
+        await SeedJob(h, userId, "job-1", tune);
+
+        var saved = await Save(h, userId, "job-1", "alas-and-did-my-saviour-bleed");
+
+        Assert.Equal(new HymnCreditDto("alas-and-did-my-saviour-bleed", "Alas! and Did My Saviour Bleed",
+            "https://notefusion.studio/hymns/alas-and-did-my-saviour-bleed", pickedCredit), saved.Value.Hymn);
+        // Still only what the job offered: a hymn sung to some other tune is not credited.
+        Assert.Null((await Save(h, userId, "job-1", "abide-with-me")).Value.Hymn);
+    }
+
+    [Fact]
+    public void A_page_whose_words_chose_a_hymn_is_named_after_that_hymn()
+    {
+        var alas = new HymnSettingDto("alas-and-did-my-saviour-bleed", "Alas! and Did My Saviour Bleed",
+            "https://notefusion.studio/hymns/alas-and-did-my-saviour-bleed", "Words by Isaac Watts.", "A-las!");
+        var tune = Offer("tune-new-britain", "score") with { Title = "New Britain", Settings = [alas], SettingsTotal = 1 };
+        Assert.Equal("New Britain", tune.ShownTitle());
+        Assert.Null(tune.ChosenSetting());
+
+        var chosen = tune with { Chosen = alas.Slug };
+        Assert.Equal(alas, chosen.ChosenSetting());
+        Assert.Equal("Alas! and Did My Saviour Bleed", chosen.ShownTitle());
+
+        var job = TranscriptionJob.Record("job-1", Guid.NewGuid(), new DateTime(2026, 10, 31, 12, 0, 0, DateTimeKind.Utc));
+        var result = new TranscriptionResultDto("A major", 0.8, 84, "4/4", "<s/>", "", Hymnbook, ["Doh is A"], 0.7, HymnMatch: chosen);
+        Assert.Equal("Alas! and Did My Saviour Bleed", LibraryFiling.TitleFor(job, result, TimeZoneInfo.Utc));
     }
 
     [Fact]

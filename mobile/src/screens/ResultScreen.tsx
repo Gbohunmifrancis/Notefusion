@@ -29,6 +29,7 @@ import ScoreView, { type ScoreViewHandle } from "../components/ScoreView";
 import { SheetGrid, barOf } from "../components/result/SheetGrid";
 import { PlayerDock, DOCK_CLEARANCE } from "../components/result/PlayerDock";
 import { RehearseView } from "../components/result/RehearseView";
+import { HymnSettingSheet } from "../components/result/HymnSettingSheet";
 import { PracticeView } from "../components/result/PracticeView";
 import { Segmented } from "../components/result/Segmented";
 import { DohPicker } from "../components/result/DohPicker";
@@ -41,10 +42,10 @@ import { DohToast } from "../components/doh/DohToast";
 import { firstCelebration } from "../lib/dohPrefs";
 import { billingApi, libraryApi, transcriptionsApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
-import type { ChordSymbol, HymnCredit, KeyAlternative, NoteEvent, Plan, TranscriptionPart, TranscriptionResult } from "../api/types";
+import type { ChordSymbol, HymnCredit, HymnSetting, KeyAlternative, NoteEvent, Plan, TranscriptionPart, TranscriptionResult } from "../api/types";
 import { chordRows } from "../lib/chordRow";
 import { dohChoices, writeInKey } from "../lib/dohChoice";
-import { hymnbookSheet, hymnCreditLine, hymnLabel, hymnOffer, isPiece, type HymnbookSheet } from "../lib/hymnbook";
+import { chosenSetting, hymnbookSheet, hymnCreditLine, hymnLabel, hymnOffer, isPiece, type HymnbookSheet } from "../lib/hymnbook";
 import { showDialog, type DialogAction } from "../lib/dialog";
 import { showToast } from "../lib/toast";
 import { withBusy } from "../lib/busy";
@@ -399,6 +400,8 @@ export function ResultScreen({ route, navigation }: Props) {
    * sheet the hymnbook version, and `hymnSource` then credits it (on a saved sheet, from the library).
    */
   const [hymnAnswered, setHymnAnswered] = useState(false);
+  /** "Which hymn is it?" is open: the hymns sung to the matched tune. */
+  const [pickingHymn, setPickingHymn] = useState(false);
 
   // ── Transpose for my choir ────────────────────────────────────────────────
   // The one edit that moves the notes. After it, the *baseline* the corrections are
@@ -1059,9 +1062,9 @@ export function ResultScreen({ route, navigation }: Props) {
    * correction: the baseline moves with it. What was read against the old beats (the chords) goes.
    * Shown at once with "Hymnbook version in · Undo"; Undo puts back the take as heard, its chords and the question.
    */
-  function chooseHymnbook(take: boolean) {
-    logAppEvent("hymnbook_answered", { take, hymn: result.hymnMatch?.slug });
-    const sheet = take && result.hymnMatch ? hymnbookSheet(result.hymnMatch, tempo) : null;
+  function chooseHymnbook(take: boolean, setting?: HymnSetting) {
+    logAppEvent("hymnbook_answered", { take, hymn: setting?.slug ?? result.hymnMatch?.slug });
+    const sheet = take && result.hymnMatch ? hymnbookSheet(result.hymnMatch, tempo, setting) : null;
     if (!sheet) {
       setHymnAnswered(true);
       return;
@@ -2340,18 +2343,29 @@ export function ResultScreen({ route, navigation }: Props) {
           {hymnAsk && result.hymnMatch && !guest ? (
             <View style={styles.panel}>
               <Text style={styles.panelEyebrow} accessibilityRole="header">{isPiece(result.hymnMatch) ? "Is this the piece?" : "Is this a hymn?"}</Text>
-              <Text style={styles.panelHint}>
-                This sounds like{" "}
-                <Text
-                  style={result.hymnMatch.url ? styles.hymnName : undefined}
-                  onPress={result.hymnMatch.url ? () => Linking.openURL(result.hymnMatch!.url).catch(() => undefined) : undefined}
-                >
-                  {hymnAsk === "version" ? hymnLabel(result.hymnMatch) : result.hymnMatch.title}
+              {hymnAsk === "version" && chosenSetting(result.hymnMatch) ? (
+                // The page's printed words named the hymn: offered as itself, sung to the matched tune.
+                <Text style={styles.panelHint}>
+                  This page is{" "}
+                  <Text style={styles.hymnName} onPress={() => Linking.openURL(chosenSetting(result.hymnMatch)!.url).catch(() => undefined)}>
+                    {chosenSetting(result.hymnMatch)!.title}
+                  </Text>
+                  , sung to {result.hymnMatch.title}. Use the hymnbook version, with its words? Its notes and bar lines come from the published score.
                 </Text>
-                {hymnAsk === "version"
-                  ? `. Use the ${isPiece(result.hymnMatch) ? "published" : "hymnbook"} version? Its notes, rhythm and bar lines come from the published score, in the key you sang.`
-                  : "."}
-              </Text>
+              ) : (
+                <Text style={styles.panelHint}>
+                  This sounds like{" "}
+                  <Text
+                    style={result.hymnMatch.url ? styles.hymnName : undefined}
+                    onPress={result.hymnMatch.url ? () => Linking.openURL(result.hymnMatch!.url).catch(() => undefined) : undefined}
+                  >
+                    {hymnAsk === "version" ? hymnLabel(result.hymnMatch) : result.hymnMatch.title}
+                  </Text>
+                  {hymnAsk === "version"
+                    ? `. Use the ${isPiece(result.hymnMatch) ? "published" : "hymnbook"} version? Its notes, rhythm and bar lines come from the published score, in the key you sang.`
+                    : "."}
+                </Text>
+              )}
               {/* Both openings, bar lines and meter as each writes them, so the swap is seen before it is made. */}
               {hymnPreview ? (
                 <View style={styles.compare}>
@@ -2362,12 +2376,22 @@ export function ResultScreen({ route, navigation }: Props) {
                 </View>
               ) : null}
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipScroll}>
+                {hymnAsk === "version" && result.hymnMatch.settings?.length ? (
+                  <Touchable
+                    style={styles.chip}
+                    radius={radii.pill}
+                    onPress={() => setPickingHymn(true)}
+                    accessibilityLabel={`Which hymn is it? ${result.hymnMatch.settingsTotal ?? result.hymnMatch.settings.length} are sung to this tune`}
+                  >
+                    <Text style={styles.chipText}>{chosenSetting(result.hymnMatch) ? "Not this hymn?" : "Which hymn is it?"}</Text>
+                  </Touchable>
+                ) : null}
                 {hymnAsk === "version" ? (
                   <Touchable
                     style={[styles.chip, styles.chipOn]}
                     radius={radii.pill}
-                    onPress={() => chooseHymnbook(true)}
-                    accessibilityLabel={`Use the ${isPiece(result.hymnMatch) ? "published" : "hymnbook"} version of ${result.hymnMatch.title}`}
+                    onPress={() => chooseHymnbook(true, chosenSetting(result.hymnMatch) ?? undefined)}
+                    accessibilityLabel={`Use the ${isPiece(result.hymnMatch) ? "published" : "hymnbook"} version of ${chosenSetting(result.hymnMatch)?.title ?? result.hymnMatch.title}`}
                   >
                     <Text style={[styles.chipText, styles.chipTextOn]}>{isPiece(result.hymnMatch) ? "Use the published" : "Use the hymnbook"}</Text>
                   </Touchable>
@@ -2381,6 +2405,17 @@ export function ResultScreen({ route, navigation }: Props) {
                   <Text style={styles.chipText}>{hymnAsk === "version" ? "Keep mine" : "Dismiss"}</Text>
                 </Touchable>
               </ScrollView>
+              {result.hymnMatch.settings?.length ? (
+                <HymnSettingSheet
+                  match={result.hymnMatch}
+                  visible={pickingHymn}
+                  onClose={() => setPickingHymn(false)}
+                  onPick={(setting) => {
+                    setPickingHymn(false);
+                    chooseHymnbook(true, setting);
+                  }}
+                />
+              ) : null}
             </View>
           ) : null}
 

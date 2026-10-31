@@ -158,6 +158,23 @@ export interface HymnMatch {
   lyrics?: string | null;
   /** "piece": a famous piece that is not a hymn, offered as its published version; absent for a hymn. */
   category?: "piece" | string | null;
+  /**
+   * The hymns in the library sung to the matched tune (at most 60, those with a melody of their own first), for
+   * "Which hymn is it?" on a page whose words were not read; `settingsTotal` in all. Absent when there are none.
+   */
+  settings?: HymnSetting[] | null;
+  settingsTotal?: number | null;
+  /** The slug of the one of `settings` a photographed page's printed words named (OCR): offered without asking. */
+  chosen?: string | null;
+}
+
+/** A published hymn sung to a matched tune: its page, credit line and first verse one syllable a note (C# `HymnSettingDto`). */
+export interface HymnSetting {
+  slug: string;
+  title: string;
+  url: string;
+  credit: string;
+  lyrics: string;
 }
 
 /** The hymn a saved sheet is the hymnbook version of, with its credit. Mirrors the C# HymnCreditDto. */

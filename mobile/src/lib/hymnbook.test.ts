@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import type { HymnMatch, NoteEvent } from "../api/types";
-import { hymnbookSheet, hymnCreditLine, hymnLabel, hymnOffer, isPiece } from "./hymnbook.ts";
+import { chosenSetting, findSettings, hymnbookSheet, hymnCreditLine, hymnLabel, hymnOffer, isPiece } from "./hymnbook.ts";
 import { deriveSolfa } from "./solfa.ts";
 
 const note = (pitchMidi: number, startBeat: number, durBeats: number): NoteEvent =>
@@ -61,4 +61,24 @@ test("a famous piece that is not a hymn is offered as its published version", ()
   assert.match(hymnCreditLine({ slug: "piece-fur-elise", title: "Für Elise", url: "", credit: "Für Elise by Ludwig van Beethoven (1770–1827)." }),
     /^Published version of “Für Elise”\. Für Elise by Ludwig van Beethoven/);
   assert.equal(hymnLabel(match), "Amazing Grace (hymnbook, 3/4)");
+});
+
+test("a hymn picked from those sung to the tune brings its words and its credit on the tune's notes", () => {
+  const alas = { slug: "alas-and-did-my-saviour-bleed", title: "Alas! and Did My Saviour Bleed", url: "https://notefusion.studio/hymns/alas-and-did-my-saviour-bleed", credit: "Words by Isaac Watts.", lyrics: "A-las! and did" };
+  const tune: HymnMatch = { ...match, slug: "tune-new-britain", title: "New Britain", lyrics: "", settings: [alas, { ...alas, slug: "x", title: "Another Hymn" }], settingsTotal: 2 };
+  assert.deepEqual(findSettings(tune, "").length, 2);
+  assert.deepEqual(findSettings(tune, "saviour ALAS").map((s) => s.slug), [alas.slug]);
+  assert.deepEqual(findSettings(match, "anything"), []);
+  const sheet = hymnbookSheet(tune, 96, alas)!;
+  assert.equal(sheet.lyrics, "A-las! and did");
+  assert.deepEqual(sheet.hymn, { slug: alas.slug, title: alas.title, url: alas.url, credit: alas.credit });
+  assert.deepEqual(sheet.notes.map((n) => n.pitchMidi), match.notes!.map((n) => n.pitchMidi));
+});
+
+test("the hymn a photographed page's words named is offered without asking", () => {
+  const alas = { slug: "alas-and-did-my-saviour-bleed", title: "Alas! and Did My Saviour Bleed", url: "u", credit: "c", lyrics: "A-las!" };
+  const tune: HymnMatch = { ...match, slug: "tune-new-britain", title: "New Britain", settings: [alas], settingsTotal: 1 };
+  assert.equal(chosenSetting(tune), null);
+  assert.equal(chosenSetting({ ...tune, chosen: alas.slug })?.slug, alas.slug);
+  assert.equal(chosenSetting({ ...tune, chosen: "not-offered" }), null);
 });

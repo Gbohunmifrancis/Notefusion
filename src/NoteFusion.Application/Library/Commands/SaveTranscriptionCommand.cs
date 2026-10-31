@@ -17,9 +17,10 @@ namespace NoteFusion.Application.Library.Commands;
 /// result it received from the job-polling endpoint, along with a chosen title.
 /// </summary>
 /// <param name="HymnSlug">
-/// Set when the user took the hymnbook version the job offered (<see cref="HymnMatchDto"/>): the sheet then
-/// keeps that hymn's credit. The credit is read from the job's own result, never from the request, so it
-/// is the line the hymn's page shows; a slug the job did not offer is ignored.
+/// Set when the user took the hymnbook version the job offered (<see cref="HymnMatchDto"/>), or picked one of the
+/// hymns sung to its tune (<see cref="HymnMatchDto.Settings"/>): the sheet then keeps that hymn's credit. The credit
+/// is read from the job's own result, never from the request, so it is the line the hymn's page shows; a slug the
+/// job did not offer is ignored.
 /// </param>
 public sealed record SaveTranscriptionCommand(
     string Title,
@@ -150,8 +151,11 @@ public sealed class SaveTranscriptionCommandHandler : IRequestHandler<SaveTransc
             sheet.MarkFromLink();
     }
 
-    /// <summary>The hymn the request names, when the job it came from offered that hymn's score.</summary>
-    private async Task<HymnMatchDto?> OfferedHymnAsync(Guid userId, SaveTranscriptionCommand request, CancellationToken ct)
+    /// <summary>
+    /// The hymn the request names, when the job it came from offered that hymn's score, or offered it as one of the
+    /// hymns sung to the matched tune.
+    /// </summary>
+    private async Task<HymnSettingDto?> OfferedHymnAsync(Guid userId, SaveTranscriptionCommand request, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(request.HymnSlug) || string.IsNullOrWhiteSpace(request.SourceJobId))
             return null;
@@ -160,6 +164,11 @@ public sealed class SaveTranscriptionCommandHandler : IRequestHandler<SaveTransc
             .Select(j => j.ResultJson)
             .FirstOrDefaultAsync(ct);
         var hymn = json is null ? null : TranscriptionResultCache.Deserialize(json)?.HymnMatch;
-        return hymn is { Kind: "score" } && hymn.Slug == request.HymnSlug.Trim() ? hymn : null;
+        if (hymn is not { Kind: "score" })
+            return null;
+        var slug = request.HymnSlug.Trim();
+        if (hymn.Slug == slug)
+            return new HymnSettingDto(hymn.Slug, hymn.Title, hymn.Url, hymn.Credit, hymn.Lyrics ?? "");
+        return hymn.Settings?.FirstOrDefault(s => s.Slug == slug);
     }
 }

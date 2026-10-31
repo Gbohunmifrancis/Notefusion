@@ -426,3 +426,29 @@ def test_matching_is_fast():
     hm.match(take)
     assert time.perf_counter() - t0 < 2.0
     assert np.isfinite(hm.match(take).confidence)
+
+
+def test_a_page_matched_to_a_tune_is_offered_every_hymn_sung_to_it():
+    from types import SimpleNamespace
+
+    # A hymn page set to CAITHNESS, its words not read: the tune is matched, and the hymns we hold sung to it come with it.
+    tune = BY_SLUG["tune-caithness"]
+    notes = [SimpleNamespace(pitch_midi=p + 2, start_beat=s, dur_beats=d) for p, s, d in tune.notes]
+    found = hm.offer(SimpleNamespace(notes=notes, tempo=90, key=None))
+    assert found is not None and _same_tune(found["slug"], "tune-caithness")
+    rows = found["settings"]
+    assert found["settings_total"] >= len(rows) > 20 and len(rows) <= hm.SETTINGS_OFFERED
+    assert "o-for-a-closer-walk-with-god" in {r["slug"] for r in rows}
+    pick = next(r for r in rows if r["slug"] == "o-for-a-closer-walk-with-god")
+    assert pick["lyrics"].startswith("O for a clos-er walk") and pick["url"].endswith("/hymns/o-for-a-closer-walk-with-god")
+    assert "CAITHNESS" in pick["credit"]
+
+
+def test_a_famous_piece_is_offered_no_hymns():
+    from types import SimpleNamespace
+
+    piece = BY_SLUG["piece-fur-elise"]
+    assert hm.settings_for(piece, INDEX) == ([], 0)
+    notes = [SimpleNamespace(pitch_midi=p, start_beat=s, dur_beats=d) for p, s, d in piece.notes]
+    found = hm.offer(SimpleNamespace(notes=notes, tempo=70, key=None))
+    assert found is None or "settings" not in found

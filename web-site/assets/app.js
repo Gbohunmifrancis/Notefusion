@@ -3476,10 +3476,21 @@
     // A piece we hold may have no page to link (only hymns have ours; a piece links its Wikipedia article when it has one).
     var name = document.createElement(m.url ? "a" : "span");
     if (m.url) { name.href = m.url; name.target = "_blank"; name.rel = "noopener"; }
-    name.textContent = what === "version" ? H.label(m) : m.title;
+    // The page's printed words named the hymn: it is offered as itself, sung to the matched tune.
+    var named = what === "version" ? H.chosen(m) : null;
+    if (named) {
+      text.textContent = "";
+      text.appendChild(document.createTextNode("This page is "));
+      name = document.createElement(named.url ? "a" : "span");
+      if (named.url) { name.href = named.url; name.target = "_blank"; name.rel = "noopener"; }
+      name.textContent = named.title;
+    } else {
+      name.textContent = what === "version" ? H.label(m) : m.title;
+    }
     var em = document.createElement("em"); em.appendChild(name);
     text.appendChild(em);
-    text.appendChild(document.createTextNode(what === "version" ? ". Use the " + H.noun(m) + "?" : "."));
+    text.appendChild(document.createTextNode(named ? ", sung to " + m.title + ". Use the hymnbook version, with its words?"
+      : what === "version" ? ". Use the " + H.noun(m) + "?" : "."));
     var row = document.createElement("span");
     row.className = "doh-choices";
     function choice(label, primary, onPick) {
@@ -3490,9 +3501,11 @@
       b.addEventListener("click", onPick);
       row.appendChild(b);
     }
+    var sung = what === "version" ? H.settings(m) : [];
+    if (sung.length) box.appendChild(hymnPicker(m, sung));
     if (what === "version") {
       // Each answer says what it does, so neither needs the question read again to be sure.
-      choice("Use the " + H.noun(m), true, function () { pickHymn(m); });
+      choice("Use the " + H.noun(m), true, function () { pickHymn(m, named || undefined); });
       choice("Keep mine", false, function () { current.hymnAnswered = true; track("Kept transcription over hymnbook", m.slug); showResult(current.result); });
     } else {
       choice("Dismiss", false, function () { current.hymnAnswered = true; hide(box); });
@@ -3503,17 +3516,52 @@
     if (!current.hymnShown) { current.hymnShown = true; track("Hymn recognised", m.slug); }
   }
 
-  function pickHymn(match) {
+  /**
+   * "Which hymn is it?": the hymns we hold sung to the matched tune, typed to find (a page's words are not read, and a
+   * tune like OLD HUNDREDTH carries a hundred and more); the one picked brings its words and its credit.
+   */
+  function hymnPicker(match, sung) {
+    var wrap = document.createElement("span");
+    wrap.className = "hymn-pick";
+    var id = "hymn-pick-list";
+    var label = document.createElement("label");
+    label.setAttribute("for", "hymn-pick");
+    var total = match.settingsTotal || sung.length;
+    var named = H.chosen(match);
+    label.textContent = named ? "Not this hymn? " + total + " we hold are sung to this tune."
+      : total > 1 ? "Which hymn is it? " + total + " we hold are sung to this tune." : "Which hymn is it?";
+    var input = document.createElement("input");
+    input.type = "search"; input.id = "hymn-pick"; input.setAttribute("list", id); input.autocomplete = "off";
+    input.placeholder = "Type the hymn's title";
+    var list = document.createElement("datalist");
+    list.id = id;
+    sung.forEach(function (s) { var o = document.createElement("option"); o.value = s.title; list.appendChild(o); });
+    var go = document.createElement("button");
+    go.type = "button"; go.className = "btn btn-sm btn-primary"; go.textContent = "Use its words"; go.disabled = true;
+    input.addEventListener("input", function () { go.disabled = !H.findSetting(match, input.value); });
+    go.addEventListener("click", function () { var s = H.findSetting(match, input.value); if (s) pickHymn(match, s); });
+    wrap.appendChild(label); wrap.appendChild(input); wrap.appendChild(list); wrap.appendChild(go);
+    if (total > sung.length && /\/hymns\/tunes\//.test(match.url || "")) {
+      var more = document.createElement("a");
+      more.href = match.url; more.target = "_blank"; more.rel = "noopener";
+      more.textContent = "Not listed? See all " + total + " on the tune's page";
+      wrap.appendChild(more);
+    }
+    return wrap;
+  }
+
+  function pickHymn(match, setting) {
     var before = { result: current.result, lyrics: current.lyrics, dohAnswered: current.dohAnswered };
     current.hymnAnswered = true;
     current.dohAnswered = true;
-    // The first verse goes under the notes, unless words were typed already.
-    if (!(current.lyrics || "").trim() && match.lyrics) current.lyrics = match.lyrics;
-    track("Took hymnbook version", match.slug);
-    var next = H.swap(current.result, match), given = current.lyrics;
+    // The first verse goes under the notes, unless words were typed already; a hymn picked by name brings its own.
+    var words = setting ? setting.lyrics : match.lyrics;
+    if (!(current.lyrics || "").trim() && words) current.lyrics = words;
+    track("Took hymnbook version", setting ? setting.slug : match.slug);
+    var next = H.swap(current.result, match, setting), given = current.lyrics;
     current.result = next;
     showResult(next);
-    offerUndo($("r-hymnbook"), H.isPiece(match) ? "This is the published version now, with its notes." : "This is the hymnbook's version now, with its notes and words.", function () {
+    offerUndo($("r-hymnbook"), H.isPiece(match) ? "This is the published version now, with its notes." : setting ? "This is “" + setting.title + "” now, with the hymnbook's notes and its words." : "This is the hymnbook's version now, with its notes and words.", function () {
       current.hymnAnswered = false; current.dohAnswered = before.dohAnswered;
       if (current.lyrics === given) current.lyrics = before.lyrics; // words typed since are kept
       current.result = before.result; showResult(before.result);

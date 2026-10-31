@@ -25,13 +25,14 @@ test("every published hymn is a score entry, and no draft is", () => {
   const scored = hymns.filter((h) => !h.setByMetre);
   for (const h of scored) assert.ok(slugs.has(h.slug), h.slug);
   for (const h of allHymns.filter((x) => x.draft || x.setByMetre)) assert.ok(!slugs.has(h.slug), `${h.slug} is in the index`);
-  assert.equal(index.entries.filter((e) => e.kind === "score" && !e.slug.startsWith("tune-")).length, scored.length);
+  assert.equal(index.entries.filter((e) => e.kind === "score" && !e.slug.startsWith("tune-") && e.category !== "piece").length, scored.length);
 });
 
 test("every entry says where it came from, under what licence, with the credit line its page shows", () => {
   for (const e of index.entries) {
     for (const k of ["slug", "title", "url", "source", "licence", "credit"]) assert.ok(typeof e[k] === "string" && e[k].trim(), `${e.slug}: ${k}`);
-    assert.match(e.url, /^https:\/\/notefusion\.studio\/hymns\//);
+    // A famous piece that is not a hymn (content/pieces) links its Wikipedia article or its source instead.
+    assert.match(e.url, e.category === "piece" ? /^https:\/\/\S+$/ : /^https:\/\/notefusion\.studio\/hymns\//);
   }
   const ag = index.entries.find((e) => e.slug === "amazing-grace");
   assert.equal(ag.credit, hymns.find((h) => h.slug === "amazing-grace").view.credit.text);
@@ -45,7 +46,7 @@ test("a score entry carries the tune exactly: notes, key, time, pickup and the f
   // D4 on beat 2 (the pickup at the end of the first bar), then G4 held two beats on the bar line.
   assert.deepEqual(ag.notes.slice(0, 3), [[62, 2, 1], [67, 3, 2], [71, 5, 0.5]]);
   assert.match(ag.lyrics, /^A-maz-ing/);
-  for (const e of index.entries.filter((x) => x.kind === "score" && !x.slug.startsWith("tune-"))) {
+  for (const e of index.entries.filter((x) => x.kind === "score" && !x.slug.startsWith("tune-") && x.category !== "piece")) {
     const h = hymns.find((x) => x.slug === e.slug);
     assert.equal(e.notes.length, h.tuneData.parsed.notes.length, e.slug);
   }
@@ -83,4 +84,23 @@ test("recognition-only incipits load from their own folder and need a source, a 
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
+});
+
+test("famous pieces are score entries of their own, slugs apart from the hymns', public domain and credited", () => {
+  const pieces = index.entries.filter((e) => e.category === "piece");
+  assert.ok(pieces.length > 100);
+  for (const e of pieces) {
+    assert.equal(e.kind, "score");
+    assert.match(e.slug, /^piece-/);
+    assert.match(e.licence, /^Public domain/);
+    assert.ok(e.notes.length >= 12, e.slug);
+  }
+});
+
+test("settings list every published hymn under the tune it is sung to, words pages too, for \"which hymn is it?\"", () => {
+  const listed = new Set(Object.values(index.settings).flat().map((row) => row[0]));
+  for (const h of hymns) assert.ok(listed.has(h.slug), h.slug);
+  for (const h of allHymns.filter((x) => x.draft)) assert.ok(!listed.has(h.slug), `${h.slug} is listed`);
+  const closer = index.settings.caithness.find((row) => row[0] === "o-for-a-closer-walk-with-god");
+  assert.ok(closer && /^O for a clos-er walk/.test(closer[4]));
 });

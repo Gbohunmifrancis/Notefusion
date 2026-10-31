@@ -153,13 +153,34 @@ def _grams(intervals: np.ndarray) -> set[tuple[int, ...]]:
     return {tuple(int(x) for x in intervals[k:k + GRAM]) for k in range(len(intervals) - GRAM + 1)}
 
 
-class HymnIndex:
-    """The entries, their contours and the trigram prefilter."""
+#: The hymns sung to a matched tune that an offer carries at most (the rest are on the tune's page).
+SETTINGS_OFFERED = 60
 
-    def __init__(self, entries: list[Entry]):
+
+@dataclass(frozen=True)
+class Setting:
+    """A published hymn sung to a tune: what a "which hymn is it?" choice takes (its words, its credit)."""
+
+    slug: str
+    title: str
+    url: str
+    credit: str
+    lyrics: str
+
+
+def tune_key(name: str) -> str:
+    """A tune's name as the index's settings are keyed ("OLD HUNDREDTH" → "old hundredth")."""
+    return re.sub(r"[^a-z0-9]+", " ", (name or "").lower()).strip()
+
+
+class HymnIndex:
+    """The entries, their contours and the trigram prefilter, and the hymns sung to each tune."""
+
+    def __init__(self, entries: list[Entry], settings: dict[str, list[Setting]] | None = None):
         from scipy import sparse
 
         self.entries = entries
+        self.settings = settings or {}
         self.contours = [contour(e.notes) for e in entries]
         vocab: dict[tuple[int, ...], int] = {}
         rows, cols = [], []
@@ -229,7 +250,8 @@ def _entry(d: dict) -> Entry:
 def load_index(path: Path = INDEX_PATH) -> HymnIndex:
     data = json.loads(path.read_text(encoding="utf-8"))
     entries = [_entry(d) for d in data["entries"] if d.get("kind") in ("score", "incipit")]
-    return HymnIndex(entries)
+    settings = {key: [Setting(*row) for row in rows] for key, rows in data.get("settings", {}).items()}
+    return HymnIndex(entries, settings)
 
 
 @lru_cache(maxsize=1)
@@ -646,18 +668,33 @@ def _label(notes: list[tuple[int, float, float]], key_name: str, time_signature:
     return labelled, lines
 
 
-def offer(result, index: HymnIndex | None = None) -> dict | None:
+def settings_for(entry: Entry, index: HymnIndex) -> tuple[list[Setting], int]:
+    """The published hymns sung to ``entry``'s tune (at most ``SETTINGS_OFFERED``, those with a melody of their own
+    first), and how many there are in all; none for a piece or an entry whose tune is sung to nothing else."""
+    if entry.category == "piece" or not entry.tune:
+        return [], 0
+    rows = index.settings.get(tune_key(entry.tune), [])
+    if not rows or (len(rows) == 1 and rows[0].slug == entry.slug):
+        return [], 0
+    return rows[:SETTINGS_OFFERED], len(rows)
+
+
+def offer(result, index: HymnIndex | None = None, page_words: str = "") -> dict | None:
     """``hymn_match`` for a finished transcription, or None when no hymn matches clearly.
 
     For a score entry it carries the hymnbook version in the key the take was sung in, at the
     book's own octave (within a tritone of the published pitch, whatever octave was sung): ``key``,
     ``time_signature``, ``tempo`` (the take's pace), ``pickup``, ``notes`` (labelled like a
     transcription's), ``solfa_lines``, ``musicxml`` and ``lyrics`` (the first verse, one syllable a
-    note). An incipit entry names the tune and links to it, and carries none of those. A famous piece that
+    note). With them, when the tune is sung to other hymns we hold, ``settings`` (each one's slug, title, url, credit
+    and first verse one syllable a note; at most ``SETTINGS_OFFERED``) and ``settings_total``, so a page whose words
+    were not read can be asked which hymn it is; with ``page_words`` (a photographed page's words) the one they name
+    is ``chosen`` and listed first. An incipit entry names the tune and links to it, and carries none of those. A famous piece that
     is not a hymn (``category`` "piece") is offered the same way; the clients call it the published version.
     """
     notes = [(n.pitch_midi, n.start_beat, n.dur_beats) for n in result.notes]
     tempo = float(result.tempo or 0)
+    index = index or default_index()
     m = match(notes, seconds_per_unit=60.0 / tempo if tempo > 0 else 1.0, index=index)
     if m is None:
         return None
@@ -687,4 +724,19 @@ def offer(result, index: HymnIndex | None = None) -> dict | None:
         "musicxml": _engrave(moved, key_name, e.time, e.pickup, bpm),
         "lyrics": e.lyrics,
     })
+    settings, total = settings_for(e, index)
+    if settings:
+        # "Which hymn is it?": every hymn we hold sung to this tune, for a page whose words were not read.
+        if page_words:
+            from app.pipeline.page_words import pick_hymn
+
+            # The words printed on the page name the hymn among all those sung to the tune (not only the first 60).
+            every = index.settings.get(tune_key(e.tune), [])
+            pick = pick_hymn(page_words, every)
+            if pick is not None:
+                chosen = next(s for s in every if s.slug == pick.slug)
+                settings = [chosen] + [s for s in settings if s.slug != chosen.slug][:SETTINGS_OFFERED - 1]
+                out["chosen"] = chosen.slug
+        out["settings"] = [asdict(s) for s in settings]
+        out["settings_total"] = total
     return out
