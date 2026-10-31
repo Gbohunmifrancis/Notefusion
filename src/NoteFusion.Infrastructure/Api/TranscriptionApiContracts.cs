@@ -174,7 +174,12 @@ internal sealed record WireHymnMatch(
     IReadOnlyList<string>? SolfaLines = null,
     [property: JsonPropertyName("musicxml")] string? MusicXml = null,
     string? Lyrics = null,
-    string? Category = null);
+    string? Category = null,
+    IReadOnlyList<WireHymnSetting>? Settings = null,
+    int? SettingsTotal = null);
+
+/// <summary>A published hymn sung to the matched tune (<c>app.pipeline.hymn_match.Setting</c>).</summary>
+internal sealed record WireHymnSetting(string Slug, string Title, string Url, string Credit, string Lyrics);
 
 /// <summary>Another doh the voice fits nearly as well (<c>app.pipeline.transcriber.KeyAlternative</c>).</summary>
 internal sealed record WireKeyAlternative(

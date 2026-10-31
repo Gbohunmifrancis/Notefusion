@@ -90,6 +90,15 @@ class KeyAlternativeDto(ApiModel):
     musicxml: str = ""
 
 
+class HymnSettingDto(ApiModel):
+    """A published hymn sung to the matched tune: its words (the first verse, one syllable a note) and credit."""
+    slug: str
+    title: str
+    url: str
+    credit: str
+    lyrics: str
+
+
 class HymnMatchDto(ApiModel):
     """A hymn in our library the tune clearly matches (``app.pipeline.hymn_match``).
 
@@ -118,6 +127,10 @@ class HymnMatchDto(ApiModel):
     solfa_lines: list[str] | None = None
     musicxml: str | None = None
     lyrics: str | None = None
+    # "Which hymn is it?": the hymns we hold sung to this tune (at most 60, those with a melody of their own first),
+    # and how many there are in all; absent when the tune is sung to no other.
+    settings: list[HymnSettingDto] | None = None
+    settings_total: int | None = None
 
 
 class ResultDto(ApiModel):

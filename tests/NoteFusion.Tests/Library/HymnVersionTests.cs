@@ -42,6 +42,28 @@ public class HymnVersionTests
     }
 
     [Fact]
+    public async Task A_hymn_picked_from_those_sung_to_the_matched_tune_keeps_its_own_credit()
+    {
+        using var h = new TestHarness();
+        var userId = await SeedUser(h);
+        const string pickedCredit = "Tune NEW BRITAIN; words by Isaac Watts (1674–1748).";
+        var tune = Offer("tune-new-britain", "score") with
+        {
+            Settings = [new HymnSettingDto("alas-and-did-my-saviour-bleed", "Alas! and Did My Saviour Bleed",
+                "https://notefusion.studio/hymns/alas-and-did-my-saviour-bleed", pickedCredit, "A-las! and did")],
+            SettingsTotal = 1,
+        };
+        await SeedJob(h, userId, "job-1", tune);
+
+        var saved = await Save(h, userId, "job-1", "alas-and-did-my-saviour-bleed");
+
+        Assert.Equal(new HymnCreditDto("alas-and-did-my-saviour-bleed", "Alas! and Did My Saviour Bleed",
+            "https://notefusion.studio/hymns/alas-and-did-my-saviour-bleed", pickedCredit), saved.Value.Hymn);
+        // Still only what the job offered: a hymn sung to some other tune is not credited.
+        Assert.Null((await Save(h, userId, "job-1", "abide-with-me")).Value.Hymn);
+    }
+
+    [Fact]
     public async Task A_hymn_the_job_did_not_offer_is_not_credited()
     {
         using var h = new TestHarness();

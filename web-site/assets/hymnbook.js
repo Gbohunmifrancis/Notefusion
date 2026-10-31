@@ -7,7 +7,9 @@
  * prompt (as it draws "Which doh is it?") and saves the swapped sheet with the hymn's slug, so the saved
  * sheet keeps the hymn's credit. A "recognition only" match (kind "incipit") names the hymn and links to
  * it; it never offers a version. A famous piece that is not a hymn (`category` "piece": a classical theme, a
- * folk or children's song, a carol, an anthem) is offered the same way, as its published version.
+ * folk or children's song, a carol, an anthem) is offered the same way, as its published version. A tune many
+ * hymns are sung to carries them (`settings`: slug, title, url, credit, first verse): "Which hymn is it?" takes the
+ * words and the credit of the one picked, for a page whose words were not read.
  */
 (function () {
   "use strict";
@@ -42,7 +44,18 @@
    * key that was sung, at the pace it was sung. What was read against the transcription's own beats goes
    * (the chords, the backing track's alignment, the other dohs on offer); the hymn's credit comes with it.
    */
-  function swap(result, match) {
+  /** The hymns sung to the matched tune that can be picked ([] when there are none). */
+  function settings(match) { return (match && match.settings) || []; }
+
+  /** The hymn of that list whose title is `text` (any case, spaces trimmed), or null. */
+  function findSetting(match, text) {
+    var t = String(text || "").trim().toLowerCase();
+    if (!t) return null;
+    return settings(match).filter(function (s) { return s.title.toLowerCase() === t; })[0] || null;
+  }
+
+  /** The version swapped in: the match's own notes, with `setting`'s words and credit when one was picked. */
+  function swap(result, match, setting) {
     return Object.assign({}, result, {
       key: match.key,
       tempo: match.tempo || result.tempo,
@@ -59,7 +72,9 @@
       hasBacking: false,
       beatOriginSec: 0,
       beatTimesSec: null,
-      hymn: Object.assign({ slug: match.slug, title: match.title, url: match.url, credit: match.credit }, match.category ? { category: match.category } : {})
+      hymn: setting
+        ? { slug: setting.slug, title: setting.title, url: setting.url, credit: setting.credit }
+        : Object.assign({ slug: match.slug, title: match.title, url: match.url, credit: match.credit }, match.category ? { category: match.category } : {})
     });
   }
 
@@ -68,5 +83,5 @@
     return (isPiece(hymn) ? "Published version of “" : "Hymnbook version of “") + hymn.title + "”. " + (hymn.credit || "");
   }
 
-  window.NfHymnbook = { ask: ask, label: label, swap: swap, credit: credit, isPiece: isPiece, noun: noun };
+  window.NfHymnbook = { ask: ask, label: label, swap: swap, credit: credit, isPiece: isPiece, noun: noun, settings: settings, findSetting: findSetting };
 })();

@@ -282,7 +282,9 @@ public sealed record TranscriptionResultDto(
 /// <c>Kind</c> "incipit": recognition only; the tune is named and linked (<c>Url</c>) and no score is offered.
 /// <c>Credit</c> is the line the hymn's page shows; <c>Source</c> and <c>Licence</c> where it came from.
 /// <c>Category</c> "piece": a famous piece that is not a hymn (classical, folk, children's, carol, anthem), offered
-/// as its published version the same way; null for a hymn.
+/// as its published version the same way; null for a hymn. <c>Settings</c>: the hymns in the library sung to the
+/// matched tune (at most 60, those with a melody of their own first; <c>SettingsTotal</c> in all), for "which hymn is
+/// it?" on a page whose words were not read: one picked gives its words and its credit (a save names its slug).
 /// </summary>
 public sealed record HymnMatchDto(
     string Slug,
@@ -302,7 +304,12 @@ public sealed record HymnMatchDto(
     IReadOnlyList<string>? SolfaLines = null,
     string? MusicXml = null,
     string? Lyrics = null,
-    string? Category = null);
+    string? Category = null,
+    IReadOnlyList<HymnSettingDto>? Settings = null,
+    int? SettingsTotal = null);
+
+/// <summary>A published hymn sung to a matched tune: its page, credit line and first verse, one syllable a note.</summary>
+public sealed record HymnSettingDto(string Slug, string Title, string Url, string Credit, string Lyrics);
 
 /// <summary>
 /// Another key the sung notes fit nearly as well. <c>Pitches</c> are the result's notes written in its
