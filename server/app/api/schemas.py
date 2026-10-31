@@ -131,6 +131,8 @@ class HymnMatchDto(ApiModel):
     # and how many there are in all; absent when the tune is sung to no other.
     settings: list[HymnSettingDto] | None = None
     settings_total: int | None = None
+    # The slug of the one of those the page's printed words name (a photo or PDF), offered without asking.
+    chosen: str | None = None
 
 
 class ResultDto(ApiModel):

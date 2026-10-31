@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import type { HymnMatch, NoteEvent } from "../api/types";
-import { findSettings, hymnbookSheet, hymnCreditLine, hymnLabel, hymnOffer, isPiece } from "./hymnbook.ts";
+import { chosenSetting, findSettings, hymnbookSheet, hymnCreditLine, hymnLabel, hymnOffer, isPiece } from "./hymnbook.ts";
 import { deriveSolfa } from "./solfa.ts";
 
 const note = (pitchMidi: number, startBeat: number, durBeats: number): NoteEvent =>
@@ -73,4 +73,12 @@ test("a hymn picked from those sung to the tune brings its words and its credit 
   assert.equal(sheet.lyrics, "A-las! and did");
   assert.deepEqual(sheet.hymn, { slug: alas.slug, title: alas.title, url: alas.url, credit: alas.credit });
   assert.deepEqual(sheet.notes.map((n) => n.pitchMidi), match.notes!.map((n) => n.pitchMidi));
+});
+
+test("the hymn a photographed page's words named is offered without asking", () => {
+  const alas = { slug: "alas-and-did-my-saviour-bleed", title: "Alas! and Did My Saviour Bleed", url: "u", credit: "c", lyrics: "A-las!" };
+  const tune: HymnMatch = { ...match, slug: "tune-new-britain", title: "New Britain", settings: [alas], settingsTotal: 1 };
+  assert.equal(chosenSetting(tune), null);
+  assert.equal(chosenSetting({ ...tune, chosen: alas.slug })?.slug, alas.slug);
+  assert.equal(chosenSetting({ ...tune, chosen: "not-offered" }), null);
 });

@@ -659,7 +659,7 @@ class JobQueue:
         try:
             try:
                 from app.pipeline.score_transcriber import transcribe_score
-                from app.pipeline.sheet_reader import READ_CONFIDENCE, SHEET_SUFFIXES, read_sheet
+                from app.pipeline.sheet_reader import PAGE_WORDS, READ_CONFIDENCE, SHEET_SUFFIXES, read_sheet
                 score = score_path
                 if score_path.suffix.lower() in SHEET_SUFFIXES:
                     # A photo or PDF of printed music: its tune is read into a score first.
@@ -672,8 +672,10 @@ class JobQueue:
                 if work is not None:
                     job.result.overall_confidence = READ_CONFIDENCE
                     # A photographed hymn page is offered its hymnbook version, as a sung one is: homr writes no
-                    # ties and misreads lengths on old scans, which the published score has right.
-                    _offer_hymn(job, "melody")
+                    # ties and misreads lengths on old scans, which the published score has right. The words
+                    # printed on it name which hymn sung to that tune it is.
+                    words = work / PAGE_WORDS
+                    _offer_hymn(job, "melody", words.read_text(encoding="utf-8") if words.exists() else "")
             finally:
                 score_path.unlink(missing_ok=True)
                 if work is not None:
@@ -845,7 +847,7 @@ _STEM_MIN_NOTES = 4
 _STEM_SECONDS_PER_NOTE = 3.0
 
 
-def _offer_hymn(job: Job, mode: str) -> None:
+def _offer_hymn(job: Job, mode: str, page_words: str = "") -> None:
     """Attach ``hymn_match`` when a melody's tune clearly matches a hymn we hold.
 
     Once, at the end of a melody (or song) transcription, or of a photo or PDF of printed music: a choir's parts, chords mode and an
@@ -858,15 +860,15 @@ def _offer_hymn(job: Job, mode: str) -> None:
     from app.pipeline import hymn_match
 
     try:
-        found = hymn_match.offer(job.result)
+        found = hymn_match.offer(job.result, page_words=page_words)
     except Exception as ex:  # noqa: BLE001 - the offer is optional; the sheet is not
         logger.warning("Job %s: hymn matching skipped: %r", job.id[:8], ex)
         return
     job.result.hymn_match = found
     if found:
         # One line per offer, for counting how often it fires; the hymn is public, the take is not named.
-        logger.info("hymn_match job=%s hymn=%s kind=%s confidence=%.3f",
-                    job.id[:8], found["slug"], found["kind"], found["confidence"])
+        logger.info("hymn_match job=%s hymn=%s kind=%s confidence=%.3f chosen=%s",
+                    job.id[:8], found["slug"], found["kind"], found["confidence"], found.get("chosen") or "-")
 
 
 #: Modes that transcribe every instrument, so a song in them is read whole, never its vocal stem.

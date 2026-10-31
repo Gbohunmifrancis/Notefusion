@@ -164,6 +164,8 @@ export interface HymnMatch {
    */
   settings?: HymnSetting[] | null;
   settingsTotal?: number | null;
+  /** The slug of the one of `settings` a photographed page's printed words named (OCR): offered without asking. */
+  chosen?: string | null;
 }
 
 /** A published hymn sung to a matched tune: its page, credit line and first verse one syllable a note (C# `HymnSettingDto`). */

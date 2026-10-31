@@ -191,8 +191,8 @@ public static class LibraryFiling
     public static string TitleFor(TranscriptionJob job, TranscriptionResultDto result, TimeZoneInfo zone)
     {
         var src = result.Source;
-        var title = result.HymnMatch is { } hymn && !string.IsNullOrWhiteSpace(hymn.Title)
-            ? hymn.Title.Trim()
+        var title = result.HymnMatch is { } hymn && !string.IsNullOrWhiteSpace(hymn.ShownTitle())
+            ? hymn.ShownTitle().Trim()
             : src is not null && !string.IsNullOrWhiteSpace(src.Title)
                 ? src.Title.Trim() + (string.IsNullOrWhiteSpace(src.Artist) ? "" : " — " + src.Artist.Trim())
                 : "Recording · " + TimeZoneInfo

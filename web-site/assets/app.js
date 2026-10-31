@@ -3476,10 +3476,21 @@
     // A piece we hold may have no page to link (only hymns have ours; a piece links its Wikipedia article when it has one).
     var name = document.createElement(m.url ? "a" : "span");
     if (m.url) { name.href = m.url; name.target = "_blank"; name.rel = "noopener"; }
-    name.textContent = what === "version" ? H.label(m) : m.title;
+    // The page's printed words named the hymn: it is offered as itself, sung to the matched tune.
+    var named = what === "version" ? H.chosen(m) : null;
+    if (named) {
+      text.textContent = "";
+      text.appendChild(document.createTextNode("This page is "));
+      name = document.createElement(named.url ? "a" : "span");
+      if (named.url) { name.href = named.url; name.target = "_blank"; name.rel = "noopener"; }
+      name.textContent = named.title;
+    } else {
+      name.textContent = what === "version" ? H.label(m) : m.title;
+    }
     var em = document.createElement("em"); em.appendChild(name);
     text.appendChild(em);
-    text.appendChild(document.createTextNode(what === "version" ? ". Use the " + H.noun(m) + "?" : "."));
+    text.appendChild(document.createTextNode(named ? ", sung to " + m.title + ". Use the hymnbook version, with its words?"
+      : what === "version" ? ". Use the " + H.noun(m) + "?" : "."));
     var row = document.createElement("span");
     row.className = "doh-choices";
     function choice(label, primary, onPick) {
@@ -3494,7 +3505,7 @@
     if (sung.length) box.appendChild(hymnPicker(m, sung));
     if (what === "version") {
       // Each answer says what it does, so neither needs the question read again to be sure.
-      choice("Use the " + H.noun(m), true, function () { pickHymn(m); });
+      choice("Use the " + H.noun(m), true, function () { pickHymn(m, named || undefined); });
       choice("Keep mine", false, function () { current.hymnAnswered = true; track("Kept transcription over hymnbook", m.slug); showResult(current.result); });
     } else {
       choice("Dismiss", false, function () { current.hymnAnswered = true; hide(box); });
@@ -3516,7 +3527,9 @@
     var label = document.createElement("label");
     label.setAttribute("for", "hymn-pick");
     var total = match.settingsTotal || sung.length;
-    label.textContent = total > 1 ? "Which hymn is it? " + total + " we hold are sung to this tune." : "Which hymn is it?";
+    var named = H.chosen(match);
+    label.textContent = named ? "Not this hymn? " + total + " we hold are sung to this tune."
+      : total > 1 ? "Which hymn is it? " + total + " we hold are sung to this tune." : "Which hymn is it?";
     var input = document.createElement("input");
     input.type = "search"; input.id = "hymn-pick"; input.setAttribute("list", id); input.autocomplete = "off";
     input.placeholder = "Type the hymn's title";

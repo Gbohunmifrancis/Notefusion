@@ -21,6 +21,10 @@ Two things are done to what homr writes before the tune is taken from it:
 A page that yields almost nothing (a hand's shadow, light falling off across a photo) is read once
 more with its lighting evened out (``_even_light``), and the better of the two readings is kept.
 
+The words printed on the first pages (its title, the verse under the staves) are read too
+(``page_words.read_words``) and left beside the score as ``PAGE_WORDS``: homr reads no words, and they name the
+hymn when the notes only name its tune.
+
 Measured on hymn pages engraved and photographed for the test (99% of syllables right) and on
 real scans of an 1870 hymn book (89% of syllables, 71% of note lengths), so the clients ask
 the person to check the notes.
@@ -51,6 +55,8 @@ PDF_DPI = 200
 PAGE_TIMEOUT_SECONDS = 120
 #: A page read as fewer notes than this is read again with its lighting evened out.
 FEW_NOTES = 16
+#: The file beside the score that holds the words printed on the page.
+PAGE_WORDS = "page-words.txt"
 #: A sheet read off a page is not the exact score a notation file is: the clients' "Some notes may need a check"
 #: (between their 0.5 and 0.75, web-site/assets/confidence.js and mobile lib/confidence.ts).
 READ_CONFIDENCE = 0.7
@@ -214,7 +220,8 @@ def read_sheet(path: Path, work: Path) -> Path:
     """
     line: list[tuple[int | None, float]] = []
     sharps, time_signature = 0, None
-    for number, page in enumerate(_pages(path, work)):
+    pages = _pages(path, work)
+    for number, page in enumerate(pages):
         read = _page_tune(page, number, work)
         if read is None:
             continue
@@ -226,6 +233,14 @@ def read_sheet(path: Path, work: Path) -> Path:
         line.pop(0)
     if sum(1 for midi, _ in line if midi is not None) < 4:
         raise LowConfidenceError(NO_MUSIC)
+    from app.pipeline.page_words import read_words
+
+    try:
+        words = read_words(pages)
+    except Exception as exc:  # noqa: BLE001 - the words name a hymn; the tune is the sheet, and it stands without them
+        logger.warning("the page's words could not be read: %s: %s", type(exc).__name__, exc)
+        words = ""
+    (work / PAGE_WORDS).write_text(words, encoding="utf-8")
 
     part = stream.Part()
     part.append(m21key.KeySignature(sharps))

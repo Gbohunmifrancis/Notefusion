@@ -56,7 +56,7 @@ public static class ReadyPushCopy
 
     private static ReadyPushText Seasonal(ReadyPushText ready, ReadyPushText known, string firstName, TranscriptionResultDto result)
     {
-        var hymn = result.HymnMatch is { Kind: "score" } match ? match.Title.Trim() : null;
+        var hymn = result.HymnMatch is { Kind: "score" } match ? match.ShownTitle().Trim() : null;
         if (hymn is not null)
         {
             var body = Fill(known.Body, result, hymn);

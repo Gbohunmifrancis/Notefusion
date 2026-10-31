@@ -679,7 +679,7 @@ def settings_for(entry: Entry, index: HymnIndex) -> tuple[list[Setting], int]:
     return rows[:SETTINGS_OFFERED], len(rows)
 
 
-def offer(result, index: HymnIndex | None = None) -> dict | None:
+def offer(result, index: HymnIndex | None = None, page_words: str = "") -> dict | None:
     """``hymn_match`` for a finished transcription, or None when no hymn matches clearly.
 
     For a score entry it carries the hymnbook version in the key the take was sung in, at the
@@ -688,7 +688,8 @@ def offer(result, index: HymnIndex | None = None) -> dict | None:
     transcription's), ``solfa_lines``, ``musicxml`` and ``lyrics`` (the first verse, one syllable a
     note). With them, when the tune is sung to other hymns we hold, ``settings`` (each one's slug, title, url, credit
     and first verse one syllable a note; at most ``SETTINGS_OFFERED``) and ``settings_total``, so a page whose words
-    were not read can be asked which hymn it is. An incipit entry names the tune and links to it, and carries none of those. A famous piece that
+    were not read can be asked which hymn it is; with ``page_words`` (a photographed page's words) the one they name
+    is ``chosen`` and listed first. An incipit entry names the tune and links to it, and carries none of those. A famous piece that
     is not a hymn (``category`` "piece") is offered the same way; the clients call it the published version.
     """
     notes = [(n.pitch_midi, n.start_beat, n.dur_beats) for n in result.notes]
@@ -726,6 +727,16 @@ def offer(result, index: HymnIndex | None = None) -> dict | None:
     settings, total = settings_for(e, index)
     if settings:
         # "Which hymn is it?": every hymn we hold sung to this tune, for a page whose words were not read.
+        if page_words:
+            from app.pipeline.page_words import pick_hymn
+
+            # The words printed on the page name the hymn among all those sung to the tune (not only the first 60).
+            every = index.settings.get(tune_key(e.tune), [])
+            pick = pick_hymn(page_words, every)
+            if pick is not None:
+                chosen = next(s for s in every if s.slug == pick.slug)
+                settings = [chosen] + [s for s in settings if s.slug != chosen.slug][:SETTINGS_OFFERED - 1]
+                out["chosen"] = chosen.slug
         out["settings"] = [asdict(s) for s in settings]
         out["settings_total"] = total
     return out

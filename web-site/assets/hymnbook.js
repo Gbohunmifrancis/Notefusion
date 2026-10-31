@@ -44,6 +44,11 @@
    * key that was sung, at the pace it was sung. What was read against the transcription's own beats goes
    * (the chords, the backing track's alignment, the other dohs on offer); the hymn's credit comes with it.
    */
+  /** The hymn a photographed page's printed words named (`chosen`), or null: offered without asking which. */
+  function chosen(match) {
+    return (match && match.chosen && settings(match).filter(function (s) { return s.slug === match.chosen; })[0]) || null;
+  }
+
   /** The hymns sung to the matched tune that can be picked ([] when there are none). */
   function settings(match) { return (match && match.settings) || []; }
 
@@ -83,5 +88,5 @@
     return (isPiece(hymn) ? "Published version of “" : "Hymnbook version of “") + hymn.title + "”. " + (hymn.credit || "");
   }
 
-  window.NfHymnbook = { ask: ask, label: label, swap: swap, credit: credit, isPiece: isPiece, noun: noun, settings: settings, findSetting: findSetting };
+  window.NfHymnbook = { ask: ask, label: label, swap: swap, credit: credit, isPiece: isPiece, noun: noun, settings: settings, findSetting: findSetting, chosen: chosen };
 })();

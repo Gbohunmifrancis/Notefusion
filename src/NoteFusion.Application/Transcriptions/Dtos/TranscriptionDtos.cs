@@ -285,6 +285,7 @@ public sealed record TranscriptionResultDto(
 /// as its published version the same way; null for a hymn. <c>Settings</c>: the hymns in the library sung to the
 /// matched tune (at most 60, those with a melody of their own first; <c>SettingsTotal</c> in all), for "which hymn is
 /// it?" on a page whose words were not read: one picked gives its words and its credit (a save names its slug).
+/// <c>Chosen</c>: the slug of the one a photographed page's printed words name (read by OCR), offered without asking.
 /// </summary>
 public sealed record HymnMatchDto(
     string Slug,
@@ -306,7 +307,15 @@ public sealed record HymnMatchDto(
     string? Lyrics = null,
     string? Category = null,
     IReadOnlyList<HymnSettingDto>? Settings = null,
-    int? SettingsTotal = null);
+    int? SettingsTotal = null,
+    string? Chosen = null)
+{
+    /// <summary>The hymn the page's words chose, when they chose one of <see cref="Settings"/>.</summary>
+    public HymnSettingDto? ChosenSetting() => Chosen is { } slug ? Settings?.FirstOrDefault(s => s.Slug == slug) : null;
+
+    /// <summary>What to call the match: the hymn the page's words chose, else the match itself.</summary>
+    public string ShownTitle() => ChosenSetting()?.Title ?? Title;
+}
 
 /// <summary>A published hymn sung to a matched tune: its page, credit line and first verse, one syllable a note.</summary>
 public sealed record HymnSettingDto(string Slug, string Title, string Url, string Credit, string Lyrics);

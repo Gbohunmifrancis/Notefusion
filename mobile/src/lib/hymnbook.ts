@@ -66,6 +66,11 @@ export function hymnbookSheet(match: HymnMatch, tempo: number, setting?: HymnSet
   };
 }
 
+/** The hymn a photographed page's printed words named (`chosen`), or null: offered without asking which. */
+export function chosenSetting(match: HymnMatch | null | undefined): HymnSetting | null {
+  return (match?.chosen && match.settings?.find((s) => s.slug === match.chosen)) || null;
+}
+
 /** The hymns sung to the matched tune whose title holds every word of `query` (any case); all of them for none. */
 export function findSettings(match: HymnMatch | null | undefined, query: string): HymnSetting[] {
   const all = match?.settings ?? [];

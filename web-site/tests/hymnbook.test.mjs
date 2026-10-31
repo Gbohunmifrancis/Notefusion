@@ -106,3 +106,11 @@ test("a hymn picked from those sung to the tune brings its words and its credit"
   assert.deepEqual(JSON.parse(JSON.stringify(swapped.hymn)), { slug: s.slug, title: s.title, url: s.url, credit: s.credit });
   assert.deepEqual(swapped.notes.map((n) => n.pitchMidi), hymnNotes.map((n) => n.pitchMidi)); // the tune's own notes
 });
+
+test("the hymn a photographed page's words named is offered without asking", () => {
+  const alas = { slug: "alas-and-did-my-saviour-bleed", title: "Alas! and Did My Saviour Bleed", url: "u", credit: "c", lyrics: "A-las!" };
+  const tune = { ...match, slug: "tune-new-britain", title: "New Britain", settings: [alas], settingsTotal: 1 };
+  assert.equal(H.chosen(tune), null);
+  assert.equal(H.chosen({ ...tune, chosen: "alas-and-did-my-saviour-bleed" }).slug, alas.slug);
+  assert.equal(H.chosen({ ...tune, chosen: "not-offered" }), null);
+});

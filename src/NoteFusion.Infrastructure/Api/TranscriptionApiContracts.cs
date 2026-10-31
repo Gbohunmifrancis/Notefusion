@@ -176,7 +176,8 @@ internal sealed record WireHymnMatch(
     string? Lyrics = null,
     string? Category = null,
     IReadOnlyList<WireHymnSetting>? Settings = null,
-    int? SettingsTotal = null);
+    int? SettingsTotal = null,
+    string? Chosen = null);
 
 /// <summary>A published hymn sung to the matched tune (<c>app.pipeline.hymn_match.Setting</c>).</summary>
 internal sealed record WireHymnSetting(string Slug, string Title, string Url, string Credit, string Lyrics);
