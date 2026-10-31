@@ -206,9 +206,13 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `SubmitTranscriptionCommand.IsScoreFile`, the web app's Sheet music tab, `/app?source=sheet`, phone Import): `app/pipeline/sheet_reader.py`
   runs homr (AGPL-3.0, unmodified, its own venv `/opt/homr` and process, `NF_OMR_BIN`; `server/THIRD_PARTY.md`) per page
   (a PDF's first 4 drawn by `pdftoppm`), keeps the first key signature where homr drops it on later systems, takes the top
-  staff's top note at each moment as the tune, and hands that to the score path; the sheet says `READ_CONFIDENCE` (0.7), so the
+  staff's top note at each moment as the tune (a top staff that began in the treble clef and is later read in the bass —
+  homr losing a songbook system's tune and reporting its piano bass — is left out), reads a page again with its lighting
+  evened out (`_even_light`) when it yields under `FEW_NOTES` (16) and keeps the better reading, and hands that to the score path; the sheet says `READ_CONFIDENCE` (0.7), so the
   clients ask for a check. Measured: engraved hymn pages photographed 99% of syllables; real 1870 scans 89% (71% lengths).
-  homr writes no ties, so a held note comes back as the same note again. `python -m app.pipeline.sheet_check` (run by
+  Measured on catalogue pieces (`content/pieces`) engraved and photographed: plain pages 39/40 named, 99.6% of pitches;
+  songbook pages (tune with a harmony note, piano bass, words) photographed small, blurred and half in shadow 32/40, 85%;
+  none misnamed. homr writes no ties, so a held note comes back as the same note again. `python -m app.pipeline.sheet_check` (run by
   `check-ec2.yml`) reads a known engraved page, `app/data/sheet_check/amazing-grace.png`, the way a job does and fails
   unless its key, meter and 90% of the hymn's notes (`amazing-grace.json`, repeats joined) come back.
   `app/pipeline/harmony.py` writes SATB under the tune (Viterbi chord choice, then Viterbi over each
