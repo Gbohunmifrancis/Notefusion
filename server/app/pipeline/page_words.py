@@ -22,6 +22,9 @@ logger = logging.getLogger(__name__)
 
 #: Pages whose words are read (a hymn's title and first verse are on its first page).
 WORD_PAGES = 2
+#: Tesseract's sparse-text reading: a page of music is short runs of words between staves, which the default page
+#: layout (3) takes for pictures and drops. Measured on 40 photographed words pages: 40 picked right with 11, 25 with 3.
+PAGE_SEGMENTATION = "11"
 #: The longest one page's reading may take.
 OCR_TIMEOUT_SECONDS = 60
 #: A hymn is picked when this share of its title's and first verse's words are on the page ...
@@ -46,7 +49,7 @@ def read_words(pages: list[Path]) -> str:
     out = []
     for page in pages[:WORD_PAGES]:
         try:
-            done = subprocess.run([_ocr(), str(page), "-", "--psm", "3", "-l", "eng"], capture_output=True,
+            done = subprocess.run([_ocr(), str(page), "-", "--psm", PAGE_SEGMENTATION, "-l", "eng"], capture_output=True,
                                   text=True, encoding="utf-8", errors="replace", timeout=OCR_TIMEOUT_SECONDS)
         except (OSError, subprocess.TimeoutExpired) as exc:  # no Tesseract here, or a page that never ends
             logger.info("page words not read: %s: %s", type(exc).__name__, exc)
