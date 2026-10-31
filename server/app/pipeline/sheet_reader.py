@@ -59,6 +59,9 @@ FEW_NOTES = 16
 ENLARGE_BELOW = 2400
 #: ... looking again until it reads this many notes (a small photo's first reading often keeps a few staves only).
 SMALL_PAGE_NOTES = 32
+#: Another look replaces the reading so far only with this many times its notes: a few more notes read off a copy
+#: are as often worse notes as more of the tune.
+CLEARLY_MORE = 1.25
 #: The file beside the score that holds the words printed on the page.
 PAGE_WORDS = "page-words.txt"
 #: A sheet read off a page is not the exact score a notation file is: the clients' "Some notes may need a check"
@@ -222,7 +225,7 @@ def _page_tune(page: Path, number: int, work: Path) -> tuple[list[tuple[int | No
         except Exception as exc:  # noqa: BLE001 - another look is a bonus; the reading so far stands
             logger.warning("page %d could not be evened out: %s: %s", number + 1, type(exc).__name__, exc)
             return best
-        if notes(again) > notes(best):
+        if notes(again) > notes(best) and notes(again) >= CLEARLY_MORE * notes(best):
             best = again
         if notes(best) >= enough:
             break

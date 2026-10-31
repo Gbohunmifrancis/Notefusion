@@ -130,6 +130,10 @@ def test_a_page_photographed_small_is_read_once_more_enlarged(tmp_path, monkeypa
     asked = _readings(monkeypatch, _line(8), _line(32), _line(40))
     line, _, _ = sheet_reader._page_tune(tmp_path / "page.jpg", 0, tmp_path)
     assert asked == [1] and len(line) == 32
+    # A copy read as a few more notes is not taken over the first reading: it must read clearly more.
+    asked = _readings(monkeypatch, _line(20), _line(24), _line(24))
+    line, _, _ = sheet_reader._page_tune(tmp_path / "page.jpg", 0, tmp_path)
+    assert asked == [1, 2] and len(line) == 20
     # A large photo is not enlarged.
     Image.new("L", (sheet_reader.ENLARGE_BELOW, 1200), 255).save(tmp_path / "page.jpg")
     asked = _readings(monkeypatch, _line(8), _line(12), _line(40))
