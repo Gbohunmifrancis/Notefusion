@@ -11,6 +11,10 @@ name: Mobile OTA
 #   4. With "publish" ticked and the runtimes the same, `eas update` on the production channel (Sentry source maps
 #      from the EAS production environment). Without it, a report only.
 #
+# A store build made by the "Android build" workflow is not an EAS cloud build, so EAS cannot say its runtime. Give its
+# run id as build_run_id and its runtime is worked out at that run's commit, as EAS works it out; an update for that
+# runtime then publishes too (it reaches that build's phones as soon as Play serves it).
+#
 # Needs the repository secret EXPO_TOKEN (an Expo access token for the account). Run it from the Actions tab.
 on:
   workflow_dispatch:
@@ -23,9 +27,14 @@ on:
         description: "The update's message (shown in EAS)"
         type: string
         default: "OTA from main"
+      build_run_id:
+        description: "Optional: the run id of an Android build (on its way to Play) whose runtime this update may target"
+        type: string
+        default: ""
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: mobile-ota
@@ -65,7 +74,7 @@ jobs:
       - name: What Google Play serves
         id: play
         env:
-          PLAY_KEY: ${{ secrets.GOOGLEPLAY__SERVICEACCOUNTJSON }}
+          PLAY_KEY: ${{ secrets.GOOGLEPLAY__SERVICEACCOUNTJSON || secrets.GOOGLE_PLAY_SUBMIT_KEY }}
         run: |
           python - <<'EOF'
           import json, os
@@ -75,7 +84,7 @@ jobs:
           out = open(os.environ["GITHUB_OUTPUT"], "a")
           key = os.environ.get("PLAY_KEY", "").strip()
           if not key:
-              print("::warning::No GOOGLEPLAY__SERVICEACCOUNTJSON secret: what Play serves cannot be read.")
+              print("::warning::No GOOGLEPLAY__SERVICEACCOUNTJSON or GOOGLE_PLAY_SUBMIT_KEY secret: what Play serves cannot be read.")
               out.write("codes=\n")
               raise SystemExit(0)
           creds = service_account.Credentials.from_service_account_info(
@@ -110,6 +119,9 @@ jobs:
         id: runtime
         env:
           CODES: ${{ steps.play.outputs.codes }}
+          BUILD_RUN_ID: ${{ inputs.build_run_id }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
         run: |
           current=$(eas fingerprint:generate --platform android --environment production --json --non-interactive | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s.slice(Math.max(0,s.search(/^[\[{]/m))));console.log(j.hash||j.fingerprint?.hash||"")})')
           echo "This commit's runtime: $current"
@@ -124,6 +136,20 @@ jobs:
             echo "Play's version code $code: runtime ${rt:-unknown (no EAS cloud build with that code: a local build?)}"
             served="$served $rt"
           done
+          if [ -n "$BUILD_RUN_ID" ]; then
+            case "$BUILD_RUN_ID" in *[!0-9]*) echo "::error::build_run_id is a number (actions/runs/<id>)."; exit 1;; esac
+            read -r path conclusion sha < <(gh api "repos/$REPO/actions/runs/$BUILD_RUN_ID" --jq '[.path, .conclusion, .head_sha] | @tsv')
+            if [ "$path" != ".github/workflows/android-build.yml" ] || [ "$conclusion" != "success" ]; then
+              echo "::error::Run $BUILD_RUN_ID is not a successful Android build ($path, $conclusion)."; exit 1
+            fi
+            git -C .. fetch --quiet --depth 1 origin "$sha"
+            git -C .. worktree add --quiet --detach "$RUNNER_TEMP/at-build" "$sha"
+            rt=$(cd "$RUNNER_TEMP/at-build/mobile" && npm ci --no-audit --no-fund > /dev/null \
+              && eas fingerprint:generate --platform android --environment production --json --non-interactive \
+              | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s.slice(Math.max(0,s.search(/^[\[{]/m))));console.log(j.hash||j.fingerprint?.hash||"")})')
+            echo "Android build run $BUILD_RUN_ID (${sha:0:8}): runtime ${rt:-unknown}"
+            served="$served $rt"
+          fi
           echo "served=$(echo $served | xargs)" >> "$GITHUB_OUTPUT"
           echo "Updates already on the production branch:"
           eas update:list --branch production --limit 6 --json --non-interactive \
