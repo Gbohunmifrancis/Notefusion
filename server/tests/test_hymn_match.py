@@ -452,3 +452,49 @@ def test_a_famous_piece_is_offered_no_hymns():
     notes = [SimpleNamespace(pitch_midi=p, start_beat=s, dur_beats=d) for p, s, d in piece.notes]
     found = hm.offer(SimpleNamespace(notes=notes, tempo=70, key=None))
     assert found is None or "settings" not in found
+
+
+# ── A title printed on the page ──────────────────────────────────────────────
+
+def test_a_title_is_found_as_its_words_in_order_whatever_the_case_brackets_or_punctuation():
+    found = {INDEX.entries[i].slug for i in hm.titled("OLD FOLKS AT HOME\nwords by S. Foster\nWay down upon", INDEX)}
+    assert "piece-old-folks-at-home" in found  # "Old Folks at Home (Swanee River)"
+    found = {INDEX.entries[i].slug for i in hm.titled("Michael row the boat a-shore", INDEX)}
+    assert "piece-michael-row-the-boat-ashore" not in found  # a word split under the notes is not the title
+    assert hm.titled("Folks at Homestead", INDEX) == [] or "piece-old-folks-at-home" not in {
+        INDEX.entries[i].slug for i in hm.titled("Folks at Homestead", INDEX)}
+
+
+def test_a_page_whose_few_notes_name_nothing_alone_is_named_by_its_printed_title():
+    tune = BY_SLUG["piece-hickory-dickory-dock"]
+    opening = tune.notes[:12]
+    assert hm.match(opening, index=INDEX) is None  # too few notes to be sure of the tune alone
+    found = hm.offer(_result(opening, key=None), page_words="Hickory Dickory Dock\nTraditional")
+    assert found is not None and found["slug"] == "piece-hickory-dickory-dock"
+    assert hm.offer(_result(opening, key=None)) is None  # the same notes, no title read
+
+
+def test_a_title_never_names_a_tune_the_notes_do_not_follow_from_its_opening():
+    # Another tune's opening under the title: the notes are the second witness and they disagree.
+    other = BY_SLUG["amazing-grace"].notes[:12]
+    assert hm.match(other, index=INDEX, among=hm.titled("Hickory Dickory Dock", INDEX)) is None
+    found = hm.offer(_result(other, key=None), page_words="Hickory Dickory Dock")
+    assert found is None or found["slug"] == "amazing-grace"  # the notes alone may still name their own tune
+    # The tune's own notes from its middle: a page prints a tune from its start.
+    tune = BY_SLUG["piece-old-folks-at-home"]
+    middle = _from_zero(tune.notes[20:32])
+    assert hm.match(middle, index=INDEX, among=hm.titled("Old Folks at Home", INDEX)) is None
+
+
+def test_wrong_titles_almost_never_name_a_tune():
+    rng = random.Random(7)
+    ids = [i for i, e in enumerate(INDEX.entries) if e.kind == "score"]
+    tried = taken = 0
+    while tried < 400:
+        a, b = rng.sample(ids, 2)
+        named = hm.titled(INDEX.entries[b].title, INDEX)
+        if not named or a in named or any(INDEX.same_tune(a, x) for x in named):
+            continue
+        tried += 1
+        taken += hm.match(INDEX.entries[a].notes[:rng.choice([10, 14, 20, 30])], index=INDEX, among=named) is not None
+    assert taken <= 2, taken

@@ -55,6 +55,8 @@ PDF_DPI = 200
 PAGE_TIMEOUT_SECONDS = 120
 #: A page read as fewer notes than this is read again with its lighting evened out.
 FEW_NOTES = 16
+#: ... and a page photographed smaller than this (its longest side, pixels) is read a third time, enlarged twice.
+ENLARGE_BELOW = 2400
 #: The file beside the score that holds the words printed on the page.
 PAGE_WORDS = "page-words.txt"
 #: A sheet read off a page is not the exact score a notation file is: the clients' "Some notes may need a check"
@@ -170,9 +172,10 @@ def _tune(xml: str) -> tuple[list[tuple[int | None, float]], int, str | None]:
     return line, (ks.sharps if ks is not None else 0), (ts.ratioString if ts is not None else None)
 
 
-def _even_light(page: Path, work: Path) -> Path:
+def _even_light(page: Path, work: Path, enlarge: int = 1) -> Path:
     """The page with its lighting evened out: each pixel divided by the paper's own brightness around it
-    (the print closed over at an eighth of the size), so a shadow or light falling off is paper-white again."""
+    (the print closed over at an eighth of the size), so a shadow or light falling off is paper-white again;
+    ``enlarge`` times as large (Lanczos) for a page photographed small."""
     import numpy as np
     from PIL import Image, ImageOps
     from scipy import ndimage
@@ -182,8 +185,11 @@ def _even_light(page: Path, work: Path) -> Path:
     paper = ndimage.gaussian_filter(ndimage.maximum_filter(np.asarray(small, dtype=np.float32), size=9), 3)
     paper = np.asarray(Image.fromarray(paper).resize(img.size, Image.BILINEAR), dtype=np.float32)
     even = np.clip(np.asarray(img, dtype=np.float32) / np.maximum(paper, 1.0) * 255.0, 0, 255)
-    out = work / f"{page.stem}-even.png"
-    Image.fromarray(even.astype(np.uint8)).save(out)
+    out = work / (f"{page.stem}-even.png" if enlarge == 1 else f"{page.stem}-even-x{enlarge}.png")
+    picture = Image.fromarray(even.astype(np.uint8))
+    if enlarge != 1:
+        picture = picture.resize((picture.width * enlarge, picture.height * enlarge), Image.LANCZOS)
+    picture.save(out)
     return out
 
 
@@ -202,15 +208,34 @@ def _page_tune(page: Path, number: int, work: Path) -> tuple[list[tuple[int | No
     def notes(r) -> int:
         return 0 if r is None else sum(1 for midi, _ in r[0] if midi is not None)
 
-    first = reading(page)
-    if notes(first) >= FEW_NOTES:
-        return first
+    best = reading(page)
+    if notes(best) >= FEW_NOTES:
+        return best
+    looks = [1]
+    if _longest_side(page) < ENLARGE_BELOW:
+        looks.append(2)  # a page photographed small: its staves too thin for homr until enlarged
+    for enlarge in looks:
+        try:
+            again = reading(_even_light(page, work, enlarge))
+        except Exception as exc:  # noqa: BLE001 - another look is a bonus; the reading so far stands
+            logger.warning("page %d could not be evened out: %s: %s", number + 1, type(exc).__name__, exc)
+            return best
+        if notes(again) > notes(best):
+            best = again
+        if notes(best) >= FEW_NOTES:
+            break
+    return best
+
+
+def _longest_side(page: Path) -> int:
+    """The page's longest side in pixels (a page whose size cannot be read is taken as large: no enlarged look)."""
+    from PIL import Image
+
     try:
-        second = reading(_even_light(page, work))
-    except Exception as exc:  # noqa: BLE001 - the second look is a bonus; the first reading stands
-        logger.warning("page %d could not be evened out: %s: %s", number + 1, type(exc).__name__, exc)
-        return first
-    return second if notes(second) > notes(first) else first
+        with Image.open(page) as img:
+            return max(img.size)
+    except Exception:  # noqa: BLE001 - only decides whether to look once more
+        return ENLARGE_BELOW
 
 
 def read_sheet(path: Path, work: Path) -> Path:

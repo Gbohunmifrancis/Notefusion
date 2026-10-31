@@ -75,6 +75,15 @@ CLEAR_DENSITY = 0.8      # below this density a match needs CLEAR_MARGIN: a step
 CLEAR_MARGIN = 1.8       # half-matching a stepwise hymn is common, a clear win over every other tune is not
 NEAR_EXACT = 0.95        # a take this exact (see _exact_share) may win by less than the margin ...
 NEAR_EXACT_LEAD = 0.1    # ... when every tune within the margin is this much less exact on the same notes
+# A photographed page whose title names a tune we hold needs fewer of its notes read (homr may read only some of a
+# small, blurred page), but those must agree with that tune from its first notes, as a page prints it: the title and
+# the notes are two witnesses. Measured: a tune's opening under a different tune's title was taken 2 times in 2,274
+# (both near-identical tunes), 281 without the start and with density 0.65.
+TITLE_MIN_MATCHED = 8     # notes matched exactly (pitch class)
+TITLE_MIN_DENSITY = 0.8   # alignment score per aligned note
+TITLE_MIN_COVERAGE = 0.6  # share of the notes read inside the alignment
+TITLE_START = 2           # the alignment begins within this many notes of the page's first and the tune's first
+TITLE_MIN_LETTERS = 6     # a title shorter than this ("Hymn") names nothing
 INCIPIT_MIN_MATCHED = 10
 INCIPIT_MIN_DENSITY = 0.9  # near note-perfect: an opening phrase is short
 INCIPIT_MIN_COVER = 0.85  # share of the incipit's notes inside the alignment, from its first note
@@ -484,19 +493,40 @@ def too_short(notes) -> bool:
     return len(contour(notes).intervals) < min(MIN_MATCHED, INCIPIT_MIN_MATCHED)
 
 
-def match(notes, seconds_per_unit: float = 1.0, index: HymnIndex | None = None, explain: bool = False):
+def _words(text: str) -> list[str]:
+    return re.findall(r"[a-z0-9]+", text.lower().replace("’", "").replace("'", ""))
+
+
+def titled(page_words: str, index: HymnIndex) -> list[int]:
+    """The entries whose title (its words in order, a part in brackets left out) is printed in ``page_words``."""
+    from app.pipeline.page_words import COMMON
+
+    text = f" {' '.join(_words(page_words))} "
+    found = []
+    for i, e in enumerate(index.entries):
+        words = _words(re.sub(r"\(.*?\)", " ", e.title))
+        if sum(len(w) for w in words) < TITLE_MIN_LETTERS or all(w in COMMON or len(w) < 3 for w in words):
+            continue
+        if f" {' '.join(words)} " in text:
+            found.append(i)
+    return found
+
+
+def match(notes, seconds_per_unit: float = 1.0, index: HymnIndex | None = None, explain: bool = False,
+          among: list[int] | None = None):
     """The hymn ``notes`` (``(pitch, start, duration)``) are a rendition of, or None.
 
     ``seconds_per_unit`` converts the take's time unit to seconds (60 / tempo for beats), for the
     pace the hymnbook version is played back at. ``explain`` returns the best candidate's figures
     even when it is refused (for measuring the thresholds), as ``(match_or_None, figures)``.
+    ``among`` (entry ids, from ``titled``) judges only those, by the ``TITLE_*`` rules: a page names them.
     """
     index = index or default_index()
     q = contour(notes)
     refused = (None, None) if explain else None
-    if too_short(notes):
+    if too_short(notes) if among is None else len(q.intervals) < TITLE_MIN_MATCHED:
         return refused
-    ids = index.prefilter(q)
+    ids = index.prefilter(q) if among is None else list(among)
     if not ids:
         return refused
     entries = index.entries
@@ -533,8 +563,12 @@ def match(notes, seconds_per_unit: float = 1.0, index: HymnIndex | None = None, 
     figures = {"slug": best.slug, "score": round(aln.score, 2), "density": round(density, 3),
                "coverage": round(coverage, 3), "matched": matched, "margin": round(margin, 2),
                "runner_up": runner, "runner_up_score": round(runner_score, 2), "notes": len(q.pitches),
-               "hymn_notes": len(c.pitches), "t_len": t_len, "q_len": q_len}
-    if best.kind == "incipit":
+               "hymn_notes": len(c.pitches), "t_len": t_len, "q_len": q_len,
+               "t_start": int(aln.t_span[0]) % max(1, len(c.pitches)), "q_start": int(aln.q_span[0])}
+    if among is not None:
+        ok = (matched >= TITLE_MIN_MATCHED and density >= TITLE_MIN_DENSITY and coverage >= TITLE_MIN_COVERAGE
+              and margin >= MARGIN_RATIO and figures["q_start"] <= TITLE_START and figures["t_start"] <= TITLE_START)
+    elif best.kind == "incipit":
         # An incipit is short, so it is judged against the other tunes on the same notes of the take:
         # a whole tune aligned to the whole take would out-score any opening phrase.
         window = _window(q, *aln.q_span)
@@ -695,7 +729,12 @@ def offer(result, index: HymnIndex | None = None, page_words: str = "") -> dict 
     notes = [(n.pitch_midi, n.start_beat, n.dur_beats) for n in result.notes]
     tempo = float(result.tempo or 0)
     index = index or default_index()
-    m = match(notes, seconds_per_unit=60.0 / tempo if tempo > 0 else 1.0, index=index)
+    pace = 60.0 / tempo if tempo > 0 else 1.0
+    m = match(notes, seconds_per_unit=pace, index=index)
+    if m is None and page_words:
+        # Too few notes read to be sure of the tune alone, but the page may print its title.
+        named = titled(page_words, index)
+        m = match(notes, seconds_per_unit=pace, index=index, among=named) if named else None
     if m is None:
         return None
     e = m.entry

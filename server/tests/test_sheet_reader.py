@@ -90,11 +90,18 @@ def test_a_tune_written_in_the_bass_clef_is_still_read():
     assert [m for m, _ in line] == [55, 58, 62]
 
 
-def _readings(monkeypatch, first, even):
-    """homr's reading of a page (``first``) and of its evened-out copy (``even``); the copy is only asked for."""
+def _readings(monkeypatch, first, even, enlarged=None):
+    """homr's reading of a page (``first``), of its evened-out copy (``even``) and of that copy enlarged; the copies
+    are only asked for."""
     asked = []
-    monkeypatch.setattr(sheet_reader, "_even_light", lambda page, work: asked.append(page) or work / "page-even.png")
-    monkeypatch.setattr(sheet_reader, "_read_page", lambda image: even if image.name.endswith("-even.png") else first)
+
+    def copy(page, work, enlarge=1):
+        asked.append(enlarge)
+        return work / ("page-even.png" if enlarge == 1 else f"page-even-x{enlarge}.png")
+
+    readings = {"page-even.png": even, "page-even-x2.png": enlarged}
+    monkeypatch.setattr(sheet_reader, "_even_light", copy)
+    monkeypatch.setattr(sheet_reader, "_read_page", lambda image: readings.get(image.name, first))
     return asked
 
 
@@ -110,6 +117,32 @@ def test_a_page_read_as_almost_nothing_is_read_again_with_its_lighting_evened(tm
     _readings(monkeypatch, _line(8), None)
     line, _, _ = sheet_reader._page_tune(tmp_path / "page.jpg", 0, tmp_path)
     assert len(line) == 8
+
+
+def test_a_page_photographed_small_is_read_once_more_enlarged(tmp_path, monkeypatch):
+    from PIL import Image
+
+    Image.new("L", (900, 1200), 255).save(tmp_path / "page.jpg")  # smaller than ENLARGE_BELOW
+    asked = _readings(monkeypatch, _line(8), _line(12), _line(40))
+    line, _, _ = sheet_reader._page_tune(tmp_path / "page.jpg", 0, tmp_path)
+    assert asked == [1, 2] and len(line) == 40
+    # The evened copy read well enough: no enlarged look.
+    asked = _readings(monkeypatch, _line(8), _line(32), _line(40))
+    line, _, _ = sheet_reader._page_tune(tmp_path / "page.jpg", 0, tmp_path)
+    assert asked == [1] and len(line) == 32
+    # A large photo is not enlarged.
+    Image.new("L", (sheet_reader.ENLARGE_BELOW, 1200), 255).save(tmp_path / "page.jpg")
+    asked = _readings(monkeypatch, _line(8), _line(12), _line(40))
+    line, _, _ = sheet_reader._page_tune(tmp_path / "page.jpg", 0, tmp_path)
+    assert asked == [1] and len(line) == 12
+
+
+def test_enlarging_doubles_the_evened_page(tmp_path):
+    from PIL import Image
+
+    Image.new("L", (300, 400), 230).save(tmp_path / "photo.png")
+    out = sheet_reader._even_light(tmp_path / "photo.png", tmp_path, 2)
+    assert out.name == "photo-even-x2.png" and Image.open(out).size == (600, 800)
 
 
 def test_a_page_read_well_is_read_once(tmp_path, monkeypatch):
