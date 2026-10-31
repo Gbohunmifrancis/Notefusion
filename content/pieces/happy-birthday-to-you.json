@@ -1,0 +1,14 @@
+{
+  "title": "Happy Birthday to You",
+  "composer": "Mildred J. Hill (1859–1916)",
+  "origin": "United States",
+  "category": "children",
+  "url": "https://en.wikipedia.org/wiki/Happy_Birthday_to_You",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "G major",
+  "time": "3/4",
+  "pickup": 1.0,
+  "tempo": 90,
+  "notes": "D4:0.75 D4:0.25 E4:1 D4:1 G4:1 F#4:2 D4:0.75 D4:0.25 E4:1 D4:1 A4:1 G4:2 D4:0.75 D4:0.25 D5:1 B4:1 G4:1 F#4:1 E4:1 C5:0.75 C5:0.25 B4:1 G4:1 A4:1 G4:2"
+}

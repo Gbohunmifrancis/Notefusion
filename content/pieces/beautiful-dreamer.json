@@ -1,0 +1,14 @@
+{
+  "title": "Beautiful Dreamer",
+  "composer": "Stephen Foster (1826–1864)",
+  "origin": "United States",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/Beautiful_Dreamer",
+  "source": "OpenEWLD, the public-domain part of the Enhanced Wikifonia Leadsheet Dataset (MIT licence)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "C major",
+  "time": "3/4",
+  "pickup": 0.0,
+  "tempo": 100,
+  "notes": "C5:1 B4:1 C5:1 G4:3 E4:3 D4:1 C#4:1 D4:1 A4:6 G4:1 B4:1 A4:1 A4:1 G4:1 F4:1 F4:1 E4:1 D4:1 E4:9 C4:9 G4:1 F4:1 D4:1 B3:3 A4:3 A4:1 G4:1 E4:1 C4:6 C5:1 B4:1 C5:1 A4:3 D5:2 C5:1 B4:1 C5:1 A4:1 G4:6 E4:9 A4:1 B4:1 C5:1 C5:1 G4:1 E4:1 F4:1 E4:1 D4:1 C4:9"
+}

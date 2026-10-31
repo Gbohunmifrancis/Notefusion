@@ -1,0 +1,14 @@
+{
+  "title": "Daisy Bell (Bicycle Built for Two)",
+  "composer": "Harry Dacre (1857–1922)",
+  "origin": "United Kingdom",
+  "category": "popular",
+  "url": "https://github.com/00sapo/OpenEWLD",
+  "source": "OpenEWLD, the public-domain part of the Enhanced Wikifonia Leadsheet Dataset (MIT licence)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "C major",
+  "time": "3/4",
+  "pickup": 0.0,
+  "tempo": 100,
+  "notes": "D5:1 C#5:1 D5:1 B4:1 A4:1 G4:1 A4:2 F#4:1 D4:2 r:1 A4:3 D4:3 D5:3 B4:2 r:1 D5:1 C#5:1 D5:1 B4:1 A4:1 G4:1 A4:2 F#4:1 D4:2 r:1 G4:1 D5:1 G4:1 F#4:1 D4:1 A4:1 G4:3 G4:2 r:1 B4:1 C5:1 B4:1 A4:1 G4:1 F#4:1 B4:2 G4:1 E4:2 r:1 D5:1 C5:1 B4:1 A4:2 A#4:1 B4:4 r:2 B4:1 C5:1 B4:1 A4:1 G4:1 F#4:1 B4:2 G4:1 E4:1 r:1 B4:1 A4:1 E5:1 C#5:1 B4:2 A4:1 D5:5 r:1 D5:3 B4:3 G4:3 D4:2 r:1 E4:1 F#4:1 G4:1 E4:2 G4:1 D4:5 r:1 A4:3 D5:3 B4:3 G4:3 E4:1 F#4:1 G4:1 A4:2 B4:1 A4:4 r:1 B4:1 C5:1 B4:1 A4:1 D5:2 B4:1 A4:1 G4:3 r:1 A4:1 B4:2 G4:1 E4:2 G4:1 E4:1 D4:3 r:1 D4:1 G4:2 B4:1 A4:2 B4:1 G4:2 B4:1 A4:1 r:1 B4:0.5 C5:0.5 D5:1 B4:1 G4:1 A4:2 D4:1 G4:5"
+}

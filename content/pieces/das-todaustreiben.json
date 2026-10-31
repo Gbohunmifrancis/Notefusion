@@ -1,0 +1,14 @@
+{
+  "title": "Das Todaustreiben",
+  "composer": "Traditional",
+  "origin": "Germany",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/Das_Todaustreiben",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "D major",
+  "time": "6/4",
+  "pickup": 1.0,
+  "tempo": 100,
+  "notes": "D4:1 A4:2 A4:1 G4:2 G4:1 A4:2 A4:1 D4:2 D4:1 A4:2 G4:1 C5:2 B4:1 A4:2 G4:1 A4:2 A4:1 D5:2 D5:1 B4:2 B4:1 C5:3 A4:2 D4:1 F4:2 G4:1 A4:2 G4:1 F4:1 E4:2 D4:2"
+}

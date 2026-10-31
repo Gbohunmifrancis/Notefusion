@@ -1,0 +1,14 @@
+{
+  "title": "Radetzky March",
+  "composer": "Johann Strauss I (1804–1849)",
+  "origin": "Austria",
+  "category": "march",
+  "url": "https://en.wikipedia.org/wiki/Radetzky_March",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "C major",
+  "time": "2/2",
+  "pickup": 0.0,
+  "tempo": 216,
+  "notes": "C5:0.5 C5:0.5 C5:0.5 r:0.5 C5:0.5 C5:0.5 C5:0.5 r:0.5 E5:1 D5:1 C5:1.5 B4:0.5 A4:0.5 G#4:0.5 A4:0.5 B4:0.5 C5:1 D5:1 G4:1 r:2 E5:0.5 r:0.5 E5:0.5 r:0.5 E5:0.5 E5:0.5"
+}

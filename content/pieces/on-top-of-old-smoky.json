@@ -1,0 +1,14 @@
+{
+  "title": "On Top of Old Smoky",
+  "composer": "Traditional",
+  "origin": "United States",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/On_Top_of_Old_Smoky",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "D major",
+  "time": "3/4",
+  "pickup": 1.0,
+  "tempo": 130,
+  "notes": "D4:1 D4:1 F#4:1 A4:1 D5:1 B4:2 B4:1 G4:1 A4:1 B4:1 A4:2 F#4:1 D4:1 D4:1 F#4:1 A4:1 E4:2 F#4:1 G4:1 F#4:1 E4:1 D4:2"
+}

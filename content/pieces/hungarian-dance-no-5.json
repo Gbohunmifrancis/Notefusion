@@ -1,0 +1,14 @@
+{
+  "title": "Hungarian Dance No. 5",
+  "composer": "Johannes Brahms (1833–1897)",
+  "origin": "Germany",
+  "category": "classical",
+  "url": "https://github.com/00sapo/OpenEWLD",
+  "source": "OpenEWLD, the public-domain part of the Enhanced Wikifonia Leadsheet Dataset (MIT licence)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "G minor",
+  "time": "2/4",
+  "pickup": 0.0,
+  "tempo": 100,
+  "notes": "D4:1.5 G4:0.5 Bb4:1.5 G4:0.5 Gb4:1.5 G4:0.25 A4:0.25 G4:2 Eb4:1.5 F4:0.25 G4:0.25 D4:2 C4:0.25 Bb3:0.25 Bb3:0.25 A3:0.25 A3:0.75 D4:0.25 G3:2 D4:1.5 G4:0.25 Bb4:0.25 D5:1.5 Bb4:0.5 A4:1.5 Bb4:0.25 C5:0.25 Bb4:2 Eb5:0.25 F5:0.25 G5:0.25 Eb5:0.25 D5:0.25 Eb5:0.25 F5:0.25 D5:0.25 C5:0.25 D5:0.25 Eb5:0.25 C5:0.25 Bb4:0.25 C5:0.25 D5:0.25 Bb4:0.25 C5:0.25 Bb4:0.25 Bb4:0.25 A4:0.25 A4:0.75 D5:0.25 G4:1.5 r:0.5 D5:1 D5:1 Eb5:1.5 D5:0.5 r:0.5 C5:1 B4:0.25 C5:0.25 D5:0.25 C5:0.25 B4:0.25 D5:0.25 C5:0.5 r:0.5 C5:1 C5:1 D5:1.5 C5:0.5 r:0.5 Bb4:1 A4:0.25 Bb4:0.25 C5:0.25 Bb4:0.25 A4:0.25 C5:0.25 Bb4:0.5 r:0.5 A4:1 A4:1 C5:0.5 Bb4:1 A4:1 G4:1 Gb4:0.25 G4:0.25 A4:0.25 G4:0.25 Gb4:0.25 A4:0.25 G4:0.5 r:0.5 D5:0.5 r:1.25 D4:0.25 E4:0.5 r:0.5 Gb4:0.5 r:0.5 G4:0.5 G4:1 Gb4:0.25 G4:0.25 A4:0.25 G4:0.25 Gb4:0.25 A4:0.25 G4:0.5 r:0.5 Eb5:0.5 r:0.5 D5:0.5 r:0.5 G5:0.5"
+}

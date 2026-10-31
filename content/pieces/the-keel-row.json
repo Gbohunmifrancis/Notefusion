@@ -1,0 +1,14 @@
+{
+  "title": "The Keel Row",
+  "composer": "Traditional",
+  "origin": "England",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/The_Keel_Row",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "F major",
+  "time": "2/4",
+  "pickup": 0.5,
+  "tempo": 100,
+  "notes": "Bb4:0.5 A4:1 F4:0.75 A4:0.25 Bb4:1 G4:0.75 Bb4:0.25 A4:1 F4:0.75 A4:0.25 G4:0.5 E4:0.5 C4:0.5 Bb4:0.5 A4:1 F4:0.75 A4:0.25 Bb4:1 G4:0.75 Bb4:0.25 A4:0.75 F4:0.25 G4:0.25 E4:0.75 F4:1.5 r:0.5 A4:0.25 C5:0.75 C5:0.75 F5:0.25 D5:1 C5:0.75 Bb4:0.25 A4:1 F4:0.75 A4:0.25 G4:0.75 E4:0.25 C4:0.5 r:0.5 A4:0.25 C5:0.75 C5:0.75 F5:0.25 D5:1 C5:0.75 Bb4:0.25 A4:0.25 F4:0.75 G4:0.25 E4:0.75 F4:1 r:0.5 Bb4:0.5 A4:1 F4:0.75 A4:0.25 Bb4:1 G4:0.75 Bb4:0.25 A4:1 F4:0.75 A4:0.25 G4:0.5 E4:0.5 C4:1 A4:1 F4:0.75 A4:0.25 Bb4:1 G4:0.75 Bb4:0.25 A4:0.25 F4:0.75 G4:0.25 E4:0.75 F4:1"
+}

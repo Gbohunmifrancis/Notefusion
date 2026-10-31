@@ -1,0 +1,14 @@
+{
+  "title": "Hickory Dickory Dock",
+  "composer": "Traditional",
+  "origin": "United Kingdom",
+  "category": "children",
+  "url": "https://en.wikipedia.org/wiki/Hickory_Dickory_Dock",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "D major",
+  "time": "6/8",
+  "pickup": 0.0,
+  "tempo": 100,
+  "notes": "F#4:0.5 G4:0.5 A4:0.5 A4:0.5 B4:0.5 C#5:0.5 D5:2.5 A4:0.5 F#4:0.5 G4:0.5 A4:0.5 A4:0.5 B4:0.5 C#5:0.5 D5:2.5 A4:0.5 D5:1 D5:0.5 C#5:1 C#5:0.5 B4:1 B4:0.5 A4:1.5 A4:0.5 B4:0.5 A4:0.5 G4:0.5 F#4:0.5 E4:0.5 D4:3"
+}

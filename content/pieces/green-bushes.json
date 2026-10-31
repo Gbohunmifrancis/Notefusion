@@ -1,0 +1,14 @@
+{
+  "title": "Green Bushes",
+  "composer": "Traditional",
+  "origin": "England",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/Green_Bushes",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "F major",
+  "time": "3/4",
+  "pickup": 1.0,
+  "tempo": 206,
+  "notes": "C4:1 F4:1 F4:1 G4:1 Eb4:1 F4:1 G4:1 C5:1 C5:0.5 A4:0.5 G4:0.5 F4:0.5 Eb4:1 F4:1 G4:0.5 A4:0.5 F4:1 F4:1 G4:1 Eb4:1 F4:1 G4:0.333333 A4:0.333333 Bb4:0.333333 C5:1 Eb5:1 D5:1 C5:2 A4:0.5 Bb4:0.5 C5:1 C5:1 F5:1 C5:1 D5:1 Eb5:1 G4:0.5 A4:0.5 Bb4:0.5 A4:0.5 G4:0.5 F4:0.5 Eb4:1 F4:1 G4:0.5 A4:0.5 F4:1 F4:0.5 A4:0.5 G4:0.5 A4:0.5 Eb4:1 F4:1 A4:0.5 Bb4:0.5 C5:1 C5:0.5 A4:0.5 G4:1 F4:2"
+}

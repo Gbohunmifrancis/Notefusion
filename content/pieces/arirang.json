@@ -1,0 +1,14 @@
+{
+  "title": "Arirang",
+  "composer": "Traditional",
+  "origin": "Korea",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/Arirang",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "F major",
+  "time": "9/8",
+  "pickup": 0.0,
+  "tempo": 140,
+  "notes": "C4:2.5 D4:0.5 C4:1 D4:0.5 F4:2.5 G4:0.5 F4:1 G4:0.5 A4:1.5 G4:0.5 A4:0.5 G4:0.5 F4:1 D4:0.5 C4:2.5 D4:0.5 C4:0.5 D4:0.5 r:0.5 F4:2.5 G4:0.5 F4:1 G4:0.5 A4:1 G4:0.5 F4:1 D4:0.5 C4:1 D4:0.5 F4:2.5 G4:0.5 F4:1.5 F4:3 r:1.5 C5:3 C5:1.5 C5:1.5 A4:1.5 G4:1.5 A4:1.5 G4:1 A4:0.5 F4:1 D4:0.5 C4:2.5 D4:0.5 C4:0.5 D4:0.5 r:0.5 F4:2.5 G4:0.5 F4:1 G4:0.5 A4:1 G4:0.5 F4:1 D4:0.5 C4:1 D4:0.5 F4:2.5 G4:0.5 F4:1.5 F4:3"
+}

@@ -1,0 +1,14 @@
+{
+  "title": "Die Forelle (The Trout)",
+  "composer": "Franz Schubert (1797–1828)",
+  "origin": "Austria",
+  "category": "classical",
+  "url": "https://en.wikipedia.org/wiki/Trout_Quintet",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "D major",
+  "time": "2/4",
+  "pickup": 0.5,
+  "tempo": 58,
+  "notes": "A4:0.5 D5:0.75 D5:0.25 F#5:0.5 F#5:0.5 D5:1 A4:1 A4:0.875 A4:0.125 E5:0.375 D5:0.125 C#5:0.375 B4:0.125 A4:1.5 A4:0.5 D5:0.75 D5:0.25 F#5:0.5 F#5:0.5 D5:1 A4:0.5 D5:0.5 C#5:0.5 B4:0.375 C#5:0.125 D5:0.5 G#4:0.5 A4:1.5 A4:0.5"
+}

@@ -1,0 +1,14 @@
+{
+  "title": "Symphony No. 40 in G minor",
+  "composer": "Wolfgang Amadeus Mozart (1756–1791)",
+  "origin": "Austria",
+  "category": "classical",
+  "url": "https://en.wikipedia.org/wiki/Symphony_No._40_(Mozart)",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "G minor",
+  "time": "2/2",
+  "pickup": 1.0,
+  "tempo": 210,
+  "notes": "Eb5:0.5 D5:0.5 D5:1 Eb5:0.5 D5:0.5 D5:1 Eb5:0.5 D5:0.5 D5:1 Bb5:1 r:1 Bb5:0.5 A5:0.5 G5:1 G5:0.5 F5:0.5 Eb5:1 Eb5:0.5 D5:0.5 C5:1 C5:1"
+}

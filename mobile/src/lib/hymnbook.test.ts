@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import type { HymnMatch, NoteEvent } from "../api/types";
-import { hymnbookSheet, hymnCreditLine, hymnLabel, hymnOffer } from "./hymnbook.ts";
+import { hymnbookSheet, hymnCreditLine, hymnLabel, hymnOffer, isPiece } from "./hymnbook.ts";
 import { deriveSolfa } from "./solfa.ts";
 
 const note = (pitchMidi: number, startBeat: number, durBeats: number): NoteEvent =>
@@ -49,4 +49,16 @@ test("Yes brings the hymn's notes, rhythm, meter, key, pace, words and credit", 
 test("the prompt and the credit name the hymn", () => {
   assert.equal(hymnLabel(match), "Amazing Grace (hymnbook, 3/4)");
   assert.equal(hymnCreditLine({ slug: "s", title: "Amazing Grace", url: "u", credit: "Tune NEW BRITAIN." }), "Hymnbook version of “Amazing Grace”. Tune NEW BRITAIN.");
+});
+
+test("a famous piece that is not a hymn is offered as its published version", () => {
+  const piece: HymnMatch = { ...match, slug: "piece-fur-elise", title: "Für Elise", tune: "", url: "", category: "piece", timeSignature: "3/8" };
+  assert.equal(hymnOffer(piece, fresh), "version");
+  assert.equal(hymnLabel(piece), "Für Elise (published, 3/8)");
+  assert.ok(isPiece(piece));
+  assert.ok(!isPiece(match));
+  // A saved sheet's credit keeps only the slug: still a piece.
+  assert.match(hymnCreditLine({ slug: "piece-fur-elise", title: "Für Elise", url: "", credit: "Für Elise by Ludwig van Beethoven (1770–1827)." }),
+    /^Published version of “Für Elise”\. Für Elise by Ludwig van Beethoven/);
+  assert.equal(hymnLabel(match), "Amazing Grace (hymnbook, 3/4)");
 });

@@ -72,6 +72,66 @@ def test_the_tune_is_the_top_note_of_each_chord_on_the_top_staff():
     assert line[8] == (68, 1.0)  # A♭ over F
 
 
+def test_bass_chords_read_in_place_of_a_lost_tune_staff_are_left_out():
+    # A songbook page: the tune's staff in the treble clef, and on the second system homr lost it and reported the
+    # piano's bass, in the bass clef, as staff 1.
+    lost = _page([
+        (FIRST, [_note("G", 4, 4), _note("A", 4, 4), _note("B", 4, 4, alter=-1), _note("C", 5, 4)]),
+        ('<attributes><clef number="1"><sign>F</sign><line>4</line></clef></attributes>',
+         [_note("E", 3, 8, alter=-1), _note("C", 3, 8, chord=True), _note("G", 2, 8)]),
+    ])
+    line, _, _ = sheet_reader._tune(lost)
+    assert [m for m, _ in line] == [67, 69, 70, 72]
+
+
+def test_a_tune_written_in_the_bass_clef_is_still_read():
+    bass = FIRST.replace("<sign>G</sign><line>2</line>", "<sign>F</sign><line>4</line>")
+    line, _, _ = sheet_reader._tune(_page([(bass, [_note("G", 3, 4), _note("B", 3, 4, alter=-1), _note("D", 4, 8)])]))
+    assert [m for m, _ in line] == [55, 58, 62]
+
+
+def _readings(monkeypatch, first, even):
+    """homr's reading of a page (``first``) and of its evened-out copy (``even``); the copy is only asked for."""
+    asked = []
+    monkeypatch.setattr(sheet_reader, "_even_light", lambda page, work: asked.append(page) or work / "page-even.png")
+    monkeypatch.setattr(sheet_reader, "_read_page", lambda image: even if image.name.endswith("-even.png") else first)
+    return asked
+
+
+def _line(count):
+    return _page([(FIRST, [_note("C", 5, 4)] * 4)] + [("", [_note("D", 5, 4)] * 4)] * (count // 4 - 1))
+
+
+def test_a_page_read_as_almost_nothing_is_read_again_with_its_lighting_evened(tmp_path, monkeypatch):
+    asked = _readings(monkeypatch, _line(8), _line(32))
+    line, _, _ = sheet_reader._page_tune(tmp_path / "page.jpg", 0, tmp_path)
+    assert asked and len(line) == 32
+    # Kept only when it reads more: an evened-out copy that loses the page leaves the first reading.
+    _readings(monkeypatch, _line(8), None)
+    line, _, _ = sheet_reader._page_tune(tmp_path / "page.jpg", 0, tmp_path)
+    assert len(line) == 8
+
+
+def test_a_page_read_well_is_read_once(tmp_path, monkeypatch):
+    asked = _readings(monkeypatch, _line(20), _line(40))
+    line, _, _ = sheet_reader._page_tune(tmp_path / "page.jpg", 0, tmp_path)
+    assert not asked and len(line) == 20
+
+
+def test_evening_the_light_takes_a_shadow_off_the_paper(tmp_path):
+    import numpy as np
+    from PIL import Image
+
+    page = np.full((400, 300), 235, np.uint8)
+    page[:, 150:] = 120            # a hand's shadow over the right half
+    page[100:104, 20:280] = 20     # a staff line across both halves
+    Image.fromarray(page).save(tmp_path / "photo.png")
+    even = np.asarray(Image.open(sheet_reader._even_light(tmp_path / "photo.png", tmp_path)), dtype=np.float32)
+    paper_lit, paper_shaded = even[300, 60], even[300, 240]
+    assert abs(paper_lit - paper_shaded) < 25 and min(paper_lit, paper_shaded) > 200
+    assert even[102, 240] < 120  # the line under the shadow is still dark
+
+
 def test_a_photo_becomes_the_tune_in_solfa(tmp_path, monkeypatch):
     _fake_homr(tmp_path, monkeypatch, EVENTIDE)
     photo = tmp_path / "hymn.jpg"

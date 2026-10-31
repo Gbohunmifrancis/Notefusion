@@ -156,6 +156,8 @@ export interface HymnMatch {
   solfaLines?: string[] | null;
   musicXml?: string | null;
   lyrics?: string | null;
+  /** "piece": a famous piece that is not a hymn, offered as its published version; absent for a hymn. */
+  category?: "piece" | string | null;
 }
 
 /** The hymn a saved sheet is the hymnbook version of, with its credit. Mirrors the C# HymnCreditDto. */
@@ -682,7 +684,7 @@ export interface GameScale {
  * One round, with its answer so a tap is told at once (the server marks the answers that count). Which note: play
  * `dohMidi` then `noteMidi`. Staff to solfa: draw `noteName` ("F#4") on a treble stave with `fifths` in the signature.
  * Name that hymn: play `notes` at `tempoBpm`; `hymns` names each choice; `key` labels its solfa when revealed. An arcade
- * stage's Which note? sounds each note for `noteSeconds` (the web's endless games; null otherwise). Which scale?: play
+ * stage's Which note? sounds each note for `noteSeconds` (the arcade's endless games; null otherwise). Which scale?: play
  * `notes` at `tempoBpm`, a scale up and back down; `scales` names each choice.
  */
 export interface PracticeGameRound {
@@ -705,7 +707,7 @@ export interface PracticeGameRound {
 
 /**
  * A fresh deal; `timeLimitSeconds` is set for a race (Staff to solfa). `gamesToday` of `gamesPerDay` earned XP today.
- * An arcade stage (`?level=`, the web's endless games) carries its `level`, and its Staff to solfa `secondsPerRound`.
+ * An arcade stage (`?level=`, the arcade's endless games) carries its `level`, and its Staff to solfa `secondsPerRound`.
  */
 export interface PracticeGame {
   game: PracticeGameId;

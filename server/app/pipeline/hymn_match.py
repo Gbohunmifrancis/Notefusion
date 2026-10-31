@@ -105,6 +105,7 @@ class Entry:
     pickup: float = 0.0
     tempo: int = 0
     lyrics: str = ""
+    category: str = ""   # "piece": a famous piece that is not a hymn (content/pieces), offered as the published version
 
 
 @dataclass(frozen=True)
@@ -221,7 +222,8 @@ def _entry(d: dict) -> Entry:
         source=d["source"], licence=d["licence"], credit=d["credit"],
         notes=tuple((int(p), float(s), float(l)) for p, s, l in d["notes"]),
         checked=bool(d.get("checked", False)), key=d.get("key", ""), time=d.get("time", ""),
-        pickup=float(d.get("pickup", 0) or 0), tempo=int(d.get("tempo", 0) or 0), lyrics=d.get("lyrics", ""))
+        pickup=float(d.get("pickup", 0) or 0), tempo=int(d.get("tempo", 0) or 0), lyrics=d.get("lyrics", ""),
+        category=d.get("category", ""))
 
 
 def load_index(path: Path = INDEX_PATH) -> HymnIndex:
@@ -651,7 +653,8 @@ def offer(result, index: HymnIndex | None = None) -> dict | None:
     book's own octave (within a tritone of the published pitch, whatever octave was sung): ``key``,
     ``time_signature``, ``tempo`` (the take's pace), ``pickup``, ``notes`` (labelled like a
     transcription's), ``solfa_lines``, ``musicxml`` and ``lyrics`` (the first verse, one syllable a
-    note). An incipit entry names the tune and links to it, and carries none of those.
+    note). An incipit entry names the tune and links to it, and carries none of those. A famous piece that
+    is not a hymn (``category`` "piece") is offered the same way; the clients call it the published version.
     """
     notes = [(n.pitch_midi, n.start_beat, n.dur_beats) for n in result.notes]
     tempo = float(result.tempo or 0)
@@ -663,6 +666,8 @@ def offer(result, index: HymnIndex | None = None) -> dict | None:
         "slug": e.slug, "title": e.title, "tune": e.tune, "url": e.url, "source": e.source,
         "licence": e.licence, "credit": e.credit, "kind": e.kind, "confidence": m.confidence,
     }
+    if e.category:
+        out["category"] = e.category
     if e.kind != "score":
         return out
     key_name = sung_key(e.key, m.transpose, result.key)

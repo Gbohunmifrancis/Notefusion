@@ -1,0 +1,14 @@
+{
+  "title": "Dives and Lazarus",
+  "composer": "Traditional",
+  "origin": "England",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/Dives_and_Lazarus_(ballad)",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "B minor",
+  "time": "4/4",
+  "pickup": 0.0,
+  "tempo": 100,
+  "notes": "D4:0.5 C#4:0.5 B3:1 B3:1 B3:0.5 A3:0.5 B3:0.5 C#4:0.5 D4:1 D4:1 E4:1 D4:0.5 E4:0.5 F#4:1 F#4:1 E4:0.5 D4:0.5 B3:1 A3:3"
+}

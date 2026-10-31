@@ -976,7 +976,7 @@
   var MOMENT_ASSETS = ["/assets/moments.js?v=1", "/assets/moment-art.js?v=1", "/assets/practice-moments.js?v=1"];
   // The 3D level-up and badge pieces: the Practice view only.
   var MOMENT_3D = "/assets/moment-3d.js?v=1";
-  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=17", "/assets/practice-progress.js?v=11", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=6", "/assets/practice-games.js?v=3", "/assets/practice-arcade.js?v=2"]
+  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=17", "/assets/practice-progress.js?v=11", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=6", "/assets/practice-games.js?v=3", "/assets/practice-arcade.js?v=3"]
     .concat(MOMENT_ASSETS, [MOMENT_3D, "/assets/practice-view.js?v=24"]);
   var assetLoads = {};
   /** One stylesheet or script, once per page; a failed one is tried again next time. Scripts run in the order asked. */
@@ -3473,12 +3473,13 @@
     box.innerHTML = "";
     var text = document.createElement("span");
     text.appendChild(document.createTextNode("This sounds like "));
-    var name = document.createElement("a");
-    name.href = m.url; name.target = "_blank"; name.rel = "noopener";
+    // A piece we hold may have no page to link (only hymns have ours; a piece links its Wikipedia article when it has one).
+    var name = document.createElement(m.url ? "a" : "span");
+    if (m.url) { name.href = m.url; name.target = "_blank"; name.rel = "noopener"; }
     name.textContent = what === "version" ? H.label(m) : m.title;
     var em = document.createElement("em"); em.appendChild(name);
     text.appendChild(em);
-    text.appendChild(document.createTextNode(what === "version" ? ". Use the hymnbook version?" : "."));
+    text.appendChild(document.createTextNode(what === "version" ? ". Use the " + H.noun(m) + "?" : "."));
     var row = document.createElement("span");
     row.className = "doh-choices";
     function choice(label, primary, onPick) {
@@ -3491,7 +3492,7 @@
     }
     if (what === "version") {
       // Each answer says what it does, so neither needs the question read again to be sure.
-      choice("Use the hymnbook version", true, function () { pickHymn(m); });
+      choice("Use the " + H.noun(m), true, function () { pickHymn(m); });
       choice("Keep mine", false, function () { current.hymnAnswered = true; track("Kept transcription over hymnbook", m.slug); showResult(current.result); });
     } else {
       choice("Dismiss", false, function () { current.hymnAnswered = true; hide(box); });
@@ -3512,7 +3513,7 @@
     var next = H.swap(current.result, match), given = current.lyrics;
     current.result = next;
     showResult(next);
-    offerUndo($("r-hymnbook"), "This is the hymnbook's version now, with its notes and words.", function () {
+    offerUndo($("r-hymnbook"), H.isPiece(match) ? "This is the published version now, with its notes." : "This is the hymnbook's version now, with its notes and words.", function () {
       current.hymnAnswered = false; current.dohAnswered = before.dohAnswered;
       if (current.lyrics === given) current.lyrics = before.lyrics; // words typed since are kept
       current.result = before.result; showResult(before.result);
@@ -3524,7 +3525,7 @@
     el.textContent = H.credit(hymn) + " ";
     if (hymn.url) {
       var a = document.createElement("a");
-      a.href = hymn.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = "See the hymn";
+      a.href = hymn.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = H.isPiece(hymn) ? "Read about it" : "See the hymn";
       el.appendChild(a);
     }
   }

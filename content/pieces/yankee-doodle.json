@@ -1,0 +1,14 @@
+{
+  "title": "Yankee Doodle",
+  "composer": "Traditional",
+  "origin": "United States",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/Yankee_Doodle",
+  "source": "NoteFusion (transcribed twice, independently, and kept where the two agree)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "G major",
+  "time": "2/4",
+  "pickup": 0.0,
+  "tempo": 110,
+  "notes": "G4:0.5 G4:0.5 A4:0.5 B4:0.5 G4:0.5 B4:0.5 A4:0.5 D4:0.5 G4:0.5 G4:0.5 A4:0.5 B4:0.5 G4:1 F#4:1 G4:0.5 G4:0.5 A4:0.5 B4:0.5 C5:0.5 B4:0.5 A4:0.5 G4:0.5 F#4:0.5 D4:0.5 E4:0.5 F#4:0.5 G4:1 G4:1"
+}

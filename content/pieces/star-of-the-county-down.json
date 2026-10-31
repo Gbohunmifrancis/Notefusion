@@ -1,0 +1,14 @@
+{
+  "title": "Star of the County Down",
+  "composer": "Traditional",
+  "origin": "Ireland",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/Star_of_the_County_Down",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "F major",
+  "time": "4/4",
+  "pickup": 1.0,
+  "tempo": 100,
+  "notes": "F4:0.5 E4:0.5 D4:1 D4:1 D4:1 C4:0.5 D4:0.5 F4:1 F4:1 G4:1 F4:0.5 G4:0.5 A4:1 G4:0.5 F4:0.5 D4:1 D4:1 C4:3"
+}

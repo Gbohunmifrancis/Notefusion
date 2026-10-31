@@ -132,7 +132,7 @@ export const EAR_TEMPO = 80;
 export function earNotes(round: PracticeGameRound): GameNoteLike[] {
   if (round.dohMidi == null || round.noteMidi == null) return [];
   if (round.noteSeconds != null && round.noteSeconds > 0) {
-    // An arcade round (the web's endless games) sounds each note `noteSeconds` long at EAR_TEMPO.
+    // An arcade round (the endless games) sounds each note `noteSeconds` long at EAR_TEMPO.
     const beats = (round.noteSeconds * EAR_TEMPO) / 60;
     return [
       { pitchMidi: round.dohMidi, startBeat: 0, durBeats: beats },

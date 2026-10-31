@@ -12,7 +12,14 @@ Two things are done to what homr writes before the tune is taken from it:
   natural from its second line on; a hymn rarely changes key, so a later "no key signature"
   is taken as the first one again (a real change to another key is kept);
 * the tune is the top note of the top staff at each moment: a hymn book prints soprano and
-  alto on that staff, homr reads them as chords, and the score path reads single notes only.
+  alto on that staff, homr reads them as chords, and the score path reads single notes only;
+* a top staff that began in the treble clef and is later read in the bass clef has lost its tune:
+  homr, on a crowded page (a songbook's piano part, words between the staves), sometimes drops a
+  system's treble staff and reports the bass under it as staff 1, and those chords are left out
+  rather than read as the tune.
+
+A page that yields almost nothing (a hand's shadow, light falling off across a photo) is read once
+more with its lighting evened out (``_even_light``), and the better of the two readings is kept.
 
 Measured on hymn pages engraved and photographed for the test (99% of syllables right) and on
 real scans of an 1870 hymn book (89% of syllables, 71% of note lengths), so the clients ask
@@ -26,7 +33,7 @@ import os
 import subprocess
 from pathlib import Path
 
-from music21 import converter, key as m21key, meter, note as m21note, stream
+from music21 import clef as m21clef, converter, key as m21key, meter, note as m21note, stream
 
 from app.pipeline.transcriber import LowConfidenceError
 
@@ -42,6 +49,8 @@ MAX_PAGES = 4
 PDF_DPI = 200
 #: The longest one page may take.
 PAGE_TIMEOUT_SECONDS = 120
+#: A page read as fewer notes than this is read again with its lighting evened out.
+FEW_NOTES = 16
 #: A sheet read off a page is not the exact score a notation file is: the clients' "Some notes may need a check"
 #: (between their 0.5 and 0.75, web-site/assets/confidence.js and mobile lib/confidence.ts).
 READ_CONFIDENCE = 0.7
@@ -137,8 +146,12 @@ def _tune(xml: str) -> tuple[list[tuple[int | None, float]], int, str | None]:
     top = staves[0].flatten()
     ks = next(iter(top.getElementsByClass(m21key.KeySignature)), None)
     ts = next(iter(top.getElementsByClass(meter.TimeSignature)), None)
+    clefs = list(top.getElementsByClass(m21clef.Clef))
+    treble = bool(clefs) and isinstance(clefs[0], m21clef.TrebleClef)
     by_onset: dict[float, list] = {}
     for el in top.notesAndRests:
+        if treble and isinstance(el.getContextByClass(m21clef.Clef), m21clef.BassClef):
+            continue  # the tune's staff lost: its bass reported in its place (see the module's note)
         by_onset.setdefault(round(float(el.offset), 4), []).append(el)
     line: list[tuple[int | None, float]] = []
     for onset in sorted(by_onset):
@@ -151,6 +164,49 @@ def _tune(xml: str) -> tuple[list[tuple[int | None, float]], int, str | None]:
     return line, (ks.sharps if ks is not None else 0), (ts.ratioString if ts is not None else None)
 
 
+def _even_light(page: Path, work: Path) -> Path:
+    """The page with its lighting evened out: each pixel divided by the paper's own brightness around it
+    (the print closed over at an eighth of the size), so a shadow or light falling off is paper-white again."""
+    import numpy as np
+    from PIL import Image, ImageOps
+    from scipy import ndimage
+
+    img = ImageOps.exif_transpose(Image.open(page)).convert("L")
+    small = img.resize((max(1, img.width // 8), max(1, img.height // 8)), Image.BILINEAR)
+    paper = ndimage.gaussian_filter(ndimage.maximum_filter(np.asarray(small, dtype=np.float32), size=9), 3)
+    paper = np.asarray(Image.fromarray(paper).resize(img.size, Image.BILINEAR), dtype=np.float32)
+    even = np.clip(np.asarray(img, dtype=np.float32) / np.maximum(paper, 1.0) * 255.0, 0, 255)
+    out = work / f"{page.stem}-even.png"
+    Image.fromarray(even.astype(np.uint8)).save(out)
+    return out
+
+
+def _page_tune(page: Path, number: int, work: Path) -> tuple[list[tuple[int | None, float]], int, str | None] | None:
+    """One page's tune, its key signature and its time signature (None when no music was read on it)."""
+    def reading(image: Path):
+        xml = _read_page(image)
+        if xml is None:
+            return None
+        try:
+            return _tune(keep_key_signature(xml))
+        except Exception as exc:  # noqa: BLE001 - one unreadable page leaves the others
+            logger.warning("homr's page %d could not be parsed: %s: %s", number + 1, type(exc).__name__, exc)
+            return None
+
+    def notes(r) -> int:
+        return 0 if r is None else sum(1 for midi, _ in r[0] if midi is not None)
+
+    first = reading(page)
+    if notes(first) >= FEW_NOTES:
+        return first
+    try:
+        second = reading(_even_light(page, work))
+    except Exception as exc:  # noqa: BLE001 - the second look is a bonus; the first reading stands
+        logger.warning("page %d could not be evened out: %s: %s", number + 1, type(exc).__name__, exc)
+        return first
+    return second if notes(second) > notes(first) else first
+
+
 def read_sheet(path: Path, work: Path) -> Path:
     """The tune of the printed music in ``path`` (a photo or a PDF) as a MusicXML file in ``work``.
 
@@ -159,14 +215,10 @@ def read_sheet(path: Path, work: Path) -> Path:
     line: list[tuple[int | None, float]] = []
     sharps, time_signature = 0, None
     for number, page in enumerate(_pages(path, work)):
-        xml = _read_page(page)
-        if xml is None:
+        read = _page_tune(page, number, work)
+        if read is None:
             continue
-        try:
-            notes, page_sharps, page_time = _tune(keep_key_signature(xml))
-        except Exception as exc:  # noqa: BLE001 - one unreadable page leaves the others
-            logger.warning("homr's page %d could not be parsed: %s: %s", number + 1, type(exc).__name__, exc)
-            continue
+        notes, page_sharps, page_time = read
         if not line:
             sharps, time_signature = page_sharps, page_time
         line += notes

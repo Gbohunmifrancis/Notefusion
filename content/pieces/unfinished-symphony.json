@@ -1,0 +1,14 @@
+{
+  "title": "Unfinished Symphony",
+  "composer": "Franz Schubert (1797–1828)",
+  "origin": "Austria",
+  "category": "classical",
+  "url": "https://en.wikipedia.org/wiki/Symphony_No._8_(Schubert)",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "B minor",
+  "time": "3/4",
+  "pickup": 0.0,
+  "tempo": 100,
+  "notes": "F#5:3 B4:1.5 A#4:0.5 B4:0.5 C#5:0.5 F#5:3 B4:1.5 A#4:0.5 B4:0.5 C#5:0.5 D5:3 E5:1 F5:1.5 E5:0.5 D5:1 C#5:2 D5:1"
+}

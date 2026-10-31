@@ -153,7 +153,8 @@ internal sealed record JobResultResponse(
 
 /// <summary>
 /// A hymn the tune clearly matches (<c>app.pipeline.hymn_match</c>): for <c>kind</c> "score" with its
-/// hymnbook version in the sung key; for "incipit" the hymn's name and link only.
+/// hymnbook version in the sung key; for "incipit" the hymn's name and link only. <c>category</c> "piece": a famous
+/// piece that is not a hymn (the worker's content/pieces), offered the same way as its published version.
 /// </summary>
 internal sealed record WireHymnMatch(
     string Slug,
@@ -172,7 +173,8 @@ internal sealed record WireHymnMatch(
     IReadOnlyList<WireNoteEvent>? Notes = null,
     IReadOnlyList<string>? SolfaLines = null,
     [property: JsonPropertyName("musicxml")] string? MusicXml = null,
-    string? Lyrics = null);
+    string? Lyrics = null,
+    string? Category = null);
 
 /// <summary>Another doh the voice fits nearly as well (<c>app.pipeline.transcriber.KeyAlternative</c>).</summary>
 internal sealed record WireKeyAlternative(

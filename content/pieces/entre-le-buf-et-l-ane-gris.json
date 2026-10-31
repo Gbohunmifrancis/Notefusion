@@ -1,0 +1,14 @@
+{
+  "title": "Entre le bœuf et l'âne gris",
+  "composer": "Traditional",
+  "origin": "France",
+  "category": "carol",
+  "url": "https://en.wikipedia.org/wiki/Entre_le_b%C5%93uf_et_l'%C3%A2ne_gris",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "D minor",
+  "time": "4/4",
+  "pickup": 0.0,
+  "tempo": 100,
+  "notes": "D4:1 D4:0.5 E4:0.5 F4:1 F4:0.5 G4:0.5 G4:1.5 A4:0.5 A4:2 C5:2 A4:2 G4:0.5 A4:0.5 Bb4:0.5 G4:0.5 A4:2 A4:0.5 Bb4:0.5 C5:0.5 D5:0.5 A4:2 G4:0.5 F4:0.5 G4:0.5 A4:0.5 F4:2 G4:0.5 F4:0.5 G4:0.5 A4:0.5 Bb4:1 G4:0.5 F4:0.5 E4:1.5 D4:0.5 D4:2"
+}

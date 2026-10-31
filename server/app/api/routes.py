@@ -687,7 +687,8 @@ def _identify_notes(notes: list[tuple[int, float, float]], seconds: float) -> Id
     found = None
     if m is not None:
         e = m.entry
-        kind = "incipit" if e.kind == "incipit" else "tune" if "/hymns/tunes/" in e.url else "hymn"
+        kind = ("piece" if e.category == "piece" else "incipit" if e.kind == "incipit"
+                else "tune" if "/hymns/tunes/" in e.url else "hymn")
         found = IdentifiedHymnDto(slug=e.slug, title=e.title, tune=e.tune, url=e.url, kind=kind,
                                   confidence=m.confidence, first_line=_first_line(e.lyrics))
     return IdentifyResponse(match=found, notes_heard=heard, too_short=False, seconds_heard=round(seconds, 2))

@@ -1,0 +1,14 @@
+{
+  "title": "Brahms's Lullaby (Wiegenlied)",
+  "composer": "Johannes Brahms (1833–1897)",
+  "origin": "Germany",
+  "category": "classical",
+  "url": "https://en.wikipedia.org/wiki/Wiegenlied_(Brahms)",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "Eb major",
+  "time": "3/4",
+  "pickup": 1.0,
+  "tempo": 100,
+  "notes": "G4:0.5 G4:0.5 Bb4:1.5 G4:0.5 G4:1 Bb4:1 r:1 G4:0.5 Bb4:0.5 Eb5:1 D5:1.5 C5:0.5 C5:1 Bb4:1 F4:0.5 G4:0.5 Ab4:1 F4:1 F4:0.5 G4:0.5 Ab4:1 r:1 F4:0.5 Ab4:0.5 D5:0.5 C5:0.5 Bb4:1 D5:1 Eb5:1 r:1 Eb4:0.5 Eb4:0.5 Eb5:2 C5:0.5 Ab4:0.5 Bb4:2 G4:0.5 Eb4:0.5 Ab4:1 Bb4:1 C5:1 Bb4:2 Eb4:0.5 Eb4:0.5 Eb5:2 C5:0.5 Ab4:0.5 Bb4:2 G4:0.5 Eb4:0.5 Ab4:1 Bb4:0.25 Ab4:0.25 G4:1 F4:1 Eb4:2"
+}

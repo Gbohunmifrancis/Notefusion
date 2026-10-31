@@ -1,0 +1,14 @@
+{
+  "title": "La Paloma",
+  "composer": "Sebastián Yradier (1809–1865)",
+  "origin": "Spain",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/La_Paloma",
+  "source": "OpenEWLD, the public-domain part of the Enhanced Wikifonia Leadsheet Dataset (MIT licence)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "C major",
+  "time": "4/4",
+  "pickup": 0.0,
+  "tempo": 100,
+  "notes": "G4:1 G4:5 E4:0.5 F4:0.5 G4:1 A4:1 B4:0.5 C5:1 A4:0.5 B4:1 G4:1 F4:6 r:1 G4:1 D5:5 E5:0.5 C5:0.5 D5:1 B4:1 C5:0.5 B4:1 A4:0.5 G4:1 F4:1 E4:5 r:1 G4:2 C5:0.5 C5:1 C5:0.5 C5:1 B4:1 D5:0.5 D5:1 C5:0.5 B4:1 A4:1 A4:1 G4:7 B4:0.5 B4:1 B4:0.5 B4:1 A4:1 A4:0.5 G4:1 G4:0.5 G4:1 A4:1 G4:0.5 F4:0.5 E4:7 E4:1 G4:0.5 G4:0.5 G4:0.5 A4:1 F#4:0.5 G4:4 r:1 G4:0.5 G4:0.5 G4:0.5 G4:1 A4:0.5 B4:2 D5:3 E5:0.5 C5:0.5 D5:0.5 B4:1 C5:0.5 A4:0.5 B4:1 C5:0.5 E5:1 D5:1 D4:0.5 E4:1 F4:0.5 A4:1 G4:1 E4:4 r:1 G4:0.5 G4:0.5 G4:0.5 A4:1 F#4:0.5 G4:4 r:1 G4:0.5 G4:0.5 G4:0.5 G4:1 A4:0.5 B4:2 D5:3 F5:0.5 E5:0.5 D5:0.5 E5:1 C5:0.5 D5:0.5 B4:1 C5:0.5 E5:1 D5:1 D4:0.5 E4:1 F4:0.5 A4:1 G4:1 C5:7"
+}

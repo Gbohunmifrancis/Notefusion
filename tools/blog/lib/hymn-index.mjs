@@ -10,6 +10,10 @@
 //   "incipit"  recognition only: an opening phrase with a title and a link, for a library that grows beyond
 //              the scores we may publish (content/hymns/incipits/*.json). A match names the tune and links to
 //              it; it never offers a hymnbook version.
+// A famous piece that is not a hymn (content/pieces/*.json: classical themes, folk, children's songs, carols,
+// anthems, all public domain) is a "score" entry with `category: "piece"`: matched and offered like a hymn, so
+// a photo of its sheet music or a hummed take is named and its published notes put right what was misread;
+// the clients call it the published version rather than the hymnbook's.
 // Every entry carries where it came from (`source`), its licence and the credit line its page shows.
 import fs from "node:fs";
 import path from "node:path";
@@ -20,6 +24,7 @@ import { tuneMatcherEntry } from "./render-tunes.mjs";
 
 export const HYMN_INDEX_PATH = path.join(REPO_ROOT, "server", "app", "data", "hymn_index.json");
 export const INCIPITS_DIR = path.join(CONTENT_DIR, "hymns", "incipits");
+export const PIECES_DIR = path.join(CONTENT_DIR, "pieces");
 
 const round = (x) => Math.round(x * 1000) / 1000;
 
@@ -76,13 +81,56 @@ export function loadIncipits(dir = INCIPITS_DIR) {
   });
 }
 
+const KEY_TEXT = /^[A-G](#|b)? (major|minor)$/;
+const TIME_TEXT = /^\d+\/\d+$/;
+
+/**
+ * The famous pieces in content/pieces/*.json: {title, composer, origin, category, url, source, licence, key, time,
+ * pickup, tempo, notes: "E5:0.5 D#5:0.5 r:1 …"} (PITCH:BEATS in quarter-note beats, r for a rest), as "score"
+ * entries with `category: "piece"`. A pickup puts the first note at the end of the first bar, as a hymn's does.
+ */
+export function loadPieces(dir = PIECES_DIR) {
+  if (!fs.existsSync(dir)) return [];
+  return fs.readdirSync(dir).filter((f) => f.endsWith(".json")).sort().map((f) => {
+    const x = JSON.parse(fs.readFileSync(path.join(dir, f), "utf8"));
+    for (const k of ["title", "composer", "origin", "category", "source", "licence", "key", "time", "notes"]) {
+      if (typeof x[k] !== "string" || !x[k].trim()) throw new Error(`pieces/${f}: "${k}" is required`);
+    }
+    if (x.url && !/^https:\/\/\S+$/.test(x.url)) throw new Error(`pieces/${f}: "url" must be a web address`);
+    if (!KEY_TEXT.test(x.key)) throw new Error(`pieces/${f}: "key" must read like "G major" or "F# minor"`);
+    if (!TIME_TEXT.test(x.time)) throw new Error(`pieces/${f}: "time" must read like "3/4"`);
+    const [num, den] = x.time.split("/").map(Number);
+    const pickup = Number(x.pickup || 0);
+    const bar = (num * 4) / den;
+    if (!(pickup >= 0 && pickup < bar)) throw new Error(`pieces/${f}: "pickup" must be under a bar`);
+    let t = pickup ? bar - pickup : 0;
+    const notes = [];
+    for (const tok of x.notes.trim().split(/\s+/)) {
+      const m = /^([^:]+):(\d*\.?\d+)$/.exec(tok);
+      if (!m) throw new Error(`pieces/${f}: cannot read "${tok}" (write PITCH:BEATS, e.g. G4:1, or r:1 for a rest)`);
+      const beats = Number(m[2]);
+      if (m[1] !== "r") notes.push([parsePitch(m[1]), round(t), round(beats)]);
+      t += beats;
+    }
+    if (notes.length < 12) throw new Error(`pieces/${f}: a piece needs at least 12 notes to be recognised safely`);
+    const credit = x.composer.startsWith("Traditional")
+      ? `${x.title}, ${x.composer.replace(/^Traditional/, "a traditional melody")} (${x.origin}).`
+      : `${x.title} by ${x.composer}.`;
+    return {
+      kind: "score", category: "piece", slug: `piece-${f.replace(/\.json$/, "")}`, title: x.title, tune: "",
+      url: x.url || "", source: x.source, licence: x.licence, credit, checked: false, key: x.key, time: x.time,
+      pickup, tempo: Number(x.tempo) || 100, notes, lyrics: "",
+    };
+  });
+}
+
 /** The index as committed: one entry a line, sorted by slug, so a change to one hymn is a one-line diff. */
-export function hymnIndexJson(hymns, incipits = loadIncipits(), tunes = []) {
-  const entries = [...hymns.filter((h) => !h.draft && !h.setByMetre).map(scoreEntry), ...tunes.map(tuneMatcherEntry), ...incipits].sort((a, b) => a.slug.localeCompare(b.slug));
+export function hymnIndexJson(hymns, incipits = loadIncipits(), tunes = [], pieces = loadPieces()) {
+  const entries = [...hymns.filter((h) => !h.draft && !h.setByMetre).map(scoreEntry), ...tunes.map(tuneMatcherEntry), ...incipits, ...pieces].sort((a, b) => a.slug.localeCompare(b.slug));
   const slugs = new Set();
   for (const e of entries) {
     if (slugs.has(e.slug)) throw new Error(`hymn index: two entries are called "${e.slug}"`);
     slugs.add(e.slug);
   }
-  return `{"version": 1, "generatedBy": "tools/blog/build.mjs from content/hymns (published hymns and tune pages only); do not edit by hand",\n"entries": [\n${entries.map((e) => JSON.stringify(e)).join(",\n")}\n]}\n`;
+  return `{"version": 1, "generatedBy": "tools/blog/build.mjs from content/hymns (published hymns and tune pages only) and content/pieces; do not edit by hand",\n"entries": [\n${entries.map((e) => JSON.stringify(e)).join(",\n")}\n]}\n`;
 }

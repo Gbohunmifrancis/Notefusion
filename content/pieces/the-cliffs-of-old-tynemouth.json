@@ -1,0 +1,14 @@
+{
+  "title": "The Cliffs of Old Tynemouth",
+  "composer": "Traditional",
+  "origin": "England",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/The_Cliffs_of_Old_Tynemouth",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "A major",
+  "time": "6/8",
+  "pickup": 1.0,
+  "tempo": 60,
+  "notes": "E5:0.75 D5:0.25 C#5:0.75 B4:0.25 A4:0.5 B4:0.5 A4:0.5 F#4:0.5 E4:0.5 F#4:0.5 A4:0.5 A4:1 B4:0.25 C#5:0.25 D5:0.75 C#5:0.25 B4:0.5 B4:0.5 C#5:0.5 A4:0.5 E5:0.5 C#5:0.5 A4:0.5 B4:1 B4:0.25 C#5:0.25 D5:0.5 C#5:0.5 B4:0.5 B4:0.5 C#5:0.5 A4:0.5 E5:0.5 C#5:0.5 A4:0.5 B4:1 A4:0.25 B4:0.25 C#5:0.75 B4:0.25 A4:0.5 A4:0.5 F#4:0.5 A4:0.5 E4:0.5 F#4:0.5 A4:0.5 D5:1 C#5:0.25 D5:0.25 E5:0.5 C#5:0.5 A4:0.5 A4:0.5 F#4:0.5 A4:0.5 E4:0.5 F#4:0.5 A4:0.5 A4:1.5"
+}

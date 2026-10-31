@@ -1,0 +1,14 @@
+{
+  "title": "The Star-Spangled Banner",
+  "composer": "John Stafford Smith (1750–1836)",
+  "origin": "United States",
+  "category": "anthem",
+  "url": "https://en.wikipedia.org/wiki/The_Star-Spangled_Banner",
+  "source": "NoteFusion (transcribed twice, independently, and kept where the two agree)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "Bb major",
+  "time": "3/4",
+  "pickup": 1.0,
+  "tempo": 90,
+  "notes": "F4:0.75 D4:0.25 Bb3:1 D4:1 F4:1 Bb4:2 D5:0.75 C5:0.25 Bb4:1 D4:1 E4:1 F4:2 F4:0.5 F4:0.5 D5:1.5 C5:0.5 Bb4:1 A4:2 G4:0.75 A4:0.25 Bb4:1 Bb4:1 F4:1 D4:1 Bb3:1"
+}

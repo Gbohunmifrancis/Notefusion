@@ -1,0 +1,14 @@
+{
+  "title": "Camptown Races",
+  "composer": "Stephen Foster (1826–1864)",
+  "origin": "United States",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/Camptown_Races",
+  "source": "OpenEWLD, the public-domain part of the Enhanced Wikifonia Leadsheet Dataset (MIT licence)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "C major",
+  "time": "4/4",
+  "pickup": 0.0,
+  "tempo": 100,
+  "notes": "G4:1 G4:1 E4:1 G4:1 A4:1 G4:1 E4:2 E4:1 D4:3 E4:1 D4:3 G4:1 G4:1 E4:1 G4:1 A4:1 G4:1 E4:2 D4:2 E4:1 D4:1 C4:4 G4:1 G4:1 E4:1 G4:1 A4:1 G4:1 E4:2 E4:1 D4:3 E4:1 D4:3 G4:1 G4:1 E4:1 G4:1 A4:1 G4:1 E4:2 D4:2 E4:1 D4:1 C4:4 C4:1 C4:1 E4:1 G4:1 C5:4 A4:1 A4:1 C5:1 A4:1 G4:4 G4:1 G4:1 E4:1 G4:1 A4:1 G4:1 E4:2 D4:1 F4:1 E4:1 D4:1 C4:4"
+}

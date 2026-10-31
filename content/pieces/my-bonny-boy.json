@@ -1,0 +1,14 @@
+{
+  "title": "My Bonny Boy",
+  "composer": "Traditional",
+  "origin": "England",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/My_Bonny_Boy",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "F minor",
+  "time": "3/4",
+  "pickup": 1.0,
+  "tempo": 86,
+  "notes": "F4:0.5 G4:0.5 Ab4:1 G4:1 F4:1 F5:1 Eb5:1 F5:1 C5:1.5 D5:0.5 Eb5:0.5 C5:0.5 Ab4:1 G4:1 F4:0.5 G4:0.5 Ab4:1 Ab4:1 Ab4:0.5 C5:0.5 Bb4:0.5 Ab4:0.5 G4:0.5 Ab4:0.5 Bb4:1 C5:2"
+}

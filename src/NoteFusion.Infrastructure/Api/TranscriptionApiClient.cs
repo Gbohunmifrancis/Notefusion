@@ -615,7 +615,7 @@ internal sealed partial class TranscriptionApiClient(
             hymn.Slug, hymn.Title, hymn.Tune ?? "", hymn.Url, hymn.Source, hymn.Licence, hymn.Credit, hymn.Kind, hymn.Confidence,
             hymn.Key, hymn.TimeSignature, hymn.Tempo, hymn.Pickup,
             hymn.Notes?.Select(n => new NoteEventDto(n.PitchMidi, n.StartBeat, n.DurBeats, n.Degree, n.Solfa, n.OctaveMark, n.Conf)).ToList(),
-            hymn.SolfaLines, hymn.MusicXml, hymn.Lyrics);
+            hymn.SolfaLines, hymn.MusicXml, hymn.Lyrics, hymn.Category);
 
     private static SourceDto? MapSource(WireSource? source)
         => source is null ? null : new SourceDto(

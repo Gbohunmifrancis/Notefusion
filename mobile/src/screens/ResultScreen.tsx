@@ -44,7 +44,7 @@ import { toApiError } from "../api/client";
 import type { ChordSymbol, HymnCredit, KeyAlternative, NoteEvent, Plan, TranscriptionPart, TranscriptionResult } from "../api/types";
 import { chordRows } from "../lib/chordRow";
 import { dohChoices, writeInKey } from "../lib/dohChoice";
-import { hymnbookSheet, hymnCreditLine, hymnLabel, hymnOffer, type HymnbookSheet } from "../lib/hymnbook";
+import { hymnbookSheet, hymnCreditLine, hymnLabel, hymnOffer, isPiece, type HymnbookSheet } from "../lib/hymnbook";
 import { showDialog, type DialogAction } from "../lib/dialog";
 import { showToast } from "../lib/toast";
 import { withBusy } from "../lib/busy";
@@ -99,7 +99,7 @@ import { rating } from "../lib/rating";
 import { exportMidi, exportMusicXml, exportPdf, exportSolfa } from "../lib/export";
 import type { HeldChange } from "../lib/heldChange";
 import { holdWithUndo, type Held } from "../lib/heldChangeRuntime";
-import { deletedLine, dohNowLine, HYMNBOOK_IN_LINE, movedLine } from "../lib/undoWords";
+import { deletedLine, dohNowLine, HYMNBOOK_IN_LINE, PUBLISHED_IN_LINE, movedLine } from "../lib/undoWords";
 import { openingBars } from "../lib/solfaOpening";
 import { firstBarOf, firstBarSyllables, firstHymnBar, layoutName, type SolfaLayout } from "../lib/readingLayouts";
 import {
@@ -1090,7 +1090,7 @@ export function ResultScreen({ route, navigation }: Props) {
     // hymnbook version replaces the filed copy, as a Save of the same job does.
     const id = savedId;
     hold(
-      HYMNBOOK_IN_LINE,
+      isPiece(result.hymnMatch!) ? PUBLISHED_IN_LINE : HYMNBOOK_IN_LINE,
       {
         commit: () => (id ? saveHymnbook(sheet, relabelled.notes) : undefined),
         undo: () => applySheet(before),
@@ -2259,7 +2259,7 @@ export function ResultScreen({ route, navigation }: Props) {
               {hymnCreditLine(hymnSource)}{" "}
               {hymnSource.url ? (
                 <Text style={styles.hymnName} onPress={() => Linking.openURL(hymnSource.url).catch(() => undefined)}>
-                  See the hymn
+                  {isPiece(hymnSource) ? "Read about it" : "See the hymn"}
                 </Text>
               ) : null}
             </Text>
@@ -2339,14 +2339,17 @@ export function ResultScreen({ route, navigation }: Props) {
 
           {hymnAsk && result.hymnMatch && !guest ? (
             <View style={styles.panel}>
-              <Text style={styles.panelEyebrow} accessibilityRole="header">Is this a hymn?</Text>
+              <Text style={styles.panelEyebrow} accessibilityRole="header">{isPiece(result.hymnMatch) ? "Is this the piece?" : "Is this a hymn?"}</Text>
               <Text style={styles.panelHint}>
                 This sounds like{" "}
-                <Text style={styles.hymnName} onPress={() => Linking.openURL(result.hymnMatch!.url).catch(() => undefined)}>
+                <Text
+                  style={result.hymnMatch.url ? styles.hymnName : undefined}
+                  onPress={result.hymnMatch.url ? () => Linking.openURL(result.hymnMatch!.url).catch(() => undefined) : undefined}
+                >
                   {hymnAsk === "version" ? hymnLabel(result.hymnMatch) : result.hymnMatch.title}
                 </Text>
                 {hymnAsk === "version"
-                  ? ". Use the hymnbook version? Its notes, rhythm and bar lines come from the published score, in the key you sang."
+                  ? `. Use the ${isPiece(result.hymnMatch) ? "published" : "hymnbook"} version? Its notes, rhythm and bar lines come from the published score, in the key you sang.`
                   : "."}
               </Text>
               {/* Both openings, bar lines and meter as each writes them, so the swap is seen before it is made. */}
@@ -2354,7 +2357,7 @@ export function ResultScreen({ route, navigation }: Props) {
                 <View style={styles.compare}>
                   <Text style={styles.compareLabel}>Yours · {hymnPreview.yoursMeter}</Text>
                   <Text style={styles.compareLine}>{hymnPreview.yours}</Text>
-                  <Text style={[styles.compareLabel, styles.compareGap]}>Hymnbook · {hymnPreview.bookMeter}</Text>
+                  <Text style={[styles.compareLabel, styles.compareGap]}>{isPiece(result.hymnMatch) ? "Published" : "Hymnbook"} · {hymnPreview.bookMeter}</Text>
                   <Text style={[styles.compareLine, styles.compareBook]}>{hymnPreview.book}</Text>
                 </View>
               ) : null}
@@ -2364,9 +2367,9 @@ export function ResultScreen({ route, navigation }: Props) {
                     style={[styles.chip, styles.chipOn]}
                     radius={radii.pill}
                     onPress={() => chooseHymnbook(true)}
-                    accessibilityLabel={`Use the hymnbook version of ${result.hymnMatch.title}`}
+                    accessibilityLabel={`Use the ${isPiece(result.hymnMatch) ? "published" : "hymnbook"} version of ${result.hymnMatch.title}`}
                   >
-                    <Text style={[styles.chipText, styles.chipTextOn]}>Use the hymnbook</Text>
+                    <Text style={[styles.chipText, styles.chipTextOn]}>{isPiece(result.hymnMatch) ? "Use the published" : "Use the hymnbook"}</Text>
                   </Touchable>
                 ) : null}
                 <Touchable

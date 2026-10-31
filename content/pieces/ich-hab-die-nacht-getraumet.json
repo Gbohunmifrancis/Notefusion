@@ -1,0 +1,14 @@
+{
+  "title": "Ich hab die Nacht geträumet",
+  "composer": "Traditional",
+  "origin": "Germany",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/Ich_hab_die_Nacht_getr%C3%A4umet",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "A minor",
+  "time": "6/8",
+  "pickup": 0.5,
+  "tempo": 100,
+  "notes": "E4:0.5 A4:1 E5:1 B4:1 B4:0.5 E5:1 E5:0.5 C5:0.75 B4:0.25 A4:0.5 A5:1.5 F5:1 D5:0.5 C5:0.75 B4:0.25 A4:0.5 B4:0.5 A4:0.5 G#4:0.5 A4:2"
+}
