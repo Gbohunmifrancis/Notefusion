@@ -30,7 +30,8 @@ test("every published hymn and tune page is in it, and nothing else", () => {
   assert.equal(pack.format, PACK_FORMAT);
   assert.equal(pack.hymnCount, summary.hymns - setByMetre);
   assert.equal(pack.count, summary.hymns - setByMetre + summary.tunes);
-  const scoreSlugs = new Set(index.entries.filter((e) => e.kind === "score").map((e) => e.slug));
+  // The pack is the Hymns screen's: famous pieces that are not hymns are recognised, never listed there.
+  const scoreSlugs = new Set(index.entries.filter((e) => e.kind === "score" && e.category !== "piece").map((e) => e.slug));
   assert.deepEqual(new Set(pack.hymns.map((h) => h.slug)), scoreSlugs);
 });
 

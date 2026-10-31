@@ -98,9 +98,10 @@ test("a page keeps its tune from run to run, from its metre's list", () => {
 test("words set by metre are left out of hymn recognition", () => {
   const tuneData = { name: "ST ANNE", music: [{ name: "William Croft", role: "Tune" }], key: "C major", time: "4/4", tempo: 80, parsed: { notes: [{ pitchMidi: 60, startBeat: 0, durBeats: 1 }] } };
   const hymn = (slug, extra) => ({ slug, title: slug, tuneData, text: [{ name: "Isaac Watts", role: "Words" }], underlay: "O", draft: false, ...extra });
-  const json = hymnIndexJson([hymn("o-god-our-help"), hymn("behold-the-glories", { setByMetre: true })], []);
-  assert.match(json, /"slug":"o-god-our-help"/);
-  assert.doesNotMatch(json, /behold-the-glories/);
+  const index = JSON.parse(hymnIndexJson([hymn("o-god-our-help"), hymn("behold-the-glories", { setByMetre: true })], [], [], []));
+  assert.deepEqual(index.entries.map((e) => e.slug), ["o-god-our-help"]);
+  // Never an entry, but one of the hymns sung to ST ANNE that a page matched to that tune is asked about.
+  assert.deepEqual(index.settings["st anne"].map((row) => row[0]), ["o-god-our-help", "behold-the-glories"]);
 });
 
 const PSALMS = `
