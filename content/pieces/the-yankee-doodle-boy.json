@@ -1,0 +1,14 @@
+{
+  "title": "The Yankee Doodle Boy",
+  "composer": "George M. Cohan (1878–1942)",
+  "origin": "United States",
+  "category": "popular",
+  "url": "https://github.com/00sapo/OpenEWLD",
+  "source": "OpenEWLD, the public-domain part of the Enhanced Wikifonia Leadsheet Dataset (MIT licence)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "G major",
+  "time": "2/4",
+  "pickup": 0.5,
+  "tempo": 100,
+  "notes": "D4:0.5 G4:0.5 G4:0.5 A4:0.5 B4:0.5 G4:0.5 G4:0.5 F#4:0.5 D4:0.5 G4:0.5 G4:0.5 A4:0.5 B4:0.5 G4:1 F#4:0.5 D4:0.5 G4:0.5 G4:0.5 A4:0.5 B4:0.5 C5:0.5 B4:0.5 A4:0.5 G4:0.5 F#4:0.5 D4:0.5 E4:0.5 F#4:0.5 G4:1 G4:0.5 r:0.5 E4:0.75 F#4:0.25 E4:0.5 D4:0.5 E4:0.5 F#4:0.5 G4:1 D4:0.75 E4:0.25 D4:0.5 C4:0.5 B3:0.5 C4:0.5 D4:1 E4:0.75 F#4:0.25 E4:0.5 D4:0.5 E4:0.5 F#4:0.5 G4:0.5 A4:0.5 B4:0.5 G4:0.5 A4:0.5 F#4:0.5 G4:1 G4:0.5"
+}

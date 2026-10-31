@@ -6,7 +6,8 @@
  * result, nothing more: this file decides when to ask and what the swapped result is. app.js draws the
  * prompt (as it draws "Which doh is it?") and saves the swapped sheet with the hymn's slug, so the saved
  * sheet keeps the hymn's credit. A "recognition only" match (kind "incipit") names the hymn and links to
- * it; it never offers a version.
+ * it; it never offers a version. A famous piece that is not a hymn (`category` "piece": a classical theme, a
+ * folk or children's song, a carol, an anthem) is offered the same way, as its published version.
  */
 (function () {
   "use strict";
@@ -25,9 +26,15 @@
     return null;
   }
 
-  /** "Amazing Grace (hymnbook, 3/4)": what the prompt calls the version on offer. */
+  /** Whether the match is a famous piece rather than a hymn (it has no hymnbook; its version is the published one). */
+  function isPiece(match) { return !!match && (match.category === "piece" || String(match.slug || "").indexOf("piece-") === 0); }
+
+  /** "hymnbook version" or "published version": what the prompt and its buttons call the version on offer. */
+  function noun(match) { return isPiece(match) ? "published version" : "hymnbook version"; }
+
+  /** "Amazing Grace (hymnbook, 3/4)", "Für Elise (published, 3/8)": what the prompt calls the version on offer. */
   function label(match) {
-    return match.title + (match.timeSignature ? " (hymnbook, " + match.timeSignature + ")" : "");
+    return match.title + (match.timeSignature ? " (" + (isPiece(match) ? "published" : "hymnbook") + ", " + match.timeSignature + ")" : "");
   }
 
   /**
@@ -52,14 +59,14 @@
       hasBacking: false,
       beatOriginSec: 0,
       beatTimesSec: null,
-      hymn: { slug: match.slug, title: match.title, url: match.url, credit: match.credit }
+      hymn: Object.assign({ slug: match.slug, title: match.title, url: match.url, credit: match.credit }, match.category ? { category: match.category } : {})
     });
   }
 
-  /** The credit line under a hymnbook version's title. */
+  /** The credit line under a hymnbook (or published) version's title. */
   function credit(hymn) {
-    return "Hymnbook version of “" + hymn.title + "”. " + (hymn.credit || "");
+    return (isPiece(hymn) ? "Published version of “" : "Hymnbook version of “") + hymn.title + "”. " + (hymn.credit || "");
   }
 
-  window.NfHymnbook = { ask: ask, label: label, swap: swap, credit: credit };
+  window.NfHymnbook = { ask: ask, label: label, swap: swap, credit: credit, isPiece: isPiece, noun: noun };
 })();

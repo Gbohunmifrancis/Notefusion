@@ -1,0 +1,14 @@
+{
+  "title": "Battle Cry of Freedom",
+  "composer": "George F. Root (1820–1895)",
+  "origin": "United States",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/Battle_Cry_of_Freedom",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "Bb major",
+  "time": "4/4",
+  "pickup": 1.0,
+  "tempo": 100,
+  "notes": "Bb4:0.5 C5:0.5 D5:0.5 D5:0.5 D5:0.75 C5:0.25 Bb4:1 G4:0.75 A4:0.25 Bb4:0.5 Bb4:0.5 Bb4:0.75 A4:0.25 G4:2 F4:1 F4:0.75 Eb4:0.25 D4:0.5 F4:0.5 Bb4:0.75 C5:0.25 D5:2 C5:1"
+}

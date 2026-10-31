@@ -1,0 +1,14 @@
+{
+  "title": "Estudiantina",
+  "composer": "Émile Waldteufel (1837–1915)",
+  "origin": "France",
+  "category": "classical",
+  "url": "https://en.wikipedia.org/wiki/Estudiantina",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "B minor",
+  "time": "3/4",
+  "pickup": 0.0,
+  "tempo": 192,
+  "notes": "A4:0.5 r:0.5 A4:1.5 G#4:0.5 B4:0.5 r:0.5 A4:1.5 G#4:0.5 B4:0.5 r:0.5 A4:2.5 r:0.5 A3:0.5 B3:0.5 C#4:0.5 D4:0.5 E4:0.5 r:0.5 A4:0.5 B4:0.5 C#5:0.5 D5:0.5 E5:0.5 r:0.5 A5:0.5 B5:0.5 C#6:0.5 D6:0.5 E6:0.5 r:0.5 A3:0.5 B3:0.5 C#4:0.5 D4:0.5 E4:0.5 F#4:0.5 G4:0.5 A4:0.5 B4:0.5 C#5:0.5 D5:0.5 r:0.5 F#4:0.5 r:0.5 F#4:0.5 r:1.5 F#4:0.5 r:0.5 F#4:0.5 r:1.5 F#4:0.5 r:0.5 F#4:0.5 r:1.5 F#4:0.5 r:0.5 F#4:0.5"
+}

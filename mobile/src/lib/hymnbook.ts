@@ -3,8 +3,10 @@
  * transcription (`hymnMatch`), the published score is exactly right where the transcription is a
  * reading: notes, rhythm, bar lines, pickup and time signature. The match carries that score already
  * written in the key that was sung, so taking it swaps the sheet, nothing more. A recognition-only
- * match (`kind` "incipit") names the hymn and links to it; it never offers a version. Mirrors the web's
- * assets/hymnbook.js.
+ * match (`kind` "incipit") names the hymn and links to it; it never offers a version. A famous piece that is
+ * not a hymn (`category` "piece": a classical theme, a folk or children's song, a carol, an anthem; its index
+ * slug starts "piece-", which is all a saved sheet's credit keeps) is offered the same way, as its published
+ * version. Mirrors the web's assets/hymnbook.js.
  */
 import type { HymnCredit, HymnMatch, NoteEvent } from "../api/types";
 
@@ -24,9 +26,15 @@ export function hymnOffer(
   return null;
 }
 
-/** "Amazing Grace (hymnbook, 3/4)": what the prompt calls the version on offer. */
+/** Whether a match (or a saved sheet's credit) is a famous piece rather than a hymn: it has no hymnbook. */
+export function isPiece(hymn: { slug: string; category?: string | null }): boolean {
+  return hymn.category === "piece" || hymn.slug.startsWith("piece-");
+}
+
+/** "Amazing Grace (hymnbook, 3/4)", "Für Elise (published, 3/8)": what the prompt calls the version on offer. */
 export function hymnLabel(match: HymnMatch): string {
-  return match.timeSignature ? `${match.title} (hymnbook, ${match.timeSignature})` : match.title;
+  const book = isPiece(match) ? "published" : "hymnbook";
+  return match.timeSignature ? `${match.title} (${book}, ${match.timeSignature})` : match.title;
 }
 
 /** The sheet the hymnbook version replaces the transcription with. */
@@ -52,7 +60,7 @@ export function hymnbookSheet(match: HymnMatch, tempo: number): HymnbookSheet | 
   };
 }
 
-/** The credit line under a hymnbook version's title. */
+/** The credit line under a hymnbook (or published) version's title. */
 export function hymnCreditLine(hymn: HymnCredit): string {
-  return `Hymnbook version of “${hymn.title}”. ${hymn.credit}`.trim();
+  return `${isPiece(hymn) ? "Published" : "Hymnbook"} version of “${hymn.title}”. ${hymn.credit}`.trim();
 }

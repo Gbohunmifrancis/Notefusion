@@ -1,0 +1,14 @@
+{
+  "title": "Wait Till the Sun Shines, Nellie",
+  "composer": "Harry Von Tilzer (1872–1946)",
+  "origin": "United States",
+  "category": "popular",
+  "url": "https://github.com/00sapo/OpenEWLD",
+  "source": "OpenEWLD, the public-domain part of the Enhanced Wikifonia Leadsheet Dataset (MIT licence)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "C major",
+  "time": "4/4",
+  "pickup": 0.0,
+  "tempo": 100,
+  "notes": "G4:4 E5:3 D5:1 C5:2 A4:2 G4:1 C5:3 D5:2 C#5:2 D5:2 E5:2 C5:2 A4:2 G4:4 A4:4 B4:3 A4:1 G4:2 C5:2 B4:1 C5:1 r:2 E5:4 A4:4 D5:8 G4:4 E5:3 D5:1 C5:2 A4:2 G4:1 C5:3 D5:2 C#5:2 D5:2 D#5:2 E5:5 A4:1 G#4:1 A4:1 F5:2 r:2 E5:3 A4:1 E5:2 D5:2 G#4:1 A4:3 E5:4 B4:4 C5:7"
+}

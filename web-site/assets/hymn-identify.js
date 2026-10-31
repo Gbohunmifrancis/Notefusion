@@ -29,6 +29,7 @@
 
   /** The hymn's page as a path on this site (so it works on a preview deploy), or the address as given. */
   function pageHref(url) {
+    if (!url) return "";
     try {
       var u = new URL(url, SITE);
       return u.origin === SITE ? u.pathname : u.href;
@@ -78,19 +79,26 @@
     var box = el("div");
     var href = pageHref(m.url), external = href.indexOf("http") === 0;
     box.appendChild(el("p", "kicker", "This sounds like"));
-    var h = el("h2"), a = el("a", null, m.title);
-    a.href = href; a.setAttribute("data-track", "Hymn identify: open hymn");
+    var h = el("h2"), a = el(href ? "a" : "span", null, m.title);
+    if (href) { a.href = href; a.setAttribute("data-track", "Hymn identify: open hymn"); }
     if (external) a.rel = "noopener";
     h.appendChild(a); box.appendChild(h);
     if (m.firstLine) box.appendChild(el("p", "first-line", "“" + m.firstLine + "”"));
     var meta = m.kind === "tune" ? "The hymn tune " + m.title : m.tune ? "Tune: " + m.tune : "";
     if (meta) box.appendChild(el("p", "story-meta", meta));
     var actions = el("div", "identify-actions");
+    // A famous piece that is not a hymn: named, and its Wikipedia article linked when it has one.
+    if (m.kind === "piece" && !href) {
+      actions.appendChild(againButton());
+      box.appendChild(actions);
+      showResult(box, false);
+      return;
+    }
     var go = el("a", "cta-button");
     go.href = href;
     go.setAttribute("data-track", "Hymn identify: see solfa");
     if (external) go.rel = "noopener";
-    go.appendChild(document.createTextNode(m.kind === "incipit" ? "Read about this hymn " : m.kind === "tune" ? "See the tune in solfa and play it " : "See the solfa and play it "));
+    go.appendChild(document.createTextNode(m.kind === "piece" ? "Read about this piece " : m.kind === "incipit" ? "Read about this hymn " : m.kind === "tune" ? "See the tune in solfa and play it " : "See the solfa and play it "));
     var arrow = el("span", null, "→"); arrow.setAttribute("aria-hidden", "true"); go.appendChild(arrow);
     actions.appendChild(go);
     actions.appendChild(againButton());

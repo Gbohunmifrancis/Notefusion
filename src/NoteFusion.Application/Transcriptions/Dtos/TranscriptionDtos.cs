@@ -281,6 +281,8 @@ public sealed record TranscriptionResultDto(
 /// as <c>Lyrics</c> — and a client that takes it saves it with <c>hymnSlug</c> so the sheet keeps the credit.
 /// <c>Kind</c> "incipit": recognition only; the tune is named and linked (<c>Url</c>) and no score is offered.
 /// <c>Credit</c> is the line the hymn's page shows; <c>Source</c> and <c>Licence</c> where it came from.
+/// <c>Category</c> "piece": a famous piece that is not a hymn (classical, folk, children's, carol, anthem), offered
+/// as its published version the same way; null for a hymn.
 /// </summary>
 public sealed record HymnMatchDto(
     string Slug,
@@ -299,7 +301,8 @@ public sealed record HymnMatchDto(
     IReadOnlyList<NoteEventDto>? Notes = null,
     IReadOnlyList<string>? SolfaLines = null,
     string? MusicXml = null,
-    string? Lyrics = null);
+    string? Lyrics = null,
+    string? Category = null);
 
 /// <summary>
 /// Another key the sung notes fit nearly as well. <c>Pitches</c> are the result's notes written in its

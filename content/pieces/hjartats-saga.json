@@ -1,0 +1,14 @@
+{
+  "title": "Hjärtats saga",
+  "composer": "Wilhelm Åström (1840–1898)",
+  "origin": "Sweden",
+  "category": "popular",
+  "url": "https://github.com/00sapo/OpenEWLD",
+  "source": "OpenEWLD, the public-domain part of the Enhanced Wikifonia Leadsheet Dataset (MIT licence)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "F major",
+  "time": "6/8",
+  "pickup": 0.0,
+  "tempo": 100,
+  "notes": "A4:0.5 A4:1 A4:0.5 Bb4:0.5 A4:0.5 Ab4:0.5 A4:1.5 F4:1 C5:0.5 C5:1 C5:0.5 C5:0.5 Bb4:0.5 A4:0.5 Bb4:2 r:0.5 Bb4:0.5 Bb4:1 Bb4:0.5 Bb4:0.5 A4:0.5 G4:0.5 A4:1.5 C5:1 C5:0.5 B4:0.5 A4:0.5 G4:0.5 D5:1 C5:0.5 C5:1.5 Bb4:1 A4:0.5 A4:1 A4:0.5 Bb4:0.5 A4:0.5 Ab4:0.5 A4:1.5 F4:1 C5:0.5 C5:1 C5:0.5 D5:0.5 C5:0.5 B4:0.5 C5:2.5 Db5:0.5 D5:1 D5:0.5 D5:0.5 Bb4:0.5 G4:0.5 C5:1.5 C5:1 Bb4:0.5 A4:1 A4:0.5 A4:1 G4:0.5 F4:2 r:0.5 C4:0.5 C4:0.5 D4:0.5 C4:0.5 F4:1 G4:0.5 A4:1.5 C4:1 D4:0.5 D4:0.5 Eb4:0.5 D4:0.5 G4:1 A4:0.5 Bb4:2.5 A4:0.5 A4:1 G4:0.5 F4:0.5 E4:0.5 D4:0.5 D4:1.5 C4:1 C4:0.5 C4:1 C4:0.5 C4:0.5 D4:0.5 Bb3:0.5 A3:2.5 C4:0.5 C4:0.5 D4:0.5 C4:0.5 F4:1 G4:0.5 A4:1.5 C4:1 D4:0.5 D4:0.5 Eb4:0.5 D4:0.5 G4:1 A4:0.5 Bb4:2.5 E5:0.5 E5:1 E5:0.5 E5:0.5 D5:0.5 C5:0.5 F5:1.5 A4:1 D5:0.5 C5:0.5 G4:0.5 A4:0.5 Bb4:1 E4:0.5 F4:2.5"
+}

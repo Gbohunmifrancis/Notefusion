@@ -1,0 +1,14 @@
+{
+  "title": "The Irish Washerwoman",
+  "composer": "Traditional",
+  "origin": "Ireland",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/The_Irish_Washerwoman",
+  "source": "NoteFusion (transcribed twice, independently, and kept where the two agree)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "G major",
+  "time": "6/8",
+  "pickup": 1.0,
+  "tempo": 160,
+  "notes": "D5:0.5 C5:0.5 B4:0.5 G4:0.5 G4:0.5 D4:0.5 G4:0.5 G4:0.5 B4:0.5 G4:0.5 B4:0.5 D5:0.5 C5:0.5 B4:0.5 C5:0.5 A4:0.5 A4:0.5 E4:0.5 A4:0.5 A4:0.5 C5:0.5"
+}

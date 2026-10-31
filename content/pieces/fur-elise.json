@@ -1,0 +1,14 @@
+{
+  "title": "Für Elise",
+  "composer": "Ludwig van Beethoven (1770–1827)",
+  "origin": "Germany",
+  "category": "classical",
+  "url": "https://en.wikipedia.org/wiki/F%C3%BCr_Elise",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "A minor",
+  "time": "3/8",
+  "pickup": 0.5,
+  "tempo": 70,
+  "notes": "E5:0.25 D#5:0.25 E5:0.25 D#5:0.25 E5:0.25 B4:0.25 D5:0.25 C5:0.25 A4:0.5 r:0.25 C4:0.25 E4:0.25 A4:0.25 B4:0.5 r:0.25 E4:0.25 G#4:0.25 B4:0.25 C5:0.5 r:0.25 E4:0.25 E5:0.25 D#5:0.25 E5:0.25 D#5:0.25 E5:0.25 B4:0.25 D5:0.25 C5:0.25"
+}

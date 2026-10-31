@@ -76,3 +76,17 @@ test("Yes swaps notes, rhythm, time signature, key, score and solfa, and drops w
 test("the credit line names the hymn and its sources", () => {
   assert.equal(H.credit({ title: "Amazing Grace", credit: "Tune NEW BRITAIN." }), "Hymnbook version of “Amazing Grace”. Tune NEW BRITAIN.");
 });
+
+test("a famous piece that is not a hymn is offered as its published version", () => {
+  const piece = { ...match, slug: "piece-fur-elise", title: "Für Elise", tune: "", url: "", category: "piece", timeSignature: "3/8" };
+  assert.equal(H.ask({ hymnMatch: piece }, {}), "version");
+  assert.equal(H.label(piece), "Für Elise (published, 3/8)");
+  assert.equal(H.noun(piece), "published version");
+  assert.equal(H.noun(match), "hymnbook version");
+  const swapped = H.swap(heard, piece);
+  assert.equal(swapped.hymn.category, "piece");
+  assert.match(H.credit(swapped.hymn), /^Published version of “Für Elise”/);
+  // A saved sheet's credit keeps only the slug: still a piece.
+  assert.ok(H.isPiece({ slug: "piece-fur-elise", title: "Für Elise" }));
+  assert.ok(!H.isPiece(match));
+});

@@ -10,6 +10,8 @@ export function dohNowLine(dohLetter: string): string {
 
 /** "Use the hymnbook" taken. */
 export const HYMNBOOK_IN_LINE = "Hymnbook version in";
+/** The same for a famous piece that is not a hymn: its published version. */
+export const PUBLISHED_IN_LINE = "Published version in";
 
 /** Profile's "Remove photo". */
 export const PHOTO_REMOVED_LINE = "Photo removed";

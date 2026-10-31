@@ -1,0 +1,14 @@
+{
+  "title": "Loch Lomond",
+  "composer": "Traditional",
+  "origin": "Scotland",
+  "category": "folk",
+  "url": "https://github.com/00sapo/OpenEWLD",
+  "source": "OpenEWLD, the public-domain part of the Enhanced Wikifonia Leadsheet Dataset (MIT licence)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "C major",
+  "time": "4/4",
+  "pickup": 0.0,
+  "tempo": 100,
+  "notes": "G4:0.5 A4:0.5 C5:1 C5:0.5 D5:0.5 E5:1 D5:0.5 C5:0.5 D5:1 D5:0.5 C5:0.5 A4:1 G4:0.5 A4:0.5 C5:1 C5:1 C5:1 E5:0.5 G5:0.5 A5:2 G5:1 G5:1 A5:1 A5:0.5 G5:0.5 E5:1 E5:0.5 G5:0.5 F5:0.5 E5:0.5 D5:0.5 C5:0.5 A4:1 G4:0.5 A4:0.5 C5:0.5 C5:0.5 E5:0.5 G5:0.5 A5:1 G5:0.5 E5:0.5 D5:2 C5:1 G4:1 C5:1 C5:0.5 D5:0.5 E5:1 E5:0.5 D5:0.5 C5:1 C5:0.5 A4:0.5 G4:1 G4:0.5 A4:0.5 C5:1 C5:0.5 C5:0.5 C5:1 E5:0.5 G5:0.5 A5:2 G5:1 G5:1 A5:1 A5:0.5 G5:0.5 E5:1 E5:0.5 G5:0.5 F5:0.5 E5:0.5 D5:0.5 C5:0.5 A4:1 G4:0.5 A4:0.5 C5:0.5 C5:0.5 E5:0.5 G5:0.5 A5:1 G5:0.5 E5:0.5 D5:2 C5:2"
+}

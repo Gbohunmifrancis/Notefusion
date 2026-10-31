@@ -156,6 +156,8 @@ export interface HymnMatch {
   solfaLines?: string[] | null;
   musicXml?: string | null;
   lyrics?: string | null;
+  /** "piece": a famous piece that is not a hymn, offered as its published version; absent for a hymn. */
+  category?: "piece" | string | null;
 }
 
 /** The hymn a saved sheet is the hymnbook version of, with its credit. Mirrors the C# HymnCreditDto. */

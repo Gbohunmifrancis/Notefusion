@@ -1,0 +1,14 @@
+{
+  "title": "Tarantella Napoletana",
+  "composer": "Traditional",
+  "origin": "Italy",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/Tarantella_Napoletana",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: a traditional melody.",
+  "key": "E minor",
+  "time": "12/8",
+  "pickup": 1.5,
+  "tempo": 189,
+  "notes": "E5:1 E5:0.5 B4:1 B4:0.5 E5:1 E5:0.5 B4:1.5 B4:1 B4:0.5 C5:1 C5:0.5 C5:0.5 D5:0.5 C5:0.5 B4:1.5"
+}

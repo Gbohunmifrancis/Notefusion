@@ -1,0 +1,14 @@
+{
+  "title": "Hard Times Come Again No More",
+  "composer": "Stephen Foster (1826–1864)",
+  "origin": "United States",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/Hard_Times_Come_Again_No_More",
+  "source": "OpenEWLD, the public-domain part of the Enhanced Wikifonia Leadsheet Dataset (MIT licence)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "C major",
+  "time": "4/4",
+  "pickup": 0.0,
+  "tempo": 100,
+  "notes": "C4:0.5 D4:0.5 E4:1 E4:0.5 E4:0.5 E4:0.5 G4:1 E4:0.5 D4:0.5 C4:0.5 C4:0.5 D4:0.5 E4:1 A4:0.75 G4:0.25 G4:1 E4:1 E4:0.5 C4:0.5 D4:0.75 D4:0.25 C4:2 r:1 C4:0.5 D4:0.5 E4:1 E4:0.5 E4:0.5 E4:0.5 G4:1 E4:0.5 D4:0.5 C4:0.5 C4:0.5 D4:0.5 E4:1 A4:1 G4:1 E4:1 E4:0.5 C4:0.5 D4:0.75 D4:0.25 C4:2 r:1 E4:0.5 F4:0.5 G4:1 r:0.5 G4:0.5 G4:1 F#4:0.5 G4:0.5 A4:2 G4:1 r:1 C5:1 G4:1 A4:1 G4:1 E4:0.5 E4:0.5 D4:0.75 C4:0.25 D4:1 C4:0.5 D4:0.5 E4:1 E4:0.5 E4:0.5 E4:0.5 G4:1 E4:0.5 D4:0.75 C4:0.25 C4:0.5 D4:0.5 E4:1 A4:1 G4:1 E4:1 E4:0.5 C4:0.5 D4:0.75 C4:0.25 C4:2"
+}

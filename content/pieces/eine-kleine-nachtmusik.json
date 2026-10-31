@@ -1,0 +1,14 @@
+{
+  "title": "Eine kleine Nachtmusik",
+  "composer": "Wolfgang Amadeus Mozart (1756–1791)",
+  "origin": "Austria",
+  "category": "classical",
+  "url": "https://en.wikipedia.org/wiki/Eine_kleine_Nachtmusik",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "G major",
+  "time": "4/4",
+  "pickup": 0.0,
+  "tempo": 148,
+  "notes": "G5:1 r:0.5 D5:0.5 G5:1 r:0.5 D5:0.5 G5:0.5 D5:0.5 G5:0.5 B5:0.5 D6:1 r:1 C6:1 r:0.5 A5:0.5 C6:1 r:0.5 A5:0.5 C6:0.5 A5:0.5 F#5:0.5 A5:0.5 D5:1"
+}

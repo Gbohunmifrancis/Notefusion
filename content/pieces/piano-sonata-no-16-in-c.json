@@ -1,0 +1,14 @@
+{
+  "title": "Piano Sonata No. 16 in C (\"Sonata facile\")",
+  "composer": "Wolfgang Amadeus Mozart (1756–1791)",
+  "origin": "Austria",
+  "category": "classical",
+  "url": "https://en.wikipedia.org/wiki/Piano_Sonata_No._16_(Mozart)",
+  "source": "Wikipedia (the score in its article on the piece)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "C major",
+  "time": "4/4",
+  "pickup": 0.0,
+  "tempo": 132,
+  "notes": "C5:2 E5:1 G5:1 B4:1.5 C5:0.25 D5:0.25 C5:1 r:1 A5:2 G5:1 C6:1 G5:1 F5:0.5 E5:0.25 F5:0.25 E5:1"
+}

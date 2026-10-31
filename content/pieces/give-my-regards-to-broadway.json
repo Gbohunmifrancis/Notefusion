@@ -1,0 +1,14 @@
+{
+  "title": "Give My Regards to Broadway",
+  "composer": "George M. Cohan (1878–1942)",
+  "origin": "United States",
+  "category": "popular",
+  "url": "https://en.wikipedia.org/wiki/Give_My_Regards_to_Broadway",
+  "source": "OpenEWLD, the public-domain part of the Enhanced Wikifonia Leadsheet Dataset (MIT licence)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "C major",
+  "time": "4/4",
+  "pickup": 0.0,
+  "tempo": 100,
+  "notes": "G4:1 A4:2 B4:1 C5:2 D5:2 C5:4 B4:3 G4:1 A4:1 A4:1 A4:1 A4:1 B4:2 B4:2 G4:7 r:1 G4:1 A4:2 B4:1 C5:2 A4:2 B4:2 C5:2 D5:1 B4:1 A4:1 G4:1 C5:2 A4:2 B4:2 C5:2 D5:7 r:1 G4:1 A4:2 B4:1 C5:2 D5:2 C5:4 B4:3 G4:1 A4:1 A4:1 A4:1 A4:1 B4:2 B4:2 G4:7 r:1 E5:1 C#5:2 A4:1 F5:2 E5:2 D5:2 C#5:2 D5:1 C5:1 D5:1 D#5:1 E5:2 C5:2 C5:2 D5:2 C5:7"
+}

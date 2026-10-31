@@ -1,0 +1,14 @@
+{
+  "title": "Annie Laurie",
+  "composer": "Alicia Scott (1810–1900)",
+  "origin": "Scotland",
+  "category": "folk",
+  "url": "https://en.wikipedia.org/wiki/Annie_Laurie",
+  "source": "OpenEWLD, the public-domain part of the Enhanced Wikifonia Leadsheet Dataset (MIT licence)",
+  "licence": "Public domain: the composer died more than seventy years ago.",
+  "key": "A major",
+  "time": "4/4",
+  "pickup": 0.0,
+  "tempo": 100,
+  "notes": "A3:1 A3:0.5 A3:0.5 A4:1.5 A4:0.5 G#4:1 F#4:2 F#4:1 E4:1.5 C#4:0.5 C#4:1 B3:0.5 A3:0.5 C#4:1 B3:2 C#4:0.5 B3:0.5 A3:1.5 A3:0.5 A4:1.5 A4:0.5 G#4:1 F#4:2 F#4:1 E4:1.5 C#4:0.5 C#4:1.5 B3:0.5 A3:3 E4:1 A4:1.5 A4:0.5 B4:1.5 B4:0.5 C#5:3 E4:1 A4:1.5 A4:0.5 B4:1.5 B4:0.5 C#5:3 C#5:0.5 B4:0.5 A4:1.5 G#4:0.5 F#4:1 A4:0.5 F#4:0.5 E4:1 C#4:2 C#4:0.5 B3:0.5 A3:0.5 A4:1 C#4:0.5 C#4:1.5 B3:0.5 A3:3"
+}

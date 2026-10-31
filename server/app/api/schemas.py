@@ -108,6 +108,7 @@ class HymnMatchDto(ApiModel):
     licence: str
     credit: str
     kind: str  # score | incipit
+    category: str | None = None  # "piece": a famous piece that is not a hymn (content/pieces); its published version
     confidence: float
     key: str | None = None
     time_signature: str | None = None
@@ -185,7 +186,8 @@ class IdentifiedHymnDto(ApiModel):
     tune: str
     # The hymn's page (absolute); for an incipit, wherever the incipit's source lives.
     url: str
-    # "hymn" (a hymn page), "tune" (a tune page, no words) or "incipit" (recognition only).
+    # "hymn" (a hymn page), "tune" (a tune page, no words), "incipit" (recognition only) or "piece" (a famous
+    # piece that is not a hymn: its url is its Wikipedia article, or empty).
     kind: str
     confidence: float
     # The opening words of the first verse, plainly spelled; null for a tune without words.
